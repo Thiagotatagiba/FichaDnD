@@ -1,0 +1,13 @@
+{
+  "name": "ficha-dnd",
+  "version": "1.0.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-packager . FichaDnD --platform=win32 --arch=x64 --out=dist"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-packager": "^17.1.1"
+  }
+}

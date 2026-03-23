@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -3911,6 +3910,12 @@
     </div>
 
     <script>
+        window.api?.receberPersonagem((data) => {
+            const personagem = JSON.parse(data);
+
+            // Aqui você adapta para seu sistema
+            carregarFicha(personagem);
+        });
         window.addEventListener('DOMContentLoaded', () => {
             adicionarNovaArma();
         });
