@@ -1,18 +1,25 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ficha D&D</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=MedievalSharp&display=swap"
         rel="stylesheet">
 
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             background: #e7e1d5;
             font-family: 'MedievalSharp';
             padding: 30px;
+            margin: 0;
         }
 
         .ficha {
@@ -387,6 +394,8 @@
             background: white;
             padding: 6px 10px 8px;
             box-sizing: border-box;
+            position: relative;
+            z-index: 10;
         }
 
         .pv-atual-titulo {
@@ -409,12 +418,17 @@
         .pv-linha {
             display: grid;
             grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.8fr);
-            gap: 6px;
-            justify-content: center;
-            width: 100%;
-            max-width: 220px;
+            gap: 0;
+            align-items: stretch;
+            justify-items: stretch;
+            width: 78%;
             margin: 0 auto;
-            margin-top: -2px;
+            margin-top: -12px;
+            position: relative;
+            z-index: 5;
+            border: 2px solid #8b4513;
+            border-radius: 0;
+            box-sizing: border-box;
         }
 
         .pv-bloco {
@@ -422,29 +436,41 @@
             flex-direction: column;
             gap: 4px;
             align-items: center;
-            border: 2px solid #8b4513;
-            border-radius: 10px;
+            justify-content: center;
+            border: none;
+            border-radius: 0;
             background: white;
-            padding: 6px 8px 8px;
+            padding: 8px 6px;
             box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            min-height: 70px;
+        }
+
+        .pv-bloco-total {
+            border-right: 1px solid #8b4513;
         }
 
         .pv-bloco-titulo {
-
-            font-size: 11px;
-            line-height: 1;
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 1.2;
             color: #6f3610;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .pv-bloco input {
             border: none;
             background: none;
-            width: 100%;
-            min-height: 24px;
+            width: 90%;
+            min-height: 28px;
             text-align: center;
             box-sizing: border-box;
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
+            color: #333;
+            padding: 0;
         }
 
         .pv-bloco-total {
@@ -475,125 +501,130 @@
             min-width: 0;
         }
 
-        .dados-vida {
+        .dados-vida-container {
             display: flex;
-            gap: 0;
+            gap: 4px;
             align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
+            width: 100%;
+            max-width: 220px;
+            margin: 0 auto;
         }
 
-        .dv-combo {
+        .dados-vida {
+            display: flex;
+            gap: 4px;
+            align-items: flex-start;
+            justify-content: center;
+            flex-wrap: nowrap;
+            flex: 1;
+        }
+
+        .dv-container-principal {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex: 1;
+            min-height: 40px;
             border: 2px solid #8b4513;
             border-radius: 10px;
             background: white;
-            min-height: 46px;
-            padding: 5px 8px 7px;
+            padding: 8px 10px 4px;
             box-sizing: border-box;
         }
 
-        .dv-orbe {
+        .dv-secao-res,
+        .dv-secao-total {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
-            justify-content: center;
-            width: 58px;
-            height: 58px;
-            flex-shrink: 0;
-            border: 3px solid #8b4513;
-            border-radius: 50%;
-            background: white;
-            padding: 6px 4px;
-            box-sizing: border-box;
-        }
-
-        .dv-orbe-label,
-        .dv-combo-labels {
-            font-size: 11px;
-            line-height: 1;
-            color: #6f3610;
-        }
-
-        .dv-total,
-        .dv-tipo {
-            border: none;
-            background: none;
-            min-height: 22px;
-            text-align: center;
-            box-sizing: border-box;
-            font-size: 18px;
-            font-weight: bold;
-            font-family: 'MedievalSharp';
-        }
-
-        .dv-orbe input,
-        .dv-restante {
-            width: 36px;
-            appearance: textfield;
-            -moz-appearance: textfield;
-            border: none;
-            background: none;
-            min-height: 22px;
-            text-align: center;
-            box-sizing: border-box;
-            font-size: 18px;
-            font-weight: bold;
-            font-family: 'MedievalSharp';
-        }
-
-        .dv-combo {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            min-width: 126px;
-            margin-left: 4px;
-        }
-
-        .dv-combo-labels {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-        }
-
-        .dv-combo-campos {
-            display: flex;
-            align-items: center;
-            justify-content: center;
             gap: 2px;
+            flex: 1;
         }
 
-        .dv-total {
+        .dv-label {
+            font-size: 8px;
+            font-weight: bold;
+            color: #6f3610;
+            text-align: center;
+        }
+
+        .dv-restante,
+        .dv-total-input {
             width: 28px;
+            min-height: 20px;
+            border: none;
+            background: none;
+            padding: 1px;
+            text-align: center;
+            box-sizing: border-box;
+            font-size: 12px;
+            font-weight: bold;
+            font-family: 'MedievalSharp';
             appearance: textfield;
             -moz-appearance: textfield;
-        }
-
-        .dv-tipo {
-            width: 58px;
         }
 
         .dv-restante::-webkit-outer-spin-button,
         .dv-restante::-webkit-inner-spin-button,
-        .dv-total::-webkit-outer-spin-button,
-        .dv-total::-webkit-inner-spin-button {
+        .dv-total-input::-webkit-outer-spin-button,
+        .dv-total-input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
 
+        .dv-orbe-overlay {
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 42px;
+            height: 42px;
+            border: 3px solid #8b4513;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+            z-index: 2;
+        }
+
+        .dv-tipo-principal {
+            border: none;
+            background: none;
+            font-size: 12px;
+            font-weight: bold;
+            font-family: 'MedievalSharp';
+            text-align: center;
+            width: 100%;
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            padding: 0;
+        }
+
         .descanso-longo-botao {
-            margin-left: 6px;
-            min-width: 62px;
-            min-height: 46px;
-            padding: 4px 6px;
+            margin-left: 0;
+            width: 50px;
+            min-height: 40px;
+            padding: 3px 2px;
             border: 2px solid #8b4513;
-            border-radius: 10px;
+            border-radius: 6px;
             background: #efe1c0;
             color: #6f3610;
             font-family: 'MedievalSharp';
-            font-size: 10px;
-            line-height: 1.05;
+            font-size: 8px;
+            line-height: 1.1;
             cursor: pointer;
+            flex-shrink: 0;
+            white-space: pre-line;
+            text-align: center;
         }
 
         .caixa-salvaguarda {
@@ -1242,25 +1273,26 @@
 
         .ataque-status-linha {
             display: grid;
-            grid-template-columns: 110px 1fr;
-            gap: 10px;
+            grid-template-columns: auto auto auto;
+            gap: 8px;
         }
 
         .ataque-status-caixa {
-            min-height: 42px;
+            min-height: auto;
             border: 2px solid #8b4513;
-            border-radius: 10px;
+            border-radius: 8px;
             background: #fffaf2;
-            padding: 6px 10px;
+            padding: 6px 8px;
             box-sizing: border-box;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 3px;
+            justify-content: center;
         }
 
         .ataque-status-caixa label {
-            font-size: 11px;
+            font-size: 9px;
             font-weight: bold;
             color: #7a5a38;
             text-transform: uppercase;
@@ -1278,6 +1310,7 @@
             outline: none;
             min-width: 0;
             width: 100%;
+            text-align: center;
         }
 
         .ataque-status-caixa.posicao input {
@@ -1288,9 +1321,24 @@
             padding: 0;
         }
 
+        .ataque-status-caixa:has(#combateRodada) input {
+            width: 30px;
+            text-align: center;
+        }
+
         .ataque-status-sufixo {
             font-size: 16px;
             font-weight: bold;
+            margin-left: -8px;
+            letter-spacing: -3px;
+        }
+
+        .ataque-status-input-group {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            width: 100%;
+            justify-content: center;
         }
 
         .ataque-status-caixa.posicao input::-webkit-outer-spin-button,
@@ -1311,23 +1359,111 @@
             font-weight: bold;
         }
 
+        .ataque-contra-morte {
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            background: #fff5e6;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .contra-morte-titulo {
+            text-align: center;
+            font-weight: bold;
+            color: #6f3610;
+            font-size: 14px;
+        }
+
+        .contra-morte-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .contra-morte-caveira {
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .contra-morte-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .contra-morte-label {
+            font-size: 12px;
+            color: #6f3610;
+            font-weight: bold;
+        }
+
+        .contra-morte-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .contra-morte-dot {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #8b4513;
+            border-radius: 50%;
+            display: inline-block;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .contra-morte-dot.ativo {
+            background: #8b4513;
+        }
+
+        .contra-morte-botoes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
         .ataque-acoes {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
 
-        .ataque-botao,
-        .subaba-botao {
+        .ataque-botao {
             border: 2px solid #8b4513;
             border-radius: 8px;
-            background: #efe2ce;
+            background: #d4c5ae;
             color: #5f2d0c;
             font-family: 'MedievalSharp';
             font-size: 14px;
             font-weight: bold;
-            padding: 8px 10px;
+            padding: 10px 16px;
             cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            bottom: -1px;
+        }
+
+        .subaba-botao {
+            border: 2px solid #8b4513;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            background: #d4c5ae;
+            color: #5f2d0c;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            font-weight: bold;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            bottom: -1px;
         }
 
         .subabas-combate {
@@ -1336,20 +1472,23 @@
 
         .subabas-botoes {
             display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
+            gap: 0;
+            margin-bottom: 0;
+            border-bottom: 2px solid #8b4513;
         }
 
         .subaba-botao.ativa {
-            background: #8b4513;
-            color: #fffaf2;
+            background: #fffaf2;
+            color: #5f2d0c;
+            border-bottom: 2px solid #fffaf2;
         }
 
         .subaba-combate {
             display: none;
             min-height: 120px;
-            border: 1px solid #bda68c;
-            border-radius: 10px;
+            border: 2px solid #8b4513;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
             background: #fffaf2;
             padding: 14px;
             box-sizing: border-box;
@@ -1357,6 +1496,49 @@
 
         .subaba-combate.ativa {
             display: block;
+        }
+
+        .historico-tabela {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .historico-cabecalho {
+            display: grid;
+            grid-template-columns: 80px 100px 1fr;
+            gap: 10px;
+            font-weight: bold;
+            background: #8b4513;
+            color: white;
+            padding: 8px;
+            border-radius: 6px 6px 0 0;
+            font-size: 12px;
+        }
+
+        .historico-registros {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .historico-registro {
+            display: grid;
+            grid-template-columns: 80px 100px 1fr;
+            gap: 10px;
+            padding: 8px;
+            background: white;
+            border: 1px solid #bda68c;
+            font-size: 12px;
+        }
+
+        .historico-col-rodada,
+        .historico-col-tipo,
+        .historico-col-valor {
+            display: flex;
+            align-items: center;
         }
 
         .equipamento-colunas {
@@ -1978,6 +2160,590 @@
             margin-top: auto;
             /* Empurra o rodapé para o fim do espaço disponível */
         }
+
+        /* RESPONSIVIDADE PARA TABLETS E DISPOSITIVOS MENORES */
+        @media (max-width: 1024px) {
+            body {
+                padding: 15px;
+            }
+
+            .ficha {
+                max-width: 100%;
+                padding: 15px;
+                border-width: 3px;
+            }
+
+            .abas {
+                grid-template-columns: 1fr 1fr;
+                overflow-x: auto;
+            }
+
+            .tab {
+                padding: 8px 12px;
+                font-size: 12px;
+            }
+
+            .caixa-status {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .combate-linha {
+                grid-template-columns: 1fr;
+            }
+
+            .combate-card {
+                min-width: auto;
+            }
+
+            .ataque-status-linha {
+                grid-template-columns: auto auto auto;
+                gap: 6px;
+            }
+
+            .ataque-status-caixa {
+                min-height: 32px;
+                padding: 3px 6px;
+                font-size: 8px;
+            }
+
+            .ataque-status-caixa input {
+                max-width: 50px;
+                font-size: 12px;
+            }
+        }
+
+        /* RESPONSIVIDADE PARA CELULARES */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .ficha {
+                padding: 10px;
+                margin: auto;
+            }
+
+            .abas {
+                grid-template-columns: 1fr;
+            }
+
+            .abraPrincipal,
+            .abaPrincipal {
+                width: 100% !important;
+            }
+
+            .tab,
+            .tab.active {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .acoes {
+                gap: 5px;
+            }
+
+            .acoes button {
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+
+            .ficha-botoes {
+                display: flex;
+                gap: 8px;
+            }
+
+            .ficha-titulo {
+                font-size: 16px;
+            }
+
+            .caixa-pv {
+                grid-template-columns: 1fr;
+                padding: 10px;
+                gap: 8px;
+            }
+
+            .ataque-status-linha {
+                grid-template-columns: auto auto;
+                gap: 4px;
+            }
+
+            .ataque-status-caixa {
+                min-height: 30px;
+                padding: 2px 4px;
+                gap: 2px;
+            }
+
+            .pv-atual,
+            .pv-linha {
+                width: 100%;
+                margin-top: -8px;
+            }
+
+            .combate-card {
+                padding: 10px;
+            }
+
+            .status-titulo {
+                font-size: 12px;
+            }
+
+            .subabas-botoes {
+                gap: 6px;
+            }
+
+            .subaba-botao {
+                padding: 6px 8px;
+                font-size: 10px;
+            }
+
+            .historico-cabecalho {
+                grid-template-columns: 60px 80px 1fr;
+                gap: 8px;
+                padding: 6px;
+                font-size: 10px;
+            }
+
+            .historico-registro {
+                grid-template-columns: 60px 80px 1fr;
+                gap: 8px;
+                padding: 6px;
+                font-size: 10px;
+            }
+
+            input,
+            textarea,
+            select {
+                font-size: 14px !important;
+            }
+        }
+
+        /* RESPONSIVIDADE PARA CELULARES PEQUENOS */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .ficha {
+                padding: 8px;
+                border-width: 2px;
+            }
+
+            .ficha-titulo {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .tab {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+
+            .ataque-status-caixa {
+                min-height: 28px;
+                padding: 2px 3px;
+                gap: 1px;
+            }
+
+            .ataque-status-caixa label {
+                font-size: 8px;
+            }
+
+            .ataque-status-caixa input {
+                max-width: 40px;
+                font-size: 11px;
+                padding: 2px;
+            }
+
+            .pv-bloco {
+                min-height: 50px;
+                padding: 6px 4px;
+            }
+
+            .pv-bloco-titulo {
+                font-size: 9px;
+            }
+
+            .pv-bloco input {
+                font-size: 16px;
+                width: 85%;
+            }
+
+            .contra-morte-dot {
+                width: 16px;
+                height: 16px;
+            }
+
+            .contra-morte-caveira {
+                font-size: 24px;
+            }
+        }
+
+        /* CARD DE ARMAS */
+        .arma-card {
+            position: relative;
+            background: linear-gradient(145deg, #f4ecd8, #e8dcc2);
+            border: 3px solid #3b2f1b;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            max-width: 650px;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2), 0 8px 20px rgba(0, 0, 0, 0.4);
+            z-index: 0;
+        }
+
+        .arma-card::after {
+            content: "";
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(60, 45, 25, 0.6);
+            border-radius: 8px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .arma-proficiencia {
+            display: flex !important;
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #3b2f1b, #1f170d);
+            border: 2px solid #d6c7a1;
+            color: #f4ecd8;
+            font-family: 'Metamorphous', serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            z-index: 10;
+            /* 🔥 ADICIONE ISTO AQUI */
+        }
+
+        .arma-proficiencia.nao::after {
+            content: "X";
+            position: absolute;
+            background: radial-gradient(circle, #7a1c1c, #3a0d0d);
+            color: red;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .arma-linha {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .arma-linha-3 {
+            grid-template-columns: 2fr 1fr 1.3fr;
+        }
+
+        .arma-linha-2 {
+            grid-template-columns: 1fr 1.2fr 1.5fr;
+        }
+
+        .arma-linha-1 {
+            grid-template-columns: 1fr;
+        }
+
+        .arma-linha-2-cols {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .arma-card label {
+            font-size: 11px;
+            color: #3b2f1b;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .arma-card input[type="text"],
+        .arma-card input[type="number"],
+        .arma-card select {
+            width: 100%;
+            padding: 6px;
+            height: 28px;
+            box-sizing: border-box;
+            background: #fdfaf2;
+            border: none;
+            border-bottom: 2px solid #3b2f1b;
+            font-family: 'Metamorphous', serif;
+            font-size: 12px;
+        }
+
+        .arma-card input[type="number"] {
+            text-align: center;
+        }
+
+        .arma-card select {
+            appearance: none;
+            padding-right: 20px;
+            background-image: linear-gradient(45deg, transparent 50%, #3b2f1b 50%),
+                linear-gradient(135deg, #3b2f1b 50%, transparent 50%);
+            background-position: calc(100% - 10px) 50%, calc(100% - 5px) 50%;
+            background-size: 5px 5px;
+            background-repeat: no-repeat;
+        }
+
+        .arma-card input[type="checkbox"] {
+            width: auto;
+            height: auto;
+            padding: 0;
+            margin: 0 2px 0 0;
+            accent-color: #7a1c1c;
+        }
+
+        .arma-card input:focus,
+        .arma-card select:focus {
+            outline: none;
+            border-bottom: 2px solid #8b5a2b;
+        }
+
+        .arma-distancia {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .arma-distancia input {
+            width: 50px;
+        }
+
+        .arma-propriedades {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .arma-propriedades label {
+            background: #e0d2b8;
+            border: 1px solid #3b2f1b;
+            padding: 1px;
+            border-radius: 6px;
+            font-size: 10px;
+            text-align: left;
+            cursor: pointer;
+            margin: -2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .arma-linha-inferior {
+            font-size: 20px;
+            position: absolute;
+            bottom: -10px;
+            right: 5px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            z-index: 4;
+        }
+
+        .arma-campo-icone {
+            display: flex;
+            align-items: flex-start;
+            gap: 0;
+            padding: 0;
+            position: relative;
+        }
+
+        .arma-emoji {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            width: 25px;
+            height: 25px;
+            background: radial-gradient(circle, #2d2416, #1a140d);
+            border: 1px solid #3b2f1b;
+            border-radius: 50%;
+            flex-shrink: 0;
+            font-size: 18px;
+            color: #f4ecd8;
+            position: absolute;
+            left: 0;
+            top: -3px;
+            z-index: 3;
+        }
+
+        .arma-campo-pequeno {
+            width: 50px;
+            height: 32px;
+            font-size: 12px;
+            text-align: center;
+            border: 1px solid #3b2f1b;
+            background: #fdfaf2;
+            padding: 4px;
+            box-sizing: border-box;
+            border-radius: 4px;
+            margin-left: 16px;
+        }
+
+        .arma-descricao-toggle {
+            position: relative;
+            font-size: 12px;
+            cursor: pointer;
+            color: #3b2f1b;
+            display: none;
+            margin: 8px 0 0 0;
+            z-index: 2;
+        }
+
+        .arma-descricao-toggle:hover {
+            color: #8b5a2b;
+        }
+
+        .arma-container-descricao {
+            display: none;
+            margin-top: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .arma-container-descricao label {
+            margin-bottom: 4px;
+        }
+
+        .arma-descricao {
+            width: 100%;
+            height: 60px;
+            resize: none;
+            background: #fdfaf2;
+            border: 1px solid #3b2f1b;
+            border-radius: 6px;
+            padding: 5px;
+            font-family: 'Metamorphous', serif;
+            box-sizing: border-box;
+        }
+
+        #container_distancia {
+            display: none;
+        }
+
+        #container_municao {
+            display: none;
+        }
+
+        .armas-container {
+            position: relative;
+        }
+
+        .armas-opcoes {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            display: flex;
+            gap: 15px;
+            font-size: 12px;
+            z-index: 2;
+        }
+
+        .armas-container .proficiencia-texto {
+            padding-top: 25px;
+        }
+
+        .armadura-container {
+            position: relative;
+        }
+
+        .armaduras-opcoes {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            /* 🔥 2 por linha */
+            gap: 5px 15px;
+            /* linha / coluna */
+            font-size: 12px;
+            z-index: 2;
+        }
+
+        .armaduras-opcoes label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 🔥 padding só para essa textarea específica */
+        #proficienciaArmaduras {
+            padding-top: 45px;
+            /* ajustado para 2 linhas de checkbox */
+        }
+
+        .arma-card .arma-campo-pequeno {
+            width: 45px !important;
+            text-align: center;
+            height: 20px !important;
+            font-size: 10px !important;
+        }
+
+        .arma-header {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+
+        .arma-nome-container {
+            flex: 1;
+            /* 🔥 ocupa todo o espaço disponível */
+        }
+
+        .arma-nome-container input {
+            width: 100%;
+        }
+
+        .arma-toggle {
+            font-size: 16px;
+            margin-left: auto;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 2px;
+        }
+
+        .arma-card.fechado .arma-conteudo {
+            display: none;
+        }
+
+        .arma-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .btn-remover-arma {
+            position: relative;
+            color: #8b4513;
+            background: #3b2f1b;
+            border: none;
+            border-radius: 50%;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 2px 2px;
+            transition: all 0.2s;
+            z-index: 10;
+            left: -88px;
+            /* Garante que o clique funcione sobre o header */
+        }
+
+        .btn-remover-arma:hover {
+            color: #ff4d4d;
+            transform: scale(1.2);
+            background: red;
+
+        }
     </style>
 </head>
 
@@ -2168,59 +2934,43 @@
 
                         </div>
 
-                        <div class="dados-vida">
+                        <div class="dados-vida-container">
+                            <div class="dados-vida">
 
-                            <div class="bonus-orbe">
-                                <div class="pv-bloco-titulo"></div>
-                                <input id="dadosVidaRestantes" title="Dados de Vida Restante" class="dv-restante"
-                                    type="number" min="0" step="1" value="1">
+                                <div class="dv-container-principal">
+                                    <div class="dv-secao-res">
+                                        <div class="dv-label">Res</div>
+                                        <input id="dadosVidaRestantes" title="Dados de Vida Restante"
+                                            class="dv-restante" type="number" min="0" step="1" value="1">
+                                    </div>
+
+                                    <div class="dv-secao-total">
+                                        <div class="dv-label">Total</div>
+                                        <input id="dadosVidaTotal" title="Total de Dados de Vida" class="dv-total-input"
+                                            type="number" min="0" step="1" value="1">
+                                    </div>
+
+                                    <div class="dv-orbe-overlay">
+                                        <select id="dadosVidaTipo" title="Dado de vida" class="dv-tipo-principal">
+                                            <option value="d4">d4</option>
+                                            <option value="d6">d6</option>
+                                            <option value="d8" selected>d8</option>
+                                            <option value="d10">d10</option>
+                                            <option value="d12">d12</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                             </div>
 
-                            <div class="dv-combo">
-                                <div class="dv-combo-labels">
-                                    <span>Total</span>
-                                    <span>Dado</span>
-                                </div>
-                                <div class="dv-combo-campos">
-                                    <input id="dadosVidaTotal" title="Total de Dados de Vida" class="dv-total"
-                                        type="number" min="0" step="1" value="1">
-
-                                    <select id="dadosVidaTipo" title="Dado de vida" class="dv-tipo">
-                                        <option value="d4">d4</option>
-                                        <option value="d6">d6</option>
-                                        <option value="d8" selected>d8</option>
-                                        <option value="d10">d10</option>
-                                        <option value="d12">d12</option>
-                                    </select>
-                                </div>
-                            </div>
-
+                            <button type="button" class="descanso-longo-botao" onclick="descansoLongo()">Descanso
+                                Longo</button>
                         </div>
 
                     </div>
 
                     <div class="caixa-salvaguarda">
-
-                        <div class="campo-titulo">Contra Morte</div>
-
-                        <div class="salvaguarda-grupo">
-                            Sucessos
-                            <div>
-                                <input id="morteSucesso1" type="checkbox">
-                                <input id="morteSucesso2" type="checkbox">
-                                <input id="morteSucesso3" type="checkbox">
-                            </div>
-                        </div>
-
-                        <div class="salvaguarda-grupo">
-                            Fracassos
-                            <div>
-                                <input id="morteFracasso1" type="checkbox">
-                                <input id="morteFracasso2" type="checkbox">
-                                <input id="morteFracasso3" type="checkbox">
-                            </div>
-                        </div>
-
+                        <!-- Espaço reservado para implementações futuras -->
                     </div>
 
                 </div>
@@ -2442,17 +3192,31 @@
 
                             <div class="proficiencia-secao">
                                 <div class="proficiencia-subtitulo">Armas</div>
-                                <textarea id="proficienciaArmas" class="proficiencia-texto"></textarea>
-                            </div>
+                                <div class="armas-container">
+                                    <div class="armas-opcoes">
+                                        <label><input type="checkbox" id="profArmaSimples"> Simples</label>
+                                        <label><input type="checkbox" id="profArmaMarciais"> Marciais</label>
+                                    </div>
 
+                                    <textarea id="proficienciaArmas" class="proficiencia-texto"></textarea>
+                                </div>
+                            </div>
                             <div class="proficiencia-secao">
                                 <div class="proficiencia-subtitulo">Armaduras</div>
-                                <textarea id="proficienciaArmaduras" class="proficiencia-texto"></textarea>
-                            </div>
+                                <div class="armadura-container">
+                                    <div class="armaduras-opcoes">
+                                        <label><input type="checkbox" id="profArmaduraLeves"> Leves</label>
+                                        <label><input type="checkbox" id="profArmaduraMedias"> Medias</label>
+                                        <label><input type="checkbox" id="profArmaduraPesadas"> Pesadas</label>
+                                        <label><input type="checkbox" id="profEscudos"> Escudos</label>
+                                    </div>
+                                    <textarea id="proficienciaArmaduras" class="proficiencia-texto"></textarea>
+                                </div>
 
-                            <div class="proficiencia-secao">
-                                <div class="proficiencia-subtitulo">Ferramentas</div>
-                                <textarea id="proficienciaFerramentas" class="proficiencia-texto"></textarea>
+                                <div class="proficiencia-secao">
+                                    <div class="proficiencia-subtitulo">Ferramentas</div>
+                                    <textarea id="proficienciaFerramentas" class="proficiencia-texto"></textarea>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2592,7 +3356,7 @@
                             <div class="ataque-topo">
                                 <div class="ataque-mini-escudo">
                                     <div class="shield">
-                                        <input id="ataqueCaTotal" readonly>
+                                        <input id="ataqueCaTotal" value="0" readonly>
                                     </div>
                                     <div class="bonus-escudo" title="Bônus do escudo">
                                         <input id="ataqueCaEscudo" readonly>
@@ -2602,17 +3366,51 @@
                                 <div class="ataque-pv-bloco">
                                     <div class="ataque-status-linha">
                                         <div class="ataque-status-caixa posicao">
-                                            <label for="ataquePosicao">Posição:</label>
-                                            <input id="ataquePosicao" type="number" min="0" step="1" value="0">
-                                            <span class="ataque-status-sufixo">º</span>
+                                            <label for="ataquePosicao">Pos.:</label>
+                                            <div class="ataque-status-input-group">
+                                                <input id="ataquePosicao" type="number" min="0" step="1" value="0">
+                                                <span class="ataque-status-sufixo">º</span>
+                                            </div>
                                         </div>
                                         <div class="ataque-status-caixa">
                                             <label for="ataqueCondicao">Condição:</label>
                                             <input id="ataqueCondicao" value="Normal">
                                         </div>
+                                        <div class="ataque-status-caixa">
+                                            <label for="combateRodada">Rodada:</label>
+                                            <input id="combateRodada" type="number" min="1" step="1" value="1">
+                                        </div>
                                     </div>
 
                                     <div class="ataque-pv-valor" id="ataquePvAtual">PV 0</div>
+                                    <div class="ataque-contra-morte" id="ataqueContraMorte" style="display: none;">
+                                        <div class="contra-morte-titulo">Salvaguarda Contra Morte</div>
+                                        <div class="contra-morte-row">
+                                            <div class="contra-morte-group">
+                                                <div class="contra-morte-label">Sucessos</div>
+                                                <div class="contra-morte-dots">
+                                                    <span class="contra-morte-dot" id="sucesso1"></span>
+                                                    <span class="contra-morte-dot" id="sucesso2"></span>
+                                                    <span class="contra-morte-dot" id="sucesso3"></span>
+                                                </div>
+                                            </div>
+                                            <div class="contra-morte-caveira">☠️</div>
+                                            <div class="contra-morte-group">
+                                                <div class="contra-morte-label">Fracassos</div>
+                                                <div class="contra-morte-dots">
+                                                    <span class="contra-morte-dot" id="fracasso1"></span>
+                                                    <span class="contra-morte-dot" id="fracasso2"></span>
+                                                    <span class="contra-morte-dot" id="fracasso3"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="contra-morte-botoes">
+                                            <button type="button" class="ataque-botao" onclick="adicionarSucesso()">+
+                                                Sucesso</button>
+                                            <button type="button" class="ataque-botao" onclick="adicionarFracasso()">+
+                                                Fracasso</button>
+                                        </div>
+                                    </div>
                                     <div class="ataque-acoes">
                                         <button type="button" class="ataque-botao" onclick="aplicarDanoNoPV()">Tomar
                                             Dano</button>
@@ -2627,10 +3425,25 @@
                                         onclick="trocarSubAbaCombate('arma', this)">Arma</button>
                                     <button type="button" class="subaba-botao"
                                         onclick="trocarSubAbaCombate('magia', this)">Magia</button>
+                                    <button type="button" class="subaba-botao"
+                                        onclick="trocarSubAbaCombate('historico', this)">Histórico</button>
                                 </div>
 
                                 <div id="subabaCombateArma" class="subaba-combate ativa"></div>
                                 <div id="subabaCombateMagia" class="subaba-combate"></div>
+                                <div id="subabaCombateHistorico" class="subaba-combate">
+                                    <div class="historico-tabela">
+                                        <div class="historico-cabecalho">
+                                            <div class="historico-col-rodada">Rodada</div>
+                                            <div class="historico-col-tipo">Tipo</div>
+                                            <div class="historico-col-valor">Valor</div>
+                                        </div>
+                                        <div id="historicoRegistros" class="historico-registros"></div>
+                                    </div>
+                                    <button type="button" class="ataque-botao" onclick="limparHistorico()"
+                                        style="margin-top: 10px; width: 100%;">Finalizar Combate (Limpar
+                                        Histórico)</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2948,8 +3761,138 @@
                         <div class="inventario-colunas">
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo">Armas</div>
-                                <textarea id="inventarioArmas" class="inventario-texto"></textarea>
+                                <button type="button" onclick="adicionarNovaArma()">+ Nova Arma</button>
+
+                                <!-- CARD DE ARMAS CADASTRO -->
+                                <div id="armaModelo" class="arma-card fechado" style="display: none;">
+
+
+                                    <div class="arma-linha-inferior">
+                                        <!-- Botão de Remover Arma -->
+                                        <button type="button" class="btn-remover-arma" title="Remover Arma">🗑️</button>
+
+                                        <div class="arma-campo-icone">
+                                            <span class="arma-emoji">🪙</span>
+                                            <input type="text" class="arma-campo-pequeno" data-campo="arma_preco">
+                                        </div>
+                                        <div class="arma-campo-icone">
+                                            <span class="arma-emoji">⚖️</span>
+                                            <input type="text" class="arma-campo-pequeno" data-campo="arma_peso"
+                                                type="text">
+                                        </div>
+                                    </div>
+                                    <div class="arma-proficiencia nao">P</div>
+                                    <div class="arma-header"></div>
+
+                                    <!-- LINHA 1: Nome -->
+                                    <div class="arma-linha arma-linha-1 arma-header" onclick="toggleArma(this, event)">
+
+                                        <div class="arma-nome-container">
+                                            <label>Nome</label>
+                                            <input type="text" data-campo="arma_nome">
+                                        </div>
+                                        <span class="arma-toggle">🔽</span>
+                                    </div>
+
+                                    <div class="arma-conteudo"> <!-- LINHA 2: Dano + Tipo de Dano -->
+                                        <div class="arma-linha arma-linha-2-cols">
+                                            <div>
+                                                <label>Dano</label>
+                                                <div class="container_dano">
+                                                    <input type="text" data-campo="arma_dano" placeholder="1d8">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label>Tipo de Dano</label>
+                                                <select data-campo="arma_tipo_dano">
+                                                    <option>Concussão</option>
+                                                    <option>Cortante</option>
+                                                    <option>Perfurante</option>
+                                                    <option>Ácido</option>
+                                                    <option>Congelante</option>
+                                                    <option>Elétrico</option>
+                                                    <option>Fogo</option>
+                                                    <option>Trovão</option>
+                                                    <option>Veneno</option>
+                                                    <option>Energia (Force)</option>
+                                                    <option>Necrótico</option>
+                                                    <option>Psíquico</option>
+                                                    <option>Radiante</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- LINHA 3: Tipo de Arma + Distância -->
+                                        <div class="arma-linha arma-linha-2-cols">
+                                            <div>
+                                                <label>Tipo de Arma</label>
+                                                <select data-campo="arma_tipo">
+                                                    <option>Simples</option>
+                                                    <option>Marcial</option>
+                                                </select>
+                                            </div>
+                                            <div class="container_distancia">
+                                                <label>Distância</label>
+                                                <div class="arma-distancia">
+                                                    <input type="text" data-campo="arma_dist_curto">
+                                                    /
+                                                    <input type="text" data-campo="arma_dist_longo">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- LINHA 4: Munição (se necessário) -->
+                                        <div class="container_municao arma-linha arma-linha-1" style="display: none;">
+                                            <div>
+                                                <label>Munição</label>
+                                                <div class="arma-distancia">
+                                                    <input type="number" data-campo="arma_municao_qtd" min="0" step="1">
+                                                    |
+                                                    <input type="text" data-campo="arma_municao_tipo"
+                                                        placeholder="Tipo">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- PROPRIEDADES -->
+                                        <div class="arma-linha">
+                                            <label>Propriedades</label>
+                                            <div class="arma-propriedades">
+                                                <label><input class="propriedade-checkbox" data-propriedade="acuidade"
+                                                        type="checkbox">Acuidade</label>
+                                                <label><input class="propriedade-checkbox" data-propriedade="alcance"
+                                                        type="checkbox">Alcance</label>
+                                                <label><input class="propriedade-checkbox" data-propriedade="arremesso"
+                                                        type="checkbox">Arremesso</label>
+                                                <label><input class="propriedade-checkbox"
+                                                        data-propriedade="carregamento"
+                                                        type="checkbox">Carregamento</label>
+                                                <label><input class="propriedade-checkbox" data-propriedade="duas_maos"
+                                                        type="checkbox">Duas Mãos</label>
+                                                <label><input class="propriedade-checkbox" data-propriedade="leve"
+                                                        type="checkbox">Leve</label>
+                                                <label><input class="propriedade-checkbox" data-propriedade="municao"
+                                                        type="checkbox">Munição</label>
+                                                <label><input class="propriedade-checkbox" data-propriedade="pesada"
+                                                        type="checkbox">Pesada</label>
+                                                <label><input class="propriedade-checkbox" data-propriedade="versatil"
+                                                        type="checkbox">Versátil</label>
+                                                <label><input class="propriedade-checkbox" data-propriedade="especial"
+                                                        type="checkbox">Especial</label>
+                                            </div>
+                                        </div>
+                                        <div class="arma-container-descricao container_descricao"
+                                            style="display: none;">
+                                            <label>Descrição do efeito Especial</label>
+                                            <textarea class="arma-descricao" data-campo="arma_descricao"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="listaArmas"></div>
+
                             </div>
+
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo">Armadura</div>
                                 <textarea id="inventarioArmadura" class="inventario-texto"></textarea>
@@ -2968,6 +3911,241 @@
     </div>
 
     <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            adicionarNovaArma();
+        });
+
+        function inicializarEventosArma(card) {
+            // ==========================================
+            // 1. LÓGICA DE REMOVER A ARMA
+            // ==========================================
+            const btnRemover = card.querySelector('.btn-remover-arma');
+            if (btnRemover) {
+                btnRemover.addEventListener('click', function (e) {
+                    e.stopPropagation(); // Impede que o card abra/feche ao clicar no X
+                    if (confirm("Deseja remover esta arma?")) {
+                        card.remove();
+                    }
+                });
+            }
+
+            // ==========================================
+            // 2. LÓGICA DO "P" DE PROFICIÊNCIA
+            // ==========================================
+            const divP = card.querySelector('.arma-proficiencia');
+            const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
+
+            function atualizarStatusP() {
+                if (!divP || !selectTipo) return;
+
+                const tipo = selectTipo.value; // Pega "Simples" ou "Marcial"
+                const profSimples = document.getElementById('profArmaSimples')?.checked;
+                const profMarciais = document.getElementById('profArmaMarciais')?.checked;
+
+                let temProficiencia = false;
+                if (tipo === "Simples" && profSimples && profSimples.checked) temProficiencia = true;
+                if (tipo === "Marcial" && profMarciais && profMarciais.checked) temProficiencia = true;
+
+                // Se tem proficiência, removemos a classe "nao" (tira o X vermelho). Senão, colocamos.
+                if (temProficiencia) {
+                    divP.classList.remove('nao');
+                } else {
+                    divP.classList.add('nao');
+                }
+            }
+
+            // Lógica Manual: Clicar direto no P para ativar/desativar
+            if (divP) {
+                divP.addEventListener('click', function (e) {
+                    e.stopPropagation(); // Impede que o clique abra/feche a arma sem querer
+                    this.classList.toggle('nao');
+                    console.log("Clicou no P! Agora tem a classe 'nao'?", this.classList.contains('nao'));
+
+                    // Opcional: atualiza o resumo de combate
+                    if (typeof atualizarSubAbaArmas === "function") atualizarSubAbaArmas();
+                });
+            }
+
+            // Lógica Automática: Quando o select de tipo muda, checa a proficiência
+            if (selectTipo) {
+                selectTipo.addEventListener('change', atualizarStatusP);
+            }
+
+            atualizarStatusP();
+
+
+            // ==========================================
+            // 3. LÓGICA DAS PROPRIEDADES (Distância, Munição, Especial, Versátil)
+            // ==========================================
+            const checkboxes = card.querySelectorAll('.arma-propriedades input[type="checkbox"]');
+            const distanciaContainer = card.querySelector('.container_distancia');
+            const containerMunicao = card.querySelector('.container_municao');
+            const containerDescricao = card.querySelector('.arma-container-descricao');
+
+            // Dano Versátil
+            const checkboxVersatil = Array.from(checkboxes).find(el => el.dataset.propriedade === 'versatil');
+            if (checkboxVersatil) {
+                checkboxVersatil.addEventListener('change', function () {
+                    const containerDano = card.querySelector('.container_dano');
+                    if (this.checked) {
+                        containerDano.innerHTML = `
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" placeholder="1 mão" data-campo="dano_1">
+                        /
+                        <input type="text" placeholder="2 mãos" data-campo="dano_2">
+                    </div>
+                `;
+                    } else {
+                        containerDano.innerHTML = `
+                    <input type="text" data-campo="arma_dano" placeholder="1d8">
+                `;
+                    }
+                });
+            }
+
+            // Mostrar/Esconder Containers
+            function atualizarCamposArma() {
+                let temArremesso = false;
+                let temMunicao = false;
+                let temEspecial = false;
+
+                checkboxes.forEach(cb => {
+                    const propriedade = cb.dataset.propriedade;
+                    if (cb.checked) {
+                        if (propriedade === 'arremesso') temArremesso = true;
+                        if (propriedade === 'municao') temMunicao = true;
+                        if (propriedade === 'especial') temEspecial = true;
+                    }
+                });
+
+                if (distanciaContainer) distanciaContainer.style.display = (temArremesso || temMunicao) ? 'block' : 'none';
+                if (containerMunicao) containerMunicao.style.display = temMunicao ? 'block' : 'none';
+                if (containerDescricao) containerDescricao.style.display = temEspecial ? 'block' : 'none';
+            }
+
+            checkboxes.forEach(cb => cb.addEventListener('change', atualizarCamposArma));
+
+            // ==========================================
+            // 4. INICIALIZAÇÃO AUTOMÁTICA
+            // Roda essas funções logo que a arma é criada
+            // ==========================================
+            atualizarStatusP();
+            atualizarCamposArma();
+        }
+        // Escuta os checkboxes de Proficiência na aba de Status
+        ['profArmaSimples', 'profArmaMarciais'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    const tipoAlvo = (id === 'profArmaSimples') ? 'Simples' : 'Marcial';
+
+                    // Procura todas as armas e atualiza o "P"
+                    document.querySelectorAll('.arma-card:not(#armaModelo)').forEach(card => {
+                        const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
+                        const divP = card.querySelector('.arma-proficiencia');
+
+                        if (selectTipo && divP && selectTipo.value === tipoAlvo) {
+                            if (el.checked) {
+                                divP.classList.remove('nao');
+                            } else {
+                                divP.classList.add('nao');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+
+
+        // Monitora os checkboxes de proficiência na aba Status
+        ['profArmaSimples', 'profArmaMarciais'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    const tipoAlvo = (id === 'profArmaSimples') ? 'Simples' : 'Marcial';
+
+                    document.querySelectorAll('.arma-card:not(#armaModelo)').forEach(card => {
+                        const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
+                        const divP = card.querySelector('.arma-proficiencia');
+
+                        if (selectTipo && divP && selectTipo.value === tipoAlvo) {
+                            if (el.checked) {
+                                divP.classList.remove('nao');
+                                divP.classList.add('ativo');
+                            } else {
+                                divP.classList.add('nao');
+                                divP.classList.remove('ativo');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
+        // CORREÇÃO DA FUNÇÃO DE ADICIONAR (O erro do novoCard)
+        function adicionarNovaArma() {
+            const modelo = document.getElementById('armaModelo');
+            const container = document.getElementById('listaArmas');
+
+            const novaArma = modelo.cloneNode(true);
+            novaArma.removeAttribute('id');
+            novaArma.style.display = 'block';
+
+            container.appendChild(novaArma);
+
+            inicializarEventosArma(novaArma);
+
+            return novaArma; // 🔥 ANTES ESTAVA 'novoCard', POR ISSO DAVA ERRO
+        }
+
+
+        function coletarArmas() {
+            const armas = [];
+            // Pega todos os cards de arma criados, ignorando o modelo base
+            const lista = document.querySelectorAll('.arma-card:not(#armaModelo)');
+
+            lista.forEach(card => {
+                const arma = {};
+
+                // 1. Coleta os textos, números e selects (que usam data-campo)
+                card.querySelectorAll('[data-campo]').forEach(campo => {
+                    arma[campo.dataset.campo] = campo.value;
+                });
+
+                // 2. Coleta o estado dos checkboxes (que usam data-propriedade)
+                arma.propriedades = {};
+                card.querySelectorAll('.propriedade-checkbox').forEach(checkbox => {
+                    const nomePropriedade = checkbox.dataset.propriedade;
+                    // Salva true se estiver marcado, false se estiver desmarcado
+                    arma.propriedades[nomePropriedade] = checkbox.checked;
+                });
+
+                armas.push(arma);
+            });
+
+            return armas;
+        }
+
+        let contadorArmas = 0;
+
+
+
+        function toggleArma(header, event) {
+            // 🔥 evita clicar no input ativar o toggle
+            if (event.target.tagName === 'INPUT') return;
+
+            const card = header.closest('.arma-card');
+            const icon = header.querySelector('.arma-toggle');
+
+            card.classList.toggle('fechado');
+
+            if (card.classList.contains('fechado')) {
+                icon.textContent = '🔽';
+            } else {
+                icon.textContent = '🔼';
+            }
+        }
 
         const canvas = document.getElementById("radar")
         const ctx = canvas.getContext("2d")
@@ -3089,6 +4267,7 @@
         function salvarFicha() {
 
             const dados = coletarDadosFicha()
+            dados.armas = coletarArmas();
 
             const nome = document.getElementById("nomePersonagem").value || "Personagem"
             const jogador = document.getElementById("jogador").value || "Jogador"
@@ -3106,6 +4285,7 @@
             a.href = URL.createObjectURL(blob)
             a.download = nomeArquivo
             a.click()
+
 
             marcarFichaComoSalva()
         }
@@ -3137,6 +4317,46 @@
 
                 if (dados.inventarioTexto && !dados.inventarioArmas && !dados.inventarioArmadura && !dados.inventarioOutros) {
                     document.getElementById("inventarioOutros").value = dados.inventarioTexto
+                }
+                // ... dentro da função reader.onload, após carregar os dados fixos ...
+
+                // ... dentro do reader.onload ...
+
+                if (dados.armas && Array.isArray(dados.armas)) {
+                    // 1. Localiza o container (usando o ID que você definiu)
+                    const containerArmas = document.getElementById('listaArmas');
+
+                    if (containerArmas) {
+                        // 2. Limpa as armas atuais (mantendo apenas o modelo se ele estiver dentro)
+                        const armasAtuais = containerArmas.querySelectorAll('.arma-card:not(#armaModelo)');
+                        armasAtuais.forEach(a => a.remove());
+
+                        // 3. Recria cada arma
+                        dados.armas.forEach(dadosArma => {
+                            const novoCard = adicionarNovaArma(); // Usa a função corrigida acima
+
+                            if (novoCard) {
+                                // Preenche campos de texto
+                                novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                                    const valor = dadosArma[campo.dataset.campo];
+                                    if (valor !== undefined) campo.value = valor;
+                                });
+
+                                // Preenche checkboxes
+                                if (dadosArma.propriedades) {
+                                    novoCard.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                                        const prop = checkbox.dataset.propriedade;
+                                        if (prop && dadosArma.propriedades[prop] !== undefined) {
+                                            checkbox.checked = dadosArma.propriedades[prop];
+                                        }
+                                    });
+                                }
+
+                                // Força a atualização visual (mostrar Especial, etc)
+                                inicializarEventosArma(novoCard);
+                            }
+                        });
+                    }
                 }
 
                 atualizarAtributos()
@@ -3316,6 +4536,7 @@
             campoTotal.value = pvTotal;
 
             atualizarResumoAtaquesConjuracao();
+            verificarStatusMorte();
         }
 
         function normalizarDadosVida() {
@@ -3595,7 +4816,7 @@
             const campoAtaqueEscudo = document.getElementById('ataqueCaEscudo');
             const campoAtaquePV = document.getElementById('ataquePvAtual');
 
-            if (campoAtaqueCA) campoAtaqueCA.value = caBase + caEscudo;
+            if (campoAtaqueCA) campoAtaqueCA.value = caBase;
             if (campoAtaqueEscudo) campoAtaqueEscudo.value = formatarCA(caEscudo);
             if (campoAtaquePV) campoAtaquePV.textContent = "PV " + pvAtual;
         }
@@ -3621,7 +4842,7 @@
                 <div class="arma-resumo-lista">
                     ${armas.map(arma => `
                         <div class="arma-resumo-item">
-                            <div class="arma-resumo-topo">${arma.nome}</div>
+                            <div class="arma-resumo-topo">${arma.nome} ⚔️</div>
                             <div class="arma-resumo-detalhes">
                                 Ataque: ${arma.ataque || "-"} | Dano: ${arma.dano || "-"} | Tipo: ${arma.tipo || "-"} | Propriedade: ${arma.propriedade || "-"}
                             </div>
@@ -3641,6 +4862,7 @@
             const campoPV = document.getElementById('pvAtual');
             const atual = parseInt(campoPV?.value) || 0;
             campoPV.value = Math.max(0, atual - dano);
+            registrarHistoricoComandoCombate('Dano', dano);
             normalizarPontosDeVida();
         }
 
@@ -3654,7 +4876,183 @@
             const campoPV = document.getElementById('pvAtual');
             const atual = parseInt(campoPV?.value) || 0;
             campoPV.value = atual + cura;
+            registrarHistoricoComandoCombate('Cura', cura);
             normalizarPontosDeVida();
+        }
+
+        function registrarHistoricoComandoCombate(tipo, valor) {
+            const campoRodada = document.getElementById('combateRodada');
+            const rodada = parseInt(campoRodada?.value) || 1;
+            const registrosContainer = document.getElementById('historicoRegistros');
+
+            // 🔥 Mapa de emojis
+            const icones = {
+                'Cura': '❤️',
+                'Fracasso': '💀',
+                'Dano': '💥',
+                'Sucesso': '🍀'
+            };
+
+            const icone = icones[tipo] || '';
+
+            const registro = document.createElement('div');
+            registro.className = 'historico-registro';
+            registro.innerHTML = `
+        <div class="historico-col-rodada">${rodada}</div>
+        <div class="historico-col-tipo">${icone} ${tipo}</div>
+        <div class="historico-col-valor">
+            ${tipo === 'Dano' ? `-${valor}` :
+                    tipo === 'Cura' ? `+${valor}` :
+                        `${valor}`
+                }
+        </div>
+    `;
+
+            registrosContainer.prepend(registro);
+        }
+        function limparHistorico() {
+            const registrosContainer = document.getElementById('historicoRegistros');
+            registrosContainer.innerHTML = '';
+        }
+
+        function descansoLongo() {
+            if (!confirm('Deseja realmente fazer um descanso longo?')) {
+                return;
+            }
+
+            const campoTotal = document.getElementById('dadosVidaTotal');
+            const campoRestantes = document.getElementById('dadosVidaRestantes');
+            const campoPV = document.getElementById('pvAtual');
+            const campoPVTotal = document.getElementById('pvTotal');
+
+            if (campoTotal && campoRestantes) {
+                campoRestantes.value = campoTotal.value;
+                normalizarDadosVida();
+            }
+
+            if (campoPV && campoPVTotal) {
+                campoPV.value = campoPVTotal.value;
+                normalizarPontosDeVida();
+            }
+        }
+
+        function verificarStatusMorte() {
+            const campoPV = document.getElementById('pvAtual');
+            const campoPVTotal = document.getElementById('pvTotal');
+            const campoContraMorte = document.getElementById('ataqueContraMorte');
+            const campoPVDisplay = document.getElementById('ataquePvAtual');
+
+            if (!campoPV || !campoContraMorte || !campoPVDisplay || !campoPVTotal) return;
+
+            const pvAtual = parseInt(campoPV.value) || 0;
+            const pvTotal = parseInt(campoPVTotal.value) || 0;
+
+            // Se PV total é zero, a ficha não foi montada, então não abre contra morte
+            if (pvTotal === 0) {
+                campoPVDisplay.style.display = 'flex';
+                campoContraMorte.style.display = 'none';
+                limparContraMorte();
+                return;
+            }
+
+            if (pvAtual <= 0) {
+                campoPVDisplay.style.display = 'none';
+                campoContraMorte.style.display = 'flex';
+            } else {
+                campoPVDisplay.style.display = 'flex';
+                campoContraMorte.style.display = 'none';
+                limparContraMorte();
+            }
+        }
+
+        function adicionarSucesso() {
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById('sucesso' + i);
+
+                if (dot && !dot.classList.contains('ativo')) {
+                    dot.classList.add('ativo');
+                    registrarHistoricoComandoCombate('Sucesso', `${i}º`);
+
+                    verificarVitoriaDeathSave();
+                    return;
+                }
+            }
+        }
+
+        function adicionarFracasso() {
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById('fracasso' + i);
+
+                if (dot && !dot.classList.contains('ativo')) {
+                    dot.classList.add('ativo');
+
+                    // 🔥 Registrar só aqui (depois de confirmar)
+                    registrarHistoricoComandoCombate('Fracasso', `${i}º`);
+
+                    verificarDerrrotaDeathSave();
+                    return;
+                }
+            }
+        }
+
+        function verificarVitoriaDeathSave() {
+            let sucessos = 0;
+            for (let i = 1; i <= 3; i++) {
+                if (document.getElementById('sucesso' + i)?.classList.contains('ativo')) {
+                    sucessos++;
+                }
+            }
+
+            if (sucessos >= 3) {
+                alert('O personagem ganhou 1 PV e está estável!');
+                const campoPV = document.getElementById('pvAtual');
+                if (campoPV) {
+                    registrarHistoricoComandoCombate('Cura', 1);
+                    campoPV.value = 1;
+                    normalizarPontosDeVida();
+
+
+                }
+            }
+        }
+
+        function verificarDerrrotaDeathSave() {
+            let fracassos = 0;
+
+            for (let i = 1; i <= 3; i++) {
+                if (document.getElementById('fracasso' + i)?.classList.contains('ativo')) {
+                    fracassos++;
+                }
+            }
+
+            if (fracassos >= 3) {
+
+                const frases = [
+                    "Sua canção termina aqui, mas o eco de suas façanhas perdurará pelas eras.",
+                    "A luz em seus olhos se apaga, cedendo lugar ao descanso eterno dos heróis.",
+                    "As estrelas brilham um pouco menos hoje. Sua alma agora pertence ao cosmos.",
+                    "O frio do abismo finalmente te alcançou.",
+                    "Seu sangue mancha a terra; o silêncio é sua única companhia agora.",
+                    "O destino foi cruel. Seu corpo tomba, desprovido de vida.",
+                    "A escuridão te envolveu. Não há mais volta.",
+                    "O último capítulo da sua história foi escrito.",
+                    "Os dados pararam de rolar para você. Que sua próxima encarnação seja mais afortunada.",
+                    "Sua ficha repousa agora no panteão das lendas esquecidas.",
+                    "O mestre das almas recolheu sua ficha. Fim de jogo."
+                ];
+
+                const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
+                document.getElementById('nomePersonagem').value = "☠️ " + document.getElementById('nomePersonagem').value;
+
+                alert(fraseAleatoria + "\n\nGAME OVER!\n" + document.getElementById('nomePersonagem').value);
+            }
+        }
+
+        function limparContraMorte() {
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('sucesso' + i)?.classList.remove('ativo');
+                document.getElementById('fracasso' + i)?.classList.remove('ativo');
+            }
         }
 
         function normalizarPosicaoAtaque() {
@@ -3671,9 +5069,14 @@
 
             botao.classList.add('ativa');
 
-            const alvo = tipo === 'magia'
-                ? document.getElementById('subabaCombateMagia')
-                : document.getElementById('subabaCombateArma');
+            let alvo;
+            if (tipo === 'magia') {
+                alvo = document.getElementById('subabaCombateMagia');
+            } else if (tipo === 'historico') {
+                alvo = document.getElementById('subabaCombateHistorico');
+            } else {
+                alvo = document.getElementById('subabaCombateArma');
+            }
 
             if (alvo) alvo.classList.add('ativa');
         }
@@ -3852,16 +5255,16 @@
         atualizarResumoAtaquesConjuracao();
         atualizarSubAbaArmas();
 
+
     </script>
 
+    <footer class="meu-rodape">
+        <div class="footer-content">
+            <p>Criado por: <strong>Thiago Tatagiba</strong></p>
+            <p>&copy; 2026 Todos os direitos reservados</p>
+            <p class="aviso">Proibida cópia</p>
+        </div>
+    </footer>
 </body>
-
-<footer class="meu-rodape">
-    <div class="footer-content">
-        <p>Criado por: <strong>Thiago Tatagiba</strong></p>
-        <p>&copy; 2026 Todos os direitos reservados</p>
-        <p class="aviso">Proibida cópia</p>
-    </div>
-</footer>
 
 </html>
