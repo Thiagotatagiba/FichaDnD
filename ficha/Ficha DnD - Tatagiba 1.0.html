@@ -3453,6 +3453,7 @@
                             <div class="equipamento-colunas">
                                 <div class="equipamento-coluna">
                                     <div class="proficiencia-subtitulo">Armas</div>
+                                    <div id="lista-armas-equipamento"></div>
                                     <textarea id="equipamentoArmas" class="equipamento-texto"></textarea>
                                 </div>
 
@@ -3928,6 +3929,48 @@
                 }
             }
         });
+
+        //escreve a arma no formato "Espada Longa 1d8/1d10 Cortante (P) - Versátil, Arremesso (20/60)"
+        function formatarArma(arma) {
+            let dano = arma.versatil
+                ? `${arma.dano1}/${arma.dano2}`
+                : arma.dano1;
+
+            let prof = arma.proficiente ? "(P)" : "(nP)";
+
+            let linha1 = `${arma.nome} ${dano} ${arma.tipoDano} ${prof}`;
+
+            let propriedades = [];
+
+            if (arma.acuidade) propriedades.push("Acuidade");
+            if (arma.leve) propriedades.push("Leve");
+            if (arma.versatil) propriedades.push("Versátil");
+
+            if (arma.arremesso) {
+                propriedades.push(`Arremesso`);
+                if (arma.distMin && arma.distMax) {
+                    propriedades.push(`Distância (${arma.distMin}/${arma.distMax})`);
+                }
+            }
+
+            if (arma.municao) {
+                let muni = `Munição`;
+                if (arma.qtdMunicao && arma.tipoMunicao) {
+                    muni += ` (${arma.qtdMunicao} ${arma.tipoMunicao})`;
+                }
+                propriedades.push(muni);
+
+                if (arma.distMin && arma.distMax) {
+                    propriedades.push(`Distância (${arma.distMin}/${arma.distMax})`);
+                }
+            }
+
+            if (arma.duasMaos) propriedades.push("Duas Mãos");
+
+            let linha2 = propriedades.join(", ");
+
+            return { linha1, linha2, proficiente: arma.proficiente };
+        }
 
         // atualiza o "P" de proficiência quando o tipo de arma muda, verificando os checkboxes de proficiência
         function atualizarProficienciaCard(card) {
