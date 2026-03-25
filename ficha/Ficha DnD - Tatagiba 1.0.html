@@ -3824,10 +3824,10 @@
                                         <!-- LINHA 3: Tipo de Arma + Distância -->
                                         <div class="arma-linha arma-linha-2-cols">
                                             <div>
-                                                <label>Tipo de Arma</label>
                                                 <select data-campo="arma_tipo">
-                                                    <option>Simples</option>
-                                                    <option>Marcial</option>
+                                                    <option value="">Tipo de Arma</option>
+                                                    <option value="Simples">Simples</option>
+                                                    <option value="Marcial">Marcial</option>
                                                 </select>
                                             </div>
                                             <div class="container_distancia">
@@ -3919,6 +3919,35 @@
         window.addEventListener('DOMContentLoaded', () => {
             adicionarNovaArma();
         });
+
+        document.addEventListener('change', (e) => {
+            if (e.target.matches('[data-campo="arma_tipo"]')) {
+                const card = e.target.closest('.arma-card');
+                if (card) {
+                    atualizarProficienciaCard(card);
+                }
+            }
+        });
+
+        // atualiza o "P" de proficiência quando o tipo de arma muda, verificando os checkboxes de proficiência
+        function atualizarProficienciaCard(card) {
+            const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
+            const divP = card.querySelector('.arma-proficiencia');
+
+            if (!selectTipo || !divP) return;
+
+            const tipo = selectTipo.value;
+            const profSimples = document.getElementById('profArmaSimples')?.checked;
+            const profMarcial = document.getElementById('profArmaMarciais')?.checked;
+
+            let temProficiencia = false;
+
+            if (tipo === 'Simples' && profSimples) temProficiencia = true;
+            if (tipo === 'Marcial' && profMarcial) temProficiencia = true;
+
+            divP.classList.toggle('ativo', temProficiencia);
+            divP.classList.toggle('nao', !temProficiencia);
+        }
 
         function inicializarEventosArma(card) {
             // ==========================================
