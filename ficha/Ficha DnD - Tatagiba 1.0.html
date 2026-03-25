@@ -10,6 +10,7 @@
         rel="stylesheet">
 
     <style>
+        /* ===== Base da pagina ===== */
         * {
             box-sizing: border-box;
         }
@@ -18,9 +19,13 @@
             background: #e7e1d5;
             font-family: 'MedievalSharp';
             padding: 30px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             margin: 0;
         }
 
+        /* ===== Estrutura principal da ficha ===== */
         .arma-equipamento {
             margin-bottom: 8px;
         }
@@ -148,6 +153,7 @@
             text-align: center;
         }
 
+        /* ===== Bloco superior, atributos e combate ===== */
         .grid-combate {
             display: grid;
             grid-template-columns: 340px 1fr;
@@ -684,23 +690,21 @@
             width: 100%;
         }
 
+        /* ===== Abas principais ===== */
         .tabs {
             display: flex;
             gap: 4px;
             margin-top: 20px;
             position: relative;
             z-index: 2;
-            /* garante que a aba selecionada fique acima do conteúdo */
         }
 
-        /* Abas */
         .tab {
             font-family: 'MedievalSharp', cursive;
             padding: 10px 18px;
             border: 2px solid #333;
             border-bottom: none;
             background: #ddd;
-            /* abas não selecionadas */
             cursor: pointer;
             border-top-left-radius: 10px;
             border-top-right-radius: 10px;
@@ -708,24 +712,19 @@
             top: 2px;
             transition: 0.2s;
             z-index: 1;
-            /* abas não selecionadas ficam atrás do conteúdo */
         }
 
-        /* Hover */
         .tab:hover {
             background: #eee;
         }
 
-        /* Aba ativa (efeito fichário real) */
         .tab.active {
             background: #fafafa;
             font-weight: bold;
             top: 0;
             z-index: 3;
-            /* garante que aba selecionada fique acima do conteúdo */
         }
 
-        /* Conteúdo */
         .conteudo-abas {
             border: 2px solid #333;
             border-radius: 0 10px 10px 10px;
@@ -739,7 +738,6 @@
             z-index: 0;
         }
 
-        /* Abas escondidas */
         .aba {
             display: none;
         }
@@ -759,14 +757,12 @@
         }
 
 
-        /* Bônus de Proficiência - Orbe + Retângulo */
+        /* Bônus e passivas */
         .bonus-orbe-container {
             display: flex;
             align-items: center;
             width: 240px;
-            /* 🔥 aumentou pra caber o texto */
             height: 50px;
-            /* 🔥 menor altura */
             justify-content: center;
         }
 
@@ -783,20 +779,16 @@
             font-size: 20px;
             background: #fff;
             margin-right: -12px;
-            /* 🔥 encaixe melhor */
             z-index: 2;
             padding: 0;
-            /* 🔥 remove deslocamento lateral */
             box-sizing: border-box;
         }
 
         .bonus-orbe input {
             border: none;
             width: 100%;
-            /* 🔥 ocupa todo o círculo */
             height: 100%;
             text-align: center;
-            /* 🔥 centraliza de verdade */
             font-weight: bold;
             font-size: 18px;
             background: none;
@@ -813,7 +805,6 @@
         .bonus-retangulo {
             flex: 0 0 180px;
             height: 40px;
-            /* 🔥 menor altura (encaixa melhor no orbe) */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -824,45 +815,23 @@
             background: #f4efe6;
             font-weight: bold;
             font-size: 14px;
-            /* 🔥 leve ajuste pra caber melhor */
             overflow: hidden;
             z-index: 1;
             text-align: center;
             line-height: 1.15;
         }
 
-        /* Container das caixas */
         .salvaguarda-container {
             display: flex;
             gap: 12px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
-        /* Cada caixa de atributo */
-        .salvaguarda-caixa {
-            min-height: 84px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            width: 62px;
-            border: 2px solid #8b4513;
-            border-radius: 10px;
-            padding: 5px 6px 0;
-            background: #f4efe6;
-            position: relative;
-            transition: background 0.2s;
-            box-sizing: border-box;
-            overflow: visible;
-        }
-
-        /* Caixa fica colorida quando proficiente */
         .salvaguarda-caixa.proficiente {
             background: #d8f0d8;
-            /* cor quando proficiente */
         }
 
-        /* Label do atributo com checkbox colado */
         .salvaguarda-caixa .atributo-label {
             display: flex;
             align-items: center;
@@ -872,7 +841,6 @@
             margin-bottom: 2px;
         }
 
-        /* Valor do atributo */
         .salvaguarda-caixa .valor-atributo input {
             width: 100%;
             text-align: center;
@@ -885,7 +853,6 @@
             margin: 0;
         }
 
-        /* Modificador */
         .salvaguarda-caixa .modificador {
             font-weight: bold;
             font-size: 16px;
@@ -909,7 +876,6 @@
             z-index: 1;
         }
 
-        /* Destaque quando proficiente */
         .salvaguarda-caixa.proficiente .modificador-orbe {
             background: #cde8cd;
             border-color: #4a7a4a;
@@ -922,7 +888,6 @@
             margin-top: 20px;
         }
 
-        /* Blocos internos */
         .status-bloco {
             border: 2px solid #8b4513;
             border-radius: 12px;
@@ -930,7 +895,6 @@
             background: #f4efe6;
         }
 
-        /* Título de cada bloco */
         .status-titulo,
         .aba h3 {
             position: relative;
@@ -952,16 +916,10 @@
             background: linear-gradient(90deg, #8b4513 0%, #c9a06a 50%, #8b4513 100%);
         }
 
-        /* Grid interno do bloco de passivas */
         .passivas-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-        }
-
-        /* Garantir que salvaguardas fiquem organizadas */
-        .salvaguarda-container {
-            justify-content: center;
         }
 
         .status-linhas {
@@ -1023,6 +981,7 @@
             align-items: start;
         }
 
+        /* ===== Aba de status ===== */
         .status-primeira-linha {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -1212,6 +1171,7 @@
             white-space: pre-wrap;
         }
 
+        /* ===== Aba de combate ===== */
         .combate-grid {
             display: flex;
             flex-direction: column;
@@ -1594,6 +1554,7 @@
             outline: none;
         }
 
+        /* ===== Aba de itens ===== */
         .itens-grid {
             display: flex;
             flex-direction: column;
@@ -1636,6 +1597,7 @@
             outline: none;
         }
 
+        /* ===== Inventario e arsenal ===== */
         .inventario-card {
             border: 2px solid #8b4513;
             border-radius: 12px;
@@ -1686,6 +1648,7 @@
             outline: none;
         }
 
+        /* ===== Aba de magia ===== */
         .magia-grid {
             display: flex;
             flex-direction: column;
@@ -1824,6 +1787,7 @@
             min-height: 220px;
         }
 
+        /* ===== Aba de historia ===== */
         .historia-grid {
             display: flex;
             flex-direction: column;
@@ -1979,7 +1943,8 @@
             justify-content: start;
         }
 
-        .equipados-grid-cabecalho {
+        .equipados-grid-cabecalho,
+        .equipados-grid-cabecalho-centro {
             font-size: 12px;
             font-weight: bold;
             color: #7a5a38;
@@ -1988,15 +1953,11 @@
         }
 
         .equipados-grid-cabecalho-centro {
-            font-size: 12px;
-            font-weight: bold;
             text-align: center;
-            color: #7a5a38;
-            text-transform: uppercase;
-            letter-spacing: 0.04em;
         }
 
-        .equipados-grid input {
+        .equipados-grid input,
+        .equipados-grid select {
             width: 100%;
             height: 32px;
             border: 1px solid #bda68c;
@@ -2010,18 +1971,6 @@
 
         .equipados-grid input::placeholder {
             color: #9b8a75;
-        }
-
-        .equipados-grid select {
-            width: 100%;
-            height: 32px;
-            border: 1px solid #bda68c;
-            border-radius: 8px;
-            padding: 6px 8px;
-            background: #fffaf2;
-            font-family: 'MedievalSharp';
-            font-size: 14px;
-            box-sizing: border-box;
         }
 
         .equipados-quantidade {
@@ -2139,49 +2088,30 @@
             }
         }
 
+        /* ===== Rodape ===== */
         .meu-rodape {
             background-color: #222;
-            /* Fundo escuro */
             color: #fff;
-            /* Texto branco */
             text-align: center;
-            /* Centraliza o texto */
             padding: 20px 0;
-            /* Espaçamento interno */
             font-family: sans-serif;
-            margin-top: 50px;
-            /* Garante que ele não cole no conteúdo de cima */
+            margin-top: auto;
             border-top: 3px solid #f1c40f;
-            /* Uma linha decorativa (opcional) */
         }
 
         .meu-rodape p {
             margin: 5px 0;
-            /* Espaço entre as linhas */
             font-size: 14px;
         }
 
         .meu-rodape .aviso {
             color: #ff4d4d;
-            /* Vermelho para o aviso de proibida cópia */
             font-weight: bold;
             text-transform: uppercase;
             font-size: 12px;
         }
 
-        body {
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .meu-rodape {
-            margin-top: auto;
-            /* Empurra o rodapé para o fim do espaço disponível */
-        }
-
-        /* RESPONSIVIDADE PARA TABLETS E DISPOSITIVOS MENORES */
+        /* ===== Responsividade ===== */
         @media (max-width: 1024px) {
             body {
                 padding: 15px;
@@ -2399,7 +2329,7 @@
             }
         }
 
-        /* CARD DE ARMAS */
+        /* ===== Cards de armas cadastradas ===== */
         .arma-card {
             position: relative;
             background: linear-gradient(145deg, #f4ecd8, #e8dcc2);
@@ -2440,7 +2370,6 @@
             cursor: pointer;
             font-weight: bold;
             z-index: 10;
-            /* 🔥 ADICIONE ISTO AQUI */
         }
 
         .arma-proficiencia.nao::after {
@@ -2609,20 +2538,6 @@
             margin-left: 16px;
         }
 
-        .arma-descricao-toggle {
-            position: relative;
-            font-size: 12px;
-            cursor: pointer;
-            color: #3b2f1b;
-            display: none;
-            margin: 8px 0 0 0;
-            z-index: 2;
-        }
-
-        .arma-descricao-toggle:hover {
-            color: #8b5a2b;
-        }
-
         .arma-container-descricao {
             display: none;
             margin-top: 10px;
@@ -2644,14 +2559,6 @@
             padding: 5px;
             font-family: 'Metamorphous', serif;
             box-sizing: border-box;
-        }
-
-        #container_distancia {
-            display: none;
-        }
-
-        #container_municao {
-            display: none;
         }
 
         .armas-container {
@@ -2682,9 +2589,7 @@
             left: 8px;
             display: grid;
             grid-template-columns: repeat(2, auto);
-            /* 🔥 2 por linha */
             gap: 5px 15px;
-            /* linha / coluna */
             font-size: 12px;
             z-index: 2;
         }
@@ -2695,10 +2600,8 @@
             gap: 4px;
         }
 
-        /* 🔥 padding só para essa textarea específica */
         #proficienciaArmaduras {
             padding-top: 45px;
-            /* ajustado para 2 linhas de checkbox */
         }
 
         .arma-card .arma-campo-pequeno {
@@ -2708,16 +2611,8 @@
             font-size: 10px !important;
         }
 
-        .arma-header {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-        }
-
         .arma-nome-container {
             flex: 1;
-            /* 🔥 ocupa todo o espaço disponível */
         }
 
         .arma-nome-container input {
@@ -2727,7 +2622,6 @@
         .arma-toggle {
             font-size: 16px;
             margin-left: auto;
-            font-size: 16px;
             cursor: pointer;
             margin-bottom: 2px;
         }
@@ -2738,9 +2632,11 @@
 
         .arma-header {
             display: flex;
+            gap: 5px;
             justify-content: space-between;
             align-items: center;
             position: relative;
+            cursor: pointer;
         }
 
         .btn-remover-arma {
@@ -2755,7 +2651,6 @@
             transition: all 0.2s;
             z-index: 10;
             left: -88px;
-            /* Garante que o clique funcione sobre o header */
         }
 
         .btn-remover-arma:hover {
@@ -3932,10 +3827,9 @@
     </div>
 
     <script>
+        // ===== Integracao e inicializacao =====
         window.api?.receberPersonagem((data) => {
             const personagem = JSON.parse(data);
-
-            // Aqui você adapta para seu sistema
             carregarFicha(personagem);
         });
         window.addEventListener('DOMContentLoaded', () => {
@@ -3951,6 +3845,7 @@
             }
         });
 
+        // ===== Arsenal cadastrado e inventario de armas =====
         function getTemProficienciaArma(tipo) {
             if (tipo === 'Simples') return !!document.getElementById('profArmaSimples')?.checked;
             if (tipo === 'Marcial') return !!document.getElementById('profArmaMarciais')?.checked;
@@ -4208,34 +4103,7 @@
             atualizarCamposArma();
             atualizarListaArmasEquipamento();
         }
-        // Escuta os checkboxes de Proficiência na aba de Status
-        ['profArmaSimples', 'profArmaMarciais'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) {
-                el.addEventListener('change', () => {
-                    const tipoAlvo = (id === 'profArmaSimples') ? 'Simples' : 'Marcial';
-
-                    // Procura todas as armas e atualiza o "P"
-                    document.querySelectorAll('.arma-card:not(#armaModelo)').forEach(card => {
-                        const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
-                        const divP = card.querySelector('.arma-proficiencia');
-
-                        if (selectTipo && divP && selectTipo.value === tipoAlvo) {
-                            if (el.checked) {
-                                divP.classList.remove('nao');
-                            } else {
-                                divP.classList.add('nao');
-                            }
-                        }
-                    });
-                    atualizarListaArmasEquipamento();
-                });
-            }
-        });
-
-
-
-        // Monitora os checkboxes de proficiência na aba Status
+        // ===== Listeners finais e sincronizacoes automaticas =====
         ['profArmaSimples', 'profArmaMarciais'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
@@ -4261,7 +4129,7 @@
             }
         });
 
-        // CORREÇÃO DA FUNÇÃO DE ADICIONAR (O erro do novoCard)
+        // Adiciona um novo card de arma a partir do modelo oculto
         function adicionarNovaArma() {
             const modelo = document.getElementById('armaModelo');
             const container = document.getElementById('listaArmas');
@@ -4311,10 +4179,6 @@
             return armas;
         }
 
-        let contadorArmas = 0;
-
-
-
         function toggleArma(header, event) {
             // 🔥 evita clicar no input ativar o toggle
             if (event.target.tagName === 'INPUT') return;
@@ -4331,100 +4195,7 @@
             }
         }
 
-        const canvas = document.getElementById("radar")
-        const ctx = canvas.getContext("2d")
-
-        const cx = 130
-        const cy = 130
-        const raio = 95
-
-        const inputs = document.querySelectorAll(".atributo input")
-
-        function mod(v) {
-            return Math.floor((v - 10) / 2)
-        }
-
-        function desenhar() {
-
-            ctx.clearRect(0, 0, 260, 260)
-
-            let valores = []
-
-            inputs.forEach((input) => {
-
-                let v = parseInt(input.value) || 0
-
-
-                if (v > 20) v = 20
-                if (v < 0) v = 0
-
-                input.value = v
-
-                const m = mod(v)
-
-                input.parentElement.querySelector(".mod").innerText = (m >= 0 ? "+" : "") + m
-
-                valores.push(v)
-
-            })
-
-            ctx.strokeStyle = "#c8b9a5"
-
-            for (let i = 1; i <= 4; i++) {
-                ctx.beginPath()
-                ctx.arc(cx, cy, (raio / 4) * i, 0, Math.PI * 2)
-                ctx.stroke()
-            }
-
-            for (let i = 0; i < 6; i++) {
-
-                let ang = (Math.PI * 2 / 6) * i - Math.PI / 2
-
-                let x = cx + Math.cos(ang) * raio
-                let y = cy + Math.sin(ang) * raio
-
-                ctx.beginPath()
-                ctx.moveTo(cx, cy)
-                ctx.lineTo(x, y)
-                ctx.stroke()
-
-            }
-
-            ctx.beginPath()
-
-            for (let i = 0; i < 6; i++) {
-
-                let ang = (Math.PI * 2 / 6) * i - Math.PI / 2
-                let r = raio * (valores[i] / 20)
-
-                let x = cx + Math.cos(ang) * r
-                let y = cy + Math.sin(ang) * r
-
-                if (i == 0) ctx.moveTo(x, y)
-                else ctx.lineTo(x, y)
-
-            }
-
-            ctx.closePath()
-
-            ctx.fillStyle = "rgba(150,80,50,0.4)"
-            ctx.fill()
-
-            ctx.strokeStyle = "#8b4513"
-            ctx.lineWidth = 2
-            ctx.stroke()
-
-        }
-
-        document.querySelectorAll(".atributo input").forEach(input => {
-            input.addEventListener("input", () => {
-                atualizarAtributos()
-                desenharRadar()
-            })
-        })
-
-        desenhar()
-
+        // ===== Persistencia da ficha =====
         function aplicarDadosFicha(dados) {
 
             if (!dados || typeof dados !== "object") return
@@ -4569,6 +4340,7 @@
             reader.readAsText(file)
         })
 
+        // ===== Atributos, radar e navegacao principal =====
         function atualizarAtributos() {
 
             const inputs = document.querySelectorAll(".atributo input")
@@ -4802,6 +4574,7 @@
             return mapa[textoNormalizado] || "";
         }
 
+        // ===== Classe, caracteristicas e magia =====
         function inferirAtributoConjuracaoPorClasse(nomeClasse) {
             const nomeNormalizado = normalizarTextoComparacao(nomeClasse);
 
@@ -4969,6 +4742,7 @@
             document.getElementById('intPass').value = 10 + intuicao;
         }
 
+        // ===== Classe de armadura e resumo de combate =====
         function atualizarClasseArmaduraEquipada() {
             const armaduraCA = parseInt(document.getElementById('armaduraCA')?.value) || 0;
             const outrosCA = parseInt(document.getElementById('outroEquipadoCA')?.value) || 0;
@@ -5057,6 +4831,7 @@
             container.appendChild(lista);
         }
 
+        // ===== Combate, historico e contra a morte =====
         function aplicarDanoNoPV() {
             const entrada = prompt('Quanto de dano o personagem tomou?');
             if (entrada === null) return;
