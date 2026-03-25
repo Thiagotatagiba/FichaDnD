@@ -1951,6 +1951,7 @@
         .arma-resumo-detalhes {
             font-size: 14px;
             line-height: 1.35;
+            white-space: pre-line;
         }
 
         .subaba-vazia {
@@ -1986,7 +1987,7 @@
         }
 
         .equipados-grid.armas {
-            grid-template-columns: minmax(120px, 1.8fr) 80px 72px minmax(100px, 1.2fr) minmax(110px, 1.2fr);
+            grid-template-columns: minmax(120px, 1.8fr) 110px minmax(120px, 1.25fr) minmax(110px, 1.2fr);
         }
 
         .equipados-grid.armadura {
@@ -3278,7 +3279,6 @@
                                         <div class="equipados-grid-cabecalho">Nome</div>
                                         <div class="equipados-grid-cabecalho-centro">Ataque</div>
                                         <div class="equipados-grid-cabecalho-centro">Dano</div>
-                                        <div class="equipados-grid-cabecalho">Tipo</div>
                                         <div class="equipados-grid-cabecalho">Propriedade</div>
 
                                         <input id="arma1Nome" placeholder="Arma Principal">
@@ -3286,8 +3286,7 @@
                                             <option value="for">FOR</option>
                                             <option value="des">DES</option>
                                         </select>
-                                        <input id="arma1Dano" placeholder="dado">
-                                        <input id="arma1TipoDano" placeholder="Tipo de dano">
+                                        <input id="arma1Dano" placeholder="1d8 cortante">
                                         <input id="arma1Propriedade" placeholder="Propriedades da Arma">
                                         <input id="arma2Nome" placeholder="Arma secundária">
                                         <select id="arma2Ataque" aria-label="Atributo de ataque da arma secundária">
@@ -3296,7 +3295,6 @@
                                             <option value="des">DES</option>
                                         </select>
                                         <input id="arma2Dano" aria-label="Dano da arma secundária">
-                                        <input id="arma2TipoDano" aria-label="Tipo de dano da arma secundária">
                                         <input id="arma2Propriedade" aria-label="Propriedades da arma secundária">
                                     </div>
                                 </div>
@@ -3437,7 +3435,7 @@
                             <div class="subabas-combate">
                                 <div class="subabas-botoes">
                                     <button type="button" class="subaba-botao ativa"
-                                        onclick="trocarSubAbaCombate('arma', this)">Armas</button>
+                                        onclick="trocarSubAbaCombate('arma', this)">Arma</button>
                                     <button type="button" class="subaba-botao"
                                         onclick="trocarSubAbaCombate('magia', this)">Magia</button>
                                     <button type="button" class="subaba-botao"
@@ -4183,6 +4181,32 @@
             renderizarOutrosEquipamento(coletarOutros());
         }
 
+        function obterTextoDanoArma(arma) {
+            if (!arma) return "";
+
+            const danoUmaMao = arma.dano_1?.trim() || "";
+            const danoDuasMaos = arma.dano_2?.trim() || "";
+            const propriedades = arma.propriedades || {};
+
+            if (danoUmaMao && danoDuasMaos) {
+                return `${danoUmaMao}/${danoDuasMaos}`;
+            }
+
+            if (propriedades.versatil && (danoUmaMao || danoDuasMaos)) {
+                return [danoUmaMao, danoDuasMaos].filter(Boolean).join("/");
+            }
+
+            if (danoUmaMao || danoDuasMaos) {
+                return [danoUmaMao, danoDuasMaos].filter(Boolean).join("/");
+            }
+
+            if (propriedades.versatil && (arma.dano_1 || arma.dano_2)) {
+                return [arma.dano_1, arma.dano_2].filter(Boolean).join("/");
+            }
+
+            return arma.arma_dano?.trim() || [arma.dano_1, arma.dano_2].filter(Boolean).join("/");
+        }
+
         // escreve a arma no formato atual do cadastro de armas
         function formatarArma(arma) {
             const propriedades = arma.propriedades || {};
@@ -4192,9 +4216,7 @@
             const proficiente = typeof arma.proficiente === "boolean"
                 ? arma.proficiente
                 : getTemProficienciaArma(tipoArma);
-            const dano = propriedades.versatil && (arma.dano_1 || arma.dano_2)
-                ? [arma.dano_1, arma.dano_2].filter(Boolean).join("/")
-                : (arma.arma_dano?.trim() || "-");
+            const dano = obterTextoDanoArma(arma) || "-";
             const linha1 = `${nome} ${dano} ${tipo} ${proficiente ? "(P)" : "(nP)"}`;
             const listaPropriedades = [];
 
@@ -4370,11 +4392,10 @@
             const nome = outro.outro_nome?.trim() || "Item sem nome";
             const tipo = outro.outro_tipo?.trim() || "Outros";
             const quantidade = Math.max(1, parseInt(outro.outro_quantidade, 10) || 1);
-            const peso = outro.outro_peso?.trim() || "";
 
             return {
                 linha1: `${nome} x${quantidade}`,
-                linha2: `Tipo: ${tipo}${peso ? ` | Peso: ${peso}` : ""}`
+                linha2: `Tipo: ${tipo}`
             };
         }
 
@@ -4573,11 +4594,10 @@
             [1, 2].forEach(indice => {
                 const arma = armasSelecionadas[indice - 1];
                 preencherCampo(`arma${indice}Nome`, arma?.arma_nome?.trim() || "");
-                preencherCampo(`arma${indice}Dano`, arma?.arma_dano?.trim() || [arma?.dano_1, arma?.dano_2].filter(Boolean).join("/") || "");
-                preencherCampo(`arma${indice}TipoDano`, arma?.arma_tipo_dano?.trim() || "");
+                preencherCampo(`arma${indice}Dano`, [obterTextoDanoArma(arma), arma?.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "));
                 preencherCampo(`arma${indice}Propriedade`, limparTextoCombate(obterResumoCombateArma(arma)));
                 aplicarEstiloProficienciaCampos(
-                    [`arma${indice}Nome`, `arma${indice}Ataque`, `arma${indice}Dano`, `arma${indice}TipoDano`, `arma${indice}Propriedade`],
+                    [`arma${indice}Nome`, `arma${indice}Ataque`, `arma${indice}Dano`, `arma${indice}Propriedade`],
                     arma ? formatarArma(arma).proficiente : null
                 );
             });
@@ -4719,12 +4739,28 @@
             const distanciaContainer = card.querySelector('.container_distancia');
             const containerMunicao = card.querySelector('.container_municao');
             const containerDescricao = card.querySelector('.arma-container-descricao');
+            const registrarListenersCamposArma = () => {
+                card.querySelectorAll('[data-campo]').forEach(campo => {
+                    if (campo.dataset.listenerResumoArma === 'true') return;
+                    campo.addEventListener('input', atualizarListaArmasEquipamento);
+                    campo.addEventListener('change', atualizarListaArmasEquipamento);
+                    campo.dataset.listenerResumoArma = 'true';
+                });
+            };
 
             // Dano Versátil
             const checkboxVersatil = Array.from(checkboxes).find(el => el.dataset.propriedade === 'versatil');
             if (checkboxVersatil) {
                 checkboxVersatil.addEventListener('change', function () {
                     const containerDano = card.querySelector('.container_dano');
+                    if (!containerDano) return;
+
+                    const campoDanoPadrao = containerDano.querySelector('[data-campo="arma_dano"]');
+                    const campoDanoUmaMao = containerDano.querySelector('[data-campo="dano_1"]');
+                    const campoDanoDuasMaos = containerDano.querySelector('[data-campo="dano_2"]');
+                    const valorDanoPadrao = campoDanoPadrao?.value?.trim() || "";
+                    const valorDanoUmaMao = campoDanoUmaMao?.value?.trim() || "";
+                    const valorDanoDuasMaos = campoDanoDuasMaos?.value?.trim() || "";
                     if (this.checked) {
                         containerDano.innerHTML = `
                     <div style="display:flex; gap:5px;">
@@ -4733,11 +4769,19 @@
                         <input type="text" placeholder="2 mãos" data-campo="dano_2">
                     </div>
                 `;
+                        const novoDanoUmaMao = containerDano.querySelector('[data-campo="dano_1"]');
+                        const novoDanoDuasMaos = containerDano.querySelector('[data-campo="dano_2"]');
+                        if (novoDanoUmaMao) novoDanoUmaMao.value = valorDanoUmaMao || valorDanoPadrao;
+                        if (novoDanoDuasMaos) novoDanoDuasMaos.value = valorDanoDuasMaos;
                     } else {
                         containerDano.innerHTML = `
                     <input type="text" data-campo="arma_dano" placeholder="1d8">
                 `;
+                        const novoDanoPadrao = containerDano.querySelector('[data-campo="arma_dano"]');
+                        if (novoDanoPadrao) novoDanoPadrao.value = valorDanoUmaMao || valorDanoPadrao || valorDanoDuasMaos;
                     }
+                    registrarListenersCamposArma();
+                    atualizarListaArmasEquipamento();
                 });
             }
 
@@ -4762,10 +4806,7 @@
             }
 
             checkboxes.forEach(cb => cb.addEventListener('change', atualizarCamposArma));
-            card.querySelectorAll('[data-campo]').forEach(campo => {
-                campo.addEventListener('input', atualizarListaArmasEquipamento);
-                campo.addEventListener('change', atualizarListaArmasEquipamento);
-            });
+            registrarListenersCamposArma();
             checkboxes.forEach(cb => {
                 cb.addEventListener('change', atualizarListaArmasEquipamento);
             });
@@ -5256,19 +5297,20 @@
 
                         if (!novoCard) return
 
-                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
-                            const valor = dadosArma[campo.dataset.campo]
-                            if (valor !== undefined) campo.value = valor
-                        })
-
                         if (dadosArma.propriedades) {
                             novoCard.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                                 const prop = checkbox.dataset.propriedade
                                 if (prop && dadosArma.propriedades[prop] !== undefined) {
                                     checkbox.checked = dadosArma.propriedades[prop]
+                                    checkbox.dispatchEvent(new Event('change'))
                                 }
                             })
                         }
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosArma[campo.dataset.campo]
+                            if (valor !== undefined) campo.value = valor
+                        })
 
                         if (typeof dadosArma.proficiente === "boolean") {
                             const indicadorProficiencia = novoCard.querySelector('.arma-proficiencia')
@@ -5757,6 +5799,21 @@
             return Math.floor((valorBase - 10) / 2);
         }
 
+        function formatarRotuloAtributo(chaveAtributo) {
+            const chaveNormalizada = normalizarChaveAtributo(chaveAtributo);
+
+            const mapa = {
+                for: "FOR",
+                des: "DES",
+                con: "CON",
+                int: "INT",
+                sab: "SAB",
+                car: "CAR"
+            };
+
+            return mapa[chaveNormalizada] || "";
+        }
+
         function atualizarMagias() {
             sincronizarCamposMagia();
 
@@ -5940,7 +5997,6 @@
                 nome: document.getElementById(`arma${indice}Nome`)?.value.trim() || "",
                 ataque: document.getElementById(`arma${indice}Ataque`)?.value.trim() || "",
                 dano: document.getElementById(`arma${indice}Dano`)?.value.trim() || "",
-                tipo: document.getElementById(`arma${indice}TipoDano`)?.value.trim() || "",
                 propriedade: limparTextoCombate(document.getElementById(`arma${indice}Propriedade`)?.value.trim() || "")
             })).filter(arma => arma.nome);
 
@@ -5964,7 +6020,14 @@
 
                 const detalhes = document.createElement('div');
                 detalhes.className = 'arma-resumo-detalhes';
-                detalhes.textContent = `Ataque: ${arma.ataque || "-"} | Dano: ${arma.dano || "-"} | Tipo: ${arma.tipo || "-"} | Propriedade: ${arma.propriedade || "-"}`;
+                const rotuloAtaque = formatarRotuloAtributo(arma.ataque) || "-";
+                const modificadorAtaque = getModificadorBaseAtributo(arma.ataque);
+                const bonusProf = getBonusProf();
+                const totalAtaque = modificadorAtaque === null ? null : bonusProf + modificadorAtaque;
+                const textoAtaque = totalAtaque === null
+                    ? rotuloAtaque
+                    : `${rotuloAtaque} (${totalAtaque >= 0 ? "+" : ""}${totalAtaque})`;
+                detalhes.textContent = `Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}\nPropriedade: ${arma.propriedade || "-"}`;
 
                 item.appendChild(topo);
                 item.appendChild(detalhes);
@@ -6344,7 +6407,7 @@
             campo.addEventListener('input', normalizarDadosVida);
             campo.addEventListener('change', normalizarDadosVida);
         });
-        ['arma1Nome', 'arma1Ataque', 'arma1Dano', 'arma1TipoDano', 'arma1Propriedade', 'arma2Nome', 'arma2Ataque', 'arma2Dano', 'arma2TipoDano', 'arma2Propriedade'].forEach(id => {
+        ['arma1Nome', 'arma1Ataque', 'arma1Dano', 'arma1Propriedade', 'arma2Nome', 'arma2Ataque', 'arma2Dano', 'arma2Propriedade'].forEach(id => {
             const campo = document.getElementById(id);
             if (!campo) return;
             campo.addEventListener('input', atualizarSubAbaArmas);
