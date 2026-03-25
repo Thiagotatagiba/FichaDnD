@@ -4466,6 +4466,55 @@
             campo.value = valor;
         }
 
+        function formatarBonusCalculado(valor) {
+            return valor >= 0 ? `+${valor}` : String(valor);
+        }
+
+        function getModificadorAtributoBase(chave) {
+            const valor = parseInt(document.getElementById(chave)?.value, 10) || 0;
+            return Math.floor((valor - 10) / 2);
+        }
+
+        function atualizarSelectAtaqueArma(indice, arma) {
+            const select = document.getElementById(`arma${indice}Ataque`);
+            if (!select) return;
+
+            const valorAtual = select.value || 'for';
+            const bonusProf = getBonusProf();
+            const modFor = getModificadorAtributoBase('for');
+            const modDes = getModificadorAtributoBase('des');
+            const proficiente = arma ? formatarArma(arma).proficiente : false;
+            const totalFor = modFor + (proficiente ? bonusProf : 0);
+            const totalDes = modDes + (proficiente ? bonusProf : 0);
+
+            select.innerHTML = '';
+
+            const opcoes = [
+                { value: 'for', label: `FOR (${formatarBonusCalculado(totalFor)})` },
+                { value: 'des', label: `DES (${formatarBonusCalculado(totalDes)})` }
+            ];
+
+            opcoes.forEach(opcao => {
+                const option = document.createElement('option');
+                option.value = opcao.value;
+                option.textContent = opcao.label;
+                select.appendChild(option);
+            });
+
+            select.value = ['for', 'des'].includes(valorAtual) ? valorAtual : 'for';
+        }
+
+        function atualizarSeletoresAtaqueEquipados() {
+            const armas = coletarArmas();
+            const armasSelecionadas = Array.from(document.querySelectorAll('#lista-armas-equipamento input:checked'))
+                .slice(0, 2)
+                .map(input => armas[parseInt(input.dataset.index, 10)])
+                .filter(Boolean);
+
+            atualizarSelectAtaqueArma(1, armasSelecionadas[0] || null);
+            atualizarSelectAtaqueArma(2, armasSelecionadas[1] || null);
+        }
+
         function aplicarEstiloProficienciaCampos(ids, proficiente) {
             ids.forEach(id => {
                 const campo = document.getElementById(id);
@@ -4492,9 +4541,7 @@
 
             [1, 2].forEach(indice => {
                 const arma = armasSelecionadas[indice - 1];
-                const campoAtaque = document.getElementById(`arma${indice}Ataque`);
                 preencherCampo(`arma${indice}Nome`, arma?.arma_nome?.trim() || "");
-                preencherCampo(`arma${indice}Ataque`, arma ? (campoAtaque?.value || "") : "");
                 preencherCampo(`arma${indice}Dano`, arma?.arma_dano?.trim() || [arma?.dano_1, arma?.dano_2].filter(Boolean).join("/") || "");
                 preencherCampo(`arma${indice}TipoDano`, arma?.arma_tipo_dano?.trim() || "");
                 preencherCampo(`arma${indice}Propriedade`, limparTextoCombate(obterResumoCombateArma(arma)));
@@ -4503,6 +4550,8 @@
                     arma ? formatarArma(arma).proficiente : null
                 );
             });
+
+            atualizarSeletoresAtaqueEquipados();
 
             const armaduraSelecionadaInput = document.querySelector('#lista-armaduras-equipamento input:checked');
             const armaduraSelecionada = armaduraSelecionadaInput
@@ -5291,6 +5340,7 @@
                 }
             }
 
+            sincronizarSalvaguardasComAtributosBase()
             atualizarAtributos()
             desenharRadar()
             atualizarModificadoresSalvaguarda()
@@ -5405,6 +5455,7 @@
             })
 
             atualizarIniciativa()
+            atualizarSeletoresAtaqueEquipados()
         }
 
         function atualizarIniciativa() {
@@ -5755,6 +5806,23 @@
 
                 campoSalvaguarda.value = valor;
                 atributoBase.value = valor;
+            });
+        }
+
+        function sincronizarSalvaguardasComAtributosBase() {
+            ["for", "des", "con", "int", "sab", "car"].forEach(atributo => {
+                const campoSalvaguarda = document.getElementById("salv_" + atributo);
+                const atributoBase = document.getElementById(atributo);
+
+                if (!campoSalvaguarda || !atributoBase) return;
+
+                let valor = parseInt(atributoBase.value, 10) || 0;
+
+                if (valor > 20) valor = 20;
+                if (valor < 0) valor = 0;
+
+                atributoBase.value = valor;
+                campoSalvaguarda.value = valor;
             });
         }
 
