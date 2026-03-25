@@ -21,6 +21,19 @@
             margin: 0;
         }
 
+        .arma-equipamento {
+            margin-bottom: 8px;
+        }
+
+        .arma-equipamento small {
+            display: block;
+            margin-left: 22px;
+        }
+
+        .arma-equipamento-nao-proficiente {
+            color: red;
+        }
+
         .ficha {
             max-width: 1100px;
             margin: auto;
@@ -189,8 +202,8 @@
             background: none;
             padding: 0;
             margin: 0 auto;
-            appearance: textfield;
             -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .atributo input[readonly] {
@@ -561,8 +574,8 @@
             font-size: 12px;
             font-weight: bold;
             font-family: 'MedievalSharp';
-            appearance: textfield;
             -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .dv-restante::-webkit-outer-spin-button,
@@ -602,9 +615,9 @@
             width: 100%;
             outline: none;
             cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
             -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
             padding: 0;
         }
 
@@ -660,6 +673,15 @@
             font-weight: bold;
             width: 50px;
             text-align: center;
+        }
+
+        .oculto {
+            display: none;
+        }
+
+        .ataque-botao-bloco {
+            margin-top: 10px;
+            width: 100%;
         }
 
         .tabs {
@@ -1277,7 +1299,6 @@
         }
 
         .ataque-status-caixa {
-            min-height: auto;
             border: 2px solid #8b4513;
             border-radius: 8px;
             background: #fffaf2;
@@ -1315,8 +1336,8 @@
         .ataque-status-caixa.posicao input {
             width: 28px;
             text-align: center;
-            appearance: textfield;
             -moz-appearance: textfield;
+            appearance: textfield;
             padding: 0;
         }
 
@@ -2764,9 +2785,9 @@
             </div>
 
             <div class="jogador-xp">
-                Jogador
+                <label for="jogador">Jogador</label>
                 <input id="jogador" placeholder="Nome do Jogador">
-                XP
+                <label for="xp">XP</label>
                 <input id="xp" value="0">
             </div>
 
@@ -2779,7 +2800,8 @@
                 <div class="campo-duplo">
                     <input id="classeNomeID" class="classe-nome" placeholder="Classe (Subclasse)">
                     <span class="classe-separador">NV</span>
-                    <input id="classeNivelID" class="classe-nivel" type="number" min="1" value="1">
+                    <input id="classeNivelID" class="classe-nivel" type="number" min="1" value="1"
+                        aria-label="Nível da classe">
                 </div>
             </div>
             <div class="campo">
@@ -2792,7 +2814,7 @@
             </div>
             <div class="campo">
                 <div class="campo-titulo">Alinhamento</div>
-                <select id="alinhamentoID">
+                <select id="alinhamentoID" aria-label="Alinhamento">
                     <option>Leal e Bom (LB)</option>
                     <option>Neutro e Bom (NB)</option>
                     <option>Caótico e Bom (CB)</option>
@@ -2816,37 +2838,37 @@
 
                 <div class="atributo for">
                     <div class="atributo-nome">FOR</div>
-                    <input id="for" type="number" min="0" max="20" value="10" readonly>
+                    <input id="for" type="number" min="0" max="20" value="10" readonly aria-label="Força base">
                     <div class="atributo-separador"></div>
                     <div class="mod">0</div>
                 </div>
                 <div class="atributo des">
                     <div class="atributo-nome">DES</div>
-                    <input id="des" type="number" min="0" max="20" value="10" readonly>
+                    <input id="des" type="number" min="0" max="20" value="10" readonly aria-label="Destreza base">
                     <div class="atributo-separador"></div>
                     <div class="mod">0</div>
                 </div>
                 <div class="atributo con">
                     <div class="atributo-nome">CON</div>
-                    <input id="con" type="number" min="0" max="20" value="10" readonly>
+                    <input id="con" type="number" min="0" max="20" value="10" readonly aria-label="Constituição base">
                     <div class="atributo-separador"></div>
                     <div class="mod">0</div>
                 </div>
                 <div class="atributo int">
                     <div class="atributo-nome">INT</div>
-                    <input id="int" type="number" min="0" max="20" value="10" readonly>
+                    <input id="int" type="number" min="0" max="20" value="10" readonly aria-label="Inteligência base">
                     <div class="atributo-separador"></div>
                     <div class="mod">0</div>
                 </div>
                 <div class="atributo sab">
                     <div class="atributo-nome">SAB</div>
-                    <input id="sab" type="number" min="0" max="20" value="10" readonly>
+                    <input id="sab" type="number" min="0" max="20" value="10" readonly aria-label="Sabedoria base">
                     <div class="atributo-separador"></div>
                     <div class="mod">0</div>
                 </div>
                 <div class="atributo car">
                     <div class="atributo-nome">CAR</div>
-                    <input id="car" type="number" min="0" max="20" value="10" readonly>
+                    <input id="car" type="number" min="0" max="20" value="10" readonly aria-label="Carisma base">
                     <div class="atributo-separador"></div>
                     <div class="mod">0</div>
                 </div>
@@ -2865,11 +2887,11 @@
                         <div class="shield-wrapper">
 
                             <div class="shield">
-                                <input id="ca_valor" readonly>
+                                <input id="ca_valor" readonly aria-label="Classe de armadura">
                             </div>
 
                             <div class="bonus-escudo" title="CA do escudo">
-                                <input id="ca_escudo" readonly>
+                                <input id="ca_escudo" readonly aria-label="Bônus de classe de armadura do escudo">
                             </div>
 
                         </div>
@@ -2887,7 +2909,7 @@
                                     stroke-width="5" />
                             </svg>
 
-                            <input id="iniciativa" readonly>
+                            <input id="iniciativa" readonly aria-label="Iniciativa">
 
                         </div>
 
@@ -2898,7 +2920,7 @@
                         <div class="campo-titulo">Deslocamento</div>
 
                         <div class="quadrado-combate">
-                            <input id="deslocamento" value="9m">
+                            <input id="deslocamento" value="9m" aria-label="Deslocamento">
                         </div>
 
                     </div>
@@ -2913,21 +2935,22 @@
 
                         <div class="pv-atual">
                             <div class="pv-atual-titulo">PV Atual</div>
-                            <input id="pvAtual" value="0">
+                            <input id="pvAtual" value="0" aria-label="Pontos de vida atuais">
                         </div>
 
                         <div class="pv-linha">
 
                             <div class="pv-bloco pv-bloco-total">
                                 <div class="pv-bloco-titulo">PV Total</div>
-                                <input id="pvTotal" value="0">
+                                <input id="pvTotal" value="0" aria-label="Pontos de vida totais">
                             </div>
 
                             <div class="pv-bloco pv-bloco-temp">
                                 <div class="pv-bloco-titulo">PV Temp</div>
                                 <div class="pv-temp-controle">
                                     <span class="pv-temp-sinal">+</span>
-                                    <input id="pvTemporario" type="number" min="0" step="1" value="0">
+                                    <input id="pvTemporario" type="number" min="0" step="1" value="0"
+                                        aria-label="Pontos de vida temporários">
                                 </div>
                             </div>
 
@@ -3001,24 +3024,24 @@
 
                         <div class="passivas-linha">
                             <div class="bonus-orbe-container">
-                                <div class="bonus-orbe"><input id="bonusProf" value="+2"></div>
+                                <div class="bonus-orbe"><input id="bonusProf" value="+2" aria-label="Bônus de proficiência"></div>
                                 <div class="bonus-retangulo">Bônus de Proficiência</div>
                             </div>
 
                             <div class="bonus-orbe-container">
-                                <div class="bonus-orbe"><input id="sabPass" value="10" readonly></div>
+                                <div class="bonus-orbe"><input id="sabPass" value="10" readonly aria-label="Sabedoria passiva"></div>
                                 <div class="bonus-retangulo">Sabedoria Passiva</div>
                             </div>
                         </div>
 
                         <div class="passivas-linha">
                             <div class="bonus-orbe-container">
-                                <div class="bonus-orbe"><input id="perPass" value="10" readonly></div>
+                                <div class="bonus-orbe"><input id="perPass" value="10" readonly aria-label="Percepção passiva"></div>
                                 <div class="bonus-retangulo">Percepção Passiva</div>
                             </div>
 
                             <div class="bonus-orbe-container">
-                                <div class="bonus-orbe"><input id="intPass" value="10" readonly></div>
+                                <div class="bonus-orbe"><input id="intPass" value="10" readonly aria-label="Intuição passiva"></div>
                                 <div class="bonus-retangulo">Intuição Passiva</div>
                             </div>
                         </div>
@@ -3029,50 +3052,50 @@
 
                         <div class="salvaguardas-grid">
                             <div class="salvaguarda-caixa" id="caixa-for">
-                                <div class="atributo-label">FOR <input id="prof_for" type="checkbox"
+                                <div class="atributo-label">FOR <input id="prof_for" type="checkbox" aria-label="Proficiência em salvaguarda de Força"
                                         class="prof-checkbox" data-atributo="for" title="Proficiência"></div>
                                 <div class="valor-atributo"><input id="salv_for" type="number"
-                                        class="valor-atributo-input" value="10" min="0"></div>
+                                        class="valor-atributo-input" value="10" min="0" aria-label="Salvaguarda de Força"></div>
                                 <div class="modificador-orbe" id="mod_for">+2</div>
                             </div>
 
                             <div class="salvaguarda-caixa" id="caixa-des">
-                                <div class="atributo-label">DES <input id="prof_des" type="checkbox"
+                                <div class="atributo-label">DES <input id="prof_des" type="checkbox" aria-label="Proficiência em salvaguarda de Destreza"
                                         class="prof-checkbox" data-atributo="des" title="Proficiência"></div>
                                 <div class="valor-atributo"><input id="salv_des" type="number"
-                                        class="valor-atributo-input" value="10" min="0"></div>
+                                        class="valor-atributo-input" value="10" min="0" aria-label="Salvaguarda de Destreza"></div>
                                 <div class="modificador-orbe" id="mod_des">+2</div>
                             </div>
 
                             <div class="salvaguarda-caixa" id="caixa-con">
-                                <div class="atributo-label">CON <input id="prof_con" type="checkbox"
+                                <div class="atributo-label">CON <input id="prof_con" type="checkbox" aria-label="Proficiência em salvaguarda de Constituição"
                                         class="prof-checkbox" data-atributo="con" title="Proficiência"></div>
                                 <div class="valor-atributo"><input id="salv_con" type="number"
-                                        class="valor-atributo-input" value="10" min="0"></div>
+                                        class="valor-atributo-input" value="10" min="0" aria-label="Salvaguarda de Constituição"></div>
                                 <div class="modificador-orbe" id="mod_con">+2</div>
                             </div>
 
                             <div class="salvaguarda-caixa" id="caixa-int">
-                                <div class="atributo-label">INT <input id="prof_int" type="checkbox"
+                                <div class="atributo-label">INT <input id="prof_int" type="checkbox" aria-label="Proficiência em salvaguarda de Inteligência"
                                         class="prof-checkbox" data-atributo="int" title="Proficiência"></div>
                                 <div class="valor-atributo"><input id="salv_int" type="number"
-                                        class="valor-atributo-input" value="10" min="0"></div>
+                                        class="valor-atributo-input" value="10" min="0" aria-label="Salvaguarda de Inteligência"></div>
                                 <div class="modificador-orbe" id="mod_int">+2</div>
                             </div>
 
                             <div class="salvaguarda-caixa" id="caixa-sab">
-                                <div class="atributo-label">SAB <input id="prof_sab" type="checkbox"
+                                <div class="atributo-label">SAB <input id="prof_sab" type="checkbox" aria-label="Proficiência em salvaguarda de Sabedoria"
                                         class="prof-checkbox" data-atributo="sab" title="Proficiência"></div>
                                 <div class="valor-atributo"><input id="salv_sab" type="number"
-                                        class="valor-atributo-input" value="10" min="0"></div>
+                                        class="valor-atributo-input" value="10" min="0" aria-label="Salvaguarda de Sabedoria"></div>
                                 <div class="modificador-orbe" id="mod_sab">+2</div>
                             </div>
 
                             <div class="salvaguarda-caixa" id="caixa-car">
-                                <div class="atributo-label">CAR <input id="prof_car" type="checkbox"
+                                <div class="atributo-label">CAR <input id="prof_car" type="checkbox" aria-label="Proficiência em salvaguarda de Carisma"
                                         class="prof-checkbox" data-atributo="car" title="Proficiência"></div>
                                 <div class="valor-atributo"><input id="salv_car" type="number"
-                                        class="valor-atributo-input" value="10" min="0"></div>
+                                        class="valor-atributo-input" value="10" min="0" aria-label="Salvaguarda de Carisma"></div>
                                 <div class="modificador-orbe" id="mod_car">+2</div>
                             </div>
                         </div>
@@ -3088,93 +3111,93 @@
 
                         <div class="pericias-lista">
                             <div class="pericia-linha" data-atributo="des"><label class="pericia-prof"><input
-                                        id="periciaAcrobaciaProf" type="checkbox"></label><input
-                                    id="periciaAcrobaciaValor" class="pericia-valor" value="+3" readonly>
+                                        id="periciaAcrobaciaProf" type="checkbox" aria-label="Proficiência em Acrobacia"></label><input
+                                    id="periciaAcrobaciaValor" class="pericia-valor" value="+3" readonly aria-label="Valor de Acrobacia">
                                 <div class="pericia-nome">Acrobacia (DES)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="int"><label class="pericia-prof"><input
-                                        id="periciaArcanismoProf" type="checkbox"></label><input
-                                    id="periciaArcanismoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaArcanismoProf" type="checkbox" aria-label="Proficiência em Arcanismo"></label><input
+                                    id="periciaArcanismoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Arcanismo">
                                 <div class="pericia-nome">Arcanismo (INT)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="for"><label class="pericia-prof"><input
-                                        id="periciaAtletismoProf" type="checkbox"></label><input
-                                    id="periciaAtletismoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaAtletismoProf" type="checkbox" aria-label="Proficiência em Atletismo"></label><input
+                                    id="periciaAtletismoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Atletismo">
                                 <div class="pericia-nome">Atletismo (FOR)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="car"><label class="pericia-prof"><input
-                                        id="periciaAtuacaoProf" type="checkbox"></label><input id="periciaAtuacaoValor"
-                                    class="pericia-valor" value="+0" readonly>
+                                        id="periciaAtuacaoProf" type="checkbox" aria-label="Proficiência em Atuação"></label><input id="periciaAtuacaoValor"
+                                    class="pericia-valor" value="+0" readonly aria-label="Valor de Atuação">
                                 <div class="pericia-nome">Atuação (CAR)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="car"><label class="pericia-prof"><input
-                                        id="periciaEnganacaoProf" type="checkbox"></label><input
-                                    id="periciaEnganacaoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaEnganacaoProf" type="checkbox" aria-label="Proficiência em Enganação"></label><input
+                                    id="periciaEnganacaoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Enganação">
                                 <div class="pericia-nome">Enganação (CAR)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="des"><label class="pericia-prof"><input
-                                        id="periciaFurtividadeProf" type="checkbox"></label><input
-                                    id="periciaFurtividadeValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaFurtividadeProf" type="checkbox" aria-label="Proficiência em Furtividade"></label><input
+                                    id="periciaFurtividadeValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Furtividade">
                                 <div class="pericia-nome">Furtividade (DES)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="int"><label class="pericia-prof"><input
-                                        id="periciaHistoriaProf" type="checkbox"></label><input
-                                    id="periciaHistoriaValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaHistoriaProf" type="checkbox" aria-label="Proficiência em História"></label><input
+                                    id="periciaHistoriaValor" class="pericia-valor" value="+0" readonly aria-label="Valor de História">
                                 <div class="pericia-nome">História (INT)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="car"><label class="pericia-prof"><input
-                                        id="periciaIntimidacaoProf" type="checkbox"></label><input
-                                    id="periciaIntimidacaoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaIntimidacaoProf" type="checkbox" aria-label="Proficiência em Intimidação"></label><input
+                                    id="periciaIntimidacaoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Intimidação">
                                 <div class="pericia-nome">Intimidação (CAR)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="sab"><label class="pericia-prof"><input
-                                        id="periciaIntuicaoProf" type="checkbox"></label><input
-                                    id="periciaIntuicaoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaIntuicaoProf" type="checkbox" aria-label="Proficiência em Intuição"></label><input
+                                    id="periciaIntuicaoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Intuição">
                                 <div class="pericia-nome">Intuição (SAB)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="int"><label class="pericia-prof"><input
-                                        id="periciaInvestigacaoProf" type="checkbox"></label><input
-                                    id="periciaInvestigacaoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaInvestigacaoProf" type="checkbox" aria-label="Proficiência em Investigação"></label><input
+                                    id="periciaInvestigacaoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Investigação">
                                 <div class="pericia-nome">Investigação (INT)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="sab"><label class="pericia-prof"><input
-                                        id="periciaLidarAnimaisProf" type="checkbox"></label><input
-                                    id="periciaLidarAnimaisValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaLidarAnimaisProf" type="checkbox" aria-label="Proficiência em Lidar com Animais"></label><input
+                                    id="periciaLidarAnimaisValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Lidar com Animais">
                                 <div class="pericia-nome">Lidar com Animais (SAB)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="sab"><label class="pericia-prof"><input
-                                        id="periciaMedicinaProf" type="checkbox"></label><input
-                                    id="periciaMedicinaValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaMedicinaProf" type="checkbox" aria-label="Proficiência em Medicina"></label><input
+                                    id="periciaMedicinaValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Medicina">
                                 <div class="pericia-nome">Medicina (SAB)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="int"><label class="pericia-prof"><input
-                                        id="periciaNaturezaProf" type="checkbox"></label><input
-                                    id="periciaNaturezaValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaNaturezaProf" type="checkbox" aria-label="Proficiência em Natureza"></label><input
+                                    id="periciaNaturezaValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Natureza">
                                 <div class="pericia-nome">Natureza (INT)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="sab"><label class="pericia-prof"><input
-                                        id="periciaPercepcaoProf" type="checkbox"></label><input
-                                    id="periciaPercepcaoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaPercepcaoProf" type="checkbox" aria-label="Proficiência em Percepção"></label><input
+                                    id="periciaPercepcaoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Percepção">
                                 <div class="pericia-nome">Percepção (SAB)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="car"><label class="pericia-prof"><input
-                                        id="periciaPersuasaoProf" type="checkbox"></label><input
-                                    id="periciaPersuasaoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaPersuasaoProf" type="checkbox" aria-label="Proficiência em Persuasão"></label><input
+                                    id="periciaPersuasaoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Persuasão">
                                 <div class="pericia-nome">Persuasão (CAR)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="des"><label class="pericia-prof"><input
-                                        id="periciaPrestidigitacaoProf" type="checkbox"></label><input
-                                    id="periciaPrestidigitacaoValor" class="pericia-valor" readonly>
+                                        id="periciaPrestidigitacaoProf" type="checkbox" aria-label="Proficiência em Prestidigitação"></label><input
+                                    id="periciaPrestidigitacaoValor" class="pericia-valor" readonly aria-label="Valor de Prestidigitação">
                                 <div class="pericia-nome">Prestidigitação (DES)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="int"><label class="pericia-prof"><input
-                                        id="periciaReligiaoProf" type="checkbox"></label><input
-                                    id="periciaReligiaoValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaReligiaoProf" type="checkbox" aria-label="Proficiência em Religião"></label><input
+                                    id="periciaReligiaoValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Religião">
                                 <div class="pericia-nome">Religião (INT)</div>
                             </div>
                             <div class="pericia-linha" data-atributo="sab"><label class="pericia-prof"><input
-                                        id="periciaSobrevivenciaProf" type="checkbox"></label><input
-                                    id="periciaSobrevivenciaValor" class="pericia-valor" value="+0" readonly>
+                                        id="periciaSobrevivenciaProf" type="checkbox" aria-label="Proficiência em Sobrevivência"></label><input
+                                    id="periciaSobrevivenciaValor" class="pericia-valor" value="+0" readonly aria-label="Valor de Sobrevivência">
                                 <div class="pericia-nome">Sobrevivência (SAB)</div>
                             </div>
                         </div>
@@ -3186,35 +3209,35 @@
                         <div class="proficiencias-secoes">
                             <div class="proficiencia-secao">
                                 <div class="proficiencia-subtitulo">Idiomas</div>
-                                <textarea id="proficienciaIdiomas" class="proficiencia-texto"></textarea>
+                                <textarea id="proficienciaIdiomas" class="proficiencia-texto" aria-label="Idiomas e outras proficiências"></textarea>
                             </div>
 
                             <div class="proficiencia-secao">
                                 <div class="proficiencia-subtitulo">Armas</div>
                                 <div class="armas-container">
                                     <div class="armas-opcoes">
-                                        <label><input type="checkbox" id="profArmaSimples"> Simples</label>
-                                        <label><input type="checkbox" id="profArmaMarciais"> Marciais</label>
+                                        <label><input type="checkbox" id="profArmaSimples" aria-label="Proficiência com armas simples"> Simples</label>
+                                        <label><input type="checkbox" id="profArmaMarciais" aria-label="Proficiência com armas marciais"> Marciais</label>
                                     </div>
 
-                                    <textarea id="proficienciaArmas" class="proficiencia-texto"></textarea>
+                                    <textarea id="proficienciaArmas" class="proficiencia-texto" aria-label="Proficiências adicionais de armas"></textarea>
                                 </div>
                             </div>
                             <div class="proficiencia-secao">
                                 <div class="proficiencia-subtitulo">Armaduras</div>
                                 <div class="armadura-container">
                                     <div class="armaduras-opcoes">
-                                        <label><input type="checkbox" id="profArmaduraLeves"> Leves</label>
-                                        <label><input type="checkbox" id="profArmaduraMedias"> Medias</label>
-                                        <label><input type="checkbox" id="profArmaduraPesadas"> Pesadas</label>
-                                        <label><input type="checkbox" id="profEscudos"> Escudos</label>
+                                        <label><input type="checkbox" id="profArmaduraLeves" aria-label="Proficiência com armaduras leves"> Leves</label>
+                                        <label><input type="checkbox" id="profArmaduraMedias" aria-label="Proficiência com armaduras médias"> Medias</label>
+                                        <label><input type="checkbox" id="profArmaduraPesadas" aria-label="Proficiência com armaduras pesadas"> Pesadas</label>
+                                        <label><input type="checkbox" id="profEscudos" aria-label="Proficiência com escudos"> Escudos</label>
                                     </div>
-                                    <textarea id="proficienciaArmaduras" class="proficiencia-texto"></textarea>
+                                    <textarea id="proficienciaArmaduras" class="proficiencia-texto" aria-label="Proficiências adicionais de armaduras"></textarea>
                                 </div>
 
                                 <div class="proficiencia-secao">
                                     <div class="proficiencia-subtitulo">Ferramentas</div>
-                                    <textarea id="proficienciaFerramentas" class="proficiencia-texto"></textarea>
+                                    <textarea id="proficienciaFerramentas" class="proficiencia-texto" aria-label="Proficiências com ferramentas"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -3225,24 +3248,24 @@
                         <div class="talentos-secoes">
                             <div class="talento-secao">
                                 <div class="talento-subtitulo">Classe: <span id="talentoClasseResumo"></span></div>
-                                <textarea id="talentoClasse" class="talento-texto"></textarea>
+                                <textarea id="talentoClasse" class="talento-texto" aria-label="Características e talentos de classe"></textarea>
                             </div>
 
                             <div class="talento-secao">
                                 <div class="talento-subtitulo">Arquétipo: <input id="talentoArquetipoResumo"
                                         placeholder="Subclasse"></div>
-                                <textarea id="talentoArquetipo" class="talento-texto"></textarea>
+                                <textarea id="talentoArquetipo" class="talento-texto" aria-label="Características e talentos de arquétipo"></textarea>
                             </div>
 
                             <div class="talento-secao">
                                 <div class="talento-subtitulo">Raça: <span id="talentoRacaResumo"></span></div>
-                                <textarea id="talentoRaca" class="talento-texto"></textarea>
+                                <textarea id="talentoRaca" class="talento-texto" aria-label="Características e talentos de raça"></textarea>
                             </div>
 
                             <div class="talento-secao">
                                 <div class="talento-subtitulo">Antecedente: <span id="talentoAntecedenteResumo"></span>
                                 </div>
-                                <textarea id="talentoAntecedente" class="talento-texto"></textarea>
+                                <textarea id="talentoAntecedente" class="talento-texto" aria-label="Características e talentos de antecedente"></textarea>
                             </div>
                         </div>
                     </div>
@@ -3266,7 +3289,7 @@
                                         <div class="equipados-grid-cabecalho">Propriedade</div>
 
                                         <input id="arma1Nome" placeholder="Arma Principal">
-                                        <select id="arma1Ataque">
+                                        <select id="arma1Ataque" aria-label="Atributo de ataque da arma principal">
                                             <option value="for">FOR</option>
                                             <option value="des">DES</option>
                                         </select>
@@ -3274,14 +3297,14 @@
                                         <input id="arma1TipoDano" placeholder="Tipo de dano">
                                         <input id="arma1Propriedade" placeholder="Propriedades da Arma">
                                         <input id="arma2Nome" placeholder="Arma secundária">
-                                        <select id="arma2Ataque">
+                                        <select id="arma2Ataque" aria-label="Atributo de ataque da arma secundária">
                                             <option value="for"></option>
                                             <option value="for">FOR</option>
                                             <option value="des">DES</option>
                                         </select>
-                                        <input id="arma2Dano">
-                                        <input id="arma2TipoDano">
-                                        <input id="arma2Propriedade">
+                                        <input id="arma2Dano" aria-label="Dano da arma secundária">
+                                        <input id="arma2TipoDano" aria-label="Tipo de dano da arma secundária">
+                                        <input id="arma2Propriedade" aria-label="Propriedades da arma secundária">
                                     </div>
                                 </div>
 
@@ -3292,9 +3315,9 @@
                                         <div class="equipados-grid-cabecalho-centro">CA</div>
                                         <div class="equipados-grid-cabecalho">Furtividade</div>
 
-                                        <input id="armaduraNome">
-                                        <input id="armaduraCA" class="campo-ca">
-                                        <select id="armaduraFurtividade">
+                                        <input id="armaduraNome" aria-label="Nome da armadura">
+                                        <input id="armaduraCA" class="campo-ca" aria-label="Classe de armadura da armadura">
+                                        <select id="armaduraFurtividade" aria-label="Efeito da armadura na furtividade">
                                             <option>Desvantagem</option>
                                             <option selected>Normal</option>
                                             <option>Vantagem</option>
@@ -3308,8 +3331,8 @@
                                         <div class="equipados-grid-cabecalho">Nome</div>
                                         <div class="equipados-grid-cabecalho-centro">CA</div>
 
-                                        <input id="escudoNome">
-                                        <input id="escudoCA" class="campo-ca">
+                                        <input id="escudoNome" aria-label="Nome do escudo">
+                                        <input id="escudoCA" class="campo-ca" aria-label="Bônus de classe de armadura do escudo">
                                     </div>
                                 </div>
 
@@ -3319,7 +3342,7 @@
                                         <div class="equipados-grid-cabecalho-centro">Quant.</div>
                                         <div class="equipados-grid-cabecalho">Tipo</div>
 
-                                        <input id="recarregavelQuantidade" class="equipados-quantidade" type="number"
+                                        <input id="recarregavelQuantidade" class="equipados-quantidade" type="number" aria-label="Quantidade de recurso recarregável"
                                             min="0" value="0">
                                         <input id="recarregavelTipo" placeholder="Ex: Flechas">
                                     </div>
@@ -3331,7 +3354,7 @@
                                         <div class="equipados-grid-cabecalho-centro">Quant.</div>
                                         <div class="equipados-grid-cabecalho">Tipo</div>
 
-                                        <input id="pocaoQuantidade" class="equipados-quantidade" type="number" min="0"
+                                        <input id="pocaoQuantidade" class="equipados-quantidade" type="number" min="0" aria-label="Quantidade de poções"
                                             value="0">
                                         <input id="pocaoTipo" placeholder="Ex: Poção de Cura">
                                     </div>
@@ -3344,7 +3367,7 @@
                                         <div class="equipados-grid-cabecalho-centro">CA</div>
 
                                         <input id="outroEquipadoTipo" placeholder="Item especial">
-                                        <input id="outroEquipadoCA" class="campo-ca">
+                                        <input id="outroEquipadoCA" class="campo-ca" aria-label="Bônus de classe de armadura de outro item">
                                     </div>
                                 </div>
                             </div>
@@ -3355,10 +3378,10 @@
                             <div class="ataque-topo">
                                 <div class="ataque-mini-escudo">
                                     <div class="shield">
-                                        <input id="ataqueCaTotal" value="0" readonly>
+                                        <input id="ataqueCaTotal" value="0" readonly aria-label="Classe de armadura no painel de ataque">
                                     </div>
                                     <div class="bonus-escudo" title="Bônus do escudo">
-                                        <input id="ataqueCaEscudo" readonly>
+                                        <input id="ataqueCaEscudo" readonly aria-label="Bônus de escudo no painel de ataque">
                                     </div>
                                 </div>
 
@@ -3367,22 +3390,22 @@
                                         <div class="ataque-status-caixa posicao">
                                             <label for="ataquePosicao">Pos.:</label>
                                             <div class="ataque-status-input-group">
-                                                <input id="ataquePosicao" type="number" min="0" step="1" value="0">
+                                                <input id="ataquePosicao" type="number" min="0" step="1" value="0" aria-label="Posição na iniciativa">
                                                 <span class="ataque-status-sufixo">º</span>
                                             </div>
                                         </div>
                                         <div class="ataque-status-caixa">
                                             <label for="ataqueCondicao">Condição:</label>
-                                            <input id="ataqueCondicao" value="Normal">
+                                            <input id="ataqueCondicao" value="Normal" aria-label="Condição de combate">
                                         </div>
                                         <div class="ataque-status-caixa">
                                             <label for="combateRodada">Rodada:</label>
-                                            <input id="combateRodada" type="number" min="1" step="1" value="1">
+                                            <input id="combateRodada" type="number" min="1" step="1" value="1" aria-label="Rodada do combate">
                                         </div>
                                     </div>
 
                                     <div class="ataque-pv-valor" id="ataquePvAtual">PV 0</div>
-                                    <div class="ataque-contra-morte" id="ataqueContraMorte" style="display: none;">
+                                    <div class="ataque-contra-morte oculto" id="ataqueContraMorte">
                                         <div class="contra-morte-titulo">Salvaguarda Contra Morte</div>
                                         <div class="contra-morte-row">
                                             <div class="contra-morte-group">
@@ -3439,8 +3462,7 @@
                                         </div>
                                         <div id="historicoRegistros" class="historico-registros"></div>
                                     </div>
-                                    <button type="button" class="ataque-botao" onclick="limparHistorico()"
-                                        style="margin-top: 10px; width: 100%;">Finalizar Combate (Limpar
+                                    <button type="button" class="ataque-botao ataque-botao-bloco" onclick="limparHistorico()">Finalizar Combate (Limpar
                                         Histórico)</button>
                                 </div>
                             </div>
@@ -3454,17 +3476,17 @@
                                 <div class="equipamento-coluna">
                                     <div class="proficiencia-subtitulo">Armas</div>
                                     <div id="lista-armas-equipamento"></div>
-                                    <textarea id="equipamentoArmas" class="equipamento-texto"></textarea>
+                                    <textarea id="equipamentoArmas" class="equipamento-texto" aria-label="Descrição de equipamentos de armas"></textarea>
                                 </div>
 
                                 <div class="equipamento-coluna">
                                     <div class="proficiencia-subtitulo">Armadura</div>
-                                    <textarea id="equipamentoArmadura" class="equipamento-texto"></textarea>
+                                    <textarea id="equipamentoArmadura" class="equipamento-texto" aria-label="Descrição de equipamentos de armadura"></textarea>
                                 </div>
 
                                 <div class="equipamento-coluna">
                                     <div class="proficiencia-subtitulo">Outros</div>
-                                    <textarea id="equipamentoOutros" class="equipamento-texto"></textarea>
+                                    <textarea id="equipamentoOutros" class="equipamento-texto" aria-label="Descrição de outros equipamentos"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -3510,7 +3532,7 @@
                                 <div class="magia-nivel">0</div>
                                 <div class="magia-titulo-nivel">Truques</div>
                             </div>
-                            <textarea id="magia0Texto" class="magia-texto magia-texto-truques"></textarea>
+                            <textarea id="magia0Texto" class="magia-texto magia-texto-truques" aria-label="Truques conhecidos"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3525,7 +3547,7 @@
                                     <input id="magia1Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia1Texto" class="magia-texto"></textarea>
+                            <textarea id="magia1Texto" class="magia-texto" aria-label="Magias de nível 1"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3540,7 +3562,7 @@
                                     <input id="magia2Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia2Texto" class="magia-texto"></textarea>
+                            <textarea id="magia2Texto" class="magia-texto" aria-label="Magias de nível 2"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3555,7 +3577,7 @@
                                     <input id="magia3Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia3Texto" class="magia-texto"></textarea>
+                            <textarea id="magia3Texto" class="magia-texto" aria-label="Magias de nível 3"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3570,7 +3592,7 @@
                                     <input id="magia4Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia4Texto" class="magia-texto"></textarea>
+                            <textarea id="magia4Texto" class="magia-texto" aria-label="Magias de nível 4"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3585,7 +3607,7 @@
                                     <input id="magia5Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia5Texto" class="magia-texto"></textarea>
+                            <textarea id="magia5Texto" class="magia-texto" aria-label="Magias de nível 5"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3600,7 +3622,7 @@
                                     <input id="magia6Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia6Texto" class="magia-texto"></textarea>
+                            <textarea id="magia6Texto" class="magia-texto" aria-label="Magias de nível 6"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3615,7 +3637,7 @@
                                     <input id="magia7Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia7Texto" class="magia-texto"></textarea>
+                            <textarea id="magia7Texto" class="magia-texto" aria-label="Magias de nível 7"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3630,7 +3652,7 @@
                                     <input id="magia8Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia8Texto" class="magia-texto"></textarea>
+                            <textarea id="magia8Texto" class="magia-texto" aria-label="Magias de nível 8"></textarea>
                         </div>
 
                         <div class="magia-card">
@@ -3645,7 +3667,7 @@
                                     <input id="magia9Usado" type="number" min="0" value="0">
                                 </div>
                             </div>
-                            <textarea id="magia9Texto" class="magia-texto"></textarea>
+                            <textarea id="magia9Texto" class="magia-texto" aria-label="Magias de nível 9"></textarea>
                         </div>
                     </div>
                 </div>
@@ -3687,34 +3709,34 @@
                         <div class="historia-card">
                             <div class="status-titulo">Traços de Personalidade</div>
                             <textarea id="historiaTracosPersonalidade"
-                                class="historia-texto historia-texto-curto"></textarea>
+                                class="historia-texto historia-texto-curto" aria-label="Traços de personalidade"></textarea>
                         </div>
 
                         <div class="historia-card">
                             <div class="status-titulo">Ideais</div>
-                            <textarea id="historiaIdeais" class="historia-texto historia-texto-curto"></textarea>
+                            <textarea id="historiaIdeais" class="historia-texto historia-texto-curto" aria-label="Ideais"></textarea>
                         </div>
 
                         <div class="historia-card">
                             <div class="status-titulo">Vínculos</div>
-                            <textarea id="historiaVinculos" class="historia-texto historia-texto-curto"></textarea>
+                            <textarea id="historiaVinculos" class="historia-texto historia-texto-curto" aria-label="Vínculos"></textarea>
                         </div>
 
                         <div class="historia-card">
                             <div class="status-titulo">Fraquezas</div>
-                            <textarea id="historiaFraquezas" class="historia-texto historia-texto-curto"></textarea>
+                            <textarea id="historiaFraquezas" class="historia-texto historia-texto-curto" aria-label="Fraquezas"></textarea>
                         </div>
                     </div>
 
                     <div class="historia-card">
                         <div class="status-titulo">Aliados e Organizações</div>
                         <textarea id="historiaAliadosOrganizacoes"
-                            class="historia-texto historia-texto-medio"></textarea>
+                            class="historia-texto historia-texto-medio" aria-label="Aliados e organizações"></textarea>
                     </div>
 
                     <div class="historia-card">
                         <div class="status-titulo">História do Personagem</div>
-                        <textarea id="historiaPersonagem" class="historia-texto historia-texto-longo"></textarea>
+                        <textarea id="historiaPersonagem" class="historia-texto historia-texto-longo" aria-label="História do personagem"></textarea>
                     </div>
                 </div>
             </div>
@@ -3764,7 +3786,7 @@
                                 <button type="button" onclick="adicionarNovaArma()">+ Nova Arma</button>
 
                                 <!-- CARD DE ARMAS CADASTRO -->
-                                <div id="armaModelo" class="arma-card fechado" style="display: none;">
+                                <div id="armaModelo" class="arma-card fechado oculto">
 
 
                                     <div class="arma-linha-inferior">
@@ -3773,11 +3795,11 @@
 
                                         <div class="arma-campo-icone">
                                             <span class="arma-emoji">🪙</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="arma_preco">
+                                            <input type="text" class="arma-campo-pequeno" data-campo="arma_preco" aria-label="Preço da arma">
                                         </div>
                                         <div class="arma-campo-icone">
                                             <span class="arma-emoji">⚖️</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="arma_peso"
+                                            <input type="text" class="arma-campo-pequeno" data-campo="arma_peso" aria-label="Peso da arma"
                                                 type="text">
                                         </div>
                                     </div>
@@ -3789,7 +3811,7 @@
 
                                         <div class="arma-nome-container">
                                             <label>Nome</label>
-                                            <input type="text" data-campo="arma_nome">
+                                            <input type="text" data-campo="arma_nome" aria-label="Nome da arma">
                                         </div>
                                         <span class="arma-toggle">🔽</span>
                                     </div>
@@ -3804,7 +3826,7 @@
                                             </div>
                                             <div>
                                                 <label>Tipo de Dano</label>
-                                                <select data-campo="arma_tipo_dano">
+                                                <select data-campo="arma_tipo_dano" aria-label="Tipo de dano da arma">
                                                     <option>Concussão</option>
                                                     <option>Cortante</option>
                                                     <option>Perfurante</option>
@@ -3825,7 +3847,7 @@
                                         <!-- LINHA 3: Tipo de Arma + Distância -->
                                         <div class="arma-linha arma-linha-2-cols">
                                             <div>
-                                                <select data-campo="arma_tipo">
+                                                <select data-campo="arma_tipo" aria-label="Tipo da arma">
                                                     <option value="">Tipo de Arma</option>
                                                     <option value="Simples">Simples</option>
                                                     <option value="Marcial">Marcial</option>
@@ -3834,21 +3856,21 @@
                                             <div class="container_distancia">
                                                 <label>Distância</label>
                                                 <div class="arma-distancia">
-                                                    <input type="text" data-campo="arma_dist_curto">
+                                                    <input type="text" data-campo="arma_dist_curto" aria-label="Distância curta da arma">
                                                     /
-                                                    <input type="text" data-campo="arma_dist_longo">
+                                                    <input type="text" data-campo="arma_dist_longo" aria-label="Distância longa da arma">
                                                 </div>
                                             </div>
                                         </div>
 
                                         <!-- LINHA 4: Munição (se necessário) -->
-                                        <div class="container_municao arma-linha arma-linha-1" style="display: none;">
+                                        <div class="container_municao arma-linha arma-linha-1 oculto">
                                             <div>
                                                 <label>Munição</label>
                                                 <div class="arma-distancia">
-                                                    <input type="number" data-campo="arma_municao_qtd" min="0" step="1">
+                                                    <input type="number" data-campo="arma_municao_qtd" min="0" step="1" aria-label="Quantidade de munição da arma">
                                                     |
-                                                    <input type="text" data-campo="arma_municao_tipo"
+                                                    <input type="text" data-campo="arma_municao_tipo" aria-label="Tipo de munição da arma"
                                                         placeholder="Tipo">
                                                 </div>
                                             </div>
@@ -3858,33 +3880,32 @@
                                         <div class="arma-linha">
                                             <label>Propriedades</label>
                                             <div class="arma-propriedades">
-                                                <label><input class="propriedade-checkbox" data-propriedade="acuidade"
+                                                <label><input class="propriedade-checkbox" data-propriedade="acuidade" aria-label="Propriedade acuidade"
                                                         type="checkbox">Acuidade</label>
-                                                <label><input class="propriedade-checkbox" data-propriedade="alcance"
+                                                <label><input class="propriedade-checkbox" data-propriedade="alcance" aria-label="Propriedade alcance"
                                                         type="checkbox">Alcance</label>
-                                                <label><input class="propriedade-checkbox" data-propriedade="arremesso"
+                                                <label><input class="propriedade-checkbox" data-propriedade="arremesso" aria-label="Propriedade arremesso"
                                                         type="checkbox">Arremesso</label>
                                                 <label><input class="propriedade-checkbox"
-                                                        data-propriedade="carregamento"
+                                                        data-propriedade="carregamento" aria-label="Propriedade carregamento"
                                                         type="checkbox">Carregamento</label>
-                                                <label><input class="propriedade-checkbox" data-propriedade="duas_maos"
+                                                <label><input class="propriedade-checkbox" data-propriedade="duas_maos" aria-label="Propriedade duas mãos"
                                                         type="checkbox">Duas Mãos</label>
-                                                <label><input class="propriedade-checkbox" data-propriedade="leve"
+                                                <label><input class="propriedade-checkbox" data-propriedade="leve" aria-label="Propriedade leve"
                                                         type="checkbox">Leve</label>
-                                                <label><input class="propriedade-checkbox" data-propriedade="municao"
+                                                <label><input class="propriedade-checkbox" data-propriedade="municao" aria-label="Propriedade munição"
                                                         type="checkbox">Munição</label>
-                                                <label><input class="propriedade-checkbox" data-propriedade="pesada"
+                                                <label><input class="propriedade-checkbox" data-propriedade="pesada" aria-label="Propriedade pesada"
                                                         type="checkbox">Pesada</label>
-                                                <label><input class="propriedade-checkbox" data-propriedade="versatil"
+                                                <label><input class="propriedade-checkbox" data-propriedade="versatil" aria-label="Propriedade versátil"
                                                         type="checkbox">Versátil</label>
-                                                <label><input class="propriedade-checkbox" data-propriedade="especial"
+                                                <label><input class="propriedade-checkbox" data-propriedade="especial" aria-label="Propriedade especial"
                                                         type="checkbox">Especial</label>
                                             </div>
                                         </div>
-                                        <div class="arma-container-descricao container_descricao"
-                                            style="display: none;">
+                                        <div class="arma-container-descricao container_descricao oculto">
                                             <label>Descrição do efeito Especial</label>
-                                            <textarea class="arma-descricao" data-campo="arma_descricao"></textarea>
+                                            <textarea class="arma-descricao" data-campo="arma_descricao" aria-label="Descrição especial da arma"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -3895,11 +3916,11 @@
 
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo">Armadura</div>
-                                <textarea id="inventarioArmadura" class="inventario-texto"></textarea>
+                                <textarea id="inventarioArmadura" class="inventario-texto" aria-label="Itens de armadura do inventário"></textarea>
                             </div>
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo">Outros</div>
-                                <textarea id="inventarioOutros" class="inventario-texto"></textarea>
+                                <textarea id="inventarioOutros" class="inventario-texto" aria-label="Outros itens do inventário"></textarea>
                             </div>
                         </div>
                     </div>
@@ -3930,47 +3951,113 @@
             }
         });
 
-        //escreve a arma no formato "Espada Longa 1d8/1d10 Cortante (P) - Versátil, Arremesso (20/60)"
-        function formatarArma(arma) {
-            let dano = arma.versatil
-                ? `${arma.dano1}/${arma.dano2}`
-                : arma.dano1;
-
-            let prof = arma.proficiente ? "(P)" : "(nP)";
-
-            let linha1 = `${arma.nome} ${dano} ${arma.tipoDano} ${prof}`;
-
-            let propriedades = [];
-
-            if (arma.acuidade) propriedades.push("Acuidade");
-            if (arma.leve) propriedades.push("Leve");
-            if (arma.versatil) propriedades.push("Versátil");
-
-            if (arma.arremesso) {
-                propriedades.push(`Arremesso`);
-                if (arma.distMin && arma.distMax) {
-                    propriedades.push(`Distância (${arma.distMin}/${arma.distMax})`);
-                }
-            }
-
-            if (arma.municao) {
-                let muni = `Munição`;
-                if (arma.qtdMunicao && arma.tipoMunicao) {
-                    muni += ` (${arma.qtdMunicao} ${arma.tipoMunicao})`;
-                }
-                propriedades.push(muni);
-
-                if (arma.distMin && arma.distMax) {
-                    propriedades.push(`Distância (${arma.distMin}/${arma.distMax})`);
-                }
-            }
-
-            if (arma.duasMaos) propriedades.push("Duas Mãos");
-
-            let linha2 = propriedades.join(", ");
-
-            return { linha1, linha2, proficiente: arma.proficiente };
+        function getTemProficienciaArma(tipo) {
+            if (tipo === 'Simples') return !!document.getElementById('profArmaSimples')?.checked;
+            if (tipo === 'Marcial') return !!document.getElementById('profArmaMarciais')?.checked;
+            return false;
         }
+
+        function atualizarListaArmasEquipamento() {
+            renderizarArmasEquipamento(coletarArmas());
+        }
+
+        // escreve a arma no formato atual do cadastro de armas
+        function formatarArma(arma) {
+            const propriedades = arma.propriedades || {};
+            const nome = arma.arma_nome?.trim() || "Arma sem nome";
+            const tipo = arma.arma_tipo_dano?.trim() || "-";
+            const tipoArma = arma.arma_tipo?.trim() || "";
+            const proficiente = typeof arma.proficiente === "boolean"
+                ? arma.proficiente
+                : getTemProficienciaArma(tipoArma);
+            const dano = propriedades.versatil && (arma.dano_1 || arma.dano_2)
+                ? [arma.dano_1, arma.dano_2].filter(Boolean).join("/")
+                : (arma.arma_dano?.trim() || "-");
+            const linha1 = `${nome} ${dano} ${tipo} ${proficiente ? "(P)" : "(nP)"}`;
+            const listaPropriedades = [];
+
+            if (tipoArma) listaPropriedades.push(tipoArma);
+
+            if (propriedades.acuidade) listaPropriedades.push("Acuidade");
+            if (propriedades.alcance) listaPropriedades.push("Alcance");
+            if (propriedades.arremesso) listaPropriedades.push("Arremesso");
+            if (propriedades.carregamento) listaPropriedades.push("Carregamento");
+            if (propriedades.duas_maos) listaPropriedades.push("Duas Mãos");
+            if (propriedades.leve) listaPropriedades.push("Leve");
+            if (propriedades.pesada) listaPropriedades.push("Pesada");
+            if (propriedades.versatil) listaPropriedades.push("Versátil");
+            if (propriedades.especial) listaPropriedades.push("Especial");
+
+            const distCurta = arma.arma_dist_curto?.trim();
+            const distLonga = arma.arma_dist_longo?.trim();
+            if ((propriedades.arremesso || propriedades.municao) && (distCurta || distLonga)) {
+                listaPropriedades.push(`Distância (${distCurta || "-"}/${distLonga || "-"})`);
+            }
+
+            if (propriedades.municao) {
+                const qtdMunicao = arma.arma_municao_qtd?.trim();
+                const tipoMunicao = arma.arma_municao_tipo?.trim();
+                let textoMunicao = "Munição";
+                if (qtdMunicao || tipoMunicao) {
+                    textoMunicao += ` (${qtdMunicao || "-"} ${tipoMunicao || ""}`.trimEnd() + ")";
+                }
+                listaPropriedades.push(textoMunicao);
+            }
+
+            const preco = arma.arma_preco?.trim();
+            if (preco) listaPropriedades.push(`Preço: ${preco}`);
+
+            const peso = arma.arma_peso?.trim();
+            if (peso) listaPropriedades.push(`Peso: ${peso}`);
+
+            const descricao = arma.arma_descricao?.trim();
+            if (descricao) listaPropriedades.push(descricao);
+
+            return {
+                linha1,
+                linha2: listaPropriedades.join(", "),
+                proficiente
+            };
+        }
+
+        function renderizarArmasEquipamento(listaArmas) {
+            const container = document.getElementById("lista-armas-equipamento");
+            if (!container) return;
+
+            container.innerHTML = "";
+
+            listaArmas.forEach((arma, index) => {
+                const { linha1, linha2, proficiente } = formatarArma(arma);
+
+                const div = document.createElement("div");
+                div.classList.add("arma-equipamento");
+
+                const label = document.createElement("label");
+                if (!proficiente) label.classList.add("arma-equipamento-nao-proficiente");
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.dataset.index = String(index);
+                checkbox.setAttribute("aria-label", "Selecionar arma para equipamento");
+
+                const textoPrincipal = document.createTextNode(linha1);
+                const quebra = document.createElement("br");
+                const textoSecundario = document.createElement("small");
+                textoSecundario.textContent = linha2;
+                const separador = document.createElement("hr");
+
+                label.appendChild(checkbox);
+                label.appendChild(document.createTextNode(" "));
+                label.appendChild(textoPrincipal);
+                label.appendChild(quebra);
+                label.appendChild(textoSecundario);
+                div.appendChild(label);
+                div.appendChild(separador);
+
+                container.appendChild(div);
+            });
+        }
+
 
         // atualiza o "P" de proficiência quando o tipo de arma muda, verificando os checkboxes de proficiência
         function atualizarProficienciaCard(card) {
@@ -4002,6 +4089,7 @@
                     e.stopPropagation(); // Impede que o card abra/feche ao clicar no X
                     if (confirm("Deseja remover esta arma?")) {
                         card.remove();
+                        atualizarListaArmasEquipamento();
                     }
                 });
             }
@@ -4020,14 +4108,16 @@
                 const profMarciais = document.getElementById('profArmaMarciais')?.checked;
 
                 let temProficiencia = false;
-                if (tipo === "Simples" && profSimples && profSimples.checked) temProficiencia = true;
-                if (tipo === "Marcial" && profMarciais && profMarciais.checked) temProficiencia = true;
+                if (tipo === "Simples" && profSimples) temProficiencia = true;
+                if (tipo === "Marcial" && profMarciais) temProficiencia = true;
 
                 // Se tem proficiência, removemos a classe "nao" (tira o X vermelho). Senão, colocamos.
                 if (temProficiencia) {
                     divP.classList.remove('nao');
+                    divP.classList.add('ativo');
                 } else {
                     divP.classList.add('nao');
+                    divP.classList.remove('ativo');
                 }
             }
 
@@ -4035,11 +4125,12 @@
             if (divP) {
                 divP.addEventListener('click', function (e) {
                     e.stopPropagation(); // Impede que o clique abra/feche a arma sem querer
-                    this.classList.toggle('nao');
-                    console.log("Clicou no P! Agora tem a classe 'nao'?", this.classList.contains('nao'));
+                    const ficouNaoProficiente = this.classList.toggle('nao');
+                    this.classList.toggle('ativo', !ficouNaoProficiente);
 
                     // Opcional: atualiza o resumo de combate
                     if (typeof atualizarSubAbaArmas === "function") atualizarSubAbaArmas();
+                    atualizarListaArmasEquipamento();
                 });
             }
 
@@ -4101,6 +4192,13 @@
             }
 
             checkboxes.forEach(cb => cb.addEventListener('change', atualizarCamposArma));
+            card.querySelectorAll('[data-campo]').forEach(campo => {
+                campo.addEventListener('input', atualizarListaArmasEquipamento);
+                campo.addEventListener('change', atualizarListaArmasEquipamento);
+            });
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', atualizarListaArmasEquipamento);
+            });
 
             // ==========================================
             // 4. INICIALIZAÇÃO AUTOMÁTICA
@@ -4108,6 +4206,7 @@
             // ==========================================
             atualizarStatusP();
             atualizarCamposArma();
+            atualizarListaArmasEquipamento();
         }
         // Escuta os checkboxes de Proficiência na aba de Status
         ['profArmaSimples', 'profArmaMarciais'].forEach(id => {
@@ -4129,6 +4228,7 @@
                             }
                         }
                     });
+                    atualizarListaArmasEquipamento();
                 });
             }
         });
@@ -4156,6 +4256,7 @@
                             }
                         }
                     });
+                    atualizarListaArmasEquipamento();
                 });
             }
         });
@@ -4172,6 +4273,7 @@
             container.appendChild(novaArma);
 
             inicializarEventosArma(novaArma);
+            atualizarListaArmasEquipamento();
 
             return novaArma; // 🔥 ANTES ESTAVA 'novoCard', POR ISSO DAVA ERRO
         }
@@ -4184,6 +4286,7 @@
 
             lista.forEach(card => {
                 const arma = {};
+                const indicadorProficiencia = card.querySelector('.arma-proficiencia');
 
                 // 1. Coleta os textos, números e selects (que usam data-campo)
                 card.querySelectorAll('[data-campo]').forEach(campo => {
@@ -4197,6 +4300,10 @@
                     // Salva true se estiver marcado, false se estiver desmarcado
                     arma.propriedades[nomePropriedade] = checkbox.checked;
                 });
+
+                arma.proficiente = indicadorProficiencia
+                    ? !indicadorProficiencia.classList.contains('nao')
+                    : getTemProficienciaArma(arma.arma_tipo?.trim());
 
                 armas.push(arma);
             });
@@ -4318,6 +4425,82 @@
 
         desenhar()
 
+        function aplicarDadosFicha(dados) {
+
+            if (!dados || typeof dados !== "object") return
+
+            for (let key in dados) {
+                const campo = document.getElementById(key)
+                if (!campo) continue
+
+                if (key === "magiaAtributoConjuracao") campo.value = normalizarChaveAtributo(dados[key])
+                else if (key === "dadosVidaTipo") campo.value = normalizarTipoDadoVida(dados[key])
+                else if (campo.type === "checkbox") campo.checked = dados[key]
+                else campo.value = dados[key]
+            }
+
+            if (dados.inventarioTexto && !dados.inventarioArmas && !dados.inventarioArmadura && !dados.inventarioOutros) {
+                document.getElementById("inventarioOutros").value = dados.inventarioTexto
+            }
+
+            if (dados.armas && Array.isArray(dados.armas)) {
+                const containerArmas = document.getElementById('listaArmas')
+
+                if (containerArmas) {
+                    const armasAtuais = containerArmas.querySelectorAll('.arma-card:not(#armaModelo)')
+                    armasAtuais.forEach(a => a.remove())
+
+                    dados.armas.forEach(dadosArma => {
+                        const novoCard = adicionarNovaArma()
+
+                        if (!novoCard) return
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosArma[campo.dataset.campo]
+                            if (valor !== undefined) campo.value = valor
+                        })
+
+                        if (dadosArma.propriedades) {
+                            novoCard.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                                const prop = checkbox.dataset.propriedade
+                                if (prop && dadosArma.propriedades[prop] !== undefined) {
+                                    checkbox.checked = dadosArma.propriedades[prop]
+                                }
+                            })
+                        }
+
+                        if (typeof dadosArma.proficiente === "boolean") {
+                            const indicadorProficiencia = novoCard.querySelector('.arma-proficiencia')
+                            if (indicadorProficiencia) {
+                                indicadorProficiencia.classList.toggle('nao', !dadosArma.proficiente)
+                                indicadorProficiencia.classList.toggle('ativo', dadosArma.proficiente)
+                            }
+                        }
+                    })
+                }
+            }
+
+            atualizarAtributos()
+            desenharRadar()
+            atualizarModificadoresSalvaguarda()
+            atualizarPericias()
+            atualizarPassivas()
+            atualizarClasseArmaduraEquipada()
+            atualizarSubAbaArmas()
+            atualizarListaArmasEquipamento()
+            sincronizarClasseNivel(true)
+            sincronizarResumoCaracteristicas(true)
+            sincronizarCamposMagia()
+            atualizarMagias()
+            normalizarPontosDeVida()
+            normalizarDadosVida()
+            marcarFichaComoSalva()
+        }
+
+        function carregarFicha(personagem) {
+            aplicarDadosFicha(personagem)
+        }
+
         function coletarDadosFicha() {
 
             const dados = {}
@@ -4379,77 +4562,8 @@
             const reader = new FileReader()
 
             reader.onload = function (e) {
-
                 const dados = JSON.parse(e.target.result)
-
-                for (let key in dados) {
-                    const campo = document.getElementById(key)
-                    if (!campo) continue
-
-                    if (key === "magiaAtributoConjuracao") campo.value = normalizarChaveAtributo(dados[key])
-                    else if (key === "dadosVidaTipo") campo.value = normalizarTipoDadoVida(dados[key])
-                    else if (campo.type === "checkbox") campo.checked = dados[key]
-                    else campo.value = dados[key]
-                }
-
-                if (dados.inventarioTexto && !dados.inventarioArmas && !dados.inventarioArmadura && !dados.inventarioOutros) {
-                    document.getElementById("inventarioOutros").value = dados.inventarioTexto
-                }
-                // ... dentro da função reader.onload, após carregar os dados fixos ...
-
-                // ... dentro do reader.onload ...
-
-                if (dados.armas && Array.isArray(dados.armas)) {
-                    // 1. Localiza o container (usando o ID que você definiu)
-                    const containerArmas = document.getElementById('listaArmas');
-
-                    if (containerArmas) {
-                        // 2. Limpa as armas atuais (mantendo apenas o modelo se ele estiver dentro)
-                        const armasAtuais = containerArmas.querySelectorAll('.arma-card:not(#armaModelo)');
-                        armasAtuais.forEach(a => a.remove());
-
-                        // 3. Recria cada arma
-                        dados.armas.forEach(dadosArma => {
-                            const novoCard = adicionarNovaArma(); // Usa a função corrigida acima
-
-                            if (novoCard) {
-                                // Preenche campos de texto
-                                novoCard.querySelectorAll('[data-campo]').forEach(campo => {
-                                    const valor = dadosArma[campo.dataset.campo];
-                                    if (valor !== undefined) campo.value = valor;
-                                });
-
-                                // Preenche checkboxes
-                                if (dadosArma.propriedades) {
-                                    novoCard.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                                        const prop = checkbox.dataset.propriedade;
-                                        if (prop && dadosArma.propriedades[prop] !== undefined) {
-                                            checkbox.checked = dadosArma.propriedades[prop];
-                                        }
-                                    });
-                                }
-
-                                // Força a atualização visual (mostrar Especial, etc)
-                                inicializarEventosArma(novoCard);
-                            }
-                        });
-                    }
-                }
-
-                atualizarAtributos()
-                desenharRadar()
-                atualizarModificadoresSalvaguarda()
-                atualizarPericias()
-                atualizarPassivas()
-                atualizarClasseArmaduraEquipada()
-                atualizarSubAbaArmas()
-                sincronizarClasseNivel(true)
-                sincronizarResumoCaracteristicas(true)
-                sincronizarCamposMagia()
-                atualizarMagias()
-                normalizarPontosDeVida()
-                normalizarDadosVida()
-                marcarFichaComoSalva()
+                aplicarDadosFicha(dados)
             }
 
             reader.readAsText(file)
@@ -4776,12 +4890,15 @@
 
             if (!campoCompleto || !campoNome || !campoNivel) return;
 
-            if (usarValorLegado && campoCompleto.value && !campoNome.value && !campoNivel.value) {
+            const nivelPadrao = campoNivel.defaultValue || "1";
+            const podeMigrarLegado = !campoNome.value.trim() && (!campoNivel.value.trim() || campoNivel.value.trim() === nivelPadrao);
+
+            if (usarValorLegado && campoCompleto.value && podeMigrarLegado) {
                 const match = campoCompleto.value.match(/^(.*?)(?:\s+NV\s+(\d+))?$/i);
 
                 if (match) {
                     campoNome.value = match[1].trim();
-                    campoNivel.value = match[2] || "";
+                    campoNivel.value = match[2] || nivelPadrao;
                 }
             }
 
@@ -4915,18 +5032,29 @@
                 return;
             }
 
-            container.innerHTML = `
-                <div class="arma-resumo-lista">
-                    ${armas.map(arma => `
-                        <div class="arma-resumo-item">
-                            <div class="arma-resumo-topo">${arma.nome} ⚔️</div>
-                            <div class="arma-resumo-detalhes">
-                                Ataque: ${arma.ataque || "-"} | Dano: ${arma.dano || "-"} | Tipo: ${arma.tipo || "-"} | Propriedade: ${arma.propriedade || "-"}
-                            </div>
-                        </div>
-                    `).join("")}
-                </div>
-            `;
+            container.replaceChildren();
+
+            const lista = document.createElement('div');
+            lista.className = 'arma-resumo-lista';
+
+            armas.forEach(arma => {
+                const item = document.createElement('div');
+                item.className = 'arma-resumo-item';
+
+                const topo = document.createElement('div');
+                topo.className = 'arma-resumo-topo';
+                topo.textContent = `${arma.nome} ⚔️`;
+
+                const detalhes = document.createElement('div');
+                detalhes.className = 'arma-resumo-detalhes';
+                detalhes.textContent = `Ataque: ${arma.ataque || "-"} | Dano: ${arma.dano || "-"} | Tipo: ${arma.tipo || "-"} | Propriedade: ${arma.propriedade || "-"}`;
+
+                item.appendChild(topo);
+                item.appendChild(detalhes);
+                lista.appendChild(item);
+            });
+
+            container.appendChild(lista);
         }
 
         function aplicarDanoNoPV() {
