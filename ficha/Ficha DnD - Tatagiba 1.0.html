@@ -1624,13 +1624,42 @@
             box-sizing: border-box;
         }
 
+        .inventario-subtitulo-barra {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.35);
+        }
+
         .inventario-subtitulo {
             font-size: 16px;
             font-weight: bold;
             color: #6f3610;
-            text-align: center;
-            padding-bottom: 6px;
-            border-bottom: 1px solid rgba(139, 69, 19, 0.35);
+        }
+
+        .inventario-botao-add {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #8b4513;
+            border-radius: 999px;
+            background: #f4efe6;
+            color: #6f3610;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .inventario-botao-add:hover {
+            background: #eadfcf;
+            transform: scale(1.05);
         }
 
         .inventario-texto {
@@ -1971,6 +2000,11 @@
 
         .equipados-grid input::placeholder {
             color: #9b8a75;
+        }
+
+        .equipados-nao-proficiente {
+            color: #b22222;
+            border-color: #b22222 !important;
         }
 
         .equipados-quantidade {
@@ -2650,6 +2684,22 @@
             align-items: center;
             position: relative;
             cursor: pointer;
+        }
+
+        .outro-header {
+            justify-content: flex-start;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .outro-quantidade-container {
+            width: 52px;
+            flex-shrink: 0;
+        }
+
+        .outro-quantidade-container input {
+            width: 100%;
+            margin-left: 0;
         }
 
         .btn-remover-arma {
@@ -3393,11 +3443,15 @@
 
                                 <div class="equipamento-coluna">
                                     <div class="proficiencia-subtitulo">Armadura</div>
+                                    <div id="lista-armaduras-equipamento"></div>
+                                    <div class="proficiencia-subtitulo">Escudo</div>
+                                    <div id="lista-escudos-equipamento"></div>
                                     <textarea id="equipamentoArmadura" class="equipamento-texto" aria-label="Descrição de equipamentos de armadura"></textarea>
                                 </div>
 
                                 <div class="equipamento-coluna">
                                     <div class="proficiencia-subtitulo">Outros</div>
+                                    <div id="lista-outros-equipamento"></div>
                                     <textarea id="equipamentoOutros" class="equipamento-texto" aria-label="Descrição de outros equipamentos"></textarea>
                                 </div>
                             </div>
@@ -3694,8 +3748,11 @@
                         <div class="status-titulo">Inventário</div>
                         <div class="inventario-colunas">
                             <div class="inventario-coluna">
-                                <div class="inventario-subtitulo">Armas</div>
-                                <button type="button" onclick="adicionarNovaArma()">+ Nova Arma</button>
+                                <div class="inventario-subtitulo-barra">
+                                    <div class="inventario-subtitulo">⚔️ Armas</div>
+                                    <button type="button" class="inventario-botao-add" onclick="adicionarNovaArma()"
+                                        title="Adicionar nova arma" aria-label="Adicionar nova arma">+</button>
+                                </div>
 
                                 <!-- CARD DE ARMAS CADASTRO -->
                                 <div id="armaModelo" class="arma-card fechado oculto">
@@ -3827,8 +3884,11 @@
                             </div>
 
                             <div class="inventario-coluna">
-                                <div class="inventario-subtitulo">Armadura</div>
-                                <button type="button" onclick="adicionarNovaArmadura()">+ Nova Armadura</button>
+                                <div class="inventario-subtitulo-barra">
+                                    <div class="inventario-subtitulo">🛡️ Armadura</div>
+                                    <button type="button" class="inventario-botao-add" onclick="adicionarNovaArmadura()"
+                                        title="Adicionar nova armadura" aria-label="Adicionar nova armadura">+</button>
+                                </div>
 
                                 <div id="armaduraModelo" class="armadura-card fechado oculto">
                                     <div class="arma-linha-inferior">
@@ -3901,8 +3961,11 @@
 
                                 <div id="listaArmaduras"></div>
 
-                                <div class="inventario-subtitulo">Escudos e Vestimentos</div>
-                                <button type="button" onclick="adicionarNovoEscudo()">+ Novo Escudo ou Vestimento</button>
+                                <div class="inventario-subtitulo-barra">
+                                    <div class="inventario-subtitulo">🛡️ Escudos e Vestimentos</div>
+                                    <button type="button" class="inventario-botao-add" onclick="adicionarNovoEscudo()"
+                                        title="Adicionar novo escudo ou vestimento" aria-label="Adicionar novo escudo ou vestimento">+</button>
+                                </div>
 
                                 <div id="escudoModelo" class="armadura-card fechado oculto">
                                     <div class="arma-linha-inferior">
@@ -3949,8 +4012,66 @@
                                 <div id="listaEscudos"></div>
                             </div>
                             <div class="inventario-coluna">
-                                <div class="inventario-subtitulo">Outros</div>
-                                <textarea id="inventarioOutros" class="inventario-texto" aria-label="Outros itens do inventário"></textarea>
+                                <div class="inventario-subtitulo-barra">
+                                    <div class="inventario-subtitulo">📦 Outros</div>
+                                    <button type="button" class="inventario-botao-add" onclick="adicionarNovoOutro()"
+                                        title="Adicionar novo item em outros" aria-label="Adicionar novo item em outros">+</button>
+                                </div>
+
+                                <div id="outroModelo" class="armadura-card fechado oculto">
+                                    <div class="arma-linha-inferior">
+                                        <button type="button" class="btn-remover-arma" title="Remover Item">🗑️</button>
+
+                                        <div class="arma-campo-icone">
+                                            <span class="arma-emoji">🪙</span>
+                                            <input type="text" class="arma-campo-pequeno" data-campo="outro_preco" aria-label="Preço do item">
+                                        </div>
+                                        <div class="arma-campo-icone">
+                                            <span class="arma-emoji">⚖️</span>
+                                            <input type="text" class="arma-campo-pequeno" data-campo="outro_peso" aria-label="Peso do item">
+                                        </div>
+                                    </div>
+
+                                    <div class="arma-linha arma-linha-1 arma-header outro-header" onclick="toggleOutro(this, event)">
+                                        <div class="outro-quantidade-container">
+                                            <label>QT</label>
+                                            <input type="number" min="1" step="1" class="arma-campo-pequeno"
+                                                data-campo="outro_quantidade" value="1" aria-label="Quantidade do item">
+                                        </div>
+                                        <div class="arma-nome-container">
+                                            <label>Nome</label>
+                                            <input type="text" data-campo="outro_nome" aria-label="Nome do item">
+                                        </div>
+                                        <span class="arma-toggle">🔽</span>
+                                    </div>
+
+                                    <div class="arma-conteudo">
+                                        <div class="arma-linha armadura-linha-2-cols">
+                                            <div>
+                                                <label>Tipo</label>
+                                                <select data-campo="outro_tipo" aria-label="Tipo do item">
+                                                    <option value="Outros" selected>Outros</option>
+                                                    <option value="Comida">Comida</option>
+                                                    <option value="Pocao">Poção</option>
+                                                    <option value="Kit">Kit</option>
+                                                    <option value="Ferramentas">Ferramentas</option>
+                                                    <option value="Municao">Munição</option>
+                                                    <option value="Ingrediente">Ingrediente</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="arma-linha arma-linha-1">
+                                            <div>
+                                                <label>Descrição</label>
+                                                <textarea class="arma-descricao" data-campo="outro_descricao"
+                                                    aria-label="Descrição do item"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="listaOutros"></div>
                             </div>
                         </div>
                     </div>
@@ -3971,6 +4092,7 @@
             adicionarNovaArma();
             adicionarNovaArmadura();
             adicionarNovoEscudo();
+            adicionarNovoOutro();
         });
 
         document.addEventListener('change', (e) => {
@@ -4014,13 +4136,20 @@
             const totalArmas = coletarArmas().reduce((soma, arma) => soma + getValorPesoItem(arma.arma_peso), 0);
             const totalArmaduras = coletarArmaduras().reduce((soma, armadura) => soma + getValorPesoItem(armadura.armadura_peso), 0);
             const totalEscudos = coletarEscudos().reduce((soma, escudo) => soma + getValorPesoItem(escudo.escudo_peso), 0);
-            const total = totalArmas + totalArmaduras + totalEscudos;
+            const totalOutros = coletarOutros().reduce((soma, outro) => {
+                const quantidade = Math.max(1, parseInt(outro.outro_quantidade, 10) || 1);
+                return soma + (getValorPesoItem(outro.outro_peso) * quantidade);
+            }, 0);
+            const total = totalArmas + totalArmaduras + totalEscudos + totalOutros;
 
             campoPesoAtual.value = Number.isInteger(total) ? total : total.toFixed(2).replace(/\.?0+$/, '');
         }
 
         function atualizarListaArmasEquipamento() {
             renderizarArmasEquipamento(coletarArmas());
+            renderizarArmadurasEquipamento(coletarArmaduras());
+            renderizarEscudosEquipamento(coletarEscudos());
+            renderizarOutrosEquipamento(coletarOutros());
         }
 
         // escreve a arma no formato atual do cadastro de armas
@@ -4066,12 +4195,6 @@
                 listaPropriedades.push(textoMunicao);
             }
 
-            const preco = arma.arma_preco?.trim();
-            if (preco) listaPropriedades.push(`Preço: ${preco}`);
-
-            const peso = arma.arma_peso?.trim();
-            if (peso) listaPropriedades.push(`Peso: ${peso}`);
-
             const descricao = arma.arma_descricao?.trim();
             if (descricao) listaPropriedades.push(descricao);
 
@@ -4086,9 +4209,15 @@
             const container = document.getElementById("lista-armas-equipamento");
             if (!container) return;
 
+            const selecionados = new Set(
+                Array.from(container.querySelectorAll('input:checked')).map(input => input.dataset.index)
+            );
+
             container.innerHTML = "";
 
             listaArmas.forEach((arma, index) => {
+                if (!arma?.arma_nome?.trim()) return;
+
                 const { linha1, linha2, proficiente } = formatarArma(arma);
 
                 const div = document.createElement("div");
@@ -4101,6 +4230,16 @@
                 checkbox.type = "checkbox";
                 checkbox.dataset.index = String(index);
                 checkbox.setAttribute("aria-label", "Selecionar arma para equipamento");
+                checkbox.checked = selecionados.has(String(index));
+                checkbox.addEventListener('change', () => {
+                    const marcados = Array.from(container.querySelectorAll('input:checked'));
+                    if (marcados.length > 2) {
+                        checkbox.checked = false;
+                        sincronizarEquipamentosCombate();
+                        return;
+                    }
+                    sincronizarEquipamentosCombate();
+                });
 
                 const textoPrincipal = document.createTextNode(linha1);
                 const quebra = document.createElement("br");
@@ -4118,6 +4257,295 @@
 
                 container.appendChild(div);
             });
+
+            if (selecionados.size) sincronizarEquipamentosCombate();
+        }
+
+        function formatarArmaduraEquipamento(armadura) {
+            const nome = armadura.armadura_nome?.trim() || "Armadura sem nome";
+            const ca = armadura.armadura_ca?.trim() || "0";
+            const bonus = armadura.armadura_bonus?.trim() || "0";
+            const furtividade = armadura.armadura_furtividade?.trim() || "Normal";
+            const tipo = armadura.armadura_tipo?.trim() || "-";
+            const proficiente = typeof armadura.proficiente === "boolean"
+                ? armadura.proficiente
+                : getTemProficienciaArmadura(tipo);
+
+            return {
+                linha1: `${nome} CA ${ca} ${proficiente ? "(P)" : "(nP)"}`,
+                linha2: `Tipo: ${tipo} | Bônus: ${bonus} | Furtividade: ${furtividade}`,
+                proficiente
+            };
+        }
+
+        function obterResumoCombateArma(arma) {
+            if (!arma) return "";
+
+            const propriedades = arma.propriedades || {};
+            const listaPropriedades = [];
+            const tipoArma = arma.arma_tipo?.trim();
+            const distCurta = arma.arma_dist_curto?.trim();
+            const distLonga = arma.arma_dist_longo?.trim();
+            const qtdMunicao = arma.arma_municao_qtd?.trim();
+            const tipoMunicao = arma.arma_municao_tipo?.trim();
+
+            if (tipoArma) listaPropriedades.push(tipoArma);
+            if (propriedades.acuidade) listaPropriedades.push("Acuidade");
+            if (propriedades.alcance) listaPropriedades.push("Alcance");
+            if (propriedades.arremesso) listaPropriedades.push("Arremesso");
+            if (propriedades.carregamento) listaPropriedades.push("Carregamento");
+            if (propriedades.duas_maos) listaPropriedades.push("Duas Mãos");
+            if (propriedades.leve) listaPropriedades.push("Leve");
+            if (propriedades.municao) listaPropriedades.push("Munição");
+            if (propriedades.pesada) listaPropriedades.push("Pesada");
+            if (propriedades.versatil) listaPropriedades.push("Versátil");
+            if (propriedades.especial) listaPropriedades.push("Especial");
+
+            if ((propriedades.arremesso || propriedades.municao) && (distCurta || distLonga)) {
+                listaPropriedades.push(`Distância (${distCurta || "-"}/${distLonga || "-"})`);
+            }
+
+            if (propriedades.municao && (qtdMunicao || tipoMunicao)) {
+                listaPropriedades.push(`Munição (${qtdMunicao || "-"} ${tipoMunicao || ""}`.trimEnd() + ")");
+            }
+
+            return listaPropriedades.join(", ");
+        }
+
+        function limparTextoCombate(texto) {
+            return String(texto || "")
+                .split(",")
+                .map(parte => parte.trim())
+                .filter(parte => parte && !parte.startsWith("Preço:") && !parte.startsWith("Peso:"))
+                .join(", ");
+        }
+
+        function formatarEscudoEquipamento(escudo) {
+            const nome = escudo.escudo_nome?.trim() || "Escudo sem nome";
+            const ca = escudo.escudo_ca?.trim() || "+0";
+            const tipo = escudo.escudo_tipo?.trim() || "-";
+            const proficiente = typeof escudo.proficiente === "boolean"
+                ? escudo.proficiente
+                : getTemProficienciaEscudo(tipo);
+
+            return {
+                linha1: `${nome} ${ca} ${proficiente ? "(P)" : "(nP)"}`,
+                linha2: `Tipo: ${tipo}`,
+                proficiente
+            };
+        }
+
+        function formatarOutroEquipamento(outro) {
+            const nome = outro.outro_nome?.trim() || "Item sem nome";
+            const tipo = outro.outro_tipo?.trim() || "Outros";
+            const quantidade = Math.max(1, parseInt(outro.outro_quantidade, 10) || 1);
+            const peso = outro.outro_peso?.trim() || "";
+
+            return {
+                linha1: `${nome} x${quantidade}`,
+                linha2: `Tipo: ${tipo}${peso ? ` | Peso: ${peso}` : ""}`
+            };
+        }
+
+        function renderizarListaEquipamento({
+            containerId,
+            itens,
+            formatarItem,
+            inputType,
+            inputName,
+            ariaLabel,
+            multiplo = false,
+            filtroItem = null,
+            maxSelecoes = null
+        }) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const selecionados = Array.from(container.querySelectorAll('input:checked')).map(input => input.dataset.index);
+            container.innerHTML = "";
+
+            itens.forEach((item, index) => {
+                if (filtroItem && !filtroItem(item)) return;
+
+                const { linha1, linha2, proficiente } = formatarItem(item);
+
+                const div = document.createElement("div");
+                div.classList.add("arma-equipamento");
+
+                const label = document.createElement("label");
+                if (proficiente === false) label.classList.add("arma-equipamento-nao-proficiente");
+
+                const input = document.createElement("input");
+                input.type = inputType;
+                if (inputName) input.name = inputName;
+                input.dataset.index = String(index);
+                input.setAttribute("aria-label", ariaLabel);
+                input.checked = multiplo
+                    ? selecionados.includes(String(index))
+                    : selecionados[0] === String(index);
+                input.addEventListener('change', () => {
+                    if (input.checked && maxSelecoes) {
+                        const marcados = Array.from(container.querySelectorAll('input:checked'));
+                        if (marcados.length > maxSelecoes) {
+                            input.checked = false;
+                            sincronizarEquipamentosCombate();
+                            return;
+                        }
+                    }
+
+                    if (!multiplo && input.checked) {
+                        container.querySelectorAll('input').forEach(outroInput => {
+                            if (outroInput !== input) outroInput.checked = false;
+                        });
+                    }
+                    sincronizarEquipamentosCombate();
+                });
+
+                const textoPrincipal = document.createTextNode(linha1);
+                const quebra = document.createElement("br");
+                const textoSecundario = document.createElement("small");
+                textoSecundario.textContent = linha2;
+                const separador = document.createElement("hr");
+
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(" "));
+                label.appendChild(textoPrincipal);
+                label.appendChild(quebra);
+                label.appendChild(textoSecundario);
+                div.appendChild(label);
+                div.appendChild(separador);
+
+                container.appendChild(div);
+            });
+
+            if (selecionados.length) sincronizarEquipamentosCombate();
+        }
+
+        function renderizarArmadurasEquipamento(listaArmaduras) {
+            renderizarListaEquipamento({
+                containerId: "lista-armaduras-equipamento",
+                itens: listaArmaduras,
+                formatarItem: formatarArmaduraEquipamento,
+                inputType: "checkbox",
+                inputName: "equipamento-armadura",
+                ariaLabel: "Selecionar armadura para equipamento",
+                filtroItem: armadura => !!armadura?.armadura_nome?.trim(),
+                maxSelecoes: 1
+            });
+        }
+
+        function renderizarEscudosEquipamento(listaEscudos) {
+            renderizarListaEquipamento({
+                containerId: "lista-escudos-equipamento",
+                itens: listaEscudos,
+                formatarItem: formatarEscudoEquipamento,
+                inputType: "checkbox",
+                inputName: "equipamento-escudo",
+                ariaLabel: "Selecionar escudo para equipamento",
+                filtroItem: escudo => !!escudo?.escudo_nome?.trim(),
+                maxSelecoes: 1
+            });
+        }
+
+        function renderizarOutrosEquipamento(listaOutros) {
+            renderizarListaEquipamento({
+                containerId: "lista-outros-equipamento",
+                itens: listaOutros,
+                formatarItem: formatarOutroEquipamento,
+                inputType: "checkbox",
+                inputName: "equipamento-outro",
+                ariaLabel: "Selecionar outro item para equipamento",
+                multiplo: true,
+                filtroItem: outro => !!outro?.outro_nome?.trim()
+            });
+        }
+
+        function preencherCampo(id, valor) {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.value = valor;
+        }
+
+        function aplicarEstiloProficienciaCampos(ids, proficiente) {
+            ids.forEach(id => {
+                const campo = document.getElementById(id);
+                if (!campo) return;
+                campo.classList.toggle('equipados-nao-proficiente', proficiente === false && !!campo.value);
+            });
+        }
+
+        function normalizarBonusCA(valor) {
+            const numero = parseInt(String(valor || "").replace(/[^\d-]/g, ""), 10) || 0;
+            return numero;
+        }
+
+        function sincronizarEquipamentosCombate() {
+            const armas = coletarArmas();
+            const armaduras = coletarArmaduras();
+            const escudos = coletarEscudos();
+            const outros = coletarOutros();
+
+            const armasSelecionadas = Array.from(document.querySelectorAll('#lista-armas-equipamento input:checked'))
+                .slice(0, 2)
+                .map(input => armas[parseInt(input.dataset.index, 10)])
+                .filter(Boolean);
+
+            [1, 2].forEach(indice => {
+                const arma = armasSelecionadas[indice - 1];
+                const campoAtaque = document.getElementById(`arma${indice}Ataque`);
+                preencherCampo(`arma${indice}Nome`, arma?.arma_nome?.trim() || "");
+                preencherCampo(`arma${indice}Ataque`, arma ? (campoAtaque?.value || "") : "");
+                preencherCampo(`arma${indice}Dano`, arma?.arma_dano?.trim() || [arma?.dano_1, arma?.dano_2].filter(Boolean).join("/") || "");
+                preencherCampo(`arma${indice}TipoDano`, arma?.arma_tipo_dano?.trim() || "");
+                preencherCampo(`arma${indice}Propriedade`, limparTextoCombate(obterResumoCombateArma(arma)));
+                aplicarEstiloProficienciaCampos(
+                    [`arma${indice}Nome`, `arma${indice}Ataque`, `arma${indice}Dano`, `arma${indice}TipoDano`, `arma${indice}Propriedade`],
+                    arma ? formatarArma(arma).proficiente : null
+                );
+            });
+
+            const armaduraSelecionadaInput = document.querySelector('#lista-armaduras-equipamento input:checked');
+            const armaduraSelecionada = armaduraSelecionadaInput
+                ? armaduras[parseInt(armaduraSelecionadaInput.dataset.index, 10)]
+                : null;
+
+            preencherCampo('armaduraNome', armaduraSelecionada?.armadura_nome?.trim() || "");
+            preencherCampo('armaduraCA', armaduraSelecionada?.armadura_ca?.trim() || "");
+            preencherCampo('armaduraFurtividade', armaduraSelecionada?.armadura_furtividade?.trim() || "Normal");
+            aplicarEstiloProficienciaCampos(
+                ['armaduraNome', 'armaduraCA', 'armaduraFurtividade'],
+                armaduraSelecionada ? formatarArmaduraEquipamento(armaduraSelecionada).proficiente : null
+            );
+
+            const escudoSelecionadoInput = document.querySelector('#lista-escudos-equipamento input:checked');
+            const escudoSelecionado = escudoSelecionadoInput
+                ? escudos[parseInt(escudoSelecionadoInput.dataset.index, 10)]
+                : null;
+
+            preencherCampo('escudoNome', escudoSelecionado?.escudo_nome?.trim() || "");
+            preencherCampo('escudoCA', escudoSelecionado?.escudo_ca?.trim() || "");
+            aplicarEstiloProficienciaCampos(
+                ['escudoNome', 'escudoCA'],
+                escudoSelecionado ? formatarEscudoEquipamento(escudoSelecionado).proficiente : null
+            );
+
+            const outrosSelecionados = Array.from(document.querySelectorAll('#lista-outros-equipamento input:checked'))
+                .map(input => outros[parseInt(input.dataset.index, 10)])
+                .filter(Boolean);
+
+            const tiposOutros = outrosSelecionados.map(outro => {
+                const nome = outro.outro_nome?.trim() || "Item";
+                const quantidade = Math.max(1, parseInt(outro.outro_quantidade, 10) || 1);
+                return quantidade > 1 ? `${nome} x${quantidade}` : nome;
+            });
+            const bonusOutros = outrosSelecionados.reduce((soma, outro) => soma + normalizarBonusCA(outro.outro_ca), 0);
+
+            preencherCampo('outroEquipadoTipo', tiposOutros.join(", "));
+            preencherCampo('outroEquipadoCA', bonusOutros ? `+${bonusOutros}` : "");
+
+            ['armaduraCA', 'outroEquipadoCA', 'escudoCA'].forEach(aplicarFormatoCA);
+            atualizarClasseArmaduraEquipada();
+            atualizarSubAbaArmas();
         }
 
 
@@ -4303,6 +4731,7 @@
                     document.querySelectorAll('#listaArmaduras .armadura-card').forEach(card => {
                         atualizarProficienciaCardArmadura(card);
                     });
+                    atualizarListaArmasEquipamento();
                 });
             }
         });
@@ -4313,6 +4742,7 @@
                 document.querySelectorAll('#listaEscudos .armadura-card').forEach(card => {
                     atualizarProficienciaCardEscudo(card);
                 });
+                atualizarListaArmasEquipamento();
             });
         }
 
@@ -4385,6 +4815,7 @@
                     if (confirm("Deseja remover esta armadura?")) {
                         card.remove();
                         atualizarPesoAtualInventario();
+                        atualizarListaArmasEquipamento();
                     }
                 });
             }
@@ -4397,20 +4828,27 @@
                     e.stopPropagation();
                     const ficouNaoProficiente = this.classList.toggle('nao');
                     this.classList.toggle('ativo', !ficouNaoProficiente);
+                    atualizarListaArmasEquipamento();
                 });
             }
 
             if (selectTipo) {
-                selectTipo.addEventListener('change', () => atualizarProficienciaCardArmadura(card));
+                selectTipo.addEventListener('change', () => {
+                    atualizarProficienciaCardArmadura(card);
+                    atualizarListaArmasEquipamento();
+                });
             }
 
             card.querySelectorAll('[data-campo]').forEach(campo => {
                 campo.addEventListener('input', atualizarPesoAtualInventario);
                 campo.addEventListener('change', atualizarPesoAtualInventario);
+                campo.addEventListener('input', atualizarListaArmasEquipamento);
+                campo.addEventListener('change', atualizarListaArmasEquipamento);
             });
 
             atualizarProficienciaCardArmadura(card);
             atualizarPesoAtualInventario();
+            atualizarListaArmasEquipamento();
         }
 
         function adicionarNovaArmadura() {
@@ -4424,6 +4862,7 @@
             container.appendChild(novaArmadura);
             inicializarEventosArmadura(novaArmadura);
             atualizarPesoAtualInventario();
+            atualizarListaArmasEquipamento();
 
             return novaArmadura;
         }
@@ -4469,6 +4908,7 @@
                     if (confirm("Deseja remover este escudo ou vestimento?")) {
                         card.remove();
                         atualizarPesoAtualInventario();
+                        atualizarListaArmasEquipamento();
                     }
                 });
             }
@@ -4481,20 +4921,27 @@
                     e.stopPropagation();
                     const ficouNaoProficiente = this.classList.toggle('nao');
                     this.classList.toggle('ativo', !ficouNaoProficiente);
+                    atualizarListaArmasEquipamento();
                 });
             }
 
             if (selectTipo) {
-                selectTipo.addEventListener('change', () => atualizarProficienciaCardEscudo(card));
+                selectTipo.addEventListener('change', () => {
+                    atualizarProficienciaCardEscudo(card);
+                    atualizarListaArmasEquipamento();
+                });
             }
 
             card.querySelectorAll('[data-campo]').forEach(campo => {
                 campo.addEventListener('input', atualizarPesoAtualInventario);
                 campo.addEventListener('change', atualizarPesoAtualInventario);
+                campo.addEventListener('input', atualizarListaArmasEquipamento);
+                campo.addEventListener('change', atualizarListaArmasEquipamento);
             });
 
             atualizarProficienciaCardEscudo(card);
             atualizarPesoAtualInventario();
+            atualizarListaArmasEquipamento();
         }
 
         function adicionarNovoEscudo() {
@@ -4507,6 +4954,7 @@
 
             container.appendChild(novoEscudo);
             inicializarEventosEscudo(novoEscudo);
+            atualizarListaArmasEquipamento();
 
             return novoEscudo;
         }
@@ -4531,6 +4979,62 @@
             });
 
             return escudos;
+        }
+
+        function inicializarEventosOutro(card) {
+            const btnRemover = card.querySelector('.btn-remover-arma');
+            if (btnRemover) {
+                btnRemover.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    if (confirm("Deseja remover este item?")) {
+                        card.remove();
+                        atualizarPesoAtualInventario();
+                        atualizarListaArmasEquipamento();
+                    }
+                });
+            }
+
+            card.querySelectorAll('[data-campo]').forEach(campo => {
+                campo.addEventListener('input', atualizarPesoAtualInventario);
+                campo.addEventListener('change', atualizarPesoAtualInventario);
+                campo.addEventListener('input', atualizarListaArmasEquipamento);
+                campo.addEventListener('change', atualizarListaArmasEquipamento);
+            });
+
+            atualizarPesoAtualInventario();
+            atualizarListaArmasEquipamento();
+        }
+
+        function adicionarNovoOutro() {
+            const modelo = document.getElementById('outroModelo');
+            const container = document.getElementById('listaOutros');
+
+            const novoOutro = modelo.cloneNode(true);
+            novoOutro.removeAttribute('id');
+            novoOutro.style.display = 'block';
+
+            container.appendChild(novoOutro);
+            inicializarEventosOutro(novoOutro);
+            atualizarListaArmasEquipamento();
+
+            return novoOutro;
+        }
+
+        function coletarOutros() {
+            const outros = [];
+            const lista = document.querySelectorAll('#listaOutros .armadura-card');
+
+            lista.forEach(card => {
+                const outro = {};
+
+                card.querySelectorAll('[data-campo]').forEach(campo => {
+                    outro[campo.dataset.campo] = campo.value;
+                });
+
+                outros.push(outro);
+            });
+
+            return outros;
         }
 
         function toggleArma(header, event) {
@@ -4579,10 +5083,76 @@
             }
         }
 
+        function toggleOutro(header, event) {
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT' || event.target.tagName === 'TEXTAREA') return;
+
+            const card = header.closest('.armadura-card');
+            const icon = header.querySelector('.arma-toggle');
+
+            card.classList.toggle('fechado');
+
+            if (card.classList.contains('fechado')) {
+                icon.textContent = '🔽';
+            } else {
+                icon.textContent = '🔼';
+            }
+        }
+
         // ===== Persistencia da ficha =====
+        function normalizarDadosImportacao(dadosOriginais) {
+            if (!dadosOriginais || typeof dadosOriginais !== "object") return {}
+
+            const dados = { ...dadosOriginais }
+            const aliases = {
+                nomePlayer: "jogador",
+                classeNome: "classeNomeID",
+                classeNivel: "classeNivelID",
+                raca: "racaID",
+                antecedente: "antecedenteID",
+                alinhamento: "alinhamentoID",
+                bonusProficiencia: "bonusProf",
+                forBase: "for",
+                desBase: "des",
+                conBase: "con",
+                intBase: "int",
+                sabBase: "sab",
+                carBase: "car"
+            }
+
+            Object.entries(aliases).forEach(([origem, destino]) => {
+                if ((dados[destino] === undefined || dados[destino] === "") && dados[origem] !== undefined) {
+                    dados[destino] = dados[origem]
+                }
+            })
+
+            return dados
+        }
+
+        function adicionarAliasesLegacyAoSave(dados) {
+            if (!dados || typeof dados !== "object") return dados
+
+            dados.nomePlayer = dados.jogador ?? ""
+            dados.classeNome = dados.classeNomeID ?? ""
+            dados.classeNivel = dados.classeNivelID ?? ""
+            dados.raca = dados.racaID ?? ""
+            dados.antecedente = dados.antecedenteID ?? ""
+            dados.alinhamento = dados.alinhamentoID ?? ""
+            dados.bonusProficiencia = dados.bonusProf ?? ""
+            dados.forBase = dados.for ?? ""
+            dados.desBase = dados.des ?? ""
+            dados.conBase = dados.con ?? ""
+            dados.intBase = dados.int ?? ""
+            dados.sabBase = dados.sab ?? ""
+            dados.carBase = dados.car ?? ""
+
+            return dados
+        }
+
         function aplicarDadosFicha(dados) {
 
             if (!dados || typeof dados !== "object") return
+
+            dados = normalizarDadosImportacao(dados)
 
             for (let key in dados) {
                 const campo = document.getElementById(key)
@@ -4592,10 +5162,6 @@
                 else if (key === "dadosVidaTipo") campo.value = normalizarTipoDadoVida(dados[key])
                 else if (campo.type === "checkbox") campo.checked = dados[key]
                 else campo.value = dados[key]
-            }
-
-            if (dados.inventarioTexto && !dados.inventarioArmas && !dados.inventarioArmadura && !dados.inventarioOutros) {
-                document.getElementById("inventarioOutros").value = dados.inventarioTexto
             }
 
             if (dados.armas && Array.isArray(dados.armas)) {
@@ -4632,6 +5198,40 @@
                             }
                         }
                     })
+                }
+            }
+
+            if (dados.outros && Array.isArray(dados.outros)) {
+                const containerOutros = document.getElementById('listaOutros')
+
+                if (containerOutros) {
+                    const outrosAtuais = containerOutros.querySelectorAll('.armadura-card')
+                    outrosAtuais.forEach(o => o.remove())
+
+                    dados.outros.forEach(dadosOutro => {
+                        const novoCard = adicionarNovoOutro()
+
+                        if (!novoCard) return
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosOutro[campo.dataset.campo]
+                            if (valor !== undefined) campo.value = valor
+                        })
+                    })
+                }
+            } else if (dados.inventarioTexto) {
+                const containerOutros = document.getElementById('listaOutros')
+
+                if (containerOutros) {
+                    const outrosAtuais = containerOutros.querySelectorAll('.armadura-card')
+                    outrosAtuais.forEach(o => o.remove())
+
+                    const novoCard = adicionarNovoOutro()
+                    const campoNome = novoCard?.querySelector('[data-campo="outro_nome"]')
+                    const campoDescricao = novoCard?.querySelector('[data-campo="outro_descricao"]')
+
+                    if (campoNome && !campoNome.value) campoNome.value = "Itens diversos"
+                    if (campoDescricao) campoDescricao.value = dados.inventarioTexto
                 }
             }
 
@@ -4722,7 +5322,7 @@
                 dados[campo.id] = campo.type === "checkbox" ? campo.checked : campo.value
             })
 
-            return dados
+            return adicionarAliasesLegacyAoSave(dados)
         }
 
         let ultimoEstadoSalvo = JSON.stringify(coletarDadosFicha())
@@ -4742,6 +5342,7 @@
             dados.armas = coletarArmas();
             dados.armaduras = coletarArmaduras();
             dados.escudos = coletarEscudos();
+            dados.outros = coletarOutros();
 
             const nome = document.getElementById("nomePersonagem").value || "Personagem"
             const jogador = document.getElementById("jogador").value || "Jogador"
@@ -5241,7 +5842,7 @@
                 ataque: document.getElementById(`arma${indice}Ataque`)?.value.trim() || "",
                 dano: document.getElementById(`arma${indice}Dano`)?.value.trim() || "",
                 tipo: document.getElementById(`arma${indice}TipoDano`)?.value.trim() || "",
-                propriedade: document.getElementById(`arma${indice}Propriedade`)?.value.trim() || ""
+                propriedade: limparTextoCombate(document.getElementById(`arma${indice}Propriedade`)?.value.trim() || "")
             })).filter(arma => arma.nome);
 
             if (!armas.length) {
