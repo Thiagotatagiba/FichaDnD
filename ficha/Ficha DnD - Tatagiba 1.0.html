@@ -2330,7 +2330,8 @@
         }
 
         /* ===== Cards de armas cadastradas ===== */
-        .arma-card {
+        .arma-card,
+        .armadura-card {
             position: relative;
             background: linear-gradient(145deg, #f4ecd8, #e8dcc2);
             border: 3px solid #3b2f1b;
@@ -2342,7 +2343,8 @@
             z-index: 0;
         }
 
-        .arma-card::after {
+        .arma-card::after,
+        .armadura-card::after {
             content: "";
             position: absolute;
             inset: 8px;
@@ -2405,7 +2407,8 @@
             grid-template-columns: 1fr 1fr;
         }
 
-        .arma-card label {
+        .arma-card label,
+        .armadura-card label {
             font-size: 11px;
             color: #3b2f1b;
             display: block;
@@ -2414,7 +2417,10 @@
 
         .arma-card input[type="text"],
         .arma-card input[type="number"],
-        .arma-card select {
+        .arma-card select,
+        .armadura-card input[type="text"],
+        .armadura-card input[type="number"],
+        .armadura-card select {
             width: 100%;
             padding: 6px;
             height: 28px;
@@ -2426,11 +2432,13 @@
             font-size: 12px;
         }
 
-        .arma-card input[type="number"] {
+        .arma-card input[type="number"],
+        .armadura-card input[type="number"] {
             text-align: center;
         }
 
-        .arma-card select {
+        .arma-card select,
+        .armadura-card select {
             appearance: none;
             padding-right: 20px;
             background-image: linear-gradient(45deg, transparent 50%, #3b2f1b 50%),
@@ -2440,7 +2448,8 @@
             background-repeat: no-repeat;
         }
 
-        .arma-card input[type="checkbox"] {
+        .arma-card input[type="checkbox"],
+        .armadura-card input[type="checkbox"] {
             width: auto;
             height: auto;
             padding: 0;
@@ -2449,7 +2458,9 @@
         }
 
         .arma-card input:focus,
-        .arma-card select:focus {
+        .arma-card select:focus,
+        .armadura-card input:focus,
+        .armadura-card select:focus {
             outline: none;
             border-bottom: 2px solid #8b5a2b;
         }
@@ -2604,7 +2615,8 @@
             padding-top: 45px;
         }
 
-        .arma-card .arma-campo-pequeno {
+        .arma-card .arma-campo-pequeno,
+        .armadura-card .arma-campo-pequeno {
             width: 45px !important;
             text-align: center;
             height: 20px !important;
@@ -2626,7 +2638,8 @@
             margin-bottom: 2px;
         }
 
-        .arma-card.fechado .arma-conteudo {
+        .arma-card.fechado .arma-conteudo,
+        .armadura-card.fechado .arma-conteudo {
             display: none;
         }
 
@@ -2658,6 +2671,10 @@
             transform: scale(1.2);
             background: red;
 
+        }
+
+        .armadura-linha-2-cols {
+            grid-template-columns: 1fr 1fr;
         }
     </style>
 </head>
@@ -3665,7 +3682,7 @@
                         </div>
                         <div class="item-campo">
                             <label for="pesoAtual">Peso Atual</label>
-                            <input id="pesoAtual" type="number" min="0" value="0">
+                            <input id="pesoAtual" type="number" min="0" value="0" readonly>
                         </div>
                         <div class="item-campo">
                             <label for="pesoMax">Peso Max</label>
@@ -3811,7 +3828,125 @@
 
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo">Armadura</div>
-                                <textarea id="inventarioArmadura" class="inventario-texto" aria-label="Itens de armadura do inventário"></textarea>
+                                <button type="button" onclick="adicionarNovaArmadura()">+ Nova Armadura</button>
+
+                                <div id="armaduraModelo" class="armadura-card fechado oculto">
+                                    <div class="arma-linha-inferior">
+                                        <button type="button" class="btn-remover-arma" title="Remover Armadura">🗑️</button>
+
+                                        <div class="arma-campo-icone">
+                                            <span class="arma-emoji">🪙</span>
+                                            <input type="text" class="arma-campo-pequeno" data-campo="armadura_preco" aria-label="Preço da armadura">
+                                        </div>
+                                        <div class="arma-campo-icone">
+                                            <span class="arma-emoji">⚖️</span>
+                                            <input type="text" class="arma-campo-pequeno" data-campo="armadura_peso" aria-label="Peso da armadura">
+                                        </div>
+                                    </div>
+
+                                    <div class="arma-proficiencia nao">P</div>
+
+                                    <div class="arma-linha arma-linha-1 arma-header" onclick="toggleArmadura(this, event)">
+                                        <div class="arma-nome-container">
+                                            <label>Nome</label>
+                                            <input type="text" data-campo="armadura_nome" aria-label="Nome da armadura">
+                                        </div>
+                                        <span class="arma-toggle">🔽</span>
+                                    </div>
+
+                                    <div class="arma-conteudo">
+                                        <div class="arma-linha armadura-linha-2-cols">
+                                            <div>
+                                                <label>CA</label>
+                                                <input type="number" data-campo="armadura_ca" min="0" step="1" aria-label="Classe de armadura base">
+                                            </div>
+                                            <div>
+                                                <label>Bônus</label>
+                                                <select data-campo="armadura_bonus" aria-label="Bônus da armadura">
+                                                    <option value="0" selected>0</option>
+                                                    <option value="DES">DES</option>
+                                                    <option value="DES Max 2">DES Max 2</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="arma-linha armadura-linha-2-cols">
+                                            <div>
+                                                <label>Força</label>
+                                                <input type="text" data-campo="armadura_forca" placeholder="Ex: 15" aria-label="Requisito de força da armadura">
+                                            </div>
+                                            <div>
+                                                <label>Furtividade</label>
+                                                <select data-campo="armadura_furtividade" aria-label="Efeito da armadura na furtividade">
+                                                    <option value="Normal">Normal</option>
+                                                    <option value="Desvantagem">Desvantagem</option>
+                                                    <option value="Vantagem">Vantagem</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="arma-linha arma-linha-1">
+                                            <div>
+                                                <label>Tipo de Armadura</label>
+                                                <select data-campo="armadura_tipo" aria-label="Tipo de armadura">
+                                                    <option value="">Tipo de Armadura</option>
+                                                    <option value="Leve">Leve</option>
+                                                    <option value="Media">Media</option>
+                                                    <option value="Pesada">Pesada</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="listaArmaduras"></div>
+
+                                <div class="inventario-subtitulo">Escudos e Vestimentos</div>
+                                <button type="button" onclick="adicionarNovoEscudo()">+ Novo Escudo ou Vestimento</button>
+
+                                <div id="escudoModelo" class="armadura-card fechado oculto">
+                                    <div class="arma-linha-inferior">
+                                        <button type="button" class="btn-remover-arma" title="Remover Escudo ou Vestimento">🗑️</button>
+
+                                        <div class="arma-campo-icone">
+                                            <span class="arma-emoji">🪙</span>
+                                            <input type="text" class="arma-campo-pequeno" data-campo="escudo_preco" aria-label="Preço do escudo ou vestimento">
+                                        </div>
+                                        <div class="arma-campo-icone">
+                                            <span class="arma-emoji">⚖️</span>
+                                            <input type="text" class="arma-campo-pequeno" data-campo="escudo_peso" aria-label="Peso do escudo ou vestimento">
+                                        </div>
+                                    </div>
+
+                                    <div class="arma-proficiencia nao">P</div>
+
+                                    <div class="arma-linha arma-linha-1 arma-header" onclick="toggleEscudo(this, event)">
+                                        <div class="arma-nome-container">
+                                            <label>Nome</label>
+                                            <input type="text" data-campo="escudo_nome" aria-label="Nome do escudo ou vestimento">
+                                        </div>
+                                        <span class="arma-toggle">🔽</span>
+                                    </div>
+
+                                    <div class="arma-conteudo">
+                                        <div class="arma-linha armadura-linha-2-cols">
+                                            <div>
+                                                <label>CA</label>
+                                                <input type="text" data-campo="escudo_ca" placeholder="+2" aria-label="Bônus de classe de armadura do escudo ou vestimento">
+                                            </div>
+                                            <div>
+                                                <label>Tipo</label>
+                                                <select data-campo="escudo_tipo" aria-label="Tipo de escudo ou vestimento">
+                                                    <option value="Escudo" selected>Escudo</option>
+                                                    <option value="Vestuario">Vesturário</option>
+                                                    <option value="Item magico">Item mágico</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="listaEscudos"></div>
                             </div>
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo">Outros</div>
@@ -3834,6 +3969,8 @@
         });
         window.addEventListener('DOMContentLoaded', () => {
             adicionarNovaArma();
+            adicionarNovaArmadura();
+            adicionarNovoEscudo();
         });
 
         document.addEventListener('change', (e) => {
@@ -3850,6 +3987,36 @@
             if (tipo === 'Simples') return !!document.getElementById('profArmaSimples')?.checked;
             if (tipo === 'Marcial') return !!document.getElementById('profArmaMarciais')?.checked;
             return false;
+        }
+
+        function getTemProficienciaArmadura(tipo) {
+            if (tipo === 'Leve') return !!document.getElementById('profArmaduraLeves')?.checked;
+            if (tipo === 'Media') return !!document.getElementById('profArmaduraMedias')?.checked;
+            if (tipo === 'Pesada') return !!document.getElementById('profArmaduraPesadas')?.checked;
+            return false;
+        }
+
+        function getTemProficienciaEscudo(tipo) {
+            if (tipo === 'Escudo') return !!document.getElementById('profEscudos')?.checked;
+            return true;
+        }
+
+        function getValorPesoItem(valor) {
+            const texto = String(valor || "").trim().replace(",", ".");
+            const numero = parseFloat(texto);
+            return Number.isFinite(numero) ? numero : 0;
+        }
+
+        function atualizarPesoAtualInventario() {
+            const campoPesoAtual = document.getElementById('pesoAtual');
+            if (!campoPesoAtual) return;
+
+            const totalArmas = coletarArmas().reduce((soma, arma) => soma + getValorPesoItem(arma.arma_peso), 0);
+            const totalArmaduras = coletarArmaduras().reduce((soma, armadura) => soma + getValorPesoItem(armadura.armadura_peso), 0);
+            const totalEscudos = coletarEscudos().reduce((soma, escudo) => soma + getValorPesoItem(escudo.escudo_peso), 0);
+            const total = totalArmas + totalArmaduras + totalEscudos;
+
+            campoPesoAtual.value = Number.isInteger(total) ? total : total.toFixed(2).replace(/\.?0+$/, '');
         }
 
         function atualizarListaArmasEquipamento() {
@@ -4129,6 +4296,26 @@
             }
         });
 
+        ['profArmaduraLeves', 'profArmaduraMedias', 'profArmaduraPesadas'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('change', () => {
+                    document.querySelectorAll('#listaArmaduras .armadura-card').forEach(card => {
+                        atualizarProficienciaCardArmadura(card);
+                    });
+                });
+            }
+        });
+
+        const campoProfEscudos = document.getElementById('profEscudos');
+        if (campoProfEscudos) {
+            campoProfEscudos.addEventListener('change', () => {
+                document.querySelectorAll('#listaEscudos .armadura-card').forEach(card => {
+                    atualizarProficienciaCardEscudo(card);
+                });
+            });
+        }
+
         // Adiciona um novo card de arma a partir do modelo oculto
         function adicionarNovaArma() {
             const modelo = document.getElementById('armaModelo');
@@ -4179,11 +4366,208 @@
             return armas;
         }
 
+        function atualizarProficienciaCardArmadura(card) {
+            const selectTipo = card.querySelector('[data-campo="armadura_tipo"]');
+            const divP = card.querySelector('.arma-proficiencia');
+
+            if (!selectTipo || !divP) return;
+
+            const temProficiencia = getTemProficienciaArmadura(selectTipo.value);
+            divP.classList.toggle('ativo', temProficiencia);
+            divP.classList.toggle('nao', !temProficiencia);
+        }
+
+        function inicializarEventosArmadura(card) {
+            const btnRemover = card.querySelector('.btn-remover-arma');
+            if (btnRemover) {
+                btnRemover.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    if (confirm("Deseja remover esta armadura?")) {
+                        card.remove();
+                        atualizarPesoAtualInventario();
+                    }
+                });
+            }
+
+            const divP = card.querySelector('.arma-proficiencia');
+            const selectTipo = card.querySelector('[data-campo="armadura_tipo"]');
+
+            if (divP) {
+                divP.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const ficouNaoProficiente = this.classList.toggle('nao');
+                    this.classList.toggle('ativo', !ficouNaoProficiente);
+                });
+            }
+
+            if (selectTipo) {
+                selectTipo.addEventListener('change', () => atualizarProficienciaCardArmadura(card));
+            }
+
+            card.querySelectorAll('[data-campo]').forEach(campo => {
+                campo.addEventListener('input', atualizarPesoAtualInventario);
+                campo.addEventListener('change', atualizarPesoAtualInventario);
+            });
+
+            atualizarProficienciaCardArmadura(card);
+            atualizarPesoAtualInventario();
+        }
+
+        function adicionarNovaArmadura() {
+            const modelo = document.getElementById('armaduraModelo');
+            const container = document.getElementById('listaArmaduras');
+
+            const novaArmadura = modelo.cloneNode(true);
+            novaArmadura.removeAttribute('id');
+            novaArmadura.style.display = 'block';
+
+            container.appendChild(novaArmadura);
+            inicializarEventosArmadura(novaArmadura);
+            atualizarPesoAtualInventario();
+
+            return novaArmadura;
+        }
+
+        function coletarArmaduras() {
+            const armaduras = [];
+            const lista = document.querySelectorAll('#listaArmaduras .armadura-card');
+
+            lista.forEach(card => {
+                const armadura = {};
+                const indicadorProficiencia = card.querySelector('.arma-proficiencia');
+
+                card.querySelectorAll('[data-campo]').forEach(campo => {
+                    armadura[campo.dataset.campo] = campo.value;
+                });
+
+                armadura.proficiente = indicadorProficiencia
+                    ? !indicadorProficiencia.classList.contains('nao')
+                    : getTemProficienciaArmadura(armadura.armadura_tipo?.trim());
+
+                armaduras.push(armadura);
+            });
+
+            return armaduras;
+        }
+
+        function atualizarProficienciaCardEscudo(card) {
+            const selectTipo = card.querySelector('[data-campo="escudo_tipo"]');
+            const divP = card.querySelector('.arma-proficiencia');
+
+            if (!selectTipo || !divP) return;
+
+            const temProficiencia = getTemProficienciaEscudo(selectTipo.value);
+            divP.classList.toggle('ativo', temProficiencia);
+            divP.classList.toggle('nao', !temProficiencia);
+        }
+
+        function inicializarEventosEscudo(card) {
+            const btnRemover = card.querySelector('.btn-remover-arma');
+            if (btnRemover) {
+                btnRemover.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    if (confirm("Deseja remover este escudo ou vestimento?")) {
+                        card.remove();
+                        atualizarPesoAtualInventario();
+                    }
+                });
+            }
+
+            const divP = card.querySelector('.arma-proficiencia');
+            const selectTipo = card.querySelector('[data-campo="escudo_tipo"]');
+
+            if (divP) {
+                divP.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const ficouNaoProficiente = this.classList.toggle('nao');
+                    this.classList.toggle('ativo', !ficouNaoProficiente);
+                });
+            }
+
+            if (selectTipo) {
+                selectTipo.addEventListener('change', () => atualizarProficienciaCardEscudo(card));
+            }
+
+            card.querySelectorAll('[data-campo]').forEach(campo => {
+                campo.addEventListener('input', atualizarPesoAtualInventario);
+                campo.addEventListener('change', atualizarPesoAtualInventario);
+            });
+
+            atualizarProficienciaCardEscudo(card);
+            atualizarPesoAtualInventario();
+        }
+
+        function adicionarNovoEscudo() {
+            const modelo = document.getElementById('escudoModelo');
+            const container = document.getElementById('listaEscudos');
+
+            const novoEscudo = modelo.cloneNode(true);
+            novoEscudo.removeAttribute('id');
+            novoEscudo.style.display = 'block';
+
+            container.appendChild(novoEscudo);
+            inicializarEventosEscudo(novoEscudo);
+
+            return novoEscudo;
+        }
+
+        function coletarEscudos() {
+            const escudos = [];
+            const lista = document.querySelectorAll('#listaEscudos .armadura-card');
+
+            lista.forEach(card => {
+                const escudo = {};
+                const indicadorProficiencia = card.querySelector('.arma-proficiencia');
+
+                card.querySelectorAll('[data-campo]').forEach(campo => {
+                    escudo[campo.dataset.campo] = campo.value;
+                });
+
+                escudo.proficiente = indicadorProficiencia
+                    ? !indicadorProficiencia.classList.contains('nao')
+                    : getTemProficienciaEscudo(escudo.escudo_tipo?.trim());
+
+                escudos.push(escudo);
+            });
+
+            return escudos;
+        }
+
         function toggleArma(header, event) {
             // 🔥 evita clicar no input ativar o toggle
             if (event.target.tagName === 'INPUT') return;
 
             const card = header.closest('.arma-card');
+            const icon = header.querySelector('.arma-toggle');
+
+            card.classList.toggle('fechado');
+
+            if (card.classList.contains('fechado')) {
+                icon.textContent = '🔽';
+            } else {
+                icon.textContent = '🔼';
+            }
+        }
+
+        function toggleArmadura(header, event) {
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
+
+            const card = header.closest('.armadura-card');
+            const icon = header.querySelector('.arma-toggle');
+
+            card.classList.toggle('fechado');
+
+            if (card.classList.contains('fechado')) {
+                icon.textContent = '🔽';
+            } else {
+                icon.textContent = '🔼';
+            }
+        }
+
+        function toggleEscudo(header, event) {
+            if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
+
+            const card = header.closest('.armadura-card');
             const icon = header.querySelector('.arma-toggle');
 
             card.classList.toggle('fechado');
@@ -4251,6 +4635,62 @@
                 }
             }
 
+            if (dados.armaduras && Array.isArray(dados.armaduras)) {
+                const containerArmaduras = document.getElementById('listaArmaduras')
+
+                if (containerArmaduras) {
+                    const armadurasAtuais = containerArmaduras.querySelectorAll('.armadura-card:not(#armaduraModelo)')
+                    armadurasAtuais.forEach(a => a.remove())
+
+                    dados.armaduras.forEach(dadosArmadura => {
+                        const novoCard = adicionarNovaArmadura()
+
+                        if (!novoCard) return
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosArmadura[campo.dataset.campo]
+                            if (valor !== undefined) campo.value = valor
+                        })
+
+                        if (typeof dadosArmadura.proficiente === "boolean") {
+                            const indicadorProficiencia = novoCard.querySelector('.arma-proficiencia')
+                            if (indicadorProficiencia) {
+                                indicadorProficiencia.classList.toggle('nao', !dadosArmadura.proficiente)
+                                indicadorProficiencia.classList.toggle('ativo', dadosArmadura.proficiente)
+                            }
+                        }
+                    })
+                }
+            }
+
+            if (dados.escudos && Array.isArray(dados.escudos)) {
+                const containerEscudos = document.getElementById('listaEscudos')
+
+                if (containerEscudos) {
+                    const escudosAtuais = containerEscudos.querySelectorAll('.armadura-card')
+                    escudosAtuais.forEach(e => e.remove())
+
+                    dados.escudos.forEach(dadosEscudo => {
+                        const novoCard = adicionarNovoEscudo()
+
+                        if (!novoCard) return
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosEscudo[campo.dataset.campo]
+                            if (valor !== undefined) campo.value = valor
+                        })
+
+                        if (typeof dadosEscudo.proficiente === "boolean") {
+                            const indicadorProficiencia = novoCard.querySelector('.arma-proficiencia')
+                            if (indicadorProficiencia) {
+                                indicadorProficiencia.classList.toggle('nao', !dadosEscudo.proficiente)
+                                indicadorProficiencia.classList.toggle('ativo', dadosEscudo.proficiente)
+                            }
+                        }
+                    })
+                }
+            }
+
             atualizarAtributos()
             desenharRadar()
             atualizarModificadoresSalvaguarda()
@@ -4265,6 +4705,7 @@
             atualizarMagias()
             normalizarPontosDeVida()
             normalizarDadosVida()
+            atualizarPesoAtualInventario()
             marcarFichaComoSalva()
         }
 
@@ -4299,6 +4740,8 @@
 
             const dados = coletarDadosFicha()
             dados.armas = coletarArmas();
+            dados.armaduras = coletarArmaduras();
+            dados.escudos = coletarEscudos();
 
             const nome = document.getElementById("nomePersonagem").value || "Personagem"
             const jogador = document.getElementById("jogador").value || "Jogador"
