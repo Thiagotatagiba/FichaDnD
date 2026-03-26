@@ -1987,7 +1987,7 @@
         }
 
         .equipados-grid.armas {
-            grid-template-columns: minmax(170px, 2.2fr) 120px minmax(170px, 1.5fr);
+            grid-template-columns: minmax(170px, 2.2fr) 120px minmax(170px, 1.5fr) 110px;
         }
 
         .equipados-armas-bloco {
@@ -2044,6 +2044,24 @@
 
         .equipados-grid input::placeholder {
             color: #9b8a75;
+        }
+
+        .equipados-grid input[readonly] {
+            color: #6f3610;
+            background: #f4efe6;
+            cursor: default;
+        }
+
+        .equipados-acao-botao {
+            width: 100%;
+            height: 32px;
+            border: 1px solid #8b4513;
+            border-radius: 8px;
+            background: #eadfcf;
+            color: #5f2d0c;
+            font-family: 'MedievalSharp';
+            font-size: 12px;
+            cursor: pointer;
         }
 
         .equipados-propriedade-linha {
@@ -3314,25 +3332,28 @@
                                         <div class="equipados-grid-cabecalho">Nome</div>
                                         <div class="equipados-grid-cabecalho-centro">Ataque</div>
                                         <div class="equipados-grid-cabecalho-centro">Dano</div>
+                                        <div class="equipados-grid-cabecalho-centro">Ação</div>
 
-                                        <input id="arma1Nome" placeholder="Arma Principal">
+                                        <select id="arma1Nome" aria-label="Arma principal equipada"></select>
                                         <select id="arma1Ataque" aria-label="Atributo de ataque da arma principal">
                                             <option value="for">FOR</option>
                                             <option value="des">DES</option>
                                         </select>
-                                        <input id="arma1Dano" placeholder="1d8 cortante">
+                                        <input id="arma1Dano" placeholder="1d8 cortante" readonly>
+                                        <button type="button" id="arma1Desequipar" class="equipados-acao-botao">Desequipar</button>
                                     </div>
                                     <div id="arma1Propriedade" class="equipados-propriedade-linha">Propriedade: </div>
                                     </div>
                                     <div class="equipados-armas-item">
                                     <div class="equipados-grid armas">
-                                        <input id="arma2Nome" placeholder="Arma secundária">
+                                        <select id="arma2Nome" aria-label="Arma secundária equipada"></select>
                                         <select id="arma2Ataque" aria-label="Atributo de ataque da arma secundária">
                                             <option value="for"></option>
                                             <option value="for">FOR</option>
                                             <option value="des">DES</option>
                                         </select>
-                                        <input id="arma2Dano" aria-label="Dano da arma secundária">
+                                        <input id="arma2Dano" aria-label="Dano da arma secundária" readonly>
+                                        <button type="button" id="arma2Desequipar" class="equipados-acao-botao">Desequipar</button>
                                     </div>
                                     <div id="arma2Propriedade" class="equipados-propriedade-linha"></div>
                                     </div>
@@ -4247,18 +4268,10 @@
             return arma.arma_dano?.trim() || [arma.dano_1, arma.dano_2].filter(Boolean).join("/");
         }
 
-        // escreve a arma no formato atual do cadastro de armas
-        function formatarArma(arma) {
+        function obterResumoPropriedadesArma(arma, incluirDescricao = false) {
             const propriedades = arma.propriedades || {};
-            const nome = arma.arma_nome?.trim() || "Arma sem nome";
-            const tipo = arma.arma_tipo_dano?.trim() || "-";
-            const tipoArma = arma.arma_tipo?.trim() || "";
-            const proficiente = typeof arma.proficiente === "boolean"
-                ? arma.proficiente
-                : getTemProficienciaArma(tipoArma);
-            const dano = obterTextoDanoArma(arma) || "-";
-            const linha1 = `${nome} ${dano} ${tipo} ${proficiente ? "(P)" : "(nP)"}`;
             const listaPropriedades = [];
+            const tipoArma = arma.arma_tipo?.trim() || "";
 
             if (tipoArma) listaPropriedades.push(tipoArma);
 
@@ -4288,12 +4301,28 @@
                 listaPropriedades.push(textoMunicao);
             }
 
-            const descricao = arma.arma_descricao?.trim();
-            if (descricao) listaPropriedades.push(descricao);
+            if (incluirDescricao) {
+                const descricao = arma.arma_descricao?.trim();
+                if (descricao) listaPropriedades.push(descricao);
+            }
+
+            return listaPropriedades.join(", ");
+        }
+
+        // escreve a arma no formato atual do cadastro de armas
+        function formatarArma(arma) {
+            const nome = arma.arma_nome?.trim() || "Arma sem nome";
+            const tipo = arma.arma_tipo_dano?.trim() || "-";
+            const tipoArma = arma.arma_tipo?.trim() || "";
+            const proficiente = typeof arma.proficiente === "boolean"
+                ? arma.proficiente
+                : getTemProficienciaArma(tipoArma);
+            const dano = obterTextoDanoArma(arma) || "-";
+            const linha1 = `${nome} ${dano} ${tipo} ${proficiente ? "(P)" : "(nP)"}`;
 
             return {
                 linha1,
-                linha2: listaPropriedades.join(", "),
+                linha2: obterResumoPropriedadesArma(arma, true),
                 proficiente
             };
         }
@@ -4401,9 +4430,6 @@
             if (propriedades.municao && (qtdMunicao || tipoMunicao)) {
                 listaPropriedades.push(`Munição (${qtdMunicao || "-"} ${tipoMunicao || ""}`.trimEnd() + ")");
             }
-
-            const descricao = arma.arma_descricao?.trim();
-            if (descricao) listaPropriedades.push(descricao);
 
             return listaPropriedades.join(", ");
         }
@@ -4573,6 +4599,15 @@
             return String(texto || "").replace(/^Propriedade:\s*/i, "").trim();
         }
 
+        function resumirMuniçãoNoTexto(texto) {
+            return String(texto || "").replace(/Muni[^(,]*\([^)]*\)/i, "Munição");
+        }
+
+        function capitalizarTexto(texto) {
+            const valor = String(texto || "").trim();
+            return valor ? valor.charAt(0).toUpperCase() + valor.slice(1) : "";
+        }
+
         function preencherPropriedadeEquipada(id, valor) {
             const campo = document.getElementById(id);
             if (!campo) return;
@@ -4633,6 +4668,95 @@
             atualizarSelectAtaqueArma(2, armasSelecionadas[1] || null);
         }
 
+        function obterIndicesArmasMarcadas() {
+            return Array.from(document.querySelectorAll('#lista-armas-equipamento input:checked'))
+                .slice(0, 2)
+                .map(input => parseInt(input.dataset.index, 10))
+                .filter(indice => Number.isInteger(indice));
+        }
+
+        function atualizarSelectNomeArmaEquipada(indiceSlot, armas, indiceSelecionado) {
+            const select = document.getElementById(`arma${indiceSlot}Nome`);
+            if (!select) return;
+
+            const placeholder = indiceSlot === 1 ? 'Arma Principal' : 'Arma Secundária';
+            select.innerHTML = '';
+
+            const opcaoVazia = document.createElement('option');
+            opcaoVazia.value = '';
+            opcaoVazia.textContent = placeholder;
+            select.appendChild(opcaoVazia);
+
+            armas.forEach((arma, indice) => {
+                if (!arma?.arma_nome?.trim()) return;
+                const option = document.createElement('option');
+                option.value = String(indice);
+                option.textContent = arma.arma_nome.trim();
+                select.appendChild(option);
+            });
+
+            select.value = indiceSelecionado !== null && indiceSelecionado !== undefined ? String(indiceSelecionado) : '';
+        }
+
+        function sincronizarMarcacaoArmasPorSlots() {
+            const slot1 = document.getElementById('arma1Nome')?.value || '';
+            const slot2 = document.getElementById('arma2Nome')?.value || '';
+            const desejados = new Set([slot1, slot2].filter(Boolean));
+
+            document.querySelectorAll('#lista-armas-equipamento input').forEach(input => {
+                input.checked = desejados.has(input.dataset.index);
+            });
+        }
+
+        function lidarSelecaoArmaEquipada(indiceSlot) {
+            const atual = document.getElementById(`arma${indiceSlot}Nome`);
+            const outro = document.getElementById(`arma${indiceSlot === 1 ? 2 : 1}Nome`);
+            if (!atual) return;
+
+            if (atual.value && outro && atual.value === outro.value) {
+                outro.value = '';
+            }
+
+            sincronizarMarcacaoArmasPorSlots();
+            sincronizarEquipamentosCombate();
+        }
+
+        function desequiparArmaSlot(indiceSlot) {
+            const select = document.getElementById(`arma${indiceSlot}Nome`);
+            if (select) select.value = '';
+            sincronizarMarcacaoArmasPorSlots();
+            sincronizarEquipamentosCombate();
+        }
+
+        function obterArmasEquipadasAtivas() {
+            const armas = coletarArmas();
+            const indicesMarcados = obterIndicesArmasMarcadas();
+            const indicesSlots = [1, 2].map(indiceSlot => {
+                const valor = document.getElementById(`arma${indiceSlot}Nome`)?.value || "";
+                const indice = parseInt(valor, 10);
+                return Number.isInteger(indice) && indicesMarcados.includes(indice) ? indice : null;
+            });
+            const faltantes = indicesMarcados.filter(indice => !indicesSlots.includes(indice));
+            const indicesEquipados = indicesSlots.map(indice => indice ?? (faltantes.shift() ?? null));
+
+            return indicesEquipados
+                .map((indiceArma, indiceSlot) => {
+                    const arma = Number.isInteger(indiceArma) ? armas[indiceArma] : null;
+                    if (!arma) return null;
+
+                    return {
+                        nome: arma.arma_nome?.trim() || "",
+                        ataque: obterTextoCampoOuBloco(`arma${indiceSlot + 1}Ataque`) || "for",
+                        dano: [obterTextoDanoArma(arma), arma.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "),
+                        propriedade: limparTextoCombate(resumirMuniçãoNoTexto(obterResumoPropriedadesArma(arma, false))),
+                        usaMunicao: !!arma.propriedades?.municao,
+                        quantidadeMunicao: arma.arma_municao_qtd?.trim() || "",
+                        tipoMunicao: capitalizarTexto(arma.arma_municao_tipo?.trim() || "")
+                    };
+                })
+                .filter(arma => arma && arma.nome);
+        }
+
         function aplicarEstiloProficienciaCampos(ids, proficiente) {
             ids.forEach(id => {
                 const campo = document.getElementById(id);
@@ -4652,15 +4776,23 @@
             const escudos = coletarEscudos();
             const outros = coletarOutros();
 
-            const armasSelecionadas = Array.from(document.querySelectorAll('#lista-armas-equipamento input:checked'))
-                .slice(0, 2)
-                .map(input => armas[parseInt(input.dataset.index, 10)])
-                .filter(Boolean);
+            const indicesMarcados = obterIndicesArmasMarcadas();
+            const slot1Atual = document.getElementById('arma1Nome')?.value || '';
+            const slot2Atual = document.getElementById('arma2Nome')?.value || '';
+            const slotsValidos = [slot1Atual, slot2Atual].map(valor => {
+                const indice = parseInt(valor, 10);
+                return Number.isInteger(indice) && indicesMarcados.includes(indice) ? indice : null;
+            });
+            const faltantes = indicesMarcados.filter(indice => !slotsValidos.includes(indice));
+            const indicesEquipados = slotsValidos.map(indice => indice ?? (faltantes.shift() ?? null));
+            const armasSelecionadas = indicesEquipados.map(indice => Number.isInteger(indice) ? armas[indice] : null);
+
+            atualizarSelectNomeArmaEquipada(1, armas, indicesEquipados[0]);
+            atualizarSelectNomeArmaEquipada(2, armas, indicesEquipados[1]);
 
             [1, 2].forEach(indice => {
                 const arma = armasSelecionadas[indice - 1];
-                const textoPropriedade = arma ? limparTextoCombate(formatarArma(arma).linha2) : "";
-                preencherCampo(`arma${indice}Nome`, arma?.arma_nome?.trim() || "");
+                const textoPropriedade = arma ? limparTextoCombate(resumirMuniçãoNoTexto(obterResumoPropriedadesArma(arma, false))) : "";
                 preencherCampo(`arma${indice}Dano`, [obterTextoDanoArma(arma), arma?.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "));
                 preencherPropriedadeEquipada(`arma${indice}Propriedade`, textoPropriedade);
                 aplicarEstiloProficienciaCampos(
@@ -6060,12 +6192,7 @@
             const container = document.getElementById('subabaCombateArma');
             if (!container) return;
 
-            const armas = [1, 2].map(indice => ({
-                nome: obterTextoCampoOuBloco(`arma${indice}Nome`),
-                ataque: obterTextoCampoOuBloco(`arma${indice}Ataque`),
-                dano: obterTextoCampoOuBloco(`arma${indice}Dano`),
-                propriedade: limparTextoCombate(limparPrefixoPropriedade(obterTextoCampoOuBloco(`arma${indice}Propriedade`)))
-            })).filter(arma => arma.nome);
+            const armas = obterArmasEquipadasAtivas();
 
             if (!armas.length) {
                 container.innerHTML = '<div class="subaba-vazia">Nenhuma arma equipada no momento.</div>';
@@ -6083,7 +6210,11 @@
 
                 const topo = document.createElement('div');
                 topo.className = 'arma-resumo-topo';
-                topo.textContent = `${arma.nome} ⚔️`;
+                const icone = arma.usaMunicao ? '🏹' : '⚔️';
+                const municaoTitulo = arma.usaMunicao
+                    ? [arma.quantidadeMunicao, arma.tipoMunicao].filter(Boolean).join(' ')
+                    : '';
+                topo.textContent = [arma.nome, icone, municaoTitulo].filter(Boolean).join('  ');
 
                 const detalhes = document.createElement('div');
                 detalhes.className = 'arma-resumo-detalhes';
@@ -6094,7 +6225,7 @@
                 const textoAtaque = totalAtaque === null
                     ? rotuloAtaque
                     : `${rotuloAtaque} (${totalAtaque >= 0 ? "+" : ""}${totalAtaque})`;
-                detalhes.textContent = `Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}\nPropriedade: ${arma.propriedade || "-"}`;
+                detalhes.innerHTML = `<strong>Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}</strong><br>Propriedade: ${arma.propriedade || "-"}`;
 
                 item.appendChild(topo);
                 item.appendChild(detalhes);
@@ -6474,11 +6605,27 @@
             campo.addEventListener('input', normalizarDadosVida);
             campo.addEventListener('change', normalizarDadosVida);
         });
-        ['arma1Nome', 'arma1Ataque', 'arma1Dano', 'arma2Nome', 'arma2Ataque', 'arma2Dano'].forEach(id => {
+        ['arma1Ataque', 'arma1Dano', 'arma2Ataque', 'arma2Dano'].forEach(id => {
             const campo = document.getElementById(id);
             if (!campo) return;
             campo.addEventListener('input', atualizarSubAbaArmas);
             campo.addEventListener('change', atualizarSubAbaArmas);
+        });
+        ['arma1Nome', 'arma2Nome'].forEach((id, indice) => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('change', () => {
+                lidarSelecaoArmaEquipada(indice + 1);
+                atualizarSubAbaArmas();
+            });
+        });
+        ['arma1Desequipar', 'arma2Desequipar'].forEach((id, indice) => {
+            const botao = document.getElementById(id);
+            if (!botao) return;
+            botao.addEventListener('click', () => {
+                desequiparArmaSlot(indice + 1);
+                atualizarSubAbaArmas();
+            });
         });
         const campoPosicaoAtaque = document.getElementById('ataquePosicao');
         if (campoPosicaoAtaque) {
@@ -6504,6 +6651,8 @@
         aplicarFormatoCA('outroEquipadoCA');
         aplicarFormatoCA('escudoCA');
         normalizarPosicaoAtaque();
+        atualizarListaArmasEquipamento();
+        sincronizarEquipamentosCombate();
         atualizarClasseArmaduraEquipada();
         atualizarResumoAtaquesConjuracao();
         atualizarSubAbaArmas();
