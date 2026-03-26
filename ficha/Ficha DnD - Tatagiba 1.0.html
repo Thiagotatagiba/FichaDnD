@@ -1940,6 +1940,16 @@
             border-radius: 10px;
             background: #f8f1e6;
             padding: 10px 12px;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        .arma-resumo-item:hover,
+        .arma-resumo-item:focus-visible {
+            border-color: #8b5a2b;
+            box-shadow: 0 6px 14px rgba(59, 47, 27, 0.18);
+            transform: translateY(-1px);
+            outline: none;
         }
 
         .arma-resumo-topo {
@@ -1952,6 +1962,103 @@
             font-size: 14px;
             line-height: 1.35;
             white-space: pre-line;
+        }
+
+        .ataque-modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(28, 18, 8, 0.55);
+            z-index: 2000;
+        }
+
+        .ataque-modal {
+            width: min(420px, 100%);
+            border: 3px solid #3b2f1b;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #f6eee0, #ead9bd);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+            padding: 18px;
+            box-sizing: border-box;
+        }
+
+        .ataque-modal-titulo {
+            font-family: 'Metamorphous', serif;
+            font-size: 18px;
+            color: #6f3610;
+            margin-bottom: 6px;
+        }
+
+        .ataque-modal-subtitulo {
+            font-size: 13px;
+            color: #5c4832;
+            margin-bottom: 14px;
+        }
+
+        .ataque-modal-linha {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .ataque-modal-linha label {
+            font-size: 11px;
+            color: #6f3610;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .ataque-modal-rolagem {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .ataque-modal input {
+            width: 100%;
+            min-height: 38px;
+            border: 2px solid #bda68c;
+            border-radius: 10px;
+            background: #fffaf2;
+            padding: 8px 10px;
+            box-sizing: border-box;
+            font-family: 'Metamorphous', serif;
+            font-size: 16px;
+        }
+
+        .ataque-modal input:focus {
+            outline: none;
+            border-color: #8b5a2b;
+            box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.12);
+        }
+
+        .ataque-modal-bonus {
+            font-family: 'Metamorphous', serif;
+            font-size: 15px;
+            color: #3b2f1b;
+            white-space: nowrap;
+        }
+
+        .ataque-modal-resumo {
+            margin-bottom: 14px;
+            font-size: 13px;
+            color: #5c4832;
+        }
+
+        .ataque-modal-acoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .ataque-modal-acoes .ataque-botao {
+            flex: 1 1 120px;
+            min-width: 120px;
         }
 
         .subaba-vazia {
@@ -1987,7 +2094,7 @@
         }
 
         .equipados-grid.armas {
-            grid-template-columns: minmax(170px, 2.2fr) 120px minmax(170px, 1.5fr) 110px;
+            grid-template-columns: minmax(214px, 2.9fr) 100px minmax(145px, 1.15fr) 16px;
         }
 
         .equipados-armas-bloco {
@@ -2029,6 +2136,10 @@
             text-align: center;
         }
 
+        .equipados-grid-cabecalho-vazio {
+            visibility: hidden;
+        }
+
         .equipados-grid input,
         .equipados-grid select {
             width: 100%;
@@ -2053,15 +2164,18 @@
         }
 
         .equipados-acao-botao {
-            width: 100%;
-            height: 32px;
-            border: 1px solid #8b4513;
-            border-radius: 8px;
-            background: #eadfcf;
-            color: #5f2d0c;
-            font-family: 'MedievalSharp';
-            font-size: 12px;
+            width: 16px;
+            height: 16px;
+            border: none;
+            background: transparent;
+            color: #7a1c1c;
+            font-family: inherit;
+            font-size: 14px;
+            line-height: 1;
             cursor: pointer;
+            padding: 0;
+            margin: 0;
+            justify-self: center;
         }
 
         .equipados-propriedade-linha {
@@ -3077,6 +3191,42 @@
                                 <div class="bonus-orbe"><input id="sabPass" value="10" readonly aria-label="Sabedoria passiva"></div>
                                 <div class="bonus-retangulo">Sabedoria Passiva</div>
                             </div>
+
+                            <div id="modalAtaqueOverlay" class="ataque-modal-overlay oculto" aria-hidden="true">
+                                <div class="ataque-modal" role="dialog" aria-modal="true" aria-labelledby="modalAtaqueTitulo">
+                                    <div id="modalAtaqueTitulo" class="ataque-modal-titulo">Ataque com arma</div>
+                                    <div id="modalAtaqueSubtitulo" class="ataque-modal-subtitulo">Digite o dado tirado.</div>
+
+                                    <div id="modalAtaqueEtapaDado">
+                                        <div class="ataque-modal-linha">
+                                            <label for="modalAtaqueDado">Dado</label>
+                                            <div class="ataque-modal-rolagem">
+                                                <input id="modalAtaqueDado" type="number" min="1" step="1" inputmode="numeric" aria-label="Dado tirado no ataque">
+                                                <div id="modalAtaqueBonus" class="ataque-modal-bonus">+ 0 (FOR)</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="ataque-modal-acoes">
+                                            <button type="button" class="ataque-botao" id="modalAtaqueSucesso">Sucesso</button>
+                                            <button type="button" class="ataque-botao" id="modalAtaqueFracasso">Fracasso</button>
+                                            <button type="button" class="ataque-botao" id="modalAtaqueCancelar">Cancelar ataque</button>
+                                        </div>
+                                    </div>
+
+                                    <div id="modalAtaqueEtapaDano" class="oculto">
+                                        <div id="modalAtaqueResumo" class="ataque-modal-resumo"></div>
+                                        <div class="ataque-modal-linha">
+                                            <label for="modalAtaqueDano">Dano</label>
+                                            <input id="modalAtaqueDano" type="number" min="0" step="1" inputmode="numeric" aria-label="Dano causado no ataque">
+                                        </div>
+
+                                        <div class="ataque-modal-acoes">
+                                            <button type="button" class="ataque-botao" id="modalAtaqueRegistrarDano">Registrar dano</button>
+                                            <button type="button" class="ataque-botao" id="modalAtaqueCancelarDano">Cancelar ataque</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="passivas-linha">
@@ -3332,7 +3482,7 @@
                                         <div class="equipados-grid-cabecalho">Nome</div>
                                         <div class="equipados-grid-cabecalho-centro">Ataque</div>
                                         <div class="equipados-grid-cabecalho-centro">Dano</div>
-                                        <div class="equipados-grid-cabecalho-centro">Ação</div>
+                                        <div class="equipados-grid-cabecalho-centro equipados-grid-cabecalho-vazio"></div>
 
                                         <select id="arma1Nome" aria-label="Arma principal equipada"></select>
                                         <select id="arma1Ataque" aria-label="Atributo de ataque da arma principal">
@@ -3340,7 +3490,7 @@
                                             <option value="des">DES</option>
                                         </select>
                                         <input id="arma1Dano" placeholder="1d8 cortante" readonly>
-                                        <button type="button" id="arma1Desequipar" class="equipados-acao-botao">Desequipar</button>
+                                        <button type="button" id="arma1Desequipar" class="equipados-acao-botao" aria-label="Desequipar arma principal" title="Desequipar arma principal">🚫</button>
                                     </div>
                                     <div id="arma1Propriedade" class="equipados-propriedade-linha">Propriedade: </div>
                                     </div>
@@ -3353,7 +3503,7 @@
                                             <option value="des">DES</option>
                                         </select>
                                         <input id="arma2Dano" aria-label="Dano da arma secundária" readonly>
-                                        <button type="button" id="arma2Desequipar" class="equipados-acao-botao">Desequipar</button>
+                                        <button type="button" id="arma2Desequipar" class="equipados-acao-botao" aria-label="Desequipar arma secundária" title="Desequipar arma secundária">🚫</button>
                                     </div>
                                     <div id="arma2Propriedade" class="equipados-propriedade-linha"></div>
                                     </div>
@@ -4728,6 +4878,31 @@
             sincronizarEquipamentosCombate();
         }
 
+        function obterSelecaoArmaEquipada(indiceSlot) {
+            const select = document.getElementById(`arma${indiceSlot}Nome`);
+            if (!select) return { indice: "", nome: "" };
+
+            const indice = select.value || "";
+            const nome = indice !== "" ? (select.options[select.selectedIndex]?.text || "") : "";
+            return { indice, nome };
+        }
+
+        function resolverIndiceArmaSalva(dados, indiceSlot, armas) {
+            const chaveIndice = `arma${indiceSlot}EquipadaIndice`;
+            const chaveNome = `arma${indiceSlot}Nome`;
+            const valorIndice = parseInt(dados[chaveIndice], 10);
+
+            if (Number.isInteger(valorIndice) && armas[valorIndice]?.arma_nome?.trim()) {
+                return valorIndice;
+            }
+
+            const nomeSalvo = String(dados[chaveNome] || "").trim();
+            if (!nomeSalvo) return null;
+
+            const indicePorNome = armas.findIndex(arma => arma?.arma_nome?.trim() === nomeSalvo);
+            return indicePorNome >= 0 ? indicePorNome : null;
+        }
+
         function obterArmasEquipadasAtivas() {
             const armas = coletarArmas();
             const indicesMarcados = obterIndicesArmasMarcadas();
@@ -5468,6 +5643,25 @@
             return dados
         }
 
+        function normalizarValorAlinhamento(valor) {
+            const texto = String(valor || "").trim()
+            if (!texto) return ""
+
+            const mapa = {
+                "Leal e Bom": "Leal e Bom (LB)",
+                "Neutro e Bom": "Neutro e Bom (NB)",
+                "Caótico e Bom": "CaÃ³tico e Bom (CB)",
+                "Leal e Neutro": "Leal e Neutro (LN)",
+                "Neutro": "Neutro (N)",
+                "Caótico e Neutro": "CaÃ³tico e Neutro (CN)",
+                "Leal e Mau": "Leal e Mau (LM)",
+                "Neutro e Mau": "Neutro e Mau (NM)",
+                "Caótico e Mau": "CaÃ³tico e Mau (CM)"
+            }
+
+            return mapa[texto] || texto
+        }
+
         function aplicarDadosFicha(dados) {
 
             if (!dados || typeof dados !== "object") return
@@ -5477,8 +5671,10 @@
             for (let key in dados) {
                 const campo = document.getElementById(key)
                 if (!campo) continue
+                if (['arma1Nome', 'arma2Nome', 'arma1Dano', 'arma2Dano'].includes(key)) continue
 
                 if (key === "magiaAtributoConjuracao") campo.value = normalizarChaveAtributo(dados[key])
+                else if (key === "alinhamentoID") campo.value = normalizarValorAlinhamento(dados[key])
                 else if (key === "dadosVidaTipo") campo.value = normalizarTipoDadoVida(dados[key])
                 else if (campo.type === "checkbox") campo.checked = dados[key]
                 else campo.value = dados[key]
@@ -5612,6 +5808,19 @@
                 }
             }
 
+            atualizarListaArmasEquipamento()
+
+            const armasImportadas = coletarArmas()
+            const indiceArma1 = resolverIndiceArmaSalva(dados, 1, armasImportadas)
+            const indiceArma2Base = resolverIndiceArmaSalva(dados, 2, armasImportadas)
+            const indiceArma2 = indiceArma2Base === indiceArma1 ? null : indiceArma2Base
+
+            atualizarSelectNomeArmaEquipada(1, armasImportadas, indiceArma1)
+            atualizarSelectNomeArmaEquipada(2, armasImportadas, indiceArma2)
+
+            sincronizarMarcacaoArmasPorSlots()
+            sincronizarEquipamentosCombate()
+
             sincronizarSalvaguardasComAtributosBase()
             atualizarAtributos()
             desenharRadar()
@@ -5620,7 +5829,6 @@
             atualizarPassivas()
             atualizarClasseArmaduraEquipada()
             atualizarSubAbaArmas()
-            atualizarListaArmasEquipamento()
             sincronizarClasseNivel(true)
             sincronizarResumoCaracteristicas(true)
             sincronizarCamposMagia()
@@ -5643,6 +5851,13 @@
                 if (!campo.id) return
                 dados[campo.id] = campo.type === "checkbox" ? campo.checked : campo.value
             })
+
+            const arma1Equipada = obterSelecaoArmaEquipada(1)
+            const arma2Equipada = obterSelecaoArmaEquipada(2)
+            dados.arma1Nome = arma1Equipada.nome
+            dados.arma2Nome = arma2Equipada.nome
+            dados.arma1EquipadaIndice = arma1Equipada.indice
+            dados.arma2EquipadaIndice = arma2Equipada.indice
 
             return adicionarAliasesLegacyAoSave(dados)
         }
