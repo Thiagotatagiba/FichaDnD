@@ -1550,6 +1550,7 @@
         .historico-col-valor {
             display: flex;
             align-items: center;
+            text-align: center;
         }
 
         .equipamento-colunas {
@@ -4470,21 +4471,11 @@
 
         //-- Botão Cancelar do Modal --
         document.getElementById('modalAtaqueCancelar')
-            ?.addEventListener('click', () => {
-                const modal = document.getElementById('modalAtaqueOverlay');
+            ?.addEventListener('click', fecharModalAtaque);
 
-                // 🔥 Limpa TODOS os inputs dentro do modal
-                modal.querySelectorAll('input').forEach(input => {
-                    if (input.type === 'checkbox' || input.type === 'radio') {
-                        input.checked = false;
-                    } else {
-                        input.value = '';
-                    }
-                });
+        document.getElementById('modalAtaqueCancelarDano')
+            ?.addEventListener('click', fecharModalAtaque);
 
-                modal.classList.remove('ativo');
-                modal.classList.add('oculto');
-            });
         //-- Abrir Ataque --
         function abrirModalAtaque(arma) {
             const modal = document.getElementById('modalAtaqueOverlay');
@@ -4496,22 +4487,77 @@
 
             console.log('Abrindo modal da arma:', arma);
 
-            //SUCESSO clique
-            document.getElementById('modalAtaqueSucesso')
-                ?.addEventListener('click', () => {
 
-                    const etapaAtaque = document.getElementById('modalAtaqueOverlay');
-                    const etapaDano = document.getElementById('modalAtaqueEtapaDano');
-
-                    if (etapaAtaque) etapaAtaque.classList.add('oculto');
-                    if (etapaDano) etapaDano.classList.remove('oculto');
-
-                    console.log('Transição: Ataque → Dano');
-                });
         }
+
+        //SUCESSO clique
+        document.getElementById('modalAtaqueSucesso')
+            ?.addEventListener('click', () => {
+
+                const etapaAtaque = document.getElementById('modalAtaqueEtapaDado');
+                const etapaDano = document.getElementById('modalAtaqueEtapaDano');
+
+                if (etapaAtaque) etapaAtaque.classList.add('oculto');
+                if (etapaDano) etapaDano.classList.remove('oculto');
+
+                console.log('Transição: Ataque → Dano');
+            });
+
+        //FRACASSO clique
+        document.getElementById('modalAtaqueFracasso')
+            ?.addEventListener('click', () => {
+
+                const dado = document.getElementById('modalAtaqueDado')?.value;
+
+                // 👉 SUA LÓGICA AQUI
+                console.log('Ataque falhou. Dado:', dado);
+                registrarHistoricoComandoCombate('Ataque falhou!', 'Dado: ' + dado);
+
+                // Fecha modal (reaproveita função)
+                fecharModalAtaque();
+            });
+
+        //REGISTRAR DANO
+        document.getElementById('modalAtaqueRegistrarDano')
+            ?.addEventListener('click', () => {
+
+                const dano = document.getElementById('modalAtaqueDano')?.value;
+
+                // 👉 Validação simples
+                if (!dano || dano < 0) {
+                    alert('Informe um valor de dano válido');
+                    return;
+                }
+
+                // 👉 SUA LÓGICA AQUI
+                console.log('Dano registrado:', dano);
+                registrarHistoricoComandoCombate('Ataque!', dano);
+
+                // Fecha modal
+                fecharModalAtaque();
+            });
 
         function fecharModalAtaque() {
             const modal = document.getElementById('modalAtaqueOverlay');
+
+            // 🔥 Remove o foco de qualquer elemento dentro do modal
+            if (document.activeElement) {
+                document.activeElement.blur();
+            }
+            // Limpa TODOS os inputs
+            modal.querySelectorAll('input').forEach(input => {
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    input.checked = false;
+                } else {
+                    input.value = '';
+                }
+            });
+
+            // Volta para a primeira etapa
+            document.getElementById('modalAtaqueEtapaDado')?.classList.remove('oculto');
+            document.getElementById('modalAtaqueEtapaDano')?.classList.add('oculto');
+
+            // Fecha o modal
             modal.classList.remove('ativo');
             modal.classList.add('oculto');
         }
@@ -6682,7 +6728,9 @@
                 'Cura': '❤️',
                 'Fracasso': '💀',
                 'Dano': '💥',
-                'Sucesso': '🍀'
+                'Sucesso': '🍀',
+                'Ataque falhou!': '❌',
+                'Ataque!': '⚔️'
             };
 
             const icone = icones[tipo] || '';
