@@ -2931,6 +2931,45 @@
 </head>
 
 <body>
+    <div id="modalAtaqueOverlay" class="ataque-modal-overlay oculto" aria-hidden="true">
+        <div class="ataque-modal" role="dialog" aria-modal="true" aria-labelledby="modalAtaqueTitulo">
+            <div id="modalAtaqueTitulo" class="ataque-modal-titulo">Ataque com arma</div>
+            <div id="modalAtaqueSubtitulo" class="ataque-modal-subtitulo">Digite o dado tirado.
+            </div>
+
+            <div id="modalAtaqueEtapaDado">
+                <div class="ataque-modal-linha">
+                    <label for="modalAtaqueDado">Dado</label>
+                    <div class="ataque-modal-rolagem">
+                        <input id="modalAtaqueDado" type="number" min="1" step="1" inputmode="numeric"
+                            aria-label="Dado tirado no ataque">
+                        <div id="modalAtaqueBonus" class="ataque-modal-bonus">+ 0 (FOR)</div>
+                    </div>
+                </div>
+
+                <div class="ataque-modal-acoes">
+                    <button type="button" class="ataque-botao" id="modalAtaqueSucesso">Sucesso</button>
+                    <button type="button" class="ataque-botao" id="modalAtaqueFracasso">Fracasso</button>
+                    <button type="button" class="ataque-botao" id="modalAtaqueCancelar">Cancelar
+                        ataque</button>
+                </div>
+            </div>
+
+            <div id="modalAtaqueEtapaDano" class="oculto">
+                <div id="modalAtaqueResumo" class="ataque-modal-resumo"></div>
+                <div class="ataque-modal-linha">
+                    <label for="modalAtaqueDano">Dano</label>
+                    <input id="modalAtaqueDano" type="number" min="0" step="1" inputmode="numeric"
+                        aria-label="Dano causado no ataque">
+                </div>
+
+                <div class="ataque-modal-acoes">
+                    <button type="button" class="ataque-botao" id="modalAtaqueRegistrarDano">Registrar dano</button>
+                    <button type="button" class="ataque-botao" id="modalAtaqueCancelarDano">Cancelar ataque</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="ficha">
 
@@ -3198,50 +3237,7 @@
                                 <div class="bonus-retangulo">Sabedoria Passiva</div>
                             </div>
 
-                            <div id="modalAtaqueOverlay" class="ataque-modal-overlay oculto" aria-hidden="true">
-                                <div class="ataque-modal" role="dialog" aria-modal="true"
-                                    aria-labelledby="modalAtaqueTitulo">
-                                    <div id="modalAtaqueTitulo" class="ataque-modal-titulo">Ataque com arma</div>
-                                    <div id="modalAtaqueSubtitulo" class="ataque-modal-subtitulo">Digite o dado tirado.
-                                    </div>
 
-                                    <div id="modalAtaqueEtapaDado">
-                                        <div class="ataque-modal-linha">
-                                            <label for="modalAtaqueDado">Dado</label>
-                                            <div class="ataque-modal-rolagem">
-                                                <input id="modalAtaqueDado" type="number" min="1" step="1"
-                                                    inputmode="numeric" aria-label="Dado tirado no ataque">
-                                                <div id="modalAtaqueBonus" class="ataque-modal-bonus">+ 0 (FOR)</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="ataque-modal-acoes">
-                                            <button type="button" class="ataque-botao"
-                                                id="modalAtaqueSucesso">Sucesso</button>
-                                            <button type="button" class="ataque-botao"
-                                                id="modalAtaqueFracasso">Fracasso</button>
-                                            <button type="button" class="ataque-botao" id="modalAtaqueCancelar">Cancelar
-                                                ataque</button>
-                                        </div>
-                                    </div>
-
-                                    <div id="modalAtaqueEtapaDano" class="oculto">
-                                        <div id="modalAtaqueResumo" class="ataque-modal-resumo"></div>
-                                        <div class="ataque-modal-linha">
-                                            <label for="modalAtaqueDano">Dano</label>
-                                            <input id="modalAtaqueDano" type="number" min="0" step="1"
-                                                inputmode="numeric" aria-label="Dano causado no ataque">
-                                        </div>
-
-                                        <div class="ataque-modal-acoes">
-                                            <button type="button" class="ataque-botao"
-                                                id="modalAtaqueRegistrarDano">Registrar dano</button>
-                                            <button type="button" class="ataque-botao"
-                                                id="modalAtaqueCancelarDano">Cancelar ataque</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="passivas-linha">
@@ -4445,6 +4441,11 @@
     </div>
 
     <script>
+        //teste de cliques
+        document.addEventListener('click', (e) => {
+            console.log('Clicou em:', e.target);
+        });
+
         // ===== Integracao e inicializacao =====
         window.api?.receberPersonagem((data) => {
             const personagem = JSON.parse(data);
@@ -4471,6 +4472,16 @@
         document.getElementById('modalAtaqueCancelar')
             ?.addEventListener('click', () => {
                 const modal = document.getElementById('modalAtaqueOverlay');
+
+                // 🔥 Limpa TODOS os inputs dentro do modal
+                modal.querySelectorAll('input').forEach(input => {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        input.checked = false;
+                    } else {
+                        input.value = '';
+                    }
+                });
+
                 modal.classList.remove('ativo');
                 modal.classList.add('oculto');
             });
@@ -4478,10 +4489,25 @@
         function abrirModalAtaque(arma) {
             const modal = document.getElementById('modalAtaqueOverlay');
 
+            console.log('MODAL:', modal); // 👈 ADICIONA ISSO
+
             modal.classList.add('ativo');
             modal.classList.remove('oculto');
 
             console.log('Abrindo modal da arma:', arma);
+
+            //SUCESSO clique
+            document.getElementById('modalAtaqueSucesso')
+                ?.addEventListener('click', () => {
+
+                    const etapaAtaque = document.getElementById('modalAtaqueOverlay');
+                    const etapaDano = document.getElementById('modalAtaqueEtapaDano');
+
+                    if (etapaAtaque) etapaAtaque.classList.add('oculto');
+                    if (etapaDano) etapaDano.classList.remove('oculto');
+
+                    console.log('Transição: Ataque → Dano');
+                });
         }
 
         function fecharModalAtaque() {
@@ -4532,10 +4558,14 @@
         }
 
         function atualizarListaArmasEquipamento() {
+
+
             renderizarArmasEquipamento(coletarArmas());
             renderizarArmadurasEquipamento(coletarArmaduras());
             renderizarEscudosEquipamento(coletarEscudos());
             renderizarOutrosEquipamento(coletarOutros());
+
+
         }
 
         function obterTextoDanoArma(arma) {
@@ -4640,6 +4670,7 @@
 
                 const div = document.createElement("div");
                 div.classList.add("arma-equipamento");
+
 
                 const label = document.createElement("label");
                 if (!proficiente) label.classList.add("arma-equipamento-nao-proficiente");
@@ -4787,6 +4818,7 @@
                 const { linha1, linha2, proficiente } = formatarItem(item);
 
                 const div = document.createElement("div");
+
                 div.classList.add("arma-equipamento");
 
                 const label = document.createElement("label");
@@ -5097,6 +5129,7 @@
             const escudos = coletarEscudos();
             const outros = coletarOutros();
 
+
             const indicesMarcados = obterIndicesArmasMarcadas();
             const slot1Atual = document.getElementById('arma1Nome')?.value || '';
             const slot2Atual = document.getElementById('arma2Nome')?.value || '';
@@ -5401,7 +5434,7 @@
 
             inicializarEventosArma(novaArma);
             atualizarListaArmasEquipamento();
-            
+
 
 
             return novaArma; // 🔥 ANTES ESTAVA 'novoCard', POR ISSO DAVA ERRO
@@ -6571,6 +6604,17 @@
             armas.forEach(arma => {
                 const item = document.createElement('div');
                 item.className = 'arma-resumo-item';
+
+                // 🔥 EVENTO DE CLIQUE AQUI
+                item.addEventListener('click', () => {
+                    console.log('Clique na arma (COMBATE):', arma);
+
+                    abrirModalAtaque({
+                        nome: arma.nome,
+                        dano: arma.dano || '-',
+                        ataque: arma.ataque
+                    });
+                });
 
                 const topo = document.createElement('div');
                 topo.className = 'arma-resumo-topo';
