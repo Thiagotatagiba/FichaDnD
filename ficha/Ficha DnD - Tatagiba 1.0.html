@@ -4172,8 +4172,7 @@
                                                     <input type="number" data-campo="arma_municao_qtd" min="0" step="1"
                                                         aria-label="Quantidade de munição da arma">
                                                     |
-                                                    <input type="text" data-campo="arma_municao_tipo"
-                                                        aria-label="Tipo de munição da arma" placeholder="Tipo">
+                                                    <select data-campo="arma_municao_tipo"></select>
                                                 </div>
                                             </div>
                                         </div>
@@ -4458,6 +4457,11 @@
             adicionarNovoEscudo();
             adicionarNovoOutro();
         });
+        window.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.arma-card').forEach(card => {
+                atualizarOpcoesMunicao(card);
+            });
+        });
 
         document.addEventListener('change', (e) => {
             if (e.target.matches('[data-campo="arma_tipo"]')) {
@@ -4467,6 +4471,46 @@
                 }
             }
         });
+        // atualizar munição
+        function atualizarOpcoesMunicao(card) {
+            if (!card) return;
+
+            const selectMunicao = card.querySelector('[data-campo="arma_municao_tipo"]');
+            if (!selectMunicao) return;
+
+            selectMunicao.innerHTML = '<option value="">Selecione</option>';
+
+            const outrosItens = document.querySelectorAll('#listaOutros .armadura-card');
+
+            outrosItens.forEach(item => {
+                const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
+                const nome = item.querySelector('[data-campo="outro_nome"]')?.value;
+
+                if (tipo === 'Municao' && nome) {
+                    const option = document.createElement('option');
+                    option.value = nome;
+                    option.textContent = nome;
+
+                    selectMunicao.appendChild(option);
+                }
+            });
+        }
+
+        document.querySelectorAll('.arma-card').forEach(card => {
+            atualizarOpcoesMunicao(card);
+        });
+        //Atualizar automaticamente quando mudar
+        document.addEventListener('change', (e) => {
+            if (e.target.matches('[data-campo="outro_tipo"], [data-campo="outro_nome"]')) {
+
+                document.querySelectorAll('.arma-card').forEach(card => {
+                    atualizarOpcoesMunicao(card);
+                });
+
+            }
+        });
+
+
         // ===== Função de Ataque de armas em combate =====
 
         //-- Botão Cancelar do Modal --
@@ -4509,7 +4553,7 @@
 
                 const dado = document.getElementById('modalAtaqueDado')?.value;
 
-                // 👉 SUA LÓGICA AQUI
+                // Registrar FRACASSO
                 console.log('Ataque falhou. Dado:', dado);
                 registrarHistoricoComandoCombate('Ataque falhou!', 'Dado: ' + dado);
 
