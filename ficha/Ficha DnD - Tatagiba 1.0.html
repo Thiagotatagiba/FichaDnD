@@ -4485,11 +4485,14 @@
             outrosItens.forEach(item => {
                 const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
                 const nome = item.querySelector('[data-campo="outro_nome"]')?.value;
+                const quantidade = item.querySelector('[data-campo="outro_quantidade"]')?.value;
 
                 if (tipo === 'Municao' && nome) {
                     const option = document.createElement('option');
-                    option.value = nome;
-                    option.textContent = nome;
+                    const texto = `${quantidade || 0} ${nome}`;
+                    option.value = nome; // valor "limpo"
+                    option.textContent = `${quantidade} ${nome}`;
+                    option.dataset.quantidade = quantidade;
 
                     selectMunicao.appendChild(option);
                 }
