@@ -830,8 +830,8 @@
 
         .salvaguarda-caixa {
             width: 62px;
-            min-height: 110px;
-            padding: 8px 6px 10px;
+            min-height: 90px;
+            padding: 5px 5px 8px;
             border: 2px solid #8b4513;
             border-radius: 14px;
             background: linear-gradient(180deg, #fbf5ea 0%, #ead9b6 100%);
@@ -869,7 +869,7 @@
 
         .salvaguarda-caixa .valor-atributo input {
             width: 100%;
-            text-align: center;
+            text-align: right;
             font-weight: bold;
             font-size: 17px;
             border: none;
@@ -2767,7 +2767,7 @@
             font-size: 18px;
             color: #f4ecd8;
             position: absolute;
-            left: 0;
+            left: -2;
             top: -3px;
             z-index: 3;
         }
@@ -2779,7 +2779,7 @@
             text-align: center;
             border: 1px solid #3b2f1b;
             background: #fdfaf2;
-            padding: 4px;
+            padding: 0px 0px 0px 8px !important;
             box-sizing: border-box;
             border-radius: 4px;
             margin-left: 16px;
@@ -5462,6 +5462,7 @@
             atualizarCamposArma();
             atualizarListaArmasEquipamento();
         }
+
         // ===== Listeners finais e sincronizacoes automaticas =====
         ['profArmaSimples', 'profArmaMarciais'].forEach(id => {
             const el = document.getElementById(id);
@@ -6109,8 +6110,14 @@
             normalizarDadosVida()
             atualizarPesoAtualInventario()
             marcarFichaComoSalva()
+
+
+
         }
 
+
+
+        
         function carregarFicha(personagem) {
             aplicarDadosFicha(personagem)
         }
@@ -6174,11 +6181,89 @@
             marcarFichaComoSalva()
         }
 
-        /* IMPORTAR */
+        /* IMPORTAR Ficha*/
 
-        function importarFicha() {
-            document.getElementById("fileInput").click()
+        /* function importarFicha(json) {
+             const dados = typeof json === "string" ? JSON.parse(json) : json;
+             document.getElementById("fileInput").click()
+                        
+ 
+ 
+         }*/
+
+        function importarFicha(json) {
+            // Se recebeu JSON diretamente, aplica imediatamente
+            if (json !== undefined && json !== null) {
+                try {
+                    const dados = (typeof json === 'string') ? JSON.parse(json) : json;
+                    if (typeof aplicarDadosFicha === 'function') {
+                        aplicarDadosFicha(dados);
+                    } else {
+                        console.warn('aplicarDadosFicha não encontrada; dados lidos:', dados);
+                    }
+                } catch (err) {
+                    console.error('importarFicha: JSON inválido', err);
+                    alert('Erro: JSON inválido.');
+                }
+                return;
+            }
+
+            // Sem argumento: abrir file picker
+            let fileInput = document.getElementById('fileInput');
+
+            // cria input se não existir
+            if (!fileInput) {
+                fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.accept = '.json,application/json';
+                fileInput.id = 'fileInput';
+                fileInput.style.display = 'none';
+                document.body.appendChild(fileInput);
+            }
+
+            // remove listeners antigos (clonar é a forma mais simples)
+            const newInput = fileInput.cloneNode(true);
+            fileInput.parentNode.replaceChild(newInput, fileInput);
+            fileInput = newInput;
+
+            // adiciona listener de leitura
+            fileInput.addEventListener('change', function (evt) {
+                const file = evt.target.files && evt.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    try {
+                        const dados = JSON.parse(e.target.result);
+                        if (typeof aplicarDadosFicha === 'function') {
+                            aplicarDadosFicha(dados);
+                            console.info('importarFicha: importação concluída');
+                        } else {
+                            console.warn('aplicarDadosFicha não definida; arquivo lido:', dados);
+                        }
+                    } catch (err) {
+                        console.error('importarFicha: erro ao parsear JSON do arquivo', err);
+                        alert('Erro ao importar: JSON inválido.');
+                    } finally {
+                        try { fileInput.value = ''; } catch (ignore) { }
+                    }
+                };
+                reader.onerror = function (e) {
+                    console.error('importarFicha: FileReader error', e);
+                    alert('Erro ao ler o arquivo.');
+                    try { fileInput.value = ''; } catch (ignore) { }
+                };
+                reader.readAsText(file, 'utf-8');
+            });
+
+            // abre o diálogo
+            try {
+                fileInput.click();
+            } catch (err) {
+                console.error('importarFicha: falha ao abrir file picker', err);
+                alert('Não foi possível abrir o seletor de arquivos.');
+            }
         }
+
 
         document.getElementById("fileInput").addEventListener("change", function () {
             const file = this.files[0]
@@ -6881,6 +6966,7 @@
 
         function verificarVitoriaDeathSave() {
             let sucessos = 0;
+
             for (let i = 1; i <= 3; i++) {
                 if (document.getElementById('sucesso' + i)?.classList.contains('ativo')) {
                     sucessos++;
@@ -6888,14 +6974,37 @@
             }
 
             if (sucessos >= 3) {
-                alert('O personagem ganhou 1 PV e está estável!');
+
+                const frases = [
+                    "Contra todas as probabilidades, você se agarra à vida.",
+                    "Seu peito volta a respirar. A morte terá que esperar.",
+                    "A chama da sua alma se recusa a se apagar.",
+                    "Você resiste. Ainda não é o seu fim.",
+                    "O destino te dá mais uma chance.",
+                    "Seu corpo responde — você está de volta.",
+                    "A vida pulsa novamente em suas veias.",
+                    "Nem hoje a morte te leva.",
+                    "Você abre os olhos mais uma vez.",
+                    "Os deuses ainda não terminaram com você.",
+                    "A morte tentou te abraçar, mas seu espírito se provou mais forte.",
+                    "O fio da sua vida se tencionou, mas não rompeu. Você está de volta.",
+                    "A luz retorna aos seus olhos. O mundo ainda precisa de você.",
+                    "Você respira fundo enquanto o abismo recua. A luta continua!",
+                    "A balança se inclinou a seu favor. Você estabilizou.",
+                    "O Ceifador terá que esperar. Hoje não é o seu dia.",
+                    "Sua determinação forçou o destino a te conceder uma segunda chance.",
+                    "Três batidas firmes no coração. O perigo imediato passou."
+                ];
+
+                const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
+
+                alert(fraseAleatoria + "\n\nVocê recupera 1 PV e está estável!");
+
                 const campoPV = document.getElementById('pvAtual');
                 if (campoPV) {
                     registrarHistoricoComandoCombate('Cura', 1);
                     campoPV.value = 1;
                     normalizarPontosDeVida();
-
-
                 }
             }
         }
@@ -7156,6 +7265,7 @@
         atualizarClasseArmaduraEquipada();
         atualizarResumoAtaquesConjuracao();
         atualizarSubAbaArmas();
+
 
 
     </script>
