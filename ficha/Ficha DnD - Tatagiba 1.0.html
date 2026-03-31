@@ -4169,10 +4169,8 @@
                                             <div>
                                                 <label>Munição</label>
                                                 <div class="arma-distancia">
-                                                    <input type="number" data-campo="arma_municao_qtd" min="0" step="1"
-                                                        aria-label="Quantidade de munição da arma">
-                                                    |
-                                                    <select data-campo="arma_municao_tipo"></select>
+
+                                                    <select data-campo="arma_municao_id"></select>
                                                 </div>
                                             </div>
                                         </div>
@@ -4444,10 +4442,7 @@
         // Variaveis globais
         let armaAtualCard = null;
 
-        //teste de cliques
-        document.addEventListener('click', (e) => {
-            console.log('Clicou em:', e.target);
-        });
+
 
         // ===== Integracao e inicializacao =====
         window.api?.receberPersonagem((data) => {
@@ -4474,32 +4469,86 @@
                 }
             }
         });
+
+
+        // ===== Função: Gerar ID único para cada item =====
+        function gerarId() {
+            return 'id_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        }
+
+        // ===== Lógica de Munição Dinâmica =====
+        function atualizarTodasMunicoesArmas() {
+
+            // 🔹 armas na aba itens
+            const armasItens = document.querySelectorAll('#listaArmas .armadura-card');
+
+            armasItens.forEach(card => {
+                atualizarOpcoesMunicao(card);
+            });
+
+            // 🔹 armas na aba combate (⚠️ AJUSTE O ID SE NECESSÁRIO)
+            const armasCombate = document.querySelectorAll('#listaArmasEquipamento .armadura-card');
+
+            armasCombate.forEach(card => {
+                atualizarOpcoesMunicao(card);
+            });
+        }
+
         // atualizar munição
         function atualizarOpcoesMunicao(card) {
             if (!card) return;
 
-            const selectMunicao = card.querySelector('[data-campo="arma_municao_tipo"]');
+            const selectMunicao = card.querySelector('[data-campo="arma_municao_id"]');
             if (!selectMunicao) return;
 
-            selectMunicao.innerHTML = '<option value="">Selecione</option>';
+            // 🔹 PASSO 1: guardar valor atual
+            const valorAtual = selectMunicao.value;
+
+            selectMunicao.innerHTML = '<option value="">Sem Munição</option>';
 
             const outrosItens = document.querySelectorAll('#listaOutros .armadura-card');
 
             outrosItens.forEach(item => {
                 const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
                 const nome = item.querySelector('[data-campo="outro_nome"]')?.value;
-                const quantidade = item.querySelector('[data-campo="outro_quantidade"]')?.value;
+                const inputQuantidade = item.querySelector('[data-campo="outro_quantidade"]');
+                const quantidade = inputQuantidade ? inputQuantidade.value : '';
+
+                let id = item.dataset.id;
+
+                if (!id) {
+                    id = gerarId();
+                    item.dataset.id = id;
+                }
 
                 if (tipo === 'Municao' && nome) {
                     const option = document.createElement('option');
-                    option.value = nome;       // 🔥 só o nome
-                    option.textContent = `${quantidade || '-'} ${nome}`; // visual bonito
-
-                    console.log('CRIANDO OPTION:', option.textContent); // 👈 TESTE AQUI
+                    option.value = id;
+                    option.textContent = `${quantidade || '-'} ${nome}`;
 
                     selectMunicao.appendChild(option);
                 }
+
             });
+
+            // 🔹 PASSO 2: restaurar valor
+            // 🔹 restaurar seleção corretamente
+            let encontrou = false;
+
+            for (let option of selectMunicao.options) {
+                if (option.value === valorAtual) {
+                    option.selected = true;
+                    encontrou = true;
+                } else {
+                    option.selected = false;
+                }
+            }
+
+            // 🔹 fallback
+            if (!encontrou) {
+                selectMunicao.selectedIndex = 0;
+            }
+
         }
 
         //CONSUMIR MUNISSÃO AO ATACAR
@@ -4510,23 +4559,20 @@
                 return;
             }
 
-            // resto da lógica
-
             if (!armaAtual) {
                 console.warn('Nenhuma arma ativa');
                 return;
             }
 
-            const nomeMunicao = armaAtual.tipoMunicao;
+            // 🔥 AGORA USA ID
+            const idMunicao = armaAtual.arma_municao_id;
 
             const itens = document.querySelectorAll('#listaOutros .armadura-card');
 
-            const item = [...itens].find(item => {
-                return item.querySelector('[data-campo="outro_nome"]')?.value === nomeMunicao;
-            });
+            const item = [...itens].find(item => item.dataset.id === idMunicao);
 
             if (!item) {
-                console.warn('Munição não encontrada:', nomeMunicao);
+                console.warn('Munição não encontrada (ID):', idMunicao);
                 return;
             }
 
@@ -4543,9 +4589,11 @@
             if (atual < 0) atual = 0;
 
             inputQtd.value = atual;
+
+            // 🔥 IMPORTANTE: dispara atualização
             inputQtd.dispatchEvent(new Event('change'));
 
-            // Atualiza UI
+            // 🔥 Atualiza selects
             document.querySelectorAll('.arma-card').forEach(card => {
                 atualizarOpcoesMunicao(card);
             });
@@ -4556,7 +4604,7 @@
         });
         //Atualizar automaticamente quando mudar
         document.addEventListener('change', (e) => {
-            if (e.target.matches('[data-campo="outro_tipo"], [data-campo="outro_nome"]')) {
+            if (e.target.matches('[data-campo="outro_tipo"], [data-campo="outro_nome"], [data-campo="outro_quantidade"]')) {
 
                 document.querySelectorAll('.arma-card').forEach(card => {
                     atualizarOpcoesMunicao(card);
@@ -4584,7 +4632,6 @@
             modal.classList.add('ativo');
             modal.classList.remove('oculto');
 
-            console.log('Abrindo modal da arma:', arma);
         }
 
         //SUCESSO clique
@@ -4597,7 +4644,6 @@
                 if (etapaAtaque) etapaAtaque.classList.add('oculto');
                 if (etapaDano) etapaDano.classList.remove('oculto');
 
-                console.log('Transição: Ataque → Dano');
             });
 
         //FRACASSO clique
@@ -4607,7 +4653,6 @@
                 const dado = document.getElementById('modalAtaqueDado')?.value;
 
                 // Registrar FRACASSO
-                console.log('Ataque falhou. Dado:', dado);
                 registrarHistoricoComandoCombate('Ataque falhou!', 'Dado: ' + dado);
                 // CONSUMIR MUNIÇÃO
                 consumirMunicao(1);
@@ -4628,7 +4673,6 @@
                 }
 
                 // 👉 SUA LÓGICA AQUI
-                console.log('Dano registrado:', dano);
                 registrarHistoricoComandoCombate('Ataque!', dano);
                 // CONSUMIR MUNIÇÃO
                 consumirMunicao(1);
@@ -4705,13 +4749,11 @@
 
         function atualizarListaArmasEquipamento() {
 
-
             renderizarArmasEquipamento(coletarArmas());
             renderizarArmadurasEquipamento(coletarArmaduras());
             renderizarEscudosEquipamento(coletarEscudos());
             renderizarOutrosEquipamento(coletarOutros());
-
-
+            atualizarTodasMunicoesArmas();
         }
 
         function obterTextoDanoArma(arma) {
@@ -4757,28 +4799,39 @@
             if (propriedades.versatil) listaPropriedades.push("Versátil");
             if (propriedades.especial) listaPropriedades.push("Especial");
 
+
             const distCurta = arma.arma_dist_curto?.trim();
             const distLonga = arma.arma_dist_longo?.trim();
             if ((propriedades.arremesso || propriedades.municao) && (distCurta || distLonga)) {
                 listaPropriedades.push(`Distância (${distCurta || "-"}/${distLonga || "-"})`);
             }
+            console.log("Propriedades de munição:", propriedades.municao);
+            console.log("Arma: ", arma.arma_municao_id);
 
             if (propriedades.municao) {
-                const texto = arma.arma_municao_tipo?.trim();
 
                 let textoMunicao = "Munição";
+// 🔥 CORRIGIDO: AGORA USA O ID PARA BUSCAR O NOME E QUANTIDADE ATUALIZADOS
+                const idMunicao = arma.arma_municao_id;
+                console.log("ID da munição:", idMunicao);
 
-                if (texto) {
-                    textoMunicao += ` (${texto})`;
+                if (idMunicao) {
+
+                    const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
+                        .find(el => el.dataset.id === idMunicao);
+
+                    const nome = item?.querySelector('[data-campo="outro_nome"]')?.value;
+                    const qtd = item?.querySelector('[data-campo="outro_quantidade"]')?.value;
+
+                    if (nome) {
+                        textoMunicao += ` (${qtd || '-'} ${nome})`;
+                    }
                 }
 
                 listaPropriedades.push(textoMunicao);
             }
 
-            if (incluirDescricao) {
-                const descricao = arma.arma_descricao?.trim();
-                if (descricao) listaPropriedades.push(descricao);
-            }
+
 
             return listaPropriedades.join(", ");
         }
@@ -4883,8 +4936,6 @@
             const tipoArma = arma.arma_tipo?.trim();
             const distCurta = arma.arma_dist_curto?.trim();
             const distLonga = arma.arma_dist_longo?.trim();
-            const textoMunicao = arma.arma_municao_tipo?.trim(); // 🔥 NOVO
-
 
 
             if (tipoArma) listaPropriedades.push(tipoArma);
@@ -4906,25 +4957,25 @@
             // 🔥 MUNIÇÃO DINÂMICA (CORRETA)
             if (propriedades.municao) {
 
-                const nomeMunicao = arma.arma_municao_tipo?.trim();
-
                 let textoFinal = "Munição";
 
-                if (nomeMunicao) {
+                const idMunicao = arma.arma_municao_id;
+
+                if (idMunicao) {
 
                     const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
-                        .find(el =>
-                            el.querySelector('[data-campo="outro_nome"]')?.value === nomeMunicao
-                        );
+                        .find(el => el.dataset.id === idMunicao);
 
-                    const qtdAtual = item?.querySelector('[data-campo="outro_quantidade"]')?.value;
+                    const nome = item?.querySelector('[data-campo="outro_nome"]')?.value;
+                    const qtd = item?.querySelector('[data-campo="outro_quantidade"]')?.value;
 
-                    textoFinal = `Munição (${qtdAtual || '-'} ${nomeMunicao})`;
+                    if (nome) {
+                        textoFinal = `Munição (${qtd || '-'} ${nome})`;
+                    }
                 }
 
                 listaPropriedades.push(textoFinal);
             }
-
             return listaPropriedades.join(", ");
         }
 
@@ -5270,7 +5321,28 @@
                         dano: [obterTextoDanoArma(arma), arma.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "),
                         propriedade: limparTextoCombate(resumirMuniçãoNoTexto(obterResumoPropriedadesArma(arma, false))),
                         usaMunicao: !!arma.propriedades?.municao,
-                        tipoMunicao: capitalizarTexto(arma.arma_municao_tipo?.trim() || "")
+
+                        // 🔥 NOVO PADRÃO
+                        arma_municao_id: arma.arma_municao_id || null,
+
+                        // 🔽 dados derivados (somente visual)
+                        nomeMunicao: (() => {
+                            if (!arma.arma_municao_id) return "";
+
+                            const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
+                                .find(el => el.dataset.id === arma.arma_municao_id);
+
+                            return item?.querySelector('[data-campo="outro_nome"]')?.value || "";
+                        })(),
+
+                        qtdMunicao: (() => {
+                            if (!arma.arma_municao_id) return "";
+
+                            const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
+                                .find(el => el.dataset.id === arma.arma_municao_id);
+
+                            return item?.querySelector('[data-campo="outro_quantidade"]')?.value || "";
+                        })()
                     };
                 })
                 .filter(arma => arma && arma.nome);
@@ -5461,8 +5533,17 @@
             const registrarListenersCamposArma = () => {
                 card.querySelectorAll('[data-campo]').forEach(campo => {
                     if (campo.dataset.listenerResumoArma === 'true') return;
-                    campo.addEventListener('input', atualizarListaArmasEquipamento);
-                    campo.addEventListener('change', atualizarListaArmasEquipamento);
+                    campo.addEventListener('input', () => {
+                        atualizarPesoAtualInventario();
+                        atualizarListaArmasEquipamento();
+                        atualizarTodasMunicoesArmas(); // 🔥 ESSENCIAL
+                    });
+
+                    campo.addEventListener('change', () => {
+                        atualizarPesoAtualInventario();
+                        atualizarListaArmasEquipamento();
+                        atualizarTodasMunicoesArmas(); // 🔥 ESSENCIAL
+                    });
                     campo.dataset.listenerResumoArma = 'true';
                 });
             };
@@ -5827,6 +5908,7 @@
             return escudos;
         }
 
+        // O card de "outros" é mais simples, sem proficiência ou propriedades, então a lógica é mais direta
         function inicializarEventosOutro(card) {
             const btnRemover = card.querySelector('.btn-remover-arma');
             if (btnRemover) {
@@ -5845,6 +5927,20 @@
                 campo.addEventListener('change', atualizarPesoAtualInventario);
                 campo.addEventListener('input', atualizarListaArmasEquipamento);
                 campo.addEventListener('change', atualizarListaArmasEquipamento);
+            });
+
+            card.querySelectorAll('[data-campo]').forEach(campo => {
+                campo.addEventListener('input', () => {
+                    atualizarPesoAtualInventario();
+                    atualizarListaArmasEquipamento();
+
+
+                });
+
+                campo.addEventListener('change', () => {
+                    atualizarPesoAtualInventario();
+                    atualizarListaArmasEquipamento();
+                });
             });
 
             atualizarPesoAtualInventario();
@@ -5873,6 +5969,18 @@
             lista.forEach(card => {
                 const outro = {};
 
+                // 🔹 NOVO: pegar ID existente do card
+                let id = card.dataset.id;
+
+                // 🔹 Se não tiver ID, cria um novo
+                if (!id) {
+                    id = gerarId();
+                    card.dataset.id = id;
+                }
+
+                outro.id = id;
+
+                // 🔹 resto dos campos
                 card.querySelectorAll('[data-campo]').forEach(campo => {
                     outro[campo.dataset.campo] = campo.value;
                 });
@@ -6762,7 +6870,7 @@
                 campoSalvaguarda.value = valor;
             });
         }
-//atualiza as pericias com base nos atributos e proficiencia
+        //atualiza as pericias com base nos atributos e proficiencia
         function atualizarPericias() {
             const bonusProf = getBonusProf();
 
@@ -6971,7 +7079,6 @@
 
                 // 🔥 EVENTO DE CLIQUE AQUI
                 item.addEventListener('click', () => {
-                    console.log('Clique na arma (COMBATE):', arma);
                     armaAtual = arma; // Define a arma atual para o modal
                     abrirModalAtaque({
                         nome: arma.nome,
@@ -6982,28 +7089,29 @@
 
                 const topo = document.createElement('div');
                 topo.className = 'arma-resumo-topo';
+
                 const icone = arma.usaMunicao ? '🏹' : '⚔️';
                 let municaoTitulo = '';
-                console.log('MUNIÇÃO NO TOPO:', municaoTitulo);
-                console.log('ARMA COMPLETA:', arma);
-                console.log('CAMPO MUNIÇÃO:', arma.arma_municao_tipo);
+
                 if (arma.usaMunicao) {
 
-                    const nomeMunicao =
-                        arma.arma_municao_tipo?.trim() ||
-                        arma.tipoMunicao?.trim();
-console.log('MUNIÇÃO FINAL:', nomeMunicao);
-                    if (nomeMunicao) {
+                    const idMunicao = arma.arma_municao_id;
+                    console.log('ID da munição associada:', idMunicao);
+
+                    if (idMunicao) {
 
                         const itemMunicao = [...document.querySelectorAll('#listaOutros .armadura-card')]
-                            .find(el =>
-                                el.querySelector('[data-campo="outro_nome"]')?.value === nomeMunicao
-                            );
+                            .find(el => el.dataset.id === idMunicao);
+
+                        const nomeMunicao = itemMunicao
+                            ?.querySelector('[data-campo="outro_nome"]')?.value;
 
                         const qtdAtual = itemMunicao
                             ?.querySelector('[data-campo="outro_quantidade"]')?.value;
 
-                        municaoTitulo = `${qtdAtual || '-'} ${nomeMunicao}`;
+                        if (nomeMunicao) {
+                            municaoTitulo = `${qtdAtual || '-'} ${nomeMunicao}`;
+                        }
                     }
                 }
                 topo.textContent = [arma.nome, icone, municaoTitulo].filter(Boolean).join('  ');
