@@ -3556,7 +3556,7 @@
                                                     <option value="for">FOR</option>
                                                     <option value="des">DES</option>
                                                 </select>
-                                                <input id="arma1Dano" placeholder="1d8 cortante" readonly>
+                                                <input id="arma1Dano" placeholder="ex: 1d8 cortante" readonly>
                                                 <button type="button" id="arma1Desequipar" class="equipados-acao-botao"
                                                     aria-label="Desequipar arma principal"
                                                     title="Desequipar arma principal">🚫</button>
@@ -4097,8 +4097,9 @@
                                     <div class="arma-linha arma-linha-1 arma-header" onclick="toggleArma(this, event)">
 
                                         <div class="arma-nome-container">
-                                            <label>Nome</label>
-                                            <input type="text" data-campo="arma_nome" aria-label="Nome da arma">
+
+                                            <input type="text" data-campo="arma_nome" aria-label="Nome da arma"
+                                                placeholder="Nome da arma">
                                         </div>
                                         <span class="arma-toggle">🔽</span>
                                     </div>
@@ -4108,7 +4109,7 @@
                                             <div>
                                                 <label>Dano</label>
                                                 <div class="container_dano">
-                                                    <input type="text" data-campo="arma_dano" placeholder="1d8">
+                                                    <input type="text" data-campo="arma_dano" placeholder="ex: 1d8">
                                                 </div>
                                             </div>
                                             <div>
@@ -4237,8 +4238,8 @@
                                     <div class="arma-linha arma-linha-1 arma-header"
                                         onclick="toggleArmadura(this, event)">
                                         <div class="arma-nome-container">
-                                            <label>Nome</label>
-                                            <input type="text" data-campo="armadura_nome" aria-label="Nome da armadura">
+                                            <input type="text" data-campo="armadura_nome" aria-label="Nome da armadura"
+                                                placeholder="Nome da armadura">
                                         </div>
                                         <span class="arma-toggle">🔽</span>
                                     </div>
@@ -4322,9 +4323,10 @@
                                     <div class="arma-linha arma-linha-1 arma-header"
                                         onclick="toggleEscudo(this, event)">
                                         <div class="arma-nome-container">
-                                            <label>Nome</label>
+
                                             <input type="text" data-campo="escudo_nome"
-                                                aria-label="Nome do escudo ou vestimento">
+                                                aria-label="Nome do escudo ou vestimento"
+                                                placeholder="Nome do escudo ou vestimento">
                                         </div>
                                         <span class="arma-toggle">🔽</span>
                                     </div>
@@ -4378,13 +4380,14 @@
                                     <div class="arma-linha arma-linha-1 arma-header outro-header"
                                         onclick="toggleOutro(this, event)">
                                         <div class="outro-quantidade-container">
-                                            <label>QT</label>
+
                                             <input type="number" min="0" step="1" class="arma-campo-pequeno"
                                                 data-campo="outro_quantidade" value="1" aria-label="Quantidade do item">
                                         </div>
                                         <div class="arma-nome-container">
-                                            <label>Nome</label>
-                                            <input type="text" data-campo="outro_nome" aria-label="Nome do item">
+
+                                            <input type="text" data-campo="outro_nome" aria-label="Nome do item"
+                                                placeholder="Nome do item">
                                         </div>
                                         <span class="arma-toggle">🔽</span>
                                     </div>
@@ -4394,13 +4397,13 @@
                                             <div>
                                                 <label>Tipo</label>
                                                 <select data-campo="outro_tipo" aria-label="Tipo do item">
-                                                    <option value="Outros" selected>Outros</option>
-                                                    <option value="Comida">Comida</option>
-                                                    <option value="Pocao">Poção</option>
-                                                    <option value="Kit">Kit</option>
-                                                    <option value="Ferramentas">Ferramentas</option>
-                                                    <option value="Municao">Munição</option>
-                                                    <option value="Ingrediente">Ingrediente</option>
+                                                    <option value="Comida">🍖 Comida</option>
+                                                    <option value="Ferramentas">🔧 Ferramentas</option>
+                                                    <option value="Ingrediente">🌿 Ingrediente</option>
+                                                    <option value="Kit">🧰 Kit</option>
+                                                    <option value="Municao">🏹 Munição</option>
+                                                    <option value="Outros">📦 Outros</option>
+                                                    <option value="Pocao">🧪 Poção</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -4820,16 +4823,22 @@
             return listaPropriedades.join(", ");
         }
 
-        // escreve a arma no formato atual do cadastro de armas
         function formatarArma(arma) {
             const nome = arma.arma_nome?.trim() || "Arma sem nome";
             const tipo = arma.arma_tipo_dano?.trim() || "-";
             const tipoArma = arma.arma_tipo?.trim() || "";
+
             const proficiente = typeof arma.proficiente === "boolean"
                 ? arma.proficiente
                 : getTemProficienciaArma(tipoArma);
+
             const dano = obterTextoDanoArma(arma) || "-";
-            const linha1 = `${nome} ${dano} ${tipo} ${proficiente ? "(P)" : "(nP)"}`;
+
+            const emojiProf = proficiente
+                ? `<span title="Proficiente">⭐<br>💥</span>`
+                : `<span title="Não proficiente">❌<br>💥</span>`;
+
+            const linha1 = `${nome} ${emojiProf} ${dano} ${tipo}`;
 
             return {
                 linha1,
@@ -4875,7 +4884,8 @@
                     sincronizarEquipamentosCombate();
                 });
 
-                const textoPrincipal = document.createTextNode(linha1);
+                const textoPrincipal = document.createElement("span");
+                textoPrincipal.innerHTML = linha1;
                 const quebra = document.createElement("br");
                 const textoSecundario = document.createElement("small");
                 textoSecundario.textContent = linha2;
@@ -4901,12 +4911,17 @@
             const bonus = armadura.armadura_bonus?.trim() || "0";
             const furtividade = armadura.armadura_furtividade?.trim() || "Normal";
             const tipo = armadura.armadura_tipo?.trim() || "-";
+
             const proficiente = typeof armadura.proficiente === "boolean"
                 ? armadura.proficiente
                 : getTemProficienciaArmadura(tipo);
 
+            const emojiProf = proficiente
+                ? `<span title="Proficiente">⭐<br></span>`
+                : `<span title="Não proficiente">❌<br></span>`;
+
             return {
-                linha1: `${nome} CA ${ca} ${proficiente ? "(P)" : "(nP)"}`,
+                linha1: `${nome} ${emojiProf} 🛡️ ${ca}`,
                 linha2: `Tipo: ${tipo} | Bônus: ${bonus} | Furtividade: ${furtividade}`,
                 proficiente
             };
@@ -4980,7 +4995,7 @@
                 : getTemProficienciaEscudo(tipo);
 
             return {
-                linha1: `${nome} ${ca} ${proficiente ? "(P)" : "(nP)"}`,
+                linha1: `${nome} ${proficiente ? "⭐" : "❌"} ${ca}`,
                 linha2: `Tipo: ${tipo}`,
                 proficiente
             };
@@ -5052,7 +5067,8 @@
                     sincronizarEquipamentosCombate();
                 });
 
-                const textoPrincipal = document.createTextNode(linha1);
+                const textoPrincipal = document.createElement("span");
+                textoPrincipal.innerHTML = linha1;
                 const quebra = document.createElement("br");
                 const textoSecundario = document.createElement("small");
                 textoSecundario.textContent = linha2;
@@ -5559,7 +5575,7 @@
                         if (novoDanoDuasMaos) novoDanoDuasMaos.value = valorDanoDuasMaos;
                     } else {
                         containerDano.innerHTML = `
-                    <input type="text" data-campo="arma_dano" placeholder="1d8">
+                    <input type="text" data-campo="arma_dano" placeholder="ex: 1d8">
                 `;
                         const novoDanoPadrao = containerDano.querySelector('[data-campo="arma_dano"]');
                         if (novoDanoPadrao) novoDanoPadrao.value = valorDanoUmaMao || valorDanoPadrao || valorDanoDuasMaos;
