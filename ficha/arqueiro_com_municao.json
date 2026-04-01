@@ -1,0 +1,76 @@
+{
+  "nomePersonagem": "Aelar Ventoflecha",
+  "jogador": "Thiago",
+  "racaID": "Elfo",
+  "classeNomeID": "Patrulheiro",
+  "classeNivelID": "5",
+  "alinhamentoID": "Caótico e Bom",
+  "antecedenteID": "Explorador",
+  "xp": "6500",
+  "bonusProf": "+3",
+  "inspiracao": false,
+  "for": "10",
+  "des": "18",
+  "con": "14",
+  "int": "12",
+  "sab": "14",
+  "car": "10",
+  "pvTotal": "42",
+  "pvAtual": "42",
+  "pvTemporario": "0",
+  "deslocamento": "9",
+  "armas": [
+    {
+      "arma_nome": "Arco Longo Élfico",
+      "arma_dano": "1d8",
+      "arma_tipo_dano": "Perfurante",
+      "arma_tipo": "Marcial",
+      "arma_dist_curto": "45",
+      "arma_dist_longo": "180",
+      "arma_municao_id": "mun_1",
+      "proficiente": true,
+      "propriedades": {
+        "municao": true,
+        "duas_maos": true,
+        "pesada": true
+      }
+    },
+    {
+      "arma_nome": "Arco Curto de Caça",
+      "arma_dano": "1d6",
+      "arma_tipo_dano": "Perfurante",
+      "arma_tipo": "Simples",
+      "arma_dist_curto": "24",
+      "arma_dist_longo": "96",
+      "arma_municao_id": "mun_2",
+      "proficiente": true,
+      "propriedades": {
+        "municao": true,
+        "duas_maos": true
+      }
+    }
+  ],
+  "armaduras": [
+    {
+      "armadura_nome": "Armadura de Couro Batido",
+      "armadura_ca": "12",
+      "armadura_bonus": "DES",
+      "armadura_tipo": "Leve",
+      "proficiente": true
+    }
+  ],
+  "outros": [
+    {
+      "id": "mun_1",
+      "outro_nome": "Flechas Élficas",
+      "outro_tipo": "Municao",
+      "outro_quantidade": "30"
+    },
+    {
+      "id": "mun_2",
+      "outro_nome": "Flechas de Caça",
+      "outro_tipo": "Municao",
+      "outro_quantidade": "20"
+    }
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "nomePersonagem": "Aelar Ventoflecha",
+  "jogador": "Thiago",
+  "racaID": "Elfo",
+  "classeNomeID": "Patrulheiro",
+  "classeNivelID": "7",
+  "alinhamentoID": "Caótico e Bom",
+  "antecedenteID": "Explorador",
+  "xp": "23000",
+  "bonusProf": "+3",
+  "inspiracao": true,
+  "for": "10",
+  "des": "19",
+  "con": "14",
+  "int": "12",
+  "sab": "15",
+  "car": "10",
+  "pvTotal": "58",
+  "pvAtual": "58",
+  "pvTemporario": "0",
+  "deslocamento": "9",
+  "historiaPersonagem": "Um arqueiro élfico que patrulha as fronteiras da floresta ancestral, abatendo ameaças antes que cheguem às vilas.",
+  "historiaTracosPersonalidade": "Observador, silencioso e paciente.",
+  "historiaIdeais": "Equilíbrio entre civilização e natureza.",
+  "historiaVinculos": "Protege a floresta onde nasceu.",
+  "historiaFraquezas": "Confia pouco em estranhos.",
+  "armas": [
+    {
+      "arma_nome": "Arco Longo Élfico",
+      "arma_dano": "1d8",
+      "arma_tipo_dano": "Perfurante",
+      "arma_tipo": "Marcial",
+      "arma_dist_curto": "45",
+      "arma_dist_longo": "180",
+      "arma_municao_id": "mun_1",
+      "proficiente": true,
+      "propriedades": {
+        "municao": true,
+        "duas_maos": true,
+        "pesada": true
+      }
+    },
+    {
+      "arma_nome": "Arco Curto de Caça",
+      "arma_dano": "1d6",
+      "arma_tipo_dano": "Perfurante",
+      "arma_tipo": "Simples",
+      "arma_dist_curto": "24",
+      "arma_dist_longo": "96",
+      "arma_municao_id": "mun_2",
+      "proficiente": true,
+      "propriedades": {
+        "municao": true,
+        "duas_maos": true
+      }
+    },
+    {
+      "arma_nome": "Espadas Curtas Duplas",
+      "arma_dano": "1d6",
+      "arma_tipo_dano": "Cortante",
+      "arma_tipo": "Marcial",
+      "arma_municao_id": "",
+      "proficiente": true,
+      "propriedades": {
+        "leve": true,
+        "acuidade": true
+      }
+    }
+  ],
+  "armaduras": [
+    {
+      "armadura_nome": "Armadura de Couro Batido",
+      "armadura_ca": "12",
+      "armadura_bonus": "DES",
+      "armadura_tipo": "Leve",
+      "proficiente": true
+    }
+  ],
+  "escudos": [],
+  "outros": [
+    {
+      "id": "mun_1",
+      "outro_nome": "Flechas Élficas",
+      "outro_tipo": "Municao",
+      "outro_quantidade": "40",
+      "outro_descricao": "Flechas finas e precisas feitas por artesãos élficos."
+    },
+    {
+      "id": "mun_2",
+      "outro_nome": "Flechas de Caça",
+      "outro_tipo": "Municao",
+      "outro_quantidade": "25",
+      "outro_descricao": "Flechas resistentes para uso geral."
+    },
+    {
+      "id": "kit_1",
+      "outro_nome": "Kit de Explorador",
+      "outro_tipo": "Kit",
+      "outro_quantidade": "1",
+      "outro_descricao": "Inclui corda, tochas e ferramentas básicas."
+    },
+    {
+      "id": "pot_1",
+      "outro_nome": "Poção de Cura",
+      "outro_tipo": "Pocao",
+      "outro_quantidade": "3",
+      "outro_descricao": "Recupera 2d4+2 PV."
+    }
+  ],
+  "arma1Nome": "Arco Longo Élfico",
+  "arma1EquipadaIndice": "0",
+  "arma1Ataque": "des",
+  "arma1Dano": "1d8 Perfurante",
+  "arma1Propriedade": "Marcial, Duas Mãos, Pesada, Distância (45/180), Munição",
+  "arma2Nome": "Arco Curto de Caça",
+  "arma2EquipadaIndice": "1",
+  "arma2Ataque": "des",
+  "arma2Dano": "1d6 Perfurante",
+  "arma2Propriedade": "Simples, Duas Mãos, Distância (24/96), Munição",
+  "armaduraNome": "Armadura de Couro Batido",
+  "armaduraCA": "12",
+  "equipamentoArmas": "Especialista em combate à distância com dois arcos para diferentes situações.",
+  "equipamentoArmadura": "Armadura leve para máxima mobilidade.",
+  "equipamentoOutros": "Carrega suprimentos e poções para longas jornadas."
+}
