@@ -4478,6 +4478,8 @@
         function atualizarOpcoesMunicao(card) {
             if (!card) return;
 
+
+
             const selectMunicao = card.querySelector('[data-campo="arma_municao_tipo"]');
             if (!selectMunicao) return;
 
@@ -6838,114 +6840,6 @@
             if (campoAtaquePV) campoAtaquePV.textContent = "PV " + pvAtual;
         }
 
-        const estadoAtaqueArma = {
-            arma: null,
-            dado: null,
-            totalAtaque: 0,
-            rotuloAtributo: ""
-        };
-
-        function obterResumoBonusAtaqueArma(arma) {
-            const rotuloAtributo = formatarRotuloAtributo(arma?.ataque) || "-";
-            const modificadorAtaque = getModificadorBaseAtributo(arma?.ataque);
-            const bonusProf = getBonusProf();
-            const totalAtaque = modificadorAtaque === null ? 0 : bonusProf + modificadorAtaque;
-
-            return {
-                rotuloAtributo,
-                totalAtaque,
-                textoResumo: `${totalAtaque >= 0 ? "+ " : "- "}${Math.abs(totalAtaque)} (${rotuloAtributo})`
-            };
-        }
-
-        function alternarEtapaModalAtaque(exibirDano) {
-            const etapaDado = document.getElementById('modalAtaqueEtapaDado');
-            const etapaDano = document.getElementById('modalAtaqueEtapaDano');
-            if (!etapaDado || !etapaDano) return;
-
-            etapaDado.classList.toggle('oculto', exibirDano);
-            etapaDano.classList.toggle('oculto', !exibirDano);
-        }
-
-        function fecharModalAtaqueArma() {
-            const overlay = document.getElementById('modalAtaqueOverlay');
-            const campoDado = document.getElementById('modalAtaqueDado');
-            const campoDano = document.getElementById('modalAtaqueDano');
-
-            estadoAtaqueArma.arma = null;
-            estadoAtaqueArma.dado = null;
-            estadoAtaqueArma.totalAtaque = 0;
-            estadoAtaqueArma.rotuloAtributo = "";
-
-            if (campoDado) campoDado.value = '';
-            if (campoDano) campoDano.value = '';
-            alternarEtapaModalAtaque(false);
-
-            if (overlay) {
-                overlay.classList.add('oculto');
-                overlay.setAttribute('aria-hidden', 'true');
-            }
-        }
-
-        function abrirModalAtaqueArma(arma) {
-            const overlay = document.getElementById('modalAtaqueOverlay');
-            const titulo = document.getElementById('modalAtaqueTitulo');
-            const subtitulo = document.getElementById('modalAtaqueSubtitulo');
-            const bonus = document.getElementById('modalAtaqueBonus');
-            const resumo = document.getElementById('modalAtaqueResumo');
-            const campoDado = document.getElementById('modalAtaqueDado');
-            const campoDano = document.getElementById('modalAtaqueDano');
-
-            if (!overlay || !titulo || !subtitulo || !bonus || !resumo || !campoDado || !campoDano) return;
-
-            const { rotuloAtributo, totalAtaque, textoResumo } = obterResumoBonusAtaqueArma(arma);
-
-            estadoAtaqueArma.arma = arma;
-            estadoAtaqueArma.dado = null;
-            estadoAtaqueArma.totalAtaque = totalAtaque;
-            estadoAtaqueArma.rotuloAtributo = rotuloAtributo;
-
-            titulo.textContent = `Ataque com ${arma?.nome || 'arma'}`;
-            subtitulo.textContent = 'Digite o dado tirado.';
-            bonus.textContent = textoResumo;
-            resumo.textContent = '';
-            campoDado.value = '';
-            campoDano.value = '';
-
-            alternarEtapaModalAtaque(false);
-            overlay.classList.remove('oculto');
-            overlay.setAttribute('aria-hidden', 'false');
-
-            setTimeout(() => campoDado.focus(), 0);
-        }
-
-        function obterDadoModalAtaque() {
-            const campoDado = document.getElementById('modalAtaqueDado');
-            if (!campoDado) return null;
-
-            const dado = parseInt(campoDado.value, 10);
-            if (!Number.isInteger(dado) || dado < 1) {
-                campoDado.focus();
-                return null;
-            }
-
-            return dado;
-        }
-
-        function abrirEtapaDanoAtaque() {
-            const dado = obterDadoModalAtaque();
-            const resumo = document.getElementById('modalAtaqueResumo');
-            const subtitulo = document.getElementById('modalAtaqueSubtitulo');
-            const campoDano = document.getElementById('modalAtaqueDano');
-            if (dado === null || !resumo || !subtitulo || !campoDano) return;
-
-            estadoAtaqueArma.dado = dado;
-            subtitulo.textContent = 'Digite o dano causado.';
-            resumo.textContent = `Dado: ${dado} | Ataque: ${estadoAtaqueArma.totalAtaque >= 0 ? "+" : "-"}${Math.abs(estadoAtaqueArma.totalAtaque)} (${estadoAtaqueArma.rotuloAtributo})`;
-            alternarEtapaModalAtaque(true);
-            setTimeout(() => campoDano.focus(), 0);
-        }
-
         function atualizarSubAbaArmas() {
             const container = document.getElementById('subabaCombateArma');
             if (!container) return;
@@ -6965,9 +6859,6 @@
             armas.forEach(arma => {
                 const item = document.createElement('div');
                 item.className = 'arma-resumo-item';
-                item.tabIndex = 0;
-                item.setAttribute('role', 'button');
-                item.setAttribute('aria-label', `Atacar com ${arma.nome}`);
 
                 // 🔥 EVENTO DE CLIQUE AQUI
                 item.addEventListener('click', () => {
@@ -6982,17 +6873,18 @@
 
                 const topo = document.createElement('div');
                 topo.className = 'arma-resumo-topo';
-                const icone = arma.usaMunicao ? '🏹' : '⚔️';
                 let municaoTitulo = '';
-                console.log('MUNIÇÃO NO TOPO:', municaoTitulo);
+                const icone = arma.usaMunicao ? '🏹' : '⚔️';
+                
                 console.log('ARMA COMPLETA:', arma);
-                console.log('CAMPO MUNIÇÃO:', arma.arma_municao_tipo);
+                console.log('CAMPO MUNIÇÃO:', arma.tipoMunicao);
+
+                
+
                 if (arma.usaMunicao) {
 
-                    const nomeMunicao =
-                        arma.arma_municao_tipo?.trim() ||
-                        arma.tipoMunicao?.trim();
-console.log('MUNIÇÃO FINAL:', nomeMunicao);
+                    const nomeMunicao = arma.tipoMunicao?.trim();
+
                     if (nomeMunicao) {
 
                         const itemMunicao = [...document.querySelectorAll('#listaOutros .armadura-card')]
@@ -7004,8 +6896,10 @@ console.log('MUNIÇÃO FINAL:', nomeMunicao);
                             ?.querySelector('[data-campo="outro_quantidade"]')?.value;
 
                         municaoTitulo = `${qtdAtual || '-'} ${nomeMunicao}`;
+                        console.log('MUNIÇÃO NO TOPO:', municaoTitulo);
                     }
                 }
+
                 topo.textContent = [arma.nome, icone, municaoTitulo].filter(Boolean).join('  ');
 
                 const detalhes = document.createElement('div');
@@ -7018,14 +6912,6 @@ console.log('MUNIÇÃO FINAL:', nomeMunicao);
                     ? rotuloAtaque
                     : `${rotuloAtaque} (${totalAtaque >= 0 ? "+" : ""}${totalAtaque})`;
                 detalhes.innerHTML = `<strong>Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}</strong><br>Propriedade: ${arma.propriedade || "-"}`;
-
-                item.addEventListener('click', () => abrirModalAtaqueArma(arma));
-                item.addEventListener('keydown', evento => {
-                    if (evento.key === 'Enter' || evento.key === ' ') {
-                        evento.preventDefault();
-                        abrirModalAtaqueArma(arma);
-                    }
-                });
 
                 item.appendChild(topo);
                 item.appendChild(detalhes);
@@ -7064,11 +6950,10 @@ console.log('MUNIÇÃO FINAL:', nomeMunicao);
             normalizarPontosDeVida();
         }
 
-        function adicionarRegistroHistoricoCombate(tipo, valor, iconePersonalizado = '') {
+        function registrarHistoricoComandoCombate(tipo, valor) {
             const campoRodada = document.getElementById('combateRodada');
             const rodada = parseInt(campoRodada?.value) || 1;
             const registrosContainer = document.getElementById('historicoRegistros');
-            if (!registrosContainer) return;
 
             // 🔥 Mapa de emojis
             const icones = {
@@ -7079,9 +6964,8 @@ console.log('MUNIÇÃO FINAL:', nomeMunicao);
                 'Ataque falhou!': '❌',
                 'Ataque!': '⚔️'
             };
-            icones['Ataque'] = '⚔️';
 
-            const icone = iconePersonalizado || icones[tipo] || '';
+            const icone = icones[tipo] || '';
 
             const registro = document.createElement('div');
             registro.className = 'historico-registro';
@@ -7094,53 +6978,10 @@ console.log('MUNIÇÃO FINAL:', nomeMunicao);
                         `${valor}`
                 }
         </div>
-            `;
+    `;
 
             registrosContainer.prepend(registro);
         }
-
-        function registrarHistoricoAtaqueArma(sucesso, dano) {
-            const arma = estadoAtaqueArma.arma;
-            const dado = estadoAtaqueArma.dado;
-            if (!arma || dado === null) return;
-
-            const valor = [
-                arma.nome || 'Arma',
-                `Dado: ${dado}`,
-                sucesso ? 'Sucesso' : 'Fracasso',
-                `Dano: ${dano}`
-            ].join(' | ');
-
-            adicionarRegistroHistoricoCombate('Ataque', valor, arma.usaMunicao ? '🏹' : '⚔️');
-        }
-
-        function confirmarFracassoAtaque() {
-            const dado = obterDadoModalAtaque();
-            if (dado === null) return;
-
-            estadoAtaqueArma.dado = dado;
-            registrarHistoricoAtaqueArma(false, 0);
-            fecharModalAtaqueArma();
-        }
-
-        function confirmarDanoAtaque() {
-            const campoDano = document.getElementById('modalAtaqueDano');
-            if (!campoDano) return;
-
-            const dano = parseInt(campoDano.value, 10);
-            if (!Number.isInteger(dano) || dano < 0) {
-                campoDano.focus();
-                return;
-            }
-
-            registrarHistoricoAtaqueArma(true, dano);
-            fecharModalAtaqueArma();
-        }
-
-        function registrarHistoricoComandoCombate(tipo, valor) {
-            adicionarRegistroHistoricoCombate(tipo, valor);
-        }
-
         function limparHistorico() {
             const registrosContainer = document.getElementById('historicoRegistros');
             registrosContainer.innerHTML = '';
@@ -7497,33 +7338,6 @@ console.log('MUNIÇÃO FINAL:', nomeMunicao);
                 desequiparArmaSlot(indice + 1);
                 atualizarSubAbaArmas();
             });
-        });
-        const overlayAtaque = document.getElementById('modalAtaqueOverlay');
-        if (overlayAtaque) {
-            overlayAtaque.addEventListener('click', evento => {
-                if (evento.target === overlayAtaque) {
-                    fecharModalAtaqueArma();
-                }
-            });
-        }
-        document.getElementById('modalAtaqueSucesso')?.addEventListener('click', abrirEtapaDanoAtaque);
-        document.getElementById('modalAtaqueFracasso')?.addEventListener('click', confirmarFracassoAtaque);
-        document.getElementById('modalAtaqueCancelar')?.addEventListener('click', fecharModalAtaqueArma);
-        document.getElementById('modalAtaqueRegistrarDano')?.addEventListener('click', confirmarDanoAtaque);
-        document.getElementById('modalAtaqueCancelarDano')?.addEventListener('click', fecharModalAtaqueArma);
-        document.getElementById('modalAtaqueDado')?.addEventListener('keydown', evento => {
-            if (evento.key === 'Enter') abrirEtapaDanoAtaque();
-        });
-        document.getElementById('modalAtaqueDano')?.addEventListener('keydown', evento => {
-            if (evento.key === 'Enter') confirmarDanoAtaque();
-        });
-        document.addEventListener('keydown', evento => {
-            if (evento.key === 'Escape') {
-                const overlay = document.getElementById('modalAtaqueOverlay');
-                if (overlay && !overlay.classList.contains('oculto')) {
-                    fecharModalAtaqueArma();
-                }
-            }
         });
         const campoPosicaoAtaque = document.getElementById('ataquePosicao');
         if (campoPosicaoAtaque) {
