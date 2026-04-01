@@ -23,17 +23,30 @@
 </head>
 <body>
 
-    <button onclick="novo()">Novo Personagem</button>
-    <button onclick="importar()">Importar Personagem</button>
+    <button id="novoPersonagemBtn" type="button">Novo Personagem</button>
+    <button id="importarPersonagemBtn" type="button">Importar Personagem</button>
 
     <script>
-        function novo() {
-            window.api.novoPersonagem();
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const novoButton = document.getElementById('novoPersonagemBtn');
+            const importarButton = document.getElementById('importarPersonagemBtn');
+            const api = window.api;
 
-        function importar() {
-            window.api.importarPersonagem();
-        }
+            if (!api) {
+                [novoButton, importarButton].forEach(button => {
+                    if (button) button.disabled = true;
+                });
+                return;
+            }
+
+            novoButton?.addEventListener('click', () => {
+                api.novoPersonagem();
+            });
+
+            importarButton?.addEventListener('click', () => {
+                api.importarPersonagem();
+            });
+        });
     </script>
 
 </body>

@@ -468,6 +468,7 @@
 
         .pv-bloco-total {
             border-right: 1px solid #8b4513;
+            min-width: 0;
         }
 
         .pv-bloco-titulo {
@@ -490,10 +491,6 @@
             font-weight: bold;
             color: #333;
             padding: 0;
-        }
-
-        .pv-bloco-total {
-            min-width: 0;
         }
 
         .pv-bloco-temp {
@@ -771,6 +768,7 @@
             width: 50px;
             height: 50px;
             flex-shrink: 0;
+            position: relative;
             border-radius: 50%;
             border: 3px solid #8b4513;
             display: flex;
@@ -785,6 +783,18 @@
             box-sizing: border-box;
         }
 
+        .bonus-orbe-prof::before {
+            content: "+";
+            position: absolute;
+            left: 1px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            font-size: 18px;
+            color: #3b2f1b;
+            pointer-events: none;
+        }
+
         .bonus-orbe input {
             border: none;
             width: 100%;
@@ -796,6 +806,10 @@
             outline: none;
             padding: 0;
             margin: 0;
+        }
+
+        .bonus-orbe-prof input {
+            padding-left: 10px;
         }
 
         .bonus-orbe input[readonly] {
@@ -1849,6 +1863,347 @@
             min-height: 220px;
         }
 
+        .magia-storage {
+            display: none !important;
+        }
+
+        .magia-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .magia-vazia {
+            border: 1px dashed #bda68c;
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            color: #8a745c;
+            background: #fffaf2;
+            font-size: 13px;
+        }
+
+        .magia-item {
+            display: grid;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            gap: 10px;
+            align-items: center;
+            border: 1px solid #ccb79a;
+            border-radius: 10px;
+            background: #fffaf2;
+            padding: 10px 12px;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+        }
+
+        .magia-item:hover,
+        .magia-item:focus-within {
+            border-color: #8b5a2b;
+            box-shadow: 0 6px 14px rgba(59, 47, 27, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .magia-item-preparada {
+            width: 18px;
+            height: 18px;
+            accent-color: #8b4513;
+            cursor: pointer;
+        }
+
+        .magia-item-nome {
+            border: none;
+            background: none;
+            padding: 0;
+            margin: 0;
+            text-align: left;
+            font-family: 'MedievalSharp';
+            font-size: 16px;
+            color: #5f2d0c;
+            min-height: 22px;
+            cursor: pointer;
+        }
+
+        .magia-item-nome.vazia::after {
+            content: "";
+            display: inline-block;
+            min-width: 24px;
+        }
+
+        .magia-item-editar {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: none;
+            background: none;
+            color: #6f3610;
+            font-family: 'MedievalSharp';
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateX(6px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            white-space: nowrap;
+        }
+
+        .magia-item:hover .magia-item-editar,
+        .magia-item:focus-within .magia-item-editar {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .magia-item-editar:hover {
+            color: #3b2f1b;
+        }
+
+        .magia-item-editar-icone {
+            font-size: 14px;
+        }
+
+        .magia-botao-add {
+            margin-left: auto;
+            min-height: 36px;
+            padding: 8px 12px;
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            background: #efe1c0;
+            color: #6f3610;
+            font-family: 'MedievalSharp';
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .magia-botao-add:hover {
+            background: #e5d2ab;
+        }
+
+        .magia-modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            background: rgba(28, 18, 8, 0.6);
+            z-index: 2100;
+        }
+
+        .magia-modal-overlay.ativo {
+            display: flex;
+        }
+
+        .magia-modal {
+            width: min(760px, 100%);
+            max-height: min(92vh, 980px);
+            overflow: auto;
+            border: 3px solid #8b4513;
+            border-radius: 16px;
+            background: linear-gradient(145deg, #f6eee0, #ead9bd);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+            padding: 18px;
+            box-sizing: border-box;
+        }
+
+        .magia-modal-topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .magia-modal-titulo {
+            font-family: 'Metamorphous', serif;
+            font-size: 20px;
+            color: #6f3610;
+        }
+
+        .magia-modal-subtitulo {
+            font-size: 13px;
+            color: #6b5338;
+        }
+
+        .magia-modal-acoes {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .magia-modal-botao {
+            min-height: 36px;
+            padding: 8px 12px;
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            background: #efe1c0;
+            color: #6f3610;
+            font-family: 'MedievalSharp';
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .magia-modal-botao.primario {
+            background: #8b4513;
+            color: #fffaf2;
+        }
+
+        .magia-modal-botao.perigo {
+            background: #b54b4b;
+            border-color: #8f2d2d;
+            color: #fffaf2;
+        }
+
+        .magia-card-detalhe {
+            background: #fffaf2;
+            border: 2px solid #8b4513;
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .magia-card-detalhe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .magia-card-detalhe-nome {
+            font-size: 20px;
+            font-weight: bold;
+            color: #5f2d0c;
+            min-height: 24px;
+        }
+
+        .magia-card-detalhe-nivel {
+            font-size: 12px;
+            background: #8b4513;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+        }
+
+        .magia-card-detalhe-info {
+            margin-top: 10px;
+            font-size: 13px;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px 10px;
+        }
+
+        .magia-card-detalhe-propriedades {
+            margin-top: 10px;
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .magia-card-detalhe-tag {
+            background: #e0d3bd;
+            border-radius: 6px;
+            padding: 2px 6px;
+            font-size: 11px;
+        }
+
+        .magia-card-detalhe-efeitos {
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #bda68c;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .magia-card-detalhe-descricao {
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.45;
+            background: #fff;
+            border: 1px solid #bda68c;
+            border-radius: 8px;
+            padding: 10px;
+            white-space: pre-wrap;
+            min-height: 90px;
+        }
+
+        .magia-formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .magia-formulario-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .magia-formulario-campo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .magia-formulario-campo label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #6f3610;
+        }
+
+        .magia-formulario-campo input,
+        .magia-formulario-campo select,
+        .magia-formulario-campo textarea {
+            width: 100%;
+            min-height: 40px;
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            padding: 8px 10px;
+            background: #fffaf2;
+            box-sizing: border-box;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            outline: none;
+        }
+
+        .magia-formulario-campo select {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+        }
+
+        .magia-formulario-campo textarea {
+            min-height: 88px;
+            resize: vertical;
+        }
+
+        .magia-formulario-campo.completo {
+            grid-column: 1 / -1;
+        }
+
+        .magia-formulario-campo.preparada {
+            flex-direction: row;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .magia-formulario-campo.preparada label {
+            margin: 0;
+        }
+
+        .magia-propriedades-checks {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .magia-propriedades-checks label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: normal;
+            color: #3b2f1b;
+        }
+
         /* ===== Aba de historia ===== */
         .historia-grid {
             display: flex;
@@ -1946,12 +2301,24 @@
             transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
         }
 
+        .arma-resumo-item.nao-proficiente {
+            border-color: #b54b4b;
+            background: linear-gradient(180deg, #fff2f2, #f6dede);
+            box-shadow: inset 0 0 0 1px rgba(181, 75, 75, 0.18);
+        }
+
         .arma-resumo-item:hover,
         .arma-resumo-item:focus-visible {
             border-color: #8b5a2b;
             box-shadow: 0 6px 14px rgba(59, 47, 27, 0.18);
             transform: translateY(-1px);
             outline: none;
+        }
+
+        .arma-resumo-item.nao-proficiente:hover,
+        .arma-resumo-item.nao-proficiente:focus-visible {
+            border-color: #a33333;
+            box-shadow: 0 6px 14px rgba(163, 51, 51, 0.2);
         }
 
         .arma-resumo-topo {
@@ -1996,12 +2363,19 @@
             font-size: 18px;
             color: #6f3610;
             margin-bottom: 6px;
+            text-align: center;
+        }
+
+        .ataque-modal-titulo-arma {
+            font-weight: bold;
         }
 
         .ataque-modal-subtitulo {
             font-size: 13px;
             color: #5c4832;
             margin-bottom: 14px;
+            text-align: center;
+            line-height: 1.45;
         }
 
         .ataque-modal-linha {
@@ -2018,11 +2392,43 @@
             letter-spacing: 0.04em;
         }
 
+        .ataque-modal-linha label.oculto-acessivel {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
         .ataque-modal-rolagem {
             display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
+            grid-template-columns: minmax(0, auto) auto;
             gap: 10px;
             align-items: center;
+            justify-content: center;
+        }
+
+        .ataque-modal-campo {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ataque-modal-campo-rotulo {
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            font-size: 9px;
+            line-height: 1;
+            color: #8b5a2b;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            pointer-events: none;
         }
 
         .ataque-modal input {
@@ -2035,6 +2441,15 @@
             box-sizing: border-box;
             font-family: 'Metamorphous', serif;
             font-size: 16px;
+        }
+
+        #modalAtaqueDado {
+            width: 84px;
+            min-width: 84px;
+            text-align: center;
+            padding-top: 16px;
+            padding-left: 8px;
+            padding-right: 8px;
         }
 
         .ataque-modal input:focus {
@@ -2056,6 +2471,16 @@
             color: #5c4832;
         }
 
+        .ataque-modal-resumo-destaque {
+            font-weight: bold;
+            color: #6f3610;
+        }
+
+        .ataque-modal-resumo-dado-critico {
+            color: #b8860b;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.65);
+        }
+
         .ataque-modal-acoes {
             display: flex;
             flex-wrap: wrap;
@@ -2065,6 +2490,55 @@
         .ataque-modal-acoes .ataque-botao {
             flex: 1 1 120px;
             min-width: 120px;
+        }
+
+        .ataque-botao-critico {
+            background: linear-gradient(135deg, #f8efb8, #ffe57a);
+            border-color: #b8860b;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.75);
+            animation: ataqueCriticoBrilho 1.1s ease-in-out infinite;
+        }
+
+        .ataque-botao-fracasso-critico {
+            background: linear-gradient(135deg, #6e1717, #c43b2f);
+            border-color: #4a0d0d;
+            color: #fff7f2;
+            box-shadow: 0 0 12px rgba(196, 59, 47, 0.7);
+            animation: ataqueFracassoBrilho 1.1s ease-in-out infinite;
+        }
+
+        @keyframes ataqueCriticoBrilho {
+            0% {
+                box-shadow: 0 0 8px rgba(255, 215, 0, 0.45);
+                transform: translateY(0);
+            }
+
+            50% {
+                box-shadow: 0 0 18px rgba(255, 215, 0, 0.95);
+                transform: translateY(-1px);
+            }
+
+            100% {
+                box-shadow: 0 0 8px rgba(255, 215, 0, 0.45);
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes ataqueFracassoBrilho {
+            0% {
+                box-shadow: 0 0 8px rgba(196, 59, 47, 0.35);
+                transform: translateY(0);
+            }
+
+            50% {
+                box-shadow: 0 0 18px rgba(196, 59, 47, 0.95);
+                transform: translateY(-1px);
+            }
+
+            100% {
+                box-shadow: 0 0 8px rgba(196, 59, 47, 0.35);
+                transform: translateY(0);
+            }
         }
 
         .subaba-vazia {
@@ -2941,10 +3415,13 @@
 
             <div id="modalAtaqueEtapaDado">
                 <div class="ataque-modal-linha">
-                    <label for="modalAtaqueDado">Dado</label>
+                    <label for="modalAtaqueDado" class="oculto-acessivel">Dado</label>
                     <div class="ataque-modal-rolagem">
-                        <input id="modalAtaqueDado" type="number" min="1" step="1" inputmode="numeric"
-                            aria-label="Dado tirado no ataque">
+                        <div class="ataque-modal-campo">
+                            <span class="ataque-modal-campo-rotulo">Dado</span>
+                            <input id="modalAtaqueDado" type="number" min="1" max="20" step="1" inputmode="numeric"
+                                aria-label="Dado tirado no ataque">
+                        </div>
                         <div id="modalAtaqueBonus" class="ataque-modal-bonus">+ 0 (FOR)</div>
                     </div>
                 </div>
@@ -2960,7 +3437,7 @@
             <div id="modalAtaqueEtapaDano" class="oculto">
                 <div id="modalAtaqueResumo" class="ataque-modal-resumo"></div>
                 <div class="ataque-modal-linha">
-                    <label for="modalAtaqueDano">Dano</label>
+                    <label for="modalAtaqueDano">Dano Total</label>
                     <input id="modalAtaqueDano" type="number" min="0" step="1" inputmode="numeric"
                         aria-label="Dano causado no ataque">
                 </div>
@@ -2977,8 +3454,8 @@
 
         <!-- BOTÕES -->
         <div class="acoes">
-            <button onclick="salvarFicha()">Salvar</button>
-            <button onclick="importarFicha()">Importar</button>
+            <button type="button" onclick="salvarFicha()">Salvar</button>
+            <button type="button" onclick="importarFicha()">Importar</button>
             <input type="file" id="fileInput" hidden>
         </div>
 
@@ -3209,11 +3686,11 @@
 
         <div class="tabs">
 
-            <button class="tab active" onclick="trocarAba('status', this)">Status</button>
-            <button class="tab" onclick="trocarAba('combate', this)">Combate</button>
-            <button class="tab" onclick="trocarAba('magia', this)">Magias</button>
-            <button class="tab" onclick="trocarAba('historia', this)">História</button>
-            <button class="tab" onclick="trocarAba('itens', this)">Itens</button>
+                <button type="button" class="tab active" onclick="trocarAba('status', this)">Status</button>
+                <button type="button" class="tab" onclick="trocarAba('combate', this)">Combate</button>
+                <button type="button" class="tab" onclick="trocarAba('magia', this)">Magias</button>
+                <button type="button" class="tab" onclick="trocarAba('historia', this)">História</button>
+                <button type="button" class="tab" onclick="trocarAba('itens', this)">Itens</button>
 
         </div>
 
@@ -3228,7 +3705,7 @@
 
                         <div class="passivas-linha">
                             <div class="bonus-orbe-container">
-                                <div class="bonus-orbe"><input id="bonusProf" value="+2"
+                                <div class="bonus-orbe bonus-orbe-prof"><input id="bonusProf" type="number" min="0" step="1" value="2"
                                         aria-label="Bônus de proficiência"></div>
                                 <div class="bonus-retangulo">Bônus de Proficiência</div>
                             </div>
@@ -4430,11 +4907,6 @@
     </div>
 
     <script>
-        // Variaveis globais
-        let armaAtualCard = null;
-
-
-
         // ===== Integracao e inicializacao =====
         window.api?.receberPersonagem((data) => {
             const personagem = JSON.parse(data);
@@ -4470,17 +4942,9 @@
         // ===== Lógica de Munição Dinâmica =====
         function atualizarTodasMunicoesArmas() {
 
-            // 🔹 armas na aba itens
-            const armasItens = document.querySelectorAll('#listaArmas .armadura-card');
+            const armasItens = document.querySelectorAll('#listaArmas .arma-card');
 
             armasItens.forEach(card => {
-                atualizarOpcoesMunicao(card);
-            });
-
-            // 🔹 armas na aba combate (⚠️ AJUSTE O ID SE NECESSÁRIO)
-            const armasCombate = document.querySelectorAll('#listaArmasEquipamento .armadura-card');
-
-            armasCombate.forEach(card => {
                 atualizarOpcoesMunicao(card);
             });
         }
@@ -4543,27 +5007,18 @@
         }
 
         //CONSUMIR MUNISSÃO AO ATACAR
-        function consumirMunicao(quantidadeGasta = 1) {
-
-            if (!armaAtual?.usaMunicao) {
-                console.log('Arma não usa munição');
+        function consumirMunicao(quantidadeGasta = 1, arma = estadoAtaqueArma.arma) {
+            if (!arma?.usaMunicao) {
                 return;
             }
 
-            if (!armaAtual) {
-                console.warn('Nenhuma arma ativa');
-                return;
-            }
-
-            // 🔥 AGORA USA ID
-            const idMunicao = armaAtual.arma_municao_id;
+            const idMunicao = arma.arma_municao_id;
 
             const itens = document.querySelectorAll('#listaOutros .armadura-card');
 
-            const item = [...itens].find(item => item.dataset.id === idMunicao);
+            const item = [...itens].find(itemInventario => itemInventario.dataset.id === idMunicao);
 
             if (!item) {
-                console.warn('Munição não encontrada (ID):', idMunicao);
                 return;
             }
 
@@ -4604,97 +5059,6 @@
             }
         });
 
-
-        // ===== Função de Ataque de armas em combate =====
-
-        //-- Botão Cancelar do Modal --
-        document.getElementById('modalAtaqueCancelar')
-            ?.addEventListener('click', fecharModalAtaque);
-
-        document.getElementById('modalAtaqueCancelarDano')
-            ?.addEventListener('click', fecharModalAtaque);
-
-        //-- Abrir Ataque --
-        function abrirModalAtaque(arma, card) {
-
-            const modal = document.getElementById('modalAtaqueOverlay');
-            armaAtualCard = card; // 💥 GUARDA A REFERÊNCIA
-            modal.classList.add('ativo');
-            modal.classList.remove('oculto');
-
-        }
-
-        //SUCESSO clique
-        document.getElementById('modalAtaqueSucesso')
-            ?.addEventListener('click', () => {
-
-                const etapaAtaque = document.getElementById('modalAtaqueEtapaDado');
-                const etapaDano = document.getElementById('modalAtaqueEtapaDano');
-
-                if (etapaAtaque) etapaAtaque.classList.add('oculto');
-                if (etapaDano) etapaDano.classList.remove('oculto');
-
-            });
-
-        //FRACASSO clique
-        document.getElementById('modalAtaqueFracasso')
-            ?.addEventListener('click', () => {
-
-                const dado = document.getElementById('modalAtaqueDado')?.value;
-
-                // Registrar FRACASSO
-                registrarHistoricoComandoCombate('Ataque falhou!', 'Dado: ' + dado);
-                // CONSUMIR MUNIÇÃO
-                consumirMunicao(1);
-                // Fecha modal (reaproveita função)
-                fecharModalAtaque();
-            });
-
-        //REGISTRAR DANO
-        document.getElementById('modalAtaqueRegistrarDano')
-            ?.addEventListener('click', () => {
-
-                const dano = document.getElementById('modalAtaqueDano')?.value;
-
-                // 👉 Validação simples
-                if (!dano || dano < 0) {
-                    alert('Informe um valor de dano válido');
-                    return;
-                }
-
-                // 👉 SUA LÓGICA AQUI
-                registrarHistoricoComandoCombate('Ataque!', dano);
-                // CONSUMIR MUNIÇÃO
-                consumirMunicao(1);
-
-                // Fecha modal
-                fecharModalAtaque();
-            });
-
-        function fecharModalAtaque() {
-            const modal = document.getElementById('modalAtaqueOverlay');
-
-            // 🔥 Remove o foco de qualquer elemento dentro do modal
-            if (document.activeElement) {
-                document.activeElement.blur();
-            }
-            // Limpa TODOS os inputs
-            modal.querySelectorAll('input').forEach(input => {
-                if (input.type === 'checkbox' || input.type === 'radio') {
-                    input.checked = false;
-                } else {
-                    input.value = '';
-                }
-            });
-
-            // Volta para a primeira etapa
-            document.getElementById('modalAtaqueEtapaDado')?.classList.remove('oculto');
-            document.getElementById('modalAtaqueEtapaDano')?.classList.add('oculto');
-
-            // Fecha o modal
-            modal.classList.remove('ativo');
-            modal.classList.add('oculto');
-        }
 
         // ===== Arsenal cadastrado e inventario de armas =====
         function getTemProficienciaArma(tipo) {
@@ -5145,8 +5509,40 @@
             return String(texto || "").replace(/^Propriedade:\s*/i, "").trim();
         }
 
-        function resumirMuniçãoNoTexto(texto) {
+        function resumirMunicaoNoTexto(texto) {
             return String(texto || "").replace(/Muni[^(,]*\([^)]*\)/i, "Munição");
+        }
+
+        function obterStatusMunicaoArma(arma) {
+            if (!arma?.usaMunicao) return "";
+
+            const itemMunicao = [...document.querySelectorAll('#listaOutros .armadura-card')]
+                .find(item => item.dataset.id === arma.arma_municao_id);
+
+            const nomeMunicao = itemMunicao?.querySelector('[data-campo="outro_nome"]')?.value?.trim();
+            const quantidadeMunicao = itemMunicao?.querySelector('[data-campo="outro_quantidade"]')?.value?.trim();
+
+            if (!arma.arma_municao_id || !nomeMunicao) {
+                return "SEM MUNIÇÃO";
+            }
+
+            return `Munição: ${quantidadeMunicao || "0"} ${nomeMunicao}`;
+        }
+
+        function montarTextoPropriedadeArma(arma, textoBase) {
+            const textoSemPrefixo = limparPrefixoPropriedade(textoBase);
+            const partes = limparTextoCombate(textoSemPrefixo)
+                .split(",")
+                .map(parte => parte.trim())
+                .filter(Boolean)
+                .filter(parte => normalizarTextoComparacao(parte) !== "municao");
+
+            const statusMunicao = obterStatusMunicaoArma(arma);
+            if (statusMunicao) {
+                partes.push(statusMunicao);
+            }
+
+            return partes.join(", ");
         }
 
         function capitalizarTexto(texto) {
@@ -5174,23 +5570,43 @@
             return Math.floor((valor - 10) / 2);
         }
 
+        function getResumoCalculoAtaque(arma, chaveAtributo = arma?.ataque) {
+            const rotuloAtributo = formatarRotuloAtributo(chaveAtributo) || "-";
+            const modificadorBase = getModificadorBaseAtributo(chaveAtributo);
+            const proficiente = !!arma?.proficiente;
+            const bonusProfAplicado = proficiente ? getBonusProf() : 0;
+            const totalAtaque = modificadorBase === null ? null : modificadorBase + bonusProfAplicado;
+
+            let textoResumo = rotuloAtributo;
+            if (totalAtaque !== null) {
+                textoResumo = proficiente && bonusProfAplicado > 0
+                    ? `${formatarBonusCalculado(totalAtaque)} (${rotuloAtributo} + ${bonusProfAplicado})`
+                    : `${formatarBonusCalculado(totalAtaque)} (${rotuloAtributo})`;
+            }
+
+            return {
+                rotuloAtributo,
+                modificadorBase,
+                proficiente,
+                bonusProfAplicado,
+                totalAtaque,
+                textoResumo
+            };
+        }
+
         function atualizarSelectAtaqueArma(indice, arma) {
             const select = document.getElementById(`arma${indice}Ataque`);
             if (!select) return;
 
             const valorAtual = select.value || 'for';
-            const bonusProf = getBonusProf();
-            const modFor = getModificadorAtributoBase('for');
-            const modDes = getModificadorAtributoBase('des');
-            const proficiente = arma ? formatarArma(arma).proficiente : false;
-            const totalFor = modFor + (proficiente ? bonusProf : 0);
-            const totalDes = modDes + (proficiente ? bonusProf : 0);
+            const resumoFor = getResumoCalculoAtaque(arma, 'for');
+            const resumoDes = getResumoCalculoAtaque(arma, 'des');
 
             select.innerHTML = '';
 
             const opcoes = [
-                { value: 'for', label: `FOR (${formatarBonusCalculado(totalFor)})` },
-                { value: 'des', label: `DES (${formatarBonusCalculado(totalDes)})` }
+                { value: 'for', label: `FOR (${resumoFor.totalAtaque === null ? '-' : formatarBonusCalculado(resumoFor.totalAtaque)})` },
+                { value: 'des', label: `DES (${resumoDes.totalAtaque === null ? '-' : formatarBonusCalculado(resumoDes.totalAtaque)})` }
             ];
 
             opcoes.forEach(opcao => {
@@ -5319,7 +5735,8 @@
                         nome: arma.arma_nome?.trim() || "",
                         ataque: obterTextoCampoOuBloco(`arma${indiceSlot + 1}Ataque`) || "for",
                         dano: [obterTextoDanoArma(arma), arma.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "),
-                        propriedade: limparTextoCombate(resumirMuniçãoNoTexto(obterResumoPropriedadesArma(arma, false))),
+                        propriedade: montarTextoPropriedadeArma(arma, resumirMunicaoNoTexto(obterResumoPropriedadesArma(arma, false))),
+                        proficiente: !!arma.proficiente,
                         usaMunicao: !!arma.propriedades?.municao,
 
                         // 🔥 NOVO PADRÃO
@@ -5384,7 +5801,7 @@
 
             [1, 2].forEach(indice => {
                 const arma = armasSelecionadas[indice - 1];
-                const textoPropriedade = arma ? limparTextoCombate(resumirMuniçãoNoTexto(obterResumoPropriedadesArma(arma, false))) : "";
+                const textoPropriedade = arma ? montarTextoPropriedadeArma(arma, resumirMunicaoNoTexto(obterResumoPropriedadesArma(arma, false))) : "";
                 preencherCampo(`arma${indice}Dano`, [obterTextoDanoArma(arma), arma?.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "));
                 preencherPropriedadeEquipada(`arma${indice}Propriedade`, textoPropriedade);
                 aplicarEstiloProficienciaCampos(
@@ -5642,6 +6059,8 @@
                         }
                     });
                     atualizarListaArmasEquipamento();
+                    sincronizarEquipamentosCombate();
+                    atualizarSubAbaArmas();
                 });
             }
         });
@@ -6076,7 +6495,16 @@
                 if ((dados[destino] === undefined || dados[destino] === "") && dados[origem] !== undefined) {
                     dados[destino] = dados[origem]
                 }
-            })
+            });
+
+            ['bonusProf', 'bonusProficiencia'].forEach(chave => {
+                if (dados[chave] !== undefined && dados[chave] !== null && dados[chave] !== "") {
+                    const valorNormalizado = parseInt(String(dados[chave]).replace(/[^\d-]/g, ""), 10);
+                    if (!Number.isNaN(valorNormalizado)) {
+                        dados[chave] = Math.abs(valorNormalizado);
+                    }
+                }
+            });
 
             return dados
         }
@@ -6135,6 +6563,10 @@
                 else if (key === "alinhamentoID") campo.value = normalizarValorAlinhamento(dados[key])
                 else if (key === "dadosVidaTipo") campo.value = normalizarTipoDadoVida(dados[key])
                 else if (campo.type === "checkbox") campo.checked = dados[key]
+                else if (campo.type === "number") {
+                    const valorNumerico = parseInt(String(dados[key] ?? "").replace(/[^\d-]/g, ""), 10)
+                    campo.value = Number.isNaN(valorNumerico) ? "" : Math.abs(valorNumerico)
+                }
                 else campo.value = dados[key]
             }
 
@@ -6206,8 +6638,6 @@
 
                             if (selectMunicao && dadosArma.arma_municao_id) {
                                 selectMunicao.value = String(dadosArma.arma_municao_id)
-                                console.log("SETANDO:", dadosArma.arma_municao_id)
-                                console.log("OPTIONS:", [...selectMunicao.options].map(o => o.value))
                                 selectMunicao.dispatchEvent(new Event('change'))
                             }
                         }, 0)
@@ -6412,8 +6842,6 @@
                         const dados = JSON.parse(e.target.result);
                         if (typeof aplicarDadosFicha === 'function') {
                             aplicarDadosFicha(dados);
-                            console.log(document.querySelectorAll('#listaArmaduras .armadura-card').length)
-                            console.info('importarFicha: importação concluída');
                         } else {
                             console.warn('aplicarDadosFicha não definida; arquivo lido:', dados);
                         }
@@ -6441,20 +6869,6 @@
             }
 
         }
-
-        document.getElementById("fileInput").addEventListener("change", function () {
-            const file = this.files[0]
-            if (!file) return
-            const reader = new FileReader()
-
-            reader.onload = function (e) {
-                const dados = JSON.parse(e.target.result)
-                aplicarDadosFicha(dados)
-            }
-
-            reader.readAsText(file)
-        })
-
         // ===== Atributos, radar e navegacao principal =====
         function atualizarAtributos() {
 
@@ -6573,10 +6987,10 @@
             const input = document.getElementById("bonusProf");
             if (!input) return 0;
 
-            let valor = parseInt(input.value.replace(/[^\d-]/g, "")) || 0;
+            let valor = parseInt(String(input.value).replace(/[^\d-]/g, ""), 10) || 0;
             if (valor < 0) valor = Math.abs(valor);
 
-            input.value = "+" + valor;
+            input.value = String(valor);
             return valor;
         }
 
@@ -6762,6 +7176,610 @@
             return mapa[chaveNormalizada] || "";
         }
 
+        const NIVEIS_MAGIA = Array.from({ length: 10 }, (_, indice) => indice);
+        const OPCOES_ESCOLA_MAGIA = ["Abjuração", "Adivinhação", "Conjuração", "Encantamento", "Evocação", "Ilusão", "Necromancia", "Transmutação"];
+        const OPCOES_TIPO_DANO_MAGIA = ["Ácido", "Concussão", "Cortante", "Elétrico", "Fogo", "Força", "Frio", "Necrótico", "Perfurante", "Psíquico", "Radiante", "Trovejante", "Veneno"];
+        const OPCOES_RESOLUCAO_MAGIA = ["Ataque", "Teste de Resistência"];
+        const OPCOES_TESTE_RESISTENCIA_MAGIA = ["FOR", "DES", "CON", "INT", "SAB", "CAR"];
+        const estadoModalMagia = {
+            nivel: 0,
+            indice: null,
+            modo: "visualizar"
+        };
+
+        function criarMagiaPadrao(nivel) {
+            return {
+                id: gerarId(),
+                nivel,
+                preparada: false,
+                nome: "",
+                escola: "",
+                tempo_conjuracao: "",
+                alcance: "",
+                duracao: "",
+                propriedades: {
+                    dano: false,
+                    cura: false,
+                    concentracao: false
+                },
+                resolucao: "",
+                teste_resistencia: "",
+                efeitos: [],
+                descricao: ""
+            };
+        }
+
+        function normalizarMagiaRegistro(registro, nivel) {
+            const base = criarMagiaPadrao(nivel);
+            const tags = Array.isArray(registro?.tags)
+                ? registro.tags
+                : String(registro?.tags || "")
+                    .split(",")
+                    .map(tag => tag.trim())
+                    .filter(Boolean);
+            const propriedades = {
+                dano: !!registro?.propriedades?.dano || tags.includes("dano"),
+                cura: !!registro?.propriedades?.cura || tags.includes("cura"),
+                concentracao: !!registro?.propriedades?.concentracao || tags.includes("concentracao")
+            };
+
+            const efeitos = Array.isArray(registro?.efeitos)
+                ? registro.efeitos
+                    .map(efeito => ({
+                        tipo: efeito?.tipo || "",
+                        formula: efeito?.formula || "",
+                        dano_tipo: efeito?.dano_tipo || "",
+                        regra: efeito?.regra || ""
+                    }))
+                    .filter(efeito => efeito.tipo || efeito.formula || efeito.dano_tipo || efeito.regra)
+                : [];
+
+            if (registro?.danoFormula || registro?.danoTipo) {
+                efeitos.push({
+                    tipo: "dano",
+                    formula: registro.danoFormula || "",
+                    dano_tipo: registro.danoTipo || "",
+                    regra: ""
+                });
+            }
+
+            if (registro?.curaRegra) {
+                efeitos.push({
+                    tipo: "cura",
+                    formula: "",
+                    dano_tipo: "",
+                    regra: registro.curaRegra
+                });
+            }
+
+            return {
+                ...base,
+                ...registro,
+                id: registro?.id || base.id,
+                nivel,
+                preparada: !!registro?.preparada,
+                propriedades,
+                resolucao: registro?.resolucao || "",
+                teste_resistencia: registro?.teste_resistencia || "",
+                efeitos
+            };
+        }
+
+        function obterCampoArmazenamentoMagia(nivel) {
+            return document.getElementById(`magia${nivel}Texto`);
+        }
+
+        function lerMagiasNivel(nivel) {
+            const campo = obterCampoArmazenamentoMagia(nivel);
+            if (!campo) return [];
+
+            const valorBruto = String(campo.value || "").trim();
+            if (!valorBruto) return [];
+
+            try {
+                const dados = JSON.parse(valorBruto);
+                if (Array.isArray(dados)) {
+                    return dados.map(registro => normalizarMagiaRegistro(registro, nivel));
+                }
+            } catch (erro) {
+                return valorBruto
+                    .split(/\r?\n/)
+                    .map(linha => linha.trim())
+                    .filter(Boolean)
+                    .map(nome => normalizarMagiaRegistro({ nome }, nivel));
+            }
+
+            return [];
+        }
+
+        function salvarMagiasNivel(nivel, magias) {
+            const campo = obterCampoArmazenamentoMagia(nivel);
+            if (!campo) return;
+
+            campo.value = JSON.stringify(magias, null, 2);
+        }
+
+        function obterContainerListaMagias(nivel) {
+            return document.getElementById(`magia${nivel}Lista`);
+        }
+
+        function obterModalMagiaOverlay() {
+            return document.getElementById("magiaModalOverlay");
+        }
+
+        function obterRotuloNivelMagia(nivel) {
+            return nivel === 0 ? "Truque" : `Nível ${nivel}`;
+        }
+
+        function formatarTagsMagia(tags) {
+            return (tags || [])
+                .map(tag => String(tag || "").trim())
+                .filter(Boolean);
+        }
+
+        function renderizarCardDetalheMagia(magia) {
+            const container = document.createElement("div");
+            container.className = "magia-card-detalhe";
+
+            const header = document.createElement("div");
+            header.className = "magia-card-detalhe-header";
+
+            const nome = document.createElement("div");
+            nome.className = "magia-card-detalhe-nome";
+            nome.textContent = magia.nome || "";
+
+            const nivel = document.createElement("div");
+            nivel.className = "magia-card-detalhe-nivel";
+            nivel.textContent = obterRotuloNivelMagia(magia.nivel);
+
+            header.appendChild(nome);
+            header.appendChild(nivel);
+
+            const info = document.createElement("div");
+            info.className = "magia-card-detalhe-info";
+            info.innerHTML = `
+                <div><strong>Tempo:</strong> ${magia.tempo_conjuracao || "-"}</div>
+                <div><strong>Alcance:</strong> ${magia.alcance || "-"}</div>
+                <div><strong>Duração:</strong> ${magia.duracao || "-"}</div>
+                <div><strong>Escola:</strong> ${magia.escola || "-"}</div>
+                <div><strong>Resolução:</strong> ${magia.resolucao || "-"}</div>
+                <div><strong>Teste:</strong> ${magia.teste_resistencia || "-"}</div>
+            `;
+
+            const propriedades = document.createElement("div");
+            propriedades.className = "magia-card-detalhe-propriedades";
+            [
+                magia?.propriedades?.dano ? "dano" : "",
+                magia?.propriedades?.cura ? "cura" : "",
+                magia?.propriedades?.concentracao ? "concentração" : ""
+            ].filter(Boolean).forEach(tag => {
+                const item = document.createElement("span");
+                item.className = "magia-card-detalhe-tag";
+                item.textContent = tag;
+                propriedades.appendChild(item);
+            });
+
+            const efeitos = document.createElement("div");
+            efeitos.className = "magia-card-detalhe-efeitos";
+
+            if (Array.isArray(magia.efeitos) && magia.efeitos.length) {
+                magia.efeitos.forEach(efeito => {
+                    const linha = document.createElement("div");
+                    if (efeito.tipo === "dano") {
+                        linha.textContent = `Dano: ${efeito.formula || "-"}${efeito.dano_tipo ? ` (${efeito.dano_tipo})` : ""}`;
+                    } else if (efeito.tipo === "cura") {
+                        linha.textContent = `Cura: ${efeito.formula || efeito.regra || "-"}`;
+                    } else {
+                        linha.textContent = efeito.regra || efeito.formula || "";
+                    }
+                    efeitos.appendChild(linha);
+                });
+            } else {
+                efeitos.textContent = "Sem efeitos cadastrados.";
+            }
+
+            const descricao = document.createElement("div");
+            descricao.className = "magia-card-detalhe-descricao";
+            descricao.textContent = magia.descricao || "";
+
+            container.appendChild(header);
+            container.appendChild(info);
+            if (propriedades.childNodes.length) {
+                container.appendChild(propriedades);
+            }
+            container.appendChild(efeitos);
+            container.appendChild(descricao);
+
+            return container;
+        }
+
+        function montarModalMagia() {
+            if (obterModalMagiaOverlay()) return;
+
+            const overlay = document.createElement("div");
+            overlay.id = "magiaModalOverlay";
+            overlay.className = "magia-modal-overlay oculto";
+            overlay.setAttribute("aria-hidden", "true");
+            overlay.innerHTML = `
+                <div class="magia-modal" role="dialog" aria-modal="true" aria-labelledby="magiaModalTitulo">
+                    <div class="magia-modal-topo">
+                        <div>
+                            <div id="magiaModalTitulo" class="magia-modal-titulo">Magia</div>
+                            <div id="magiaModalSubtitulo" class="magia-modal-subtitulo">Visualização</div>
+                        </div>
+                        <div class="magia-modal-acoes">
+                            <button type="button" class="magia-modal-botao" id="magiaModalEditar">Editar</button>
+                            <button type="button" class="magia-modal-botao perigo oculto" id="magiaModalCancelarEdicao">Cancelar edição</button>
+                            <button type="button" class="magia-modal-botao primario oculto" id="magiaModalSalvar">Salvar magia</button>
+                            <button type="button" class="magia-modal-botao" id="magiaModalFechar">Fechar</button>
+                        </div>
+                    </div>
+                    <div id="magiaModalVisualizacao" style="display: block;"></div>
+                    <form id="magiaModalFormulario" class="magia-formulario oculto" hidden style="display: none;">
+                        <div class="magia-formulario-grid">
+                            <div class="magia-formulario-campo">
+                                <label for="magiaModalNome">Nome da Magia</label>
+                                <input id="magiaModalNome" type="text">
+                            </div>
+                            <div class="magia-formulario-campo preparada">
+                                <input id="magiaModalPreparada" type="checkbox">
+                                <label for="magiaModalPreparada">Preparada</label>
+                            </div>
+                            <div class="magia-formulario-campo">
+                                <label for="magiaModalEscola">Escola</label>
+                                <select id="magiaModalEscola"></select>
+                            </div>
+                            <div class="magia-formulario-campo">
+                                <label for="magiaModalTempo">Tempo de Conjuração</label>
+                                <input id="magiaModalTempo" type="text">
+                            </div>
+                            <div class="magia-formulario-campo">
+                                <label for="magiaModalAlcance">Alcance</label>
+                                <input id="magiaModalAlcance" type="text">
+                            </div>
+                            <div class="magia-formulario-campo">
+                                <label for="magiaModalDuracao">Duração</label>
+                                <input id="magiaModalDuracao" type="text">
+                            </div>
+                            <div class="magia-formulario-campo completo">
+                                <label>Propriedades</label>
+                                <div class="magia-propriedades-checks">
+                                    <label><input id="magiaModalPropDano" type="checkbox"> Dano</label>
+                                    <label><input id="magiaModalPropCura" type="checkbox"> Cura</label>
+                                    <label><input id="magiaModalPropConcentracao" type="checkbox"> Concentração</label>
+                                </div>
+                            </div>
+                            <div class="magia-formulario-campo oculto" id="magiaModalCampoDanoFormula">
+                                <label for="magiaModalDanoFormula">Fórmula de Dano</label>
+                                <input id="magiaModalDanoFormula" type="text" placeholder="Ex: 3d6">
+                            </div>
+                            <div class="magia-formulario-campo oculto" id="magiaModalCampoDanoTipo">
+                                <label for="magiaModalDanoTipo">Tipo de Dano</label>
+                                <select id="magiaModalDanoTipo"></select>
+                            </div>
+                            <div class="magia-formulario-campo oculto" id="magiaModalCampoResolucao">
+                                <label for="magiaModalResolucao">Resolução</label>
+                                <select id="magiaModalResolucao"></select>
+                            </div>
+                            <div class="magia-formulario-campo oculto" id="magiaModalCampoAtaqueMagico">
+                                <label for="magiaModalAtaqueMagico">Ataque Mágico</label>
+                                <input id="magiaModalAtaqueMagico" type="text" readonly>
+                            </div>
+                            <div class="magia-formulario-campo oculto" id="magiaModalCampoTesteResistencia">
+                                <label for="magiaModalTesteResistencia">Teste de Resistência</label>
+                                <select id="magiaModalTesteResistencia"></select>
+                            </div>
+                            <div class="magia-formulario-campo completo oculto" id="magiaModalCampoCuraRegra">
+                                <label for="magiaModalCuraRegra">Cura / Regra adicional</label>
+                                <input id="magiaModalCuraRegra" type="text" placeholder="Ex: metade do dano causado">
+                            </div>
+                            <div class="magia-formulario-campo completo">
+                                <label for="magiaModalDescricao">Descrição</label>
+                                <textarea id="magiaModalDescricao"></textarea>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+        }
+
+        function prepararInterfaceNivelMagia(nivel) {
+            const campo = obterCampoArmazenamentoMagia(nivel);
+            if (!campo) return;
+
+            campo.classList.add("magia-storage");
+            if (document.getElementById(`magia${nivel}Lista`)) return;
+
+            const lista = document.createElement("div");
+            lista.id = `magia${nivel}Lista`;
+            lista.className = "magia-lista";
+            campo.parentNode.insertBefore(lista, campo);
+
+            const botao = document.createElement("button");
+            botao.type = "button";
+            botao.className = "magia-botao-add";
+            botao.textContent = "Nova Magia";
+            botao.addEventListener("click", () => adicionarNovaMagia(nivel));
+
+            const cabecalho = campo.closest(".magia-card")?.querySelector(nivel === 0 ? ".magia-cabecalho-truques" : ".magia-cabecalho");
+            cabecalho?.appendChild(botao);
+        }
+
+        function inicializarGerenciadorMagias() {
+            montarModalMagia();
+            preencherSelectMagia("magiaModalEscola", OPCOES_ESCOLA_MAGIA);
+            preencherSelectMagia("magiaModalDanoTipo", OPCOES_TIPO_DANO_MAGIA);
+            preencherSelectMagia("magiaModalResolucao", OPCOES_RESOLUCAO_MAGIA);
+            preencherSelectMagia("magiaModalTesteResistencia", OPCOES_TESTE_RESISTENCIA_MAGIA);
+            NIVEIS_MAGIA.forEach(prepararInterfaceNivelMagia);
+            renderizarTodasMagias();
+        }
+
+        function preencherSelectMagia(id, opcoes) {
+            const select = document.getElementById(id);
+            if (!select) return;
+
+            select.innerHTML = "";
+
+            const vazio = document.createElement("option");
+            vazio.value = "";
+            vazio.textContent = "-";
+            select.appendChild(vazio);
+
+            opcoes.forEach(opcao => {
+                const item = document.createElement("option");
+                item.value = opcao;
+                item.textContent = opcao;
+                select.appendChild(item);
+            });
+        }
+
+        function renderizarTodasMagias() {
+            NIVEIS_MAGIA.forEach(renderizarListaMagiasNivel);
+        }
+
+        function renderizarListaMagiasNivel(nivel) {
+            const container = obterContainerListaMagias(nivel);
+            if (!container) return;
+
+            const magias = lerMagiasNivel(nivel);
+            container.replaceChildren();
+
+            if (!magias.length) {
+                const vazio = document.createElement("div");
+                vazio.className = "magia-vazia";
+                vazio.textContent = "Nenhuma magia cadastrada.";
+                container.appendChild(vazio);
+                return;
+            }
+
+            magias.forEach((magia, indice) => {
+                const item = document.createElement("div");
+                item.className = "magia-item";
+
+                const checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.className = "magia-item-preparada";
+                checkbox.checked = !!magia.preparada;
+                checkbox.setAttribute("aria-label", `Magia preparada: ${magia.nome || "sem nome"}`);
+                checkbox.addEventListener("change", () => {
+                    const registros = lerMagiasNivel(nivel);
+                    if (!registros[indice]) return;
+                    registros[indice].preparada = checkbox.checked;
+                    salvarMagiasNivel(nivel, registros);
+                    renderizarListaMagiasNivel(nivel);
+                });
+
+                const nome = document.createElement("button");
+                nome.type = "button";
+                nome.className = "magia-item-nome";
+                if (!magia.nome) {
+                    nome.classList.add("vazia");
+                    nome.innerHTML = "&nbsp;";
+                    nome.setAttribute("aria-label", `Abrir magia vazia de ${obterRotuloNivelMagia(nivel)}`);
+                } else {
+                    nome.textContent = magia.nome;
+                }
+                nome.addEventListener("click", () => abrirModalMagia(nivel, indice, "visualizar"));
+
+                const editar = document.createElement("button");
+                editar.type = "button";
+                editar.className = "magia-item-editar";
+                editar.innerHTML = `<span class="magia-item-editar-icone">✏</span><span>Edição</span>`;
+                editar.setAttribute("aria-label", `Editar magia ${magia.nome || "sem nome"}`);
+                editar.addEventListener("click", () => abrirModalMagia(nivel, indice, "editar"));
+
+                item.appendChild(checkbox);
+                item.appendChild(nome);
+                item.appendChild(editar);
+                container.appendChild(item);
+            });
+        }
+
+        function obterMagiaDoEstadoModal() {
+            const magias = lerMagiasNivel(estadoModalMagia.nivel);
+            return magias[estadoModalMagia.indice] || criarMagiaPadrao(estadoModalMagia.nivel);
+        }
+
+        function preencherFormularioMagia(magia) {
+            document.getElementById("magiaModalNome").value = magia.nome || "";
+            document.getElementById("magiaModalPreparada").checked = !!magia.preparada;
+            document.getElementById("magiaModalEscola").value = magia.escola || "";
+            document.getElementById("magiaModalTempo").value = magia.tempo_conjuracao || "";
+            document.getElementById("magiaModalAlcance").value = magia.alcance || "";
+            document.getElementById("magiaModalDuracao").value = magia.duracao || "";
+            document.getElementById("magiaModalDescricao").value = magia.descricao || "";
+            document.getElementById("magiaModalPropDano").checked = !!magia?.propriedades?.dano;
+            document.getElementById("magiaModalPropCura").checked = !!magia?.propriedades?.cura;
+            document.getElementById("magiaModalPropConcentracao").checked = !!magia?.propriedades?.concentracao;
+            document.getElementById("magiaModalResolucao").value = magia.resolucao || "";
+            document.getElementById("magiaModalTesteResistencia").value = magia.teste_resistencia || "";
+
+            const efeitoDano = (magia.efeitos || []).find(efeito => efeito.tipo === "dano") || {};
+            const efeitoCura = (magia.efeitos || []).find(efeito => efeito.tipo === "cura") || {};
+
+            document.getElementById("magiaModalDanoFormula").value = efeitoDano.formula || "";
+            document.getElementById("magiaModalDanoTipo").value = efeitoDano.dano_tipo || "";
+            document.getElementById("magiaModalCuraRegra").value = efeitoCura.regra || efeitoCura.formula || "";
+            atualizarVisibilidadeFormularioMagia();
+        }
+
+        function lerFormularioMagia() {
+            const danoFormula = document.getElementById("magiaModalDanoFormula").value.trim();
+            const danoTipo = document.getElementById("magiaModalDanoTipo").value.trim();
+            const curaRegra = document.getElementById("magiaModalCuraRegra").value.trim();
+            const resolucao = document.getElementById("magiaModalResolucao").value;
+            const propriedades = {
+                dano: document.getElementById("magiaModalPropDano").checked,
+                cura: document.getElementById("magiaModalPropCura").checked,
+                concentracao: document.getElementById("magiaModalPropConcentracao").checked
+            };
+            const efeitos = [];
+
+            if (propriedades.dano && (danoFormula || danoTipo || resolucao)) {
+                efeitos.push({
+                    tipo: "dano",
+                    formula: danoFormula,
+                    dano_tipo: danoTipo,
+                    regra: ""
+                });
+            }
+
+            if (propriedades.cura && curaRegra) {
+                efeitos.push({
+                    tipo: "cura",
+                    formula: "",
+                    dano_tipo: "",
+                    regra: curaRegra
+                });
+            }
+
+            return normalizarMagiaRegistro({
+                ...obterMagiaDoEstadoModal(),
+                nome: document.getElementById("magiaModalNome").value.trim(),
+                preparada: document.getElementById("magiaModalPreparada").checked,
+                escola: document.getElementById("magiaModalEscola").value.trim(),
+                tempo_conjuracao: document.getElementById("magiaModalTempo").value.trim(),
+                alcance: document.getElementById("magiaModalAlcance").value.trim(),
+                duracao: document.getElementById("magiaModalDuracao").value.trim(),
+                propriedades,
+                resolucao,
+                teste_resistencia: document.getElementById("magiaModalTesteResistencia").value,
+                efeitos,
+                descricao: document.getElementById("magiaModalDescricao").value.trim()
+            }, estadoModalMagia.nivel);
+        }
+
+        function atualizarAtaqueMagicoModalMagia() {
+            const campo = document.getElementById("magiaModalAtaqueMagico");
+            const campoOrigem = document.getElementById("magiaAtaqueMagico");
+            if (!campo) return;
+
+            campo.value = campoOrigem?.value || "";
+        }
+
+        function atualizarVisibilidadeFormularioMagia() {
+            const habilitaDano = document.getElementById("magiaModalPropDano")?.checked;
+            const habilitaCura = document.getElementById("magiaModalPropCura")?.checked;
+            const resolucao = document.getElementById("magiaModalResolucao")?.value;
+
+            document.getElementById("magiaModalCampoDanoFormula")?.classList.toggle("oculto", !habilitaDano);
+            document.getElementById("magiaModalCampoDanoTipo")?.classList.toggle("oculto", !habilitaDano);
+            document.getElementById("magiaModalCampoResolucao")?.classList.toggle("oculto", !habilitaDano);
+            document.getElementById("magiaModalCampoCuraRegra")?.classList.toggle("oculto", !habilitaCura);
+            document.getElementById("magiaModalCampoAtaqueMagico")?.classList.toggle("oculto", !(habilitaDano && resolucao === "Ataque"));
+            document.getElementById("magiaModalCampoTesteResistencia")?.classList.toggle("oculto", !(habilitaDano && resolucao === "Teste de Resistência"));
+
+            atualizarAtaqueMagicoModalMagia();
+        }
+
+        function alternarModoModalMagia(modo) {
+            const visualizacao = document.getElementById("magiaModalVisualizacao");
+            const formulario = document.getElementById("magiaModalFormulario");
+            const botaoEditar = document.getElementById("magiaModalEditar");
+            const botaoCancelar = document.getElementById("magiaModalCancelarEdicao");
+            const botaoSalvar = document.getElementById("magiaModalSalvar");
+            const subtitulo = document.getElementById("magiaModalSubtitulo");
+
+            estadoModalMagia.modo = modo;
+
+            if (visualizacao) {
+                visualizacao.hidden = modo !== "visualizar";
+                visualizacao.classList.toggle("oculto", modo !== "visualizar");
+                visualizacao.style.display = modo === "visualizar" ? "block" : "none";
+            }
+
+            if (formulario) {
+                formulario.hidden = modo !== "editar";
+                formulario.className = modo === "editar" ? "magia-formulario" : "magia-formulario oculto";
+                formulario.style.display = modo === "editar" ? "flex" : "none";
+            }
+
+            botaoEditar?.classList.toggle("oculto", modo !== "visualizar");
+            botaoCancelar?.classList.toggle("oculto", modo !== "editar");
+            botaoSalvar?.classList.toggle("oculto", modo !== "editar");
+            if (subtitulo) {
+                subtitulo.textContent = modo === "editar" ? "Edição da magia" : "Visualização da magia";
+            }
+        }
+
+        function renderizarVisualizacaoModalMagia(magia) {
+            const container = document.getElementById("magiaModalVisualizacao");
+            if (!container) return;
+
+            container.replaceChildren();
+            container.appendChild(renderizarCardDetalheMagia(magia));
+        }
+
+        function abrirModalMagia(nivel, indice, modo = "visualizar") {
+            const overlay = obterModalMagiaOverlay();
+            if (!overlay) return;
+
+            estadoModalMagia.nivel = nivel;
+            estadoModalMagia.indice = indice;
+
+            const magia = obterMagiaDoEstadoModal();
+            document.getElementById("magiaModalTitulo").textContent = magia.nome || "Magia";
+            preencherFormularioMagia(magia);
+            renderizarVisualizacaoModalMagia(magia);
+            alternarModoModalMagia(modo);
+
+            overlay.classList.add("ativo");
+            overlay.classList.remove("oculto");
+            overlay.setAttribute("aria-hidden", "false");
+        }
+
+        function fecharModalMagia() {
+            const overlay = obterModalMagiaOverlay();
+            if (!overlay) return;
+
+            overlay.classList.remove("ativo");
+            overlay.classList.add("oculto");
+            overlay.setAttribute("aria-hidden", "true");
+        }
+
+        function salvarModalMagia() {
+            const magias = lerMagiasNivel(estadoModalMagia.nivel);
+            const magia = lerFormularioMagia();
+
+            magias[estadoModalMagia.indice] = magia;
+            salvarMagiasNivel(estadoModalMagia.nivel, magias);
+            renderizarListaMagiasNivel(estadoModalMagia.nivel);
+            document.getElementById("magiaModalTitulo").textContent = magia.nome || "Magia";
+            renderizarVisualizacaoModalMagia(magia);
+            alternarModoModalMagia("visualizar");
+        }
+
+        function adicionarNovaMagia(nivel) {
+            const magias = lerMagiasNivel(nivel);
+            magias.push(criarMagiaPadrao(nivel));
+            salvarMagiasNivel(nivel, magias);
+            renderizarListaMagiasNivel(nivel);
+            abrirModalMagia(nivel, magias.length - 1, "editar");
+        }
+
         function atualizarMagias() {
             sincronizarCamposMagia();
 
@@ -6785,6 +7803,7 @@
 
             campoCD.value = cd;
             campoAtaque.value = (ataque >= 0 ? "+" : "") + ataque;
+            renderizarTodasMagias();
         }
 
         function sincronizarClasseNivel(usarValorLegado = false) {
@@ -6941,20 +7960,27 @@
             arma: null,
             dado: null,
             totalAtaque: 0,
-            rotuloAtributo: ""
+            rotuloAtributo: "",
+            textoResumo: ""
         };
 
         function obterResumoBonusAtaqueArma(arma) {
-            const rotuloAtributo = formatarRotuloAtributo(arma?.ataque) || "-";
-            const modificadorAtaque = getModificadorBaseAtributo(arma?.ataque);
-            const bonusProf = getBonusProf();
-            const totalAtaque = modificadorAtaque === null ? 0 : bonusProf + modificadorAtaque;
+            return getResumoCalculoAtaque(arma, arma?.ataque);
+        }
 
-            return {
-                rotuloAtributo,
-                totalAtaque,
-                textoResumo: `${totalAtaque >= 0 ? "+ " : "- "}${Math.abs(totalAtaque)} (${rotuloAtributo})`
-            };
+        function obterSubtituloModalAtaque(arma) {
+            return limparPrefixoPropriedade(arma?.propriedade || "") || "Sem propriedades";
+        }
+
+        function atualizarEstadoCriticoModalAtaque() {
+            const campoDado = document.getElementById('modalAtaqueDado');
+            const botaoSucesso = document.getElementById('modalAtaqueSucesso');
+            const botaoFracasso = document.getElementById('modalAtaqueFracasso');
+            if (!campoDado || !botaoSucesso || !botaoFracasso) return;
+
+            const dado = parseInt(campoDado.value, 10);
+            botaoSucesso.classList.toggle('ataque-botao-critico', dado === 20);
+            botaoFracasso.classList.toggle('ataque-botao-fracasso-critico', dado === 1);
         }
 
         function alternarEtapaModalAtaque(exibirDano) {
@@ -6970,17 +7996,23 @@
             const overlay = document.getElementById('modalAtaqueOverlay');
             const campoDado = document.getElementById('modalAtaqueDado');
             const campoDano = document.getElementById('modalAtaqueDano');
+            const botaoSucesso = document.getElementById('modalAtaqueSucesso');
+            const botaoFracasso = document.getElementById('modalAtaqueFracasso');
 
             estadoAtaqueArma.arma = null;
             estadoAtaqueArma.dado = null;
             estadoAtaqueArma.totalAtaque = 0;
             estadoAtaqueArma.rotuloAtributo = "";
+            estadoAtaqueArma.textoResumo = "";
 
             if (campoDado) campoDado.value = '';
             if (campoDano) campoDano.value = '';
+            if (botaoSucesso) botaoSucesso.classList.remove('ataque-botao-critico');
+            if (botaoFracasso) botaoFracasso.classList.remove('ataque-botao-fracasso-critico');
             alternarEtapaModalAtaque(false);
 
             if (overlay) {
+                overlay.classList.remove('ativo');
                 overlay.classList.add('oculto');
                 overlay.setAttribute('aria-hidden', 'true');
             }
@@ -7003,15 +8035,18 @@
             estadoAtaqueArma.dado = null;
             estadoAtaqueArma.totalAtaque = totalAtaque;
             estadoAtaqueArma.rotuloAtributo = rotuloAtributo;
+            estadoAtaqueArma.textoResumo = textoResumo;
 
-            titulo.textContent = `Ataque com ${arma?.nome || 'arma'}`;
-            subtitulo.textContent = 'Digite o dado tirado.';
+            titulo.innerHTML = `Ataque com <span class="ataque-modal-titulo-arma">${arma?.nome || 'arma'}</span>`;
+            subtitulo.textContent = obterSubtituloModalAtaque(arma);
             bonus.textContent = textoResumo;
             resumo.textContent = '';
             campoDado.value = '';
             campoDano.value = '';
 
             alternarEtapaModalAtaque(false);
+            atualizarEstadoCriticoModalAtaque();
+            overlay.classList.add('ativo');
             overlay.classList.remove('oculto');
             overlay.setAttribute('aria-hidden', 'false');
 
@@ -7023,7 +8058,7 @@
             if (!campoDado) return null;
 
             const dado = parseInt(campoDado.value, 10);
-            if (!Number.isInteger(dado) || dado < 1) {
+            if (!Number.isInteger(dado) || dado < 1 || dado > 20) {
                 campoDado.focus();
                 return null;
             }
@@ -7039,8 +8074,11 @@
             if (dado === null || !resumo || !subtitulo || !campoDano) return;
 
             estadoAtaqueArma.dado = dado;
-            subtitulo.textContent = 'Digite o dano causado.';
-            resumo.textContent = `Dado: ${dado} | Ataque: ${estadoAtaqueArma.totalAtaque >= 0 ? "+" : "-"}${Math.abs(estadoAtaqueArma.totalAtaque)} (${estadoAtaqueArma.rotuloAtributo})`;
+            subtitulo.textContent = obterSubtituloModalAtaque(estadoAtaqueArma.arma);
+            resumo.innerHTML = [
+                `Dado: <span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">${dado}</span>`,
+                `Bônus: <span class="ataque-modal-resumo-destaque">${estadoAtaqueArma.textoResumoDano || estadoAtaqueArma.rotuloAtributo}</span>`
+            ].join(' | ');
             alternarEtapaModalAtaque(true);
             setTimeout(() => campoDano.focus(), 0);
         }
@@ -7064,19 +8102,12 @@
             armas.forEach(arma => {
                 const item = document.createElement('div');
                 item.className = 'arma-resumo-item';
+                if (!arma.proficiente) {
+                    item.classList.add('nao-proficiente');
+                }
                 item.tabIndex = 0;
                 item.setAttribute('role', 'button');
                 item.setAttribute('aria-label', `Atacar com ${arma.nome}`);
-
-                // 🔥 EVENTO DE CLIQUE AQUI
-                item.addEventListener('click', () => {
-                    armaAtual = arma; // Define a arma atual para o modal
-                    abrirModalAtaque({
-                        nome: arma.nome,
-                        dano: arma.dano || '-',
-                        ataque: arma.ataque
-                    });
-                });
 
                 const topo = document.createElement('div');
                 topo.className = 'arma-resumo-topo';
@@ -7087,7 +8118,6 @@
                 if (arma.usaMunicao) {
 
                     const idMunicao = arma.arma_municao_id;
-                    console.log('ID da munição associada:', idMunicao);
 
                     if (idMunicao) {
 
@@ -7109,13 +8139,7 @@
 
                 const detalhes = document.createElement('div');
                 detalhes.className = 'arma-resumo-detalhes';
-                const rotuloAtaque = formatarRotuloAtributo(arma.ataque) || "-";
-                const modificadorAtaque = getModificadorBaseAtributo(arma.ataque);
-                const bonusProf = getBonusProf();
-                const totalAtaque = modificadorAtaque === null ? null : bonusProf + modificadorAtaque;
-                const textoAtaque = totalAtaque === null
-                    ? rotuloAtaque
-                    : `${rotuloAtaque} (${totalAtaque >= 0 ? "+" : ""}${totalAtaque})`;
+                const { textoResumo: textoAtaque } = getResumoCalculoAtaque(arma, arma.ataque);
                 detalhes.innerHTML = `<strong>Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}</strong><br>Propriedade: ${arma.propriedade || "-"}`;
 
                 item.addEventListener('click', () => abrirModalAtaqueArma(arma));
@@ -7202,6 +8226,8 @@
             const arma = estadoAtaqueArma.arma;
             const dado = estadoAtaqueArma.dado;
             if (!arma || dado === null) return;
+
+            consumirMunicao(1, arma);
 
             const valor = [
                 arma.nome || 'Arma',
@@ -7319,7 +8345,7 @@
                     // 🔥 Registrar só aqui (depois de confirmar)
                     registrarHistoricoComandoCombate('Fracasso', `${i}º`);
 
-                    verificarDerrrotaDeathSave();
+                    verificarDerrotaDeathSave();
                     return;
                 }
             }
@@ -7370,7 +8396,7 @@
             }
         }
 
-        function verificarDerrrotaDeathSave() {
+        function verificarDerrotaDeathSave() {
             let fracassos = 0;
 
             for (let i = 1; i <= 3; i++) {
@@ -7508,6 +8534,8 @@
             atualizarPericias();
             atualizarPassivas();
             atualizarMagias();
+            atualizarSeletoresAtaqueEquipados();
+            atualizarSubAbaArmas();
         });
         bonusOrbeInput.addEventListener('change', () => {
             formatarBonusProf();
@@ -7515,6 +8543,8 @@
             atualizarPericias();
             atualizarPassivas();
             atualizarMagias();
+            atualizarSeletoresAtaqueEquipados();
+            atualizarSubAbaArmas();
         });
 
         document.getElementById('classeNomeID').addEventListener('input', () => {
@@ -7545,6 +8575,28 @@
             campoAtributoConjuracao.addEventListener('input', atualizarMagias);
             campoAtributoConjuracao.addEventListener('change', atualizarMagias);
         }
+        inicializarGerenciadorMagias();
+        const overlayMagia = document.getElementById('magiaModalOverlay');
+        if (overlayMagia) {
+            overlayMagia.addEventListener('click', evento => {
+                if (evento.target === overlayMagia) {
+                    fecharModalMagia();
+                }
+            });
+        }
+        document.getElementById('magiaModalEditar')?.addEventListener('click', () => {
+            preencherFormularioMagia(obterMagiaDoEstadoModal());
+            alternarModoModalMagia('editar');
+        });
+        document.getElementById('magiaModalCancelarEdicao')?.addEventListener('click', () => {
+            preencherFormularioMagia(obterMagiaDoEstadoModal());
+            alternarModoModalMagia('visualizar');
+        });
+        document.getElementById('magiaModalSalvar')?.addEventListener('click', salvarModalMagia);
+        document.getElementById('magiaModalFechar')?.addEventListener('click', fecharModalMagia);
+        ['magiaModalPropDano', 'magiaModalPropCura', 'magiaModalPropConcentracao', 'magiaModalResolucao'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', atualizarVisibilidadeFormularioMagia);
+        });
         ['armaduraCA', 'outroEquipadoCA', 'escudoCA'].forEach(id => {
             const campo = document.getElementById(id);
             if (!campo) return;
@@ -7613,6 +8665,12 @@
         document.getElementById('modalAtaqueDado')?.addEventListener('keydown', evento => {
             if (evento.key === 'Enter') abrirEtapaDanoAtaque();
         });
+        document.getElementById('modalAtaqueDado')?.addEventListener('input', () => {
+            atualizarEstadoCriticoModalAtaque();
+        });
+        document.getElementById('modalAtaqueDado')?.addEventListener('change', () => {
+            atualizarEstadoCriticoModalAtaque();
+        });
         document.getElementById('modalAtaqueDano')?.addEventListener('keydown', evento => {
             if (evento.key === 'Enter') confirmarDanoAtaque();
         });
@@ -7621,6 +8679,12 @@
                 const overlay = document.getElementById('modalAtaqueOverlay');
                 if (overlay && !overlay.classList.contains('oculto')) {
                     fecharModalAtaqueArma();
+                    return;
+                }
+
+                const overlayMagiaAtivo = document.getElementById('magiaModalOverlay');
+                if (overlayMagiaAtivo && !overlayMagiaAtivo.classList.contains('oculto')) {
+                    fecharModalMagia();
                 }
             }
         });

@@ -2,52 +2,100 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
+const PRELOAD_PATH = path.join(__dirname, 'preload.js');
 let mainWindow;
 
-function createWindow() {
-    mainWindow = new BrowserWindow({
+function createAppWindow(options = {}) {
+    const window = new BrowserWindow({
+        show: false,
+        webPreferences: {
+            preload: PRELOAD_PATH,
+            contextIsolation: true,
+            nodeIntegration: false
+        },
+        ...options
+    });
+
+    let allowInitialNavigation = true;
+
+    window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
+    window.webContents.on('will-navigate', event => {
+        if (!allowInitialNavigation) {
+            event.preventDefault();
+        }
+    });
+    window.webContents.once('did-finish-load', () => {
+        allowInitialNavigation = false;
+    });
+
+    return window;
+}
+
+function createMainWindow() {
+    mainWindow = createAppWindow({
         width: 400,
         height: 300,
-        webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
-        }
+        resizable: false
+    });
+
+    mainWindow.once('ready-to-show', () => {
+        mainWindow.show();
     });
 
     mainWindow.loadFile('index.html');
 }
 
-app.whenReady().then(createWindow);
-
-// NOVO PERSONAGEM
-ipcMain.on('novo-personagem', () => {
-    const ficha = new BrowserWindow({
+function createCharacterWindow() {
+    const characterWindow = createAppWindow({
         width: 1200,
         height: 800
     });
 
-    ficha.loadFile('ficha/Ficha DnD - Tatagiba 1.0.html');
+    characterWindow.once('ready-to-show', () => {
+        characterWindow.show();
+    });
+
+    characterWindow.loadFile('ficha/Ficha DnD - Tatagiba 1.0.html');
+    return characterWindow;
+}
+
+app.whenReady().then(() => {
+    createMainWindow();
+
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createMainWindow();
+        }
+    });
 });
 
-// IMPORTAR PERSONAGEM
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit();
+    }
+});
+
+ipcMain.on('novo-personagem', () => {
+    createCharacterWindow();
+});
+
 ipcMain.handle('importar-personagem', async () => {
     const result = await dialog.showOpenDialog({
         filters: [{ name: 'JSON', extensions: ['json'] }],
         properties: ['openFile']
     });
 
-    if (result.canceled) return;
+    if (result.canceled) {
+        return null;
+    }
 
     const filePath = result.filePaths[0];
     const data = fs.readFileSync(filePath, 'utf-8');
+    const characterWindow = createCharacterWindow();
 
-    const ficha = new BrowserWindow({
-        width: 1200,
-        height: 800
+    characterWindow.webContents.once('did-finish-load', () => {
+        characterWindow.webContents.send('carregar-personagem', data);
     });
 
-    ficha.loadFile('ficha/Ficha DnD - Tatagiba 1.0.html');
-
-    ficha.webContents.once('did-finish-load', () => {
-        ficha.webContents.send('carregar-personagem', data);
-    });
+    return data;
 });
