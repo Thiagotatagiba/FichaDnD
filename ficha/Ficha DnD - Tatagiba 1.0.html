@@ -1568,6 +1568,98 @@
             text-align: center;
         }
 
+        .magia-combate-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .magia-combate-item {
+            width: 100%;
+            border: 1px solid #c7a97b;
+            border-radius: 12px;
+            background: linear-gradient(180deg, #fffaf2, #f2e6d2);
+            padding: 12px;
+            text-align: left;
+            cursor: pointer;
+            font-family: 'MedievalSharp';
+            color: #4a240a;
+            transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+        }
+
+        .magia-combate-item:hover,
+        .magia-combate-item:focus-visible {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(111, 54, 16, 0.14);
+            border-color: #8b4513;
+            outline: none;
+        }
+
+        .magia-combate-topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .magia-combate-nome {
+            font-size: 16px;
+            font-weight: bold;
+            color: #5f2d0c;
+        }
+
+        .magia-combate-nivel {
+            font-size: 10px;
+            padding: 2px 7px;
+            opacity: 0.82;
+        }
+
+        .magia-combate-meta {
+            margin-top: 8px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .magia-combate-resumo {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #6b4b2b;
+        }
+
+        .pocoes-equipadas-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .pocao-equipada-item {
+            width: 100%;
+            border: 1px solid #c7a97b;
+            border-radius: 10px;
+            background: #fffaf2;
+            padding: 8px 10px;
+            text-align: left;
+            font-family: 'MedievalSharp';
+            color: #5f2d0c;
+            cursor: pointer;
+            transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+        }
+
+        .pocao-equipada-item:hover,
+        .pocao-equipada-item:focus-visible {
+            background: #f5ead7;
+            border-color: #8b4513;
+            transform: translateY(-1px);
+            outline: none;
+        }
+
+        .pocao-equipada-vazia {
+            color: #7a5a38;
+            font-size: 12px;
+            font-style: italic;
+        }
+
         .equipamento-colunas {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -2083,17 +2175,19 @@
         }
 
         .magia-card-detalhe {
-            background: #fffaf2;
+            background: linear-gradient(180deg, #fffaf2, #f7efdf);
             border: 2px solid #8b4513;
-            border-radius: 12px;
-            padding: 14px;
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
         }
 
         .magia-card-detalhe-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
             gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.18);
         }
 
         .magia-card-detalhe-nome {
@@ -2101,6 +2195,7 @@
             font-weight: bold;
             color: #5f2d0c;
             min-height: 24px;
+            letter-spacing: 0.01em;
         }
 
         .magia-card-detalhe-nivel {
@@ -2113,45 +2208,52 @@
         }
 
         .magia-card-detalhe-info {
-            margin-top: 10px;
+            margin-top: 12px;
             font-size: 13px;
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 6px 10px;
+            gap: 8px 12px;
         }
 
         .magia-card-detalhe-propriedades {
-            margin-top: 10px;
+            margin-top: 12px;
             display: flex;
-            gap: 6px;
+            gap: 8px;
             flex-wrap: wrap;
         }
 
         .magia-card-detalhe-tag {
-            background: #e0d3bd;
-            border-radius: 6px;
-            padding: 2px 6px;
+            background: #e9dcc6;
+            border: 1px solid #c7a97b;
+            border-radius: 999px;
+            padding: 4px 9px;
             font-size: 11px;
+            font-weight: bold;
+            color: #6a3510;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
         }
 
         .magia-card-detalhe-efeitos {
             margin-top: 12px;
-            padding-top: 8px;
-            border-top: 1px solid #bda68c;
+            padding: 10px 12px;
+            border: 1px solid #d5b993;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.6);
             font-size: 13px;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
 
         .magia-card-detalhe-descricao {
             margin-top: 12px;
             font-size: 13px;
             line-height: 1.45;
-            background: #fff;
+            background: rgba(255, 255, 255, 0.82);
             border: 1px solid #bda68c;
             border-radius: 8px;
-            padding: 10px;
+            padding: 12px;
             white-space: pre-wrap;
             min-height: 90px;
         }
@@ -2304,7 +2406,7 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            padding: 14px;
+            padding: 16px;
             border: 2px solid #c7a97b;
             border-radius: 12px;
             background: rgba(255, 250, 242, 0.82);
@@ -2328,12 +2430,13 @@
             align-items: center;
             gap: 8px;
             min-height: 40px;
-            padding: 0 12px;
+            padding: 0 14px;
             border: 2px solid #8b4513;
             border-radius: 10px;
             background: #fffaf2;
             color: #6f3610;
             font-size: 13px;
+            font-weight: bold;
         }
 
         .magia-formulario-campo.concentracao-inline input {
@@ -3240,6 +3343,201 @@
 
             .contra-morte-caveira {
                 font-size: 24px;
+            }
+        }
+
+        /* ===== Ajustes mobile consolidados ===== */
+        @media (max-width: 768px) {
+            .topo {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .nome-personagem input {
+                width: 100%;
+                font-size: 32px;
+            }
+
+            .linha-personagem {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+
+            .grid-combate {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .hexagrama {
+                width: 100%;
+                max-width: 280px;
+                height: 300px;
+                margin: 0 auto;
+            }
+
+            .abas {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+                overflow-x: visible;
+            }
+
+            .tab,
+            .tab.active {
+                flex: 1 1 calc(50% - 6px);
+                min-width: 120px;
+                text-align: center;
+            }
+
+            .status-grid,
+            .status-colunas,
+            .status-primeira-linha,
+            .status-segunda-linha,
+            .equipamento-colunas,
+            .inventario-colunas,
+            .historia-blocos,
+            .combate-linha,
+            .linha-principal,
+            .passivas-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .subabas-botoes {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .subaba-botao {
+                flex: 1 1 calc(50% - 6px);
+                text-align: center;
+            }
+
+            .ataque-topo {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .ataque-status-linha {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px;
+            }
+
+            .ataque-status-caixa,
+            .ataque-status-caixa.posicao {
+                width: 100%;
+            }
+
+            #combate .combate-linha:first-of-type>.combate-card:first-child {
+                order: 2;
+            }
+
+            #combate .combate-linha:first-of-type>.combate-card:nth-child(2) {
+                order: 1;
+            }
+
+            .contra-morte-row {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .historico-cabecalho,
+            .historico-registro {
+                grid-template-columns: 64px 90px 1fr;
+            }
+
+            .magia-modal {
+                width: min(100%, 96vw);
+                max-height: 92vh;
+                padding: 14px;
+            }
+
+            .magia-modal-topo {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .magia-modal-acoes {
+                width: 100%;
+            }
+
+            .magia-modal-botao {
+                flex: 1 1 calc(50% - 8px);
+                justify-content: center;
+            }
+
+            .magia-card-detalhe-info {
+                grid-template-columns: 1fr;
+            }
+
+            .magia-combate-topo {
+                align-items: flex-start;
+            }
+
+            .magia-combate-item {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 560px) {
+            .linha-personagem {
+                grid-template-columns: 1fr;
+            }
+
+            .caixa-status,
+            .passivas-linha,
+            .magia-topo,
+            .historia-detalhes,
+            .ataque-status-linha {
+                grid-template-columns: 1fr;
+            }
+
+            .jogador-xp {
+                gap: 4px;
+            }
+
+            .nome-personagem input {
+                font-size: 26px;
+            }
+
+            .tab,
+            .tab.active,
+            .subaba-botao {
+                flex-basis: 100%;
+            }
+
+            .hexagrama {
+                max-width: 240px;
+                height: 250px;
+            }
+
+            .atributo {
+                transform: scale(0.78);
+                transform-origin: center;
+            }
+
+            #radar {
+                transform: scale(0.78);
+                transform-origin: center;
+            }
+
+            .magia-modal-botao {
+                flex-basis: 100%;
+            }
+
+            .historico-cabecalho,
+            .historico-registro {
+                grid-template-columns: 52px 72px 1fr;
+                gap: 6px;
+                font-size: 10px;
+            }
+
+            .subaba-combate,
+            .combate-card,
+            .status-coluna-card,
+            .inventario-card,
+            .magia-card,
+            .historia-card {
+                padding: 10px;
             }
         }
 
@@ -4280,29 +4578,14 @@
                                     </div>
                                 </div>
 
-                                <div class="equipados-secao">
-                                    <div class="equipados-grid escudo">
-                                        <div class="equipados-subtitulo">Escudo</div>
-                                        <div class="equipados-grid-cabecalho-centro">CA</div>
-
-                                        <input id="escudoNome" aria-label="Nome do escudo">
-                                        <input id="escudoCA" class="campo-ca"
-                                            aria-label="Bônus de classe de armadura do escudo">
-                                    </div>
-                                </div>
+                                <input id="escudoNome" type="hidden" aria-hidden="true">
+                                <input id="escudoCA" type="hidden" aria-hidden="true">
 
 
 
                                 <div class="equipados-secao">
                                     <div class="equipados-subtitulo">Poções</div>
-                                    <div class="equipados-grid recursos">
-                                        <div class="equipados-grid-cabecalho-centro">Quant.</div>
-                                        <div class="equipados-grid-cabecalho">Tipo</div>
-
-                                        <input id="pocaoQuantidade" class="equipados-quantidade" type="number" min="0"
-                                            aria-label="Quantidade de poções" value="0">
-                                        <input id="pocaoTipo" placeholder="Ex: Poção de Cura">
-                                    </div>
+                                    <div id="listaPocoesEquipadas" class="pocoes-equipadas-lista"></div>
                                 </div>
 
                                 <div class="equipados-secao">
@@ -5588,7 +5871,9 @@
             ariaLabel,
             multiplo = false,
             filtroItem = null,
-            maxSelecoes = null
+            maxSelecoes = null,
+            selecionadoPorPadrao = null,
+            aoAlterarSelecao = null
         }) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -5613,9 +5898,13 @@
                 if (inputName) input.name = inputName;
                 input.dataset.index = String(index);
                 input.setAttribute("aria-label", ariaLabel);
-                input.checked = multiplo
+                const jaEstavaSelecionado = multiplo
                     ? selecionados.includes(String(index))
                     : selecionados[0] === String(index);
+                const marcarPorPadrao = !jaEstavaSelecionado && typeof selecionadoPorPadrao === 'function'
+                    ? !!selecionadoPorPadrao(item, index)
+                    : false;
+                input.checked = jaEstavaSelecionado || marcarPorPadrao;
                 input.addEventListener('change', () => {
                     if (input.checked && maxSelecoes) {
                         const marcados = Array.from(container.querySelectorAll('input:checked'));
@@ -5631,6 +5920,22 @@
                             if (outroInput !== input) outroInput.checked = false;
                         });
                     }
+
+                    if (containerId === "lista-escudos-equipamento") {
+                        const selectSecundario = document.getElementById('arma2Nome');
+                        if (selectSecundario) {
+                            if (input.checked) {
+                                selectSecundario.value = criarValorSlotEscudo(index);
+                            } else if (extrairIndiceSlotEscudo(selectSecundario.value) === index) {
+                                selectSecundario.value = '';
+                            }
+                        }
+                    }
+
+                    if (typeof aoAlterarSelecao === 'function') {
+                        aoAlterarSelecao({ input, item, index, containerId });
+                    }
+
                     sincronizarEquipamentosCombate();
                 });
 
@@ -5652,7 +5957,7 @@
                 container.appendChild(div);
             });
 
-            if (selecionados.length) sincronizarEquipamentosCombate();
+            if (container.querySelector('input:checked')) sincronizarEquipamentosCombate();
         }
 
         function renderizarArmadurasEquipamento(listaArmaduras) {
@@ -5682,6 +5987,15 @@
         }
 
         function renderizarOutrosEquipamento(listaOutros) {
+            const idsPocoesAtuais = new Set(
+                (listaOutros || [])
+                    .filter(outro => String(outro?.outro_tipo || "").trim().toLowerCase() === 'pocao')
+                    .map(outro => outro.id)
+            );
+            idsPocoesDesequipadasManualmente.forEach(id => {
+                if (!idsPocoesAtuais.has(id)) idsPocoesDesequipadasManualmente.delete(id);
+            });
+
             renderizarListaEquipamento({
                 containerId: "lista-outros-equipamento",
                 itens: listaOutros,
@@ -5690,7 +6004,18 @@
                 inputName: "equipamento-outro",
                 ariaLabel: "Selecionar outro item para equipamento",
                 multiplo: true,
-                filtroItem: outro => !!outro?.outro_nome?.trim()
+                filtroItem: outro => !!outro?.outro_nome?.trim(),
+                selecionadoPorPadrao: outro => {
+                    const ehPocao = String(outro?.outro_tipo || "").trim().toLowerCase() === 'pocao';
+                    return ehPocao && !idsPocoesDesequipadasManualmente.has(outro.id);
+                },
+                aoAlterarSelecao: ({ input, item }) => {
+                    const ehPocao = String(item?.outro_tipo || "").trim().toLowerCase() === 'pocao';
+                    if (!ehPocao || !item?.id) return;
+
+                    if (input.checked) idsPocoesDesequipadasManualmente.delete(item.id);
+                    else idsPocoesDesequipadasManualmente.add(item.id);
+                }
             });
         }
 
@@ -5831,6 +6156,13 @@
 
             atualizarSelectAtaqueArma(1, armasSelecionadas[0] || null);
             atualizarSelectAtaqueArma(2, armasSelecionadas[1] || null);
+
+            [1, 2].forEach(indice => {
+                const selectAtaque = document.getElementById(`arma${indice}Ataque`);
+                const valorSlot = document.getElementById(`arma${indice}Nome`)?.value || '';
+                if (!selectAtaque) return;
+                selectAtaque.disabled = extrairIndiceSlotEscudo(valorSlot) !== null || !valorSlot || valorSlot === '';
+            });
         }
 
         function obterIndicesArmasMarcadas() {
@@ -5840,11 +6172,11 @@
                 .filter(indice => Number.isInteger(indice));
         }
 
-        function atualizarSelectNomeArmaEquipada(indiceSlot, armas, indiceSelecionado) {
+        function atualizarSelectNomeArmaEquipada(indiceSlot, armas, indiceSelecionado, escudos = []) {
             const select = document.getElementById(`arma${indiceSlot}Nome`);
             if (!select) return;
 
-            const placeholder = indiceSlot === 1 ? 'Arma Principal' : 'Arma Secundária';
+            const placeholder = indiceSlot === 1 ? 'Mão Principal' : 'Mão Secundária / Escudo';
             select.innerHTML = '';
 
             const opcaoVazia = document.createElement('option');
@@ -5852,21 +6184,35 @@
             opcaoVazia.textContent = placeholder;
             select.appendChild(opcaoVazia);
 
+            if (indiceSlot === 2) {
+                escudos.forEach((escudo, indiceEscudo) => {
+                    if (!escudo?.escudo_nome?.trim()) return;
+                    const optionEscudo = document.createElement('option');
+                    optionEscudo.value = criarValorSlotEscudo(indiceEscudo);
+                    const nomeEscudo = escudo.escudo_nome.trim();
+                    const caEscudo = escudo.escudo_ca?.trim() || '+0';
+                    optionEscudo.textContent = `🛡️ ${nomeEscudo} ${caEscudo}`;
+                    select.appendChild(optionEscudo);
+                });
+            }
+
             armas.forEach((arma, indice) => {
                 if (!arma?.arma_nome?.trim()) return;
                 const option = document.createElement('option');
                 option.value = String(indice);
-                option.textContent = arma.arma_nome.trim();
+                const icone = arma?.propriedades?.municao ? '🏹' : '⚔️';
+                option.textContent = `${icone} ${arma.arma_nome.trim()}`;
                 select.appendChild(option);
             });
 
-            select.value = indiceSelecionado !== null && indiceSelecionado !== undefined ? String(indiceSelecionado) : '';
+            const valorSelecionado = indiceSelecionado !== null && indiceSelecionado !== undefined ? String(indiceSelecionado) : '';
+            select.value = Array.from(select.options).some(option => option.value === valorSelecionado) ? valorSelecionado : '';
         }
 
         function sincronizarMarcacaoArmasPorSlots() {
             const slot1 = document.getElementById('arma1Nome')?.value || '';
             const slot2 = document.getElementById('arma2Nome')?.value || '';
-            const desejados = new Set([slot1, slot2].filter(Boolean));
+            const desejados = new Set([slot1, slot2].filter(valor => valor && extrairIndiceSlotEscudo(valor) === null));
 
             document.querySelectorAll('#lista-armas-equipamento input').forEach(input => {
                 input.checked = desejados.has(input.dataset.index);
@@ -5878,8 +6224,18 @@
             const outro = document.getElementById(`arma${indiceSlot === 1 ? 2 : 1}Nome`);
             if (!atual) return;
 
-            if (atual.value && outro && atual.value === outro.value) {
+            const indiceEscudoAtual = extrairIndiceSlotEscudo(atual.value);
+
+            if (atual.value && indiceEscudoAtual === null && outro && atual.value === outro.value) {
                 outro.value = '';
+            }
+
+            const checkboxesEscudo = document.querySelectorAll('#lista-escudos-equipamento input');
+            if (indiceSlot === 2) {
+                const indiceEscudo = extrairIndiceSlotEscudo(atual.value);
+                checkboxesEscudo.forEach((input, indice) => {
+                    input.checked = indiceEscudo !== null && indice === indiceEscudo;
+                });
             }
 
             sincronizarMarcacaoArmasPorSlots();
@@ -5923,6 +6279,7 @@
             const indicesMarcados = obterIndicesArmasMarcadas();
             const indicesSlots = [1, 2].map(indiceSlot => {
                 const valor = document.getElementById(`arma${indiceSlot}Nome`)?.value || "";
+                if (extrairIndiceSlotEscudo(valor) !== null) return null;
                 const indice = parseInt(valor, 10);
                 return Number.isInteger(indice) && indicesMarcados.includes(indice) ? indice : null;
             });
@@ -5981,6 +6338,84 @@
             return numero;
         }
 
+        const idsPocoesDesequipadasManualmente = new Set();
+
+        function obterPocoesEquipadas(outrosSelecionados) {
+            return (outrosSelecionados || [])
+                .map(outro => {
+                    const tipo = String(outro.outro_tipo || "").trim().toLowerCase();
+                    const nome = String(outro.outro_nome || "").trim();
+                    const quantidade = Math.max(0, parseInt(outro.outro_quantidade, 10) || 0);
+                    if (tipo !== 'pocao' || !nome || quantidade <= 0) return null;
+                    return {
+                        id: outro.id,
+                        nome,
+                        quantidade
+                    };
+                })
+                .filter(Boolean)
+                .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+        }
+
+        function consumirPocaoEquipada(idOutro) {
+            const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
+                .find(card => card.dataset.id === idOutro);
+            if (!item) return;
+
+            const campoNome = item.querySelector('[data-campo="outro_nome"]');
+            const campoQuantidade = item.querySelector('[data-campo="outro_quantidade"]');
+            const campoDescricao = item.querySelector('[data-campo="outro_descricao"]');
+            const nome = campoNome?.value?.trim() || 'Poção';
+            const quantidadeAtual = Math.max(0, parseInt(campoQuantidade?.value, 10) || 0);
+            const descricao = campoDescricao?.value?.trim() || 'Sem descrição.';
+
+            if (quantidadeAtual <= 0) return;
+            const mensagem = [
+                `${nome}`,
+                `${quantidadeAtual}`,
+                ` ${descricao}`,
+                '',
+                'Deseja consumir esta poção?'
+            ].join('\n');
+            if (!confirm(mensagem)) return;
+
+            if (campoQuantidade) {
+                campoQuantidade.value = String(Math.max(0, quantidadeAtual - 1));
+            }
+
+            adicionarRegistroHistoricoCombate('Poção', nome, '🧪');
+            atualizarPesoAtualInventario();
+            atualizarListaArmasEquipamento();
+            sincronizarEquipamentosCombate();
+        }
+
+        function atualizarListaPocoesEquipadas(outrosSelecionados) {
+            const container = document.getElementById('listaPocoesEquipadas');
+            if (!container) return;
+
+            const pocoes = obterPocoesEquipadas(outrosSelecionados);
+            container.replaceChildren();
+
+            if (!pocoes.length) {
+                const vazio = document.createElement('div');
+                vazio.className = 'pocao-equipada-vazia';
+                vazio.textContent = 'Nenhuma poção equipada.';
+                container.appendChild(vazio);
+                return;
+            }
+
+            pocoes.forEach(pocao => {
+                const botao = document.createElement('button');
+                botao.type = 'button';
+                botao.className = 'pocao-equipada-item';
+                botao.textContent = `${pocao.quantidade} x ${pocao.nome}`;
+                botao.title = 'Consumir poção';
+                botao.setAttribute('aria-label', `Consumir poção ${pocao.nome}`);
+                botao.addEventListener('click', () => consumirPocaoEquipada(pocao.id));
+                container.appendChild(botao);
+            });
+        }
+
         function sincronizarEquipamentosCombate() {
             const armas = coletarArmas();
             const armaduras = coletarArmaduras();
@@ -5991,7 +6426,24 @@
             const indicesMarcados = obterIndicesArmasMarcadas();
             const slot1Atual = document.getElementById('arma1Nome')?.value || '';
             const slot2Atual = document.getElementById('arma2Nome')?.value || '';
+            const indiceEscudoSlot2 = extrairIndiceSlotEscudo(slot2Atual);
+            const escudoSelecionadoInput = document.querySelector('#lista-escudos-equipamento input:checked');
+            const indiceEscudoCheckbox = escudoSelecionadoInput ? parseInt(escudoSelecionadoInput.dataset.index, 10) : null;
+            const indiceEscudoAtivo = Number.isInteger(indiceEscudoSlot2) ? indiceEscudoSlot2 : indiceEscudoCheckbox;
+
+            if (Number.isInteger(indiceEscudoAtivo)) {
+                document.querySelectorAll('#lista-escudos-equipamento input').forEach((input, indice) => {
+                    input.checked = indice === indiceEscudoAtivo;
+                });
+            } else {
+                document.querySelectorAll('#lista-escudos-equipamento input').forEach(input => {
+                    input.checked = false;
+                });
+            }
+
             const slotsValidos = [slot1Atual, slot2Atual].map(valor => {
+                const indiceEscudo = extrairIndiceSlotEscudo(valor);
+                if (indiceEscudo !== null) return criarValorSlotEscudo(indiceEscudo);
                 const indice = parseInt(valor, 10);
                 return Number.isInteger(indice) && indicesMarcados.includes(indice) ? indice : null;
             });
@@ -5999,18 +6451,35 @@
             const indicesEquipados = slotsValidos.map(indice => indice ?? (faltantes.shift() ?? null));
             const armasSelecionadas = indicesEquipados.map(indice => Number.isInteger(indice) ? armas[indice] : null);
 
-            atualizarSelectNomeArmaEquipada(1, armas, indicesEquipados[0]);
-            atualizarSelectNomeArmaEquipada(2, armas, indicesEquipados[1]);
+            const valorSlot2Selecionado = Number.isInteger(indiceEscudoAtivo)
+                ? criarValorSlotEscudo(indiceEscudoAtivo)
+                : indicesEquipados[1];
+
+            atualizarSelectNomeArmaEquipada(1, armas, Number.isInteger(indicesEquipados[0]) ? indicesEquipados[0] : null, []);
+            atualizarSelectNomeArmaEquipada(2, armas, valorSlot2Selecionado, escudos);
 
             [1, 2].forEach(indice => {
                 const arma = armasSelecionadas[indice - 1];
+                const valorSlot = document.getElementById(`arma${indice}Nome`)?.value || '';
+                const indiceEscudoSelecionado = extrairIndiceSlotEscudo(valorSlot);
+                const escudoSelecionado = indice === 2 && indiceEscudoSelecionado !== null ? escudos[indiceEscudoSelecionado] : null;
+                const usandoEscudo = !!escudoSelecionado;
                 const textoPropriedade = arma ? montarTextoPropriedadeArma(arma, resumirMunicaoNoTexto(obterResumoPropriedadesArma(arma, false))) : "";
-                preencherCampo(`arma${indice}Dano`, [obterTextoDanoArma(arma), arma?.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "));
-                preencherPropriedadeEquipada(`arma${indice}Propriedade`, textoPropriedade);
+                preencherCampo(`arma${indice}Dano`, usandoEscudo ? "" : [obterTextoDanoArma(arma), arma?.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "));
+                preencherPropriedadeEquipada(`arma${indice}Propriedade`, usandoEscudo
+                    ? `Escudo empunhado${escudoSelecionado?.escudo_ca ? ` (${escudoSelecionado.escudo_ca})` : ""}`
+                    : textoPropriedade);
                 aplicarEstiloProficienciaCampos(
                     [`arma${indice}Nome`, `arma${indice}Ataque`, `arma${indice}Dano`, `arma${indice}Propriedade`],
-                    arma ? formatarArma(arma).proficiente : null
+                    usandoEscudo ? formatarEscudoEquipamento(escudoSelecionado).proficiente : (arma ? formatarArma(arma).proficiente : null)
                 );
+                const selectAtaque = document.getElementById(`arma${indice}Ataque`);
+                if (selectAtaque && usandoEscudo) {
+                    selectAtaque.value = 'for';
+                }
+                if (selectAtaque) {
+                    selectAtaque.disabled = usandoEscudo || !arma;
+                }
             });
 
             atualizarSeletoresAtaqueEquipados();
@@ -6028,16 +6497,12 @@
                 armaduraSelecionada ? formatarArmaduraEquipamento(armaduraSelecionada).proficiente : null
             );
 
-            const escudoSelecionadoInput = document.querySelector('#lista-escudos-equipamento input:checked');
-            const escudoSelecionado = escudoSelecionadoInput
-                ? escudos[parseInt(escudoSelecionadoInput.dataset.index, 10)]
-                : null;
-
-            preencherCampo('escudoNome', escudoSelecionado?.escudo_nome?.trim() || "");
-            preencherCampo('escudoCA', escudoSelecionado?.escudo_ca?.trim() || "");
+            const escudoPainel = Number.isInteger(indiceEscudoAtivo) ? escudos[indiceEscudoAtivo] : null;
+            preencherCampo('escudoNome', escudoPainel?.escudo_nome?.trim() || "");
+            preencherCampo('escudoCA', escudoPainel?.escudo_ca?.trim() || "");
             aplicarEstiloProficienciaCampos(
                 ['escudoNome', 'escudoCA'],
-                escudoSelecionado ? formatarEscudoEquipamento(escudoSelecionado).proficiente : null
+                escudoPainel ? formatarEscudoEquipamento(escudoPainel).proficiente : null
             );
 
             const outrosSelecionados = Array.from(document.querySelectorAll('#lista-outros-equipamento input:checked'))
@@ -6053,6 +6518,7 @@
 
             preencherCampo('outroEquipadoTipo', tiposOutros.join(", "));
             preencherCampo('outroEquipadoCA', bonusOutros ? `+${bonusOutros}` : "");
+            atualizarListaPocoesEquipadas(outrosSelecionados);
 
             ['armaduraCA', 'outroEquipadoCA', 'escudoCA'].forEach(aplicarFormatoCA);
             atualizarClasseArmaduraEquipada();
@@ -7384,12 +7850,24 @@
         const OPCOES_TIPO_DANO_MAGIA = ["Ácido", "Concussão", "Cortante", "Elétrico", "Fogo", "Força", "Frio", "Necrótico", "Perfurante", "Psíquico", "Radiante", "Trovejante", "Veneno"];
         const OPCOES_RESOLUCAO_MAGIA = ["Ataque", "Teste de Resistência"];
         const OPCOES_TESTE_RESISTENCIA_MAGIA = ["FOR", "DES", "CON", "INT", "SAB", "CAR"];
+        const PREFIXO_SLOT_ESCUDO = "__escudo__";
         const estadoModalMagia = {
             nivel: 0,
             indice: null,
             modo: "visualizar"
         };
         let ultimoFocoModalMagia = null;
+
+        function criarValorSlotEscudo(indice) {
+            return `${PREFIXO_SLOT_ESCUDO}${indice}`;
+        }
+
+        function extrairIndiceSlotEscudo(valor) {
+            const texto = String(valor || "");
+            if (!texto.startsWith(PREFIXO_SLOT_ESCUDO)) return null;
+            const indice = parseInt(texto.slice(PREFIXO_SLOT_ESCUDO.length), 10);
+            return Number.isInteger(indice) ? indice : null;
+        }
 
         function criarMagiaPadrao(nivel) {
             return {
@@ -7799,6 +8277,7 @@
 
         function renderizarTodasMagias() {
             NIVEIS_MAGIA.forEach(renderizarListaMagiasNivel);
+            atualizarSubAbaMagiasCombate();
         }
 
         function renderizarListaMagiasNivel(nivel) {
@@ -7831,6 +8310,7 @@
                     registros[indice].preparada = checkbox.checked;
                     salvarMagiasNivel(nivel, registros);
                     renderizarListaMagiasNivel(nivel);
+                    atualizarSubAbaMagiasCombate();
                 });
 
                 const nome = document.createElement("button");
@@ -7857,6 +8337,60 @@
                 item.appendChild(editar);
                 container.appendChild(item);
             });
+        }
+
+        function obterMagiasPreparadasCombate() {
+            return NIVEIS_MAGIA.flatMap(nivel =>
+                lerMagiasNivel(nivel)
+                    .map((magia, indice) => ({ ...magia, indiceLista: indice }))
+                    .filter(magia => magia.preparada && String(magia.nome || "").trim())
+            ).sort((a, b) => {
+                if ((a.nivel ?? 0) !== (b.nivel ?? 0)) return (a.nivel ?? 0) - (b.nivel ?? 0);
+                return String(a.nome || "").localeCompare(String(b.nome || ""), 'pt-BR');
+            });
+        }
+
+        function atualizarSubAbaMagiasCombate() {
+            const container = document.getElementById('subabaCombateMagia');
+            if (!container) return;
+
+            const magias = obterMagiasPreparadasCombate();
+
+            if (!magias.length) {
+                container.innerHTML = '<div class="subaba-vazia">Nenhuma magia preparada no momento.</div>';
+                return;
+            }
+
+            container.replaceChildren();
+
+            const lista = document.createElement('div');
+            lista.className = 'magia-combate-lista';
+
+            magias.forEach(magia => {
+                const item = document.createElement('button');
+                item.type = 'button';
+                item.className = 'magia-combate-item';
+                item.addEventListener('click', () => abrirModalMagia(magia.nivel, magia.indiceLista, 'visualizar'));
+
+                const topo = document.createElement('div');
+                topo.className = 'magia-combate-topo';
+
+                const nome = document.createElement('div');
+                nome.className = 'magia-combate-nome';
+                nome.textContent = magia.nome;
+
+                const nivel = document.createElement('span');
+                nivel.className = 'magia-card-detalhe-tag magia-combate-nivel';
+                nivel.textContent = obterRotuloNivelMagia(magia.nivel);
+
+                topo.appendChild(nome);
+                topo.appendChild(nivel);
+
+                item.appendChild(topo);
+                lista.appendChild(item);
+            });
+
+            container.appendChild(lista);
         }
 
         function obterMagiaDoEstadoModal() {
@@ -8136,6 +8670,7 @@
             magias[estadoModalMagia.indice] = magia;
             salvarMagiasNivel(estadoModalMagia.nivel, magias);
             renderizarListaMagiasNivel(estadoModalMagia.nivel);
+            atualizarSubAbaMagiasCombate();
             atualizarCabecalhoModalMagia(magia);
             renderizarVisualizacaoModalMagia(magia);
             alternarModoModalMagia("visualizar");
@@ -8151,6 +8686,7 @@
             magias.splice(estadoModalMagia.indice, 1);
             salvarMagiasNivel(estadoModalMagia.nivel, magias);
             renderizarListaMagiasNivel(estadoModalMagia.nivel);
+            atualizarSubAbaMagiasCombate();
             fecharModalMagia();
         }
 
@@ -8159,6 +8695,7 @@
             magias.push(criarMagiaPadrao(nivel));
             salvarMagiasNivel(nivel, magias);
             renderizarListaMagiasNivel(nivel);
+            atualizarSubAbaMagiasCombate();
             abrirModalMagia(nivel, magias.length - 1, "editar");
         }
 
