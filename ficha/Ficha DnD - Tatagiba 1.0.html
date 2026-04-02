@@ -4183,11 +4183,11 @@
 
         <div class="tabs">
 
-                <button type="button" class="tab active" onclick="trocarAba('status', this)">Status</button>
-                <button type="button" class="tab" onclick="trocarAba('combate', this)">Combate</button>
-                <button type="button" class="tab" onclick="trocarAba('magia', this)">Magias</button>
-                <button type="button" class="tab" onclick="trocarAba('historia', this)">História</button>
-                <button type="button" class="tab" onclick="trocarAba('itens', this)">Itens</button>
+            <button type="button" class="tab active" onclick="trocarAba('status', this)">Status</button>
+            <button type="button" class="tab" onclick="trocarAba('combate', this)">Combate</button>
+            <button type="button" class="tab" onclick="trocarAba('magia', this)">Magias</button>
+            <button type="button" class="tab" onclick="trocarAba('historia', this)">História</button>
+            <button type="button" class="tab" onclick="trocarAba('itens', this)">Itens</button>
 
         </div>
 
@@ -4202,8 +4202,8 @@
 
                         <div class="passivas-linha">
                             <div class="bonus-orbe-container">
-                                <div class="bonus-orbe bonus-orbe-prof"><input id="bonusProf" type="number" min="0" step="1" value="2"
-                                        aria-label="Bônus de proficiência"></div>
+                                <div class="bonus-orbe bonus-orbe-prof"><input id="bonusProf" type="number" min="0"
+                                        step="1" value="2" aria-label="Bônus de proficiência"></div>
                                 <div class="bonus-retangulo">Bônus de Proficiência</div>
                             </div>
 
@@ -5415,6 +5415,36 @@
             }
         });
 
+        document.getElementById("classeNivelID")
+            .addEventListener("input", atualizarBonusProficiencia);
+        // atualizar proficiência ao mudar nível
+        function atualizarBonusProficiencia() {
+            const nivelInput = document.getElementById("classeNivelID");
+            const profInput = document.getElementById("bonusProf");
+
+            if (!nivelInput || !profInput) return;
+
+            const nivel = parseInt(nivelInput.value);
+
+            if (isNaN(nivel) || nivel < 1) {
+                profInput.value = "+0";
+                return;
+            }
+
+            let bonus = 2;
+
+            if (nivel >= 5 && nivel <= 8) {
+                bonus = 3;
+            } else if (nivel >= 9 && nivel <= 12) {
+                bonus = 4;
+            } else if (nivel >= 13 && nivel <= 16) {
+                bonus = 5;
+            } else if (nivel >= 17) {
+                bonus = 6;
+            }
+
+            profInput.value = `+${bonus}`;
+        }
 
         // ===== Função: Gerar ID único para cada item =====
         function gerarId() {
@@ -7389,6 +7419,7 @@
             normalizarDadosVida()
             atualizarPesoAtualInventario()
             marcarFichaComoSalva()
+            atualizarBonusProficiencia()
         }
 
 
@@ -8037,7 +8068,7 @@
             const propriedades = document.createElement("div");
             propriedades.className = "magia-card-detalhe-propriedades";
             [
-                
+
                 magia?.propriedades?.dano ? "dano" : "",
                 magia?.propriedades?.cura ? "cura" : "",
                 magia?.propriedades?.concentracao ? "concentração" : "",
@@ -9644,8 +9675,3 @@
 </body>
 
 </html>
-
-
-
-
-
