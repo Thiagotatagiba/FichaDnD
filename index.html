@@ -2,51 +2,42 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Ficha D&D</title>
+    <title>Ficha D&D - Início</title>
+
     <style>
         body {
-            font-family: Arial;
+            margin: 0;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            gap: 20px;
+            background: #e7e1d5;
+            font-family: Arial, sans-serif;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 18px;
+            padding: 20px 40px;
+            font-size: 20px;
             cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background: #8b4513;
+            color: white;
+        }
+
+        button:hover {
+            background: #a0522d;
         }
     </style>
 </head>
 <body>
 
-    <button id="novoPersonagemBtn" type="button">Novo Personagem</button>
-    <button id="importarPersonagemBtn" type="button">Importar Personagem</button>
+    <button onclick="abrirFicha()">ABRIR NOVA FICHA</button>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const novoButton = document.getElementById('novoPersonagemBtn');
-            const importarButton = document.getElementById('importarPersonagemBtn');
-            const api = window.api;
-
-            if (!api) {
-                [novoButton, importarButton].forEach(button => {
-                    if (button) button.disabled = true;
-                });
-                return;
-            }
-
-            novoButton?.addEventListener('click', () => {
-                api.novoPersonagem();
-            });
-
-            importarButton?.addEventListener('click', () => {
-                api.importarPersonagem();
-            });
-        });
+        function abrirFicha() {
+            window.location.href = "ficha/Ficha DnD - Tatagiba 1.0.html";
+        }
     </script>
 
 </body>
