@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -2010,15 +2010,47 @@
             margin-bottom: 14px;
         }
 
+        .magia-modal-topo-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .magia-modal-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
         .magia-modal-titulo {
             font-family: 'Metamorphous', serif;
             font-size: 20px;
             color: #6f3610;
         }
 
-        .magia-modal-subtitulo {
+        .magia-modal-nivel {
+            font-size: 12px;
+            background: #8b4513;
+            color: #fffaf2;
+            padding: 4px 8px;
+            border-radius: 8px;
+            white-space: nowrap;
+        }
+
+        .magia-modal-preparada-topo {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #6f3610;
             font-size: 13px;
-            color: #6b5338;
+            font-weight: bold;
+        }
+
+        .magia-modal-preparada-topo input {
+            width: auto;
+            min-height: auto;
         }
 
         .magia-modal-acoes {
@@ -2132,7 +2164,7 @@
 
         .magia-formulario-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: repeat(12, minmax(0, 1fr));
             gap: 12px;
         }
 
@@ -2140,6 +2172,19 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
+            grid-column: span 6;
+        }
+
+        .magia-formulario-campo.col-3 {
+            grid-column: span 3;
+        }
+
+        .magia-formulario-campo.col-4 {
+            grid-column: span 4;
+        }
+
+        .magia-formulario-campo.col-8 {
+            grid-column: span 8;
         }
 
         .magia-formulario-campo label {
@@ -2179,14 +2224,121 @@
             grid-column: 1 / -1;
         }
 
-        .magia-formulario-campo.preparada {
-            flex-direction: row;
-            align-items: center;
-            gap: 8px;
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalNome) {
+            order: 1;
+            grid-column: span 9;
         }
 
-        .magia-formulario-campo.preparada label {
-            margin: 0;
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalEscola) {
+            order: 2;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalAlcance) {
+            order: 3;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalTempo) {
+            order: 4;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalDuracao) {
+            order: 5;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalPropConcentracao) {
+            order: 6;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(.magia-componentes-checks) {
+            order: 7;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(.magia-propriedades-checks) {
+            order: 1;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalCuraRegra) {
+            order: 7;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalResolucao) {
+            order: 2;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalAtaqueMagico) {
+            order: 3;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalTesteResistencia) {
+            order: 3;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalDanoFormula) {
+            order: 5;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalDanoTipo) {
+            order: 6;
+            grid-column: span 3;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalDescricao) {
+            order: 1;
+        }
+
+        .magia-formulario-grid>.magia-formulario-campo:has(#magiaModalProximosNiveis) {
+            order: 2;
+        }
+
+        .magia-formulario-bloco {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 14px;
+            border: 2px solid #c7a97b;
+            border-radius: 12px;
+            background: rgba(255, 250, 242, 0.82);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+        }
+
+        .magia-formulario-bloco-titulo {
+            font-size: 13px;
+            font-weight: bold;
+            color: #6f3610;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .magia-formulario-campo.concentracao-inline {
+            justify-content: flex-end;
+        }
+
+        .magia-formulario-campo.concentracao-inline label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 0 12px;
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            background: #fffaf2;
+            color: #6f3610;
+            font-size: 13px;
+        }
+
+        .magia-formulario-campo.concentracao-inline input {
+            width: auto;
+            min-height: auto;
         }
 
         .magia-propriedades-checks {
@@ -2202,6 +2354,49 @@
             font-size: 13px;
             font-weight: normal;
             color: #3b2f1b;
+            padding: 8px 10px;
+            border: 1px solid #c9b08e;
+            border-radius: 10px;
+            background: #fff;
+        }
+
+        .magia-propriedades-checks input {
+            width: auto;
+            min-height: auto;
+        }
+
+        .magia-componentes-checks {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .magia-componentes-checks label {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #3b2f1b;
+        }
+
+        .magia-componentes-checks input {
+            width: auto;
+            min-height: auto;
+        }
+
+        @media (max-width: 720px) {
+            .magia-formulario-grid {
+                grid-template-columns: repeat(1, minmax(0, 1fr));
+            }
+
+            .magia-formulario-campo,
+            .magia-formulario-campo.col-3,
+            .magia-formulario-campo.col-4,
+            .magia-formulario-campo.col-8,
+            .magia-formulario-campo.completo {
+                grid-column: 1 / -1;
+            }
         }
 
         /* ===== Aba de historia ===== */
@@ -2804,10 +2999,18 @@
             background-color: #222;
             color: #fff;
             text-align: center;
-            padding: 20px 0;
+            padding: 20px 16px;
             font-family: sans-serif;
             margin-top: auto;
             border-top: 3px solid #f1c40f;
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+        }
+
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
         }
 
         .meu-rodape p {
@@ -6536,13 +6739,13 @@
             const mapa = {
                 "Leal e Bom": "Leal e Bom (LB)",
                 "Neutro e Bom": "Neutro e Bom (NB)",
-                "Caótico e Bom": "CaÃ³tico e Bom (CB)",
+                "Caótico e Bom": "Caótico e Bom (CB)",
                 "Leal e Neutro": "Leal e Neutro (LN)",
                 "Neutro": "Neutro (N)",
-                "Caótico e Neutro": "CaÃ³tico e Neutro (CN)",
+                "Caótico e Neutro": "Caótico e Neutro (CN)",
                 "Leal e Mau": "Leal e Mau (LM)",
                 "Neutro e Mau": "Neutro e Mau (NM)",
-                "Caótico e Mau": "CaÃ³tico e Mau (CM)"
+                "Caótico e Mau": "Caótico e Mau (CM)"
             }
 
             return mapa[texto] || texto
@@ -7186,6 +7389,7 @@
             indice: null,
             modo: "visualizar"
         };
+        let ultimoFocoModalMagia = null;
 
         function criarMagiaPadrao(nivel) {
             return {
@@ -7202,10 +7406,16 @@
                     cura: false,
                     concentracao: false
                 },
+                componentes: {
+                    verbal: false,
+                    somatico: false,
+                    material: false
+                },
                 resolucao: "",
                 teste_resistencia: "",
                 efeitos: [],
-                descricao: ""
+                descricao: "",
+                proximos_niveis: ""
             };
         }
 
@@ -7221,6 +7431,11 @@
                 dano: !!registro?.propriedades?.dano || tags.includes("dano"),
                 cura: !!registro?.propriedades?.cura || tags.includes("cura"),
                 concentracao: !!registro?.propriedades?.concentracao || tags.includes("concentracao")
+            };
+            const componentes = {
+                verbal: !!registro?.componentes?.verbal || tags.includes("verbal"),
+                somatico: !!registro?.componentes?.somatico || tags.includes("somatico"),
+                material: !!registro?.componentes?.material || tags.includes("material")
             };
 
             const efeitos = Array.isArray(registro?.efeitos)
@@ -7259,6 +7474,7 @@
                 nivel,
                 preparada: !!registro?.preparada,
                 propriedades,
+                componentes,
                 resolucao: registro?.resolucao || "",
                 teste_resistencia: registro?.teste_resistencia || "",
                 efeitos
@@ -7328,12 +7544,7 @@
             nome.className = "magia-card-detalhe-nome";
             nome.textContent = magia.nome || "";
 
-            const nivel = document.createElement("div");
-            nivel.className = "magia-card-detalhe-nivel";
-            nivel.textContent = obterRotuloNivelMagia(magia.nivel);
-
             header.appendChild(nome);
-            header.appendChild(nivel);
 
             const info = document.createElement("div");
             info.className = "magia-card-detalhe-info";
@@ -7342,16 +7553,21 @@
                 <div><strong>Alcance:</strong> ${magia.alcance || "-"}</div>
                 <div><strong>Duração:</strong> ${magia.duracao || "-"}</div>
                 <div><strong>Escola:</strong> ${magia.escola || "-"}</div>
-                <div><strong>Resolução:</strong> ${magia.resolucao || "-"}</div>
-                <div><strong>Teste:</strong> ${magia.teste_resistencia || "-"}</div>
+                <div><strong>Componentes:</strong> ${[
+                    magia?.componentes?.verbal ? "V" : "",
+                    magia?.componentes?.somatico ? "S" : "",
+                    magia?.componentes?.material ? "M" : ""
+                ].filter(Boolean).join(", ") || "-"}</div>
             `;
 
             const propriedades = document.createElement("div");
             propriedades.className = "magia-card-detalhe-propriedades";
             [
+                
                 magia?.propriedades?.dano ? "dano" : "",
                 magia?.propriedades?.cura ? "cura" : "",
-                magia?.propriedades?.concentracao ? "concentração" : ""
+                magia?.propriedades?.concentracao ? "concentração" : "",
+                magia?.resolucao ? magia.resolucao.toLowerCase() : ""
             ].filter(Boolean).forEach(tag => {
                 const item = document.createElement("span");
                 item.className = "magia-card-detalhe-tag";
@@ -7361,6 +7577,17 @@
 
             const efeitos = document.createElement("div");
             efeitos.className = "magia-card-detalhe-efeitos";
+
+            if (magia.resolucao === "Ataque") {
+                const ataqueMagico = document.getElementById("magiaAtaqueMagico")?.value || "-";
+                const linhaAtaque = document.createElement("div");
+                linhaAtaque.textContent = `Ataque Mágico: ${ataqueMagico}`;
+                efeitos.appendChild(linhaAtaque);
+            } else if (String(magia.resolucao || "").includes("Teste")) {
+                const linhaTeste = document.createElement("div");
+                linhaTeste.textContent = `Teste de Resistência: ${magia.teste_resistencia || "-"}`;
+                efeitos.appendChild(linhaTeste);
+            }
 
             if (Array.isArray(magia.efeitos) && magia.efeitos.length) {
                 magia.efeitos.forEach(efeito => {
@@ -7380,7 +7607,10 @@
 
             const descricao = document.createElement("div");
             descricao.className = "magia-card-detalhe-descricao";
-            descricao.textContent = magia.descricao || "";
+            descricao.textContent = [
+                magia.descricao || "",
+                magia.proximos_niveis ? `Próximos níveis: ${magia.proximos_niveis}` : ""
+            ].filter(Boolean).join("\n\n");
 
             container.appendChild(header);
             container.appendChild(info);
@@ -7403,80 +7633,111 @@
             overlay.innerHTML = `
                 <div class="magia-modal" role="dialog" aria-modal="true" aria-labelledby="magiaModalTitulo">
                     <div class="magia-modal-topo">
-                        <div>
+                        <div class="magia-modal-topo-info">
                             <div id="magiaModalTitulo" class="magia-modal-titulo">Magia</div>
-                            <div id="magiaModalSubtitulo" class="magia-modal-subtitulo">Visualização</div>
+                            <div class="magia-modal-meta">
+                                <div id="magiaModalNivel" class="magia-modal-nivel">Truque</div>
+                                <label class="magia-modal-preparada-topo" for="magiaModalPreparada">
+                                    <input id="magiaModalPreparada" type="checkbox">
+                                    <span>Magia Preparada</span>
+                                </label>
+                            </div>
                         </div>
                         <div class="magia-modal-acoes">
                             <button type="button" class="magia-modal-botao" id="magiaModalEditar">Editar</button>
-                            <button type="button" class="magia-modal-botao perigo oculto" id="magiaModalCancelarEdicao">Cancelar edição</button>
+                            <button type="button" class="magia-modal-botao perigo oculto" id="magiaModalExcluir">Excluir magia</button>
                             <button type="button" class="magia-modal-botao primario oculto" id="magiaModalSalvar">Salvar magia</button>
                             <button type="button" class="magia-modal-botao" id="magiaModalFechar">Fechar</button>
                         </div>
                     </div>
                     <div id="magiaModalVisualizacao" style="display: block;"></div>
                     <form id="magiaModalFormulario" class="magia-formulario oculto" hidden style="display: none;">
+                        <div class="magia-formulario-bloco">
+                            <div class="magia-formulario-bloco-titulo">Dados básicos</div>
                         <div class="magia-formulario-grid">
-                            <div class="magia-formulario-campo">
-                                <label for="magiaModalNome">Nome da Magia</label>
-                                <input id="magiaModalNome" type="text">
-                            </div>
-                            <div class="magia-formulario-campo preparada">
-                                <input id="magiaModalPreparada" type="checkbox">
-                                <label for="magiaModalPreparada">Preparada</label>
-                            </div>
-                            <div class="magia-formulario-campo">
+                            <div class="magia-formulario-campo col-3">
                                 <label for="magiaModalEscola">Escola</label>
                                 <select id="magiaModalEscola"></select>
                             </div>
-                            <div class="magia-formulario-campo">
+                            <div class="magia-formulario-campo col-9">
+                                <label for="magiaModalNome">Nome da Magia</label>
+                                <input id="magiaModalNome" type="text">
+                            </div>
+                            <div class="magia-formulario-campo col-3">
                                 <label for="magiaModalTempo">Tempo de Conjuração</label>
                                 <input id="magiaModalTempo" type="text">
                             </div>
-                            <div class="magia-formulario-campo">
+                            <div class="magia-formulario-campo col-3">
                                 <label for="magiaModalAlcance">Alcance</label>
                                 <input id="magiaModalAlcance" type="text">
                             </div>
-                            <div class="magia-formulario-campo">
+                            <div class="magia-formulario-campo col-3">
                                 <label for="magiaModalDuracao">Duração</label>
                                 <input id="magiaModalDuracao" type="text">
                             </div>
+                            <div class="magia-formulario-campo concentracao-inline">
+                                <label for="magiaModalPropConcentracao">
+                                    <input id="magiaModalPropConcentracao" type="checkbox"> Concentração
+                                </label>
+                            </div>
+                            <div class="magia-formulario-campo completo">
+                                <label>Componentes</label>
+                                <div class="magia-componentes-checks">
+                                    <label><input id="magiaModalCompVerbal" type="checkbox"> Verbal</label>
+                                    <label><input id="magiaModalCompSomatico" type="checkbox"> Somático</label>
+                                    <label><input id="magiaModalCompMaterial" type="checkbox"> Material</label>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="magia-formulario-bloco">
+                            <div class="magia-formulario-bloco-titulo">Propriedades e efeitos</div>
+                        <div class="magia-formulario-grid">
                             <div class="magia-formulario-campo completo">
                                 <label>Propriedades</label>
                                 <div class="magia-propriedades-checks">
                                     <label><input id="magiaModalPropDano" type="checkbox"> Dano</label>
                                     <label><input id="magiaModalPropCura" type="checkbox"> Cura</label>
-                                    <label><input id="magiaModalPropConcentracao" type="checkbox"> Concentração</label>
                                 </div>
                             </div>
-                            <div class="magia-formulario-campo oculto" id="magiaModalCampoDanoFormula">
+                            <div class="magia-formulario-campo col-3 oculto" id="magiaModalCampoDanoFormula">
                                 <label for="magiaModalDanoFormula">Fórmula de Dano</label>
                                 <input id="magiaModalDanoFormula" type="text" placeholder="Ex: 3d6">
                             </div>
-                            <div class="magia-formulario-campo oculto" id="magiaModalCampoDanoTipo">
+                            <div class="magia-formulario-campo col-3 oculto" id="magiaModalCampoDanoTipo">
                                 <label for="magiaModalDanoTipo">Tipo de Dano</label>
                                 <select id="magiaModalDanoTipo"></select>
                             </div>
-                            <div class="magia-formulario-campo oculto" id="magiaModalCampoResolucao">
-                                <label for="magiaModalResolucao">Resolução</label>
+                            <div class="magia-formulario-campo col-3 oculto" id="magiaModalCampoResolucao">
+                                <label for="magiaModalResolucao">Resolução de dano</label>
                                 <select id="magiaModalResolucao"></select>
                             </div>
-                            <div class="magia-formulario-campo oculto" id="magiaModalCampoAtaqueMagico">
+                            <div class="magia-formulario-campo col-3 oculto" id="magiaModalCampoAtaqueMagico">
                                 <label for="magiaModalAtaqueMagico">Ataque Mágico</label>
                                 <input id="magiaModalAtaqueMagico" type="text" readonly>
                             </div>
-                            <div class="magia-formulario-campo oculto" id="magiaModalCampoTesteResistencia">
+                            <div class="magia-formulario-campo col-4 oculto" id="magiaModalCampoTesteResistencia">
                                 <label for="magiaModalTesteResistencia">Teste de Resistência</label>
                                 <select id="magiaModalTesteResistencia"></select>
                             </div>
-                            <div class="magia-formulario-campo completo oculto" id="magiaModalCampoCuraRegra">
-                                <label for="magiaModalCuraRegra">Cura / Regra adicional</label>
+                            <div class="magia-formulario-campo col-8 oculto" id="magiaModalCampoCuraRegra">
+                                <label for="magiaModalCuraRegra">Cura</label>
                                 <input id="magiaModalCuraRegra" type="text" placeholder="Ex: metade do dano causado">
                             </div>
+                        </div>
+                        </div>
+                        <div class="magia-formulario-bloco">
+                            <div class="magia-formulario-bloco-titulo">Descrição</div>
+                        <div class="magia-formulario-grid">
                             <div class="magia-formulario-campo completo">
                                 <label for="magiaModalDescricao">Descrição</label>
                                 <textarea id="magiaModalDescricao"></textarea>
                             </div>
+                            <div class="magia-formulario-campo completo">
+                                <label for="magiaModalProximosNiveis">Próximos níveis</label>
+                                <input id="magiaModalProximosNiveis" type="text" placeholder="Ex: +1d6 de dano por nível acima do 2">
+                            </div>
+                        </div>
                         </div>
                     </form>
                 </div>
@@ -7611,6 +7872,10 @@
             document.getElementById("magiaModalAlcance").value = magia.alcance || "";
             document.getElementById("magiaModalDuracao").value = magia.duracao || "";
             document.getElementById("magiaModalDescricao").value = magia.descricao || "";
+            document.getElementById("magiaModalProximosNiveis").value = magia.proximos_niveis || "";
+            document.getElementById("magiaModalCompVerbal").checked = !!magia?.componentes?.verbal;
+            document.getElementById("magiaModalCompSomatico").checked = !!magia?.componentes?.somatico;
+            document.getElementById("magiaModalCompMaterial").checked = !!magia?.componentes?.material;
             document.getElementById("magiaModalPropDano").checked = !!magia?.propriedades?.dano;
             document.getElementById("magiaModalPropCura").checked = !!magia?.propriedades?.cura;
             document.getElementById("magiaModalPropConcentracao").checked = !!magia?.propriedades?.concentracao;
@@ -7635,6 +7900,11 @@
                 dano: document.getElementById("magiaModalPropDano").checked,
                 cura: document.getElementById("magiaModalPropCura").checked,
                 concentracao: document.getElementById("magiaModalPropConcentracao").checked
+            };
+            const componentes = {
+                verbal: document.getElementById("magiaModalCompVerbal").checked,
+                somatico: document.getElementById("magiaModalCompSomatico").checked,
+                material: document.getElementById("magiaModalCompMaterial").checked
             };
             const efeitos = [];
 
@@ -7665,10 +7935,12 @@
                 alcance: document.getElementById("magiaModalAlcance").value.trim(),
                 duracao: document.getElementById("magiaModalDuracao").value.trim(),
                 propriedades,
+                componentes,
                 resolucao,
                 teste_resistencia: document.getElementById("magiaModalTesteResistencia").value,
                 efeitos,
-                descricao: document.getElementById("magiaModalDescricao").value.trim()
+                descricao: document.getElementById("magiaModalDescricao").value.trim(),
+                proximos_niveis: document.getElementById("magiaModalProximosNiveis").value.trim()
             }, estadoModalMagia.nivel);
         }
 
@@ -7680,18 +7952,102 @@
             campo.value = campoOrigem?.value || "";
         }
 
+        function atualizarCabecalhoModalMagia(magia = obterMagiaDoEstadoModal()) {
+            document.getElementById("magiaModalNivel").textContent = obterRotuloNivelMagia(magia?.nivel ?? estadoModalMagia.nivel);
+            document.getElementById("magiaModalTitulo").textContent = magia?.nome || "Magia";
+        }
+
+        function alternarCampoModalMagia(id, exibir) {
+            const container = document.getElementById(id);
+            if (!container) return;
+
+            container.classList.toggle("oculto", !exibir);
+            container.hidden = !exibir;
+            container.style.display = exibir ? "flex" : "none";
+        }
+
+        function ocultarCamposCondicionaisModalMagia() {
+            [
+                "magiaModalCampoDanoFormula",
+                "magiaModalCampoDanoTipo",
+                "magiaModalCampoResolucao",
+                "magiaModalCampoCuraRegra",
+                "magiaModalCampoAtaqueMagico",
+                "magiaModalCampoTesteResistencia"
+            ].forEach(id => alternarCampoModalMagia(id, false));
+        }
+
+        function validarFormularioMagia() {
+            const nome = document.getElementById("magiaModalNome")?.value.trim();
+            const habilitaDano = document.getElementById("magiaModalPropDano")?.checked;
+            const habilitaCura = document.getElementById("magiaModalPropCura")?.checked;
+            const danoFormula = document.getElementById("magiaModalDanoFormula")?.value.trim();
+            const danoTipo = document.getElementById("magiaModalDanoTipo")?.value.trim();
+            const resolucao = document.getElementById("magiaModalResolucao")?.value;
+            const testeResistencia = document.getElementById("magiaModalTesteResistencia")?.value;
+            const curaRegra = document.getElementById("magiaModalCuraRegra")?.value.trim();
+
+            if (!nome) {
+                alert("Informe o nome da magia antes de salvar.");
+                document.getElementById("magiaModalNome")?.focus();
+                return false;
+            }
+
+            if (habilitaDano) {
+                if (!resolucao) {
+                    alert("Escolha como o dano da magia e resolvido.");
+                    document.getElementById("magiaModalResolucao")?.focus();
+                    return false;
+                }
+
+                if (!danoFormula) {
+                    alert("Magias com dano precisam de uma formula de dano.");
+                    document.getElementById("magiaModalDanoFormula")?.focus();
+                    return false;
+                }
+
+                if (!danoTipo) {
+                    alert("Selecione o tipo de dano da magia.");
+                    document.getElementById("magiaModalDanoTipo")?.focus();
+                    return false;
+                }
+
+                if (String(resolucao || "").includes("Teste") && !testeResistencia) {
+                    alert("Selecione o teste de resistencia para magias com dano por salvaguarda.");
+                    document.getElementById("magiaModalTesteResistencia")?.focus();
+                    return false;
+                }
+
+            }
+
+            if (habilitaCura && !curaRegra) {
+                alert("Magias com cura precisam de uma regra ou formula de cura.");
+                document.getElementById("magiaModalCuraRegra")?.focus();
+                return false;
+            }
+
+            return true;
+        }
+
         function atualizarVisibilidadeFormularioMagia() {
             const habilitaDano = document.getElementById("magiaModalPropDano")?.checked;
             const habilitaCura = document.getElementById("magiaModalPropCura")?.checked;
             const resolucao = document.getElementById("magiaModalResolucao")?.value;
+            const danoComResolucao = !!habilitaDano && !!String(resolucao || "").trim();
 
-            document.getElementById("magiaModalCampoDanoFormula")?.classList.toggle("oculto", !habilitaDano);
-            document.getElementById("magiaModalCampoDanoTipo")?.classList.toggle("oculto", !habilitaDano);
+            document.getElementById("magiaModalCampoDanoFormula")?.classList.toggle("oculto", !danoComResolucao);
+            document.getElementById("magiaModalCampoDanoTipo")?.classList.toggle("oculto", !danoComResolucao);
             document.getElementById("magiaModalCampoResolucao")?.classList.toggle("oculto", !habilitaDano);
             document.getElementById("magiaModalCampoCuraRegra")?.classList.toggle("oculto", !habilitaCura);
             document.getElementById("magiaModalCampoAtaqueMagico")?.classList.toggle("oculto", !(habilitaDano && resolucao === "Ataque"));
             document.getElementById("magiaModalCampoTesteResistencia")?.classList.toggle("oculto", !(habilitaDano && resolucao === "Teste de Resistência"));
 
+            alternarCampoModalMagia("magiaModalCampoDanoFormula", danoComResolucao);
+            alternarCampoModalMagia("magiaModalCampoDanoTipo", danoComResolucao);
+            alternarCampoModalMagia("magiaModalCampoResolucao", !!habilitaDano);
+            alternarCampoModalMagia("magiaModalCampoCuraRegra", !!habilitaCura);
+            alternarCampoModalMagia("magiaModalCampoAtaqueMagico", !!habilitaDano && resolucao === "Ataque");
+            alternarCampoModalMagia("magiaModalCampoTesteResistencia", !!habilitaDano && String(resolucao || "").includes("Teste"));
             atualizarAtaqueMagicoModalMagia();
         }
 
@@ -7699,9 +8055,8 @@
             const visualizacao = document.getElementById("magiaModalVisualizacao");
             const formulario = document.getElementById("magiaModalFormulario");
             const botaoEditar = document.getElementById("magiaModalEditar");
-            const botaoCancelar = document.getElementById("magiaModalCancelarEdicao");
+            const botaoExcluir = document.getElementById("magiaModalExcluir");
             const botaoSalvar = document.getElementById("magiaModalSalvar");
-            const subtitulo = document.getElementById("magiaModalSubtitulo");
 
             estadoModalMagia.modo = modo;
 
@@ -7718,11 +8073,8 @@
             }
 
             botaoEditar?.classList.toggle("oculto", modo !== "visualizar");
-            botaoCancelar?.classList.toggle("oculto", modo !== "editar");
+            botaoExcluir?.classList.toggle("oculto", modo !== "editar");
             botaoSalvar?.classList.toggle("oculto", modo !== "editar");
-            if (subtitulo) {
-                subtitulo.textContent = modo === "editar" ? "Edição da magia" : "Visualização da magia";
-            }
         }
 
         function renderizarVisualizacaoModalMagia(magia) {
@@ -7737,11 +8089,12 @@
             const overlay = obterModalMagiaOverlay();
             if (!overlay) return;
 
+            ultimoFocoModalMagia = document.activeElement instanceof HTMLElement ? document.activeElement : null;
             estadoModalMagia.nivel = nivel;
             estadoModalMagia.indice = indice;
 
             const magia = obterMagiaDoEstadoModal();
-            document.getElementById("magiaModalTitulo").textContent = magia.nome || "Magia";
+            atualizarCabecalhoModalMagia(magia);
             preencherFormularioMagia(magia);
             renderizarVisualizacaoModalMagia(magia);
             alternarModoModalMagia(modo);
@@ -7749,27 +8102,56 @@
             overlay.classList.add("ativo");
             overlay.classList.remove("oculto");
             overlay.setAttribute("aria-hidden", "false");
+            const destinoFoco = modo === "editar"
+                ? document.getElementById("magiaModalNome")
+                : document.getElementById("magiaModalFechar");
+            destinoFoco?.focus();
         }
 
         function fecharModalMagia() {
             const overlay = obterModalMagiaOverlay();
             if (!overlay) return;
 
+            const focoAtual = document.activeElement;
+            if (focoAtual instanceof HTMLElement && overlay.contains(focoAtual)) {
+                focoAtual.blur();
+            }
+
             overlay.classList.remove("ativo");
             overlay.classList.add("oculto");
             overlay.setAttribute("aria-hidden", "true");
+
+            if (ultimoFocoModalMagia instanceof HTMLElement && document.contains(ultimoFocoModalMagia)) {
+                ultimoFocoModalMagia.focus();
+            }
+            ultimoFocoModalMagia = null;
         }
 
         function salvarModalMagia() {
+            if (!validarFormularioMagia()) return;
+
             const magias = lerMagiasNivel(estadoModalMagia.nivel);
             const magia = lerFormularioMagia();
 
             magias[estadoModalMagia.indice] = magia;
             salvarMagiasNivel(estadoModalMagia.nivel, magias);
             renderizarListaMagiasNivel(estadoModalMagia.nivel);
-            document.getElementById("magiaModalTitulo").textContent = magia.nome || "Magia";
+            atualizarCabecalhoModalMagia(magia);
             renderizarVisualizacaoModalMagia(magia);
             alternarModoModalMagia("visualizar");
+        }
+
+        function excluirMagiaAtual() {
+            const magias = lerMagiasNivel(estadoModalMagia.nivel);
+            if (estadoModalMagia.indice === null || !magias[estadoModalMagia.indice]) return;
+
+            const magia = magias[estadoModalMagia.indice];
+            if (!confirm(`Excluir a magia "${magia?.nome || "sem nome"}"?`)) return;
+
+            magias.splice(estadoModalMagia.indice, 1);
+            salvarMagiasNivel(estadoModalMagia.nivel, magias);
+            renderizarListaMagiasNivel(estadoModalMagia.nivel);
+            fecharModalMagia();
         }
 
         function adicionarNovaMagia(nivel) {
@@ -8588,10 +8970,7 @@
             preencherFormularioMagia(obterMagiaDoEstadoModal());
             alternarModoModalMagia('editar');
         });
-        document.getElementById('magiaModalCancelarEdicao')?.addEventListener('click', () => {
-            preencherFormularioMagia(obterMagiaDoEstadoModal());
-            alternarModoModalMagia('visualizar');
-        });
+        document.getElementById('magiaModalExcluir')?.addEventListener('click', excluirMagiaAtual);
         document.getElementById('magiaModalSalvar')?.addEventListener('click', salvarModalMagia);
         document.getElementById('magiaModalFechar')?.addEventListener('click', fecharModalMagia);
         ['magiaModalPropDano', 'magiaModalPropCura', 'magiaModalPropConcentracao', 'magiaModalResolucao'].forEach(id => {
@@ -8732,3 +9111,8 @@
 </body>
 
 </html>
+
+
+
+
+

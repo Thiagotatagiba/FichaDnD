@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Attach to Edge",
+            "port": 9222,
+            "request": "attach",
+            "type": "msedge",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Run Ficha DnD (Electron)",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "C:/Program Files/nodejs/npm.cmd",
+            "args": [
+                "run",
+                "start"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Open Ficha DnD in Edge",
+            "type": "msedge",
+            "request": "launch",
+            "file": "${workspaceFolder}/ficha/Ficha DnD - Tatagiba 1.0.html"
+        }
+    ]
+}
