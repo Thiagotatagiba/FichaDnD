@@ -9,10 +9,12 @@
             margin: 0;
             height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             background: #e7e1d5;
             font-family: Arial, sans-serif;
+            gap: 20px;
         }
 
         button {
@@ -32,12 +34,31 @@
 </head>
 <body>
 
-    <button onclick="abrirFicha()">ABRIR NOVA FICHA</button>
+    <button id="novoPersonagemBtn" type="button">Novo Personagem</button>
+    <button id="importarPersonagemBtn" type="button">Importar Personagem</button>
 
     <script>
-        function abrirFicha() {
-            window.location.href = "ficha/Ficha DnD - Tatagiba 1.0.html";
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const novoButton = document.getElementById('novoPersonagemBtn');
+            const importarButton = document.getElementById('importarPersonagemBtn');
+            const api = window.api;
+
+            novoButton?.addEventListener('click', () => {
+                if (api?.novoPersonagem) {
+                    api.novoPersonagem();
+                } else {
+                    alert("Novo personagem clicado (modo navegador)");
+                }
+            });
+
+            importarButton?.addEventListener('click', () => {
+                if (api?.importarPersonagem) {
+                    api.importarPersonagem();
+                } else {
+                    alert("Importar personagem clicado (modo navegador)");
+                }
+            });
+        });
     </script>
 
 </body>
