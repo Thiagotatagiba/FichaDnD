@@ -4066,11 +4066,14 @@
             margin-top: 10px;
             line-height: 1.5;
         }
+
+        .dv-tipo-principal.bloqueado {
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body>
-    <! /=====Modal de Ataque=====* />
     <div id="modalAtaqueOverlay" class="ataque-modal-overlay oculto" aria-hidden="true">
         <div class="ataque-modal" role="dialog" aria-modal="true" aria-labelledby="modalAtaqueTitulo">
             <div id="modalAtaqueTitulo" class="ataque-modal-titulo">Ataque com arma</div>
@@ -4113,7 +4116,7 @@
             </div>
         </div>
     </div>
-    <!=====Modal de Level Up=====* />
+
     <div id="levelUpModal" class="levelup-overlay">
         <div class="levelup-box">
             <h2 id="levelUpTitulo">🎉 LEVEL UP!</h2>
@@ -4136,7 +4139,7 @@
             <button id="btnConfirmarLevelUp">Confirmar</button>
         </div>
     </div>
-    <! /=====ficha principal=====* />
+
     <div class="ficha">
 
         <!-- BOTÕES -->
@@ -4180,7 +4183,21 @@
                 <div class="campo-titulo">Classe e Nível</div>
                 <input id="classeID" type="hidden">
                 <div class="campo-duplo">
-                    <input id="classeNomeID" class="classe-nome" placeholder="Classe (Subclasse)">
+                    <select id="classeNomeID" class="classe-nome">
+                        <option value="">Selecione uma classe</option>
+                        <option value="barbaro">Bárbaro</option>
+                        <option value="bardo">Bardo</option>
+                        <option value="bruxo">Bruxo</option>
+                        <option value="clerigo">Clérigo</option>
+                        <option value="druida">Druida</option>
+                        <option value="feiticeiro">Feiticeiro</option>
+                        <option value="guerreiro">Guerreiro</option>
+                        <option value="ladino">Ladino</option>
+                        <option value="mago">Mago</option>
+                        <option value="monge">Monge</option>
+                        <option value="paladino">Paladino</option>
+                        <option value="patrulheiro">Patrulheiro</option>
+                    </select>
                     <span class="classe-separador">NV</span>
                     <input id="classeNivelID" class="classe-nivel" value="1" type="number" readonly>
                 </div>
@@ -5594,19 +5611,67 @@
     <script>
         // Variáveis Globai
         let bloqueandoLevelUp = false;
+        let armaduraEquipadaIndice = null;
+        let personagem = {};
+        let idsPocoesDesequipadasManualmente = new Set(); 
 
+function renderizarOutrosEquipamento(listaOutros) {
+    const container = document.getElementById("lista-outros-equipamento");
+    if (!container) return;
+    
+    // Agora a variável 'idsPocoesDesequipadasManualmente' já estará inicializada
+    // ... restante do seu código de renderização ...
+}
+        // 1. No topo do seu <script>, adicione:
+let armaduraSelecionadaAtual = null; 
+
+// 2. Substitua a função e o listener por estes:
+function atualizarCamposArmaduraSelecionada(armadura) {
+    armaduraSelecionadaAtual = armadura; // Atualiza a referência global
+    try {
+        const desEl = document.getElementById('des');
+        const desValorRaw = desEl ? desEl.value : null;
+        const modDestreza = desValorRaw !== null && desValorRaw !== '' ? Math.floor((Number(desValorRaw)-10)/2) : 0;
+        
+        const info = armadura ? formatarArmaduraEquipamento(armadura, modDestreza) : null;
+
+        // Atualiza os elementos da interface
+        const elNome = document.getElementById('armaduraNome');
+        const elCA = document.getElementById('armaduraCA');
+        const elFurt = document.getElementById('armaduraFurtividade');
+        
+        if (elNome) elNome.value = info ? info.linha1 : '';
+        if (elCA) elCA.value = info ? String(info.caTotal) : '';
+        if (elFurt) elFurt.value = info ? (armadura.armadura_furtividade || '') : '';
+        
+    } catch (err) {
+        console.error('Erro em atualizarCamposArmaduraSelecionada', err);
+    }
+}
+
+// 3. Ajuste o listener de Destreza (perto da linha 6610):
+document.getElementById('des')?.addEventListener('input', () => {
+    if (armaduraSelecionadaAtual) {
+        atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual);
+    }
+});
         // ===== Lógica de Bônus de Proficiência =====
         const bonusInput = document.getElementById("bonusProf");
-        // 🔥 redefinir getter e setter para controlar o formato do valor exibido
-        Object.defineProperty(bonusInput, "value", {
-            set(v) {
-                console.trace("SETANDO bonusProf:", v);
-                this.setAttribute("value", v);
-            },
-            get() {
-                return this.getAttribute("value");
-            }
-        });
+        // Retorna o modificador a partir do valor do atributo (ex: 18 -> 4)
+function calcularModificadorAtributo(valorAtributo) {
+  const v = Number(valorAtributo);
+  if (!Number.isFinite(v)) return 0;
+  return Math.floor((v - 10) / 2);
+}
+
+
+// Utilitário único para obter o máximo do dado de vida a partir da string "d8", "d10", etc.
+function obterMaxDadoVidaFromString(dado) {
+  if (!dado || typeof dado !== 'string') return 8; // fallback seguro
+  const numero = Number(dado.replace(/\s*/g, '').toLowerCase().replace(/^d/, ''));
+  if (!Number.isFinite(numero) || numero <= 0) return 8;
+  return Math.floor(numero);
+}
 
 
         // ===== Integracao e inicializacao =====
@@ -5615,6 +5680,40 @@
             carregarFicha(personagem);
         });
 
+        const mapaDadoVida = {
+            barbaro: "d12",
+
+            guerreiro: "d10",
+            paladino: "d10",
+            patrulheiro: "d10", // ranger
+
+            clerigo: "d8",
+            druida: "d8",
+            monge: "d8",
+            ladino: "d8",
+            bruxo: "d8",
+            bardo: "d8",
+
+            mago: "d6",
+            feiticeiro: "d6"
+        };
+
+        function atualizarDadoVida() {
+            const classe = document.getElementById("classeNomeID").value;
+            const selectDV = document.getElementById("dadosVidaTipo");
+
+            if (!classe || !mapaDadoVida[classe]) {
+                selectDV.classList.remove("bloqueado");
+                return;
+            }
+
+            selectDV.value = mapaDadoVida[classe];
+            selectDV.classList.add("bloqueado");
+        }
+        document.getElementById("classeNomeID")
+            .addEventListener("change", atualizarDadoVida);
+
+        // ===== Lógica de Nível e XP =====
         function atualizarDadosVidaTotal() {
             const nivelInput = document.getElementById('classeNivelID');
             const dadosVidaTotalInput = document.getElementById('dadosVidaTotal');
@@ -5623,6 +5722,49 @@
 
             dadosVidaTotalInput.value = nivel;
         }
+        function equiparArmadura(indice) {
+            const armaduraSelecionada = personagem.armaduras[indice];
+
+            armaduraEquipadaIndice = indice; // 🔥 salva qual está equipada
+
+            preencherCampo('armaduraNome', armaduraSelecionada?.armadura_nome?.trim() || "");
+            preencherCampo('armaduraCA', armaduraSelecionada?.armadura_ca?.trim() || "");
+            preencherCampo('armaduraFurtividade', armaduraSelecionada?.armadura_furtividade?.trim() || "Normal");
+
+
+// obter modificador de Destreza do personagem (ajuste o seletor conforme seu HTML)
+const desValor = Number(document.getElementById('des')?.value) || 0;
+const modDestreza = calcularModificadorAtributo(desValor);
+
+// formatar e obter infos
+const infoArmadura = armaduraSelecionada
+  ? formatarArmaduraEquipamento(armaduraSelecionada, modDestreza)
+  : null;
+
+// aplicar estilo de proficiência (mantendo sua API)
+aplicarEstiloProficienciaCampos(
+  ['armaduraNome', 'armaduraCA', 'armaduraFurtividade'],
+  infoArmadura ? infoArmadura.proficiente : null
+);
+
+// atualizar campos visuais com CA total e CA base
+if (infoArmadura) {
+  // atualiza o campo que mostra o CA (use .value ou .textContent conforme seu input/elemento)
+  const elCA = document.getElementById('armaduraCA');
+  if (elCA) {
+    // se for input
+    if ('value' in elCA) elCA.value = String(infoArmadura.caTotal);
+    else elCA.textContent = String(infoArmadura.caTotal);
+  }
+
+  // opcional: mostrar CA base e tipo de bônus em outros campos
+  const elLinha2 = document.getElementById('armaduraLinha2');
+  if (elLinha2) elLinha2.textContent = `Tipo: ${infoArmadura.tipo || '-'} | CA base: ${infoArmadura.caBase} | Bônus: ${infoArmadura.caBonusTipo}`;
+}
+
+
+        }
+
         // ===== Lógica de Level Up e Modal =====
         function obterMaxDadoVida() {
             const select = document.querySelector('[id="dadosVidaTipo"]');
@@ -5699,19 +5841,13 @@ Bônus de Proficiência: +${bonusProf}
 
                 const botao = document.getElementById('btnConfirmarLevelUp');
 
-                function obterMaxDadoVida(dado) {
-                    if (!dado) return 8; // fallback seguro
+const max = obterMaxDadoVidaFromString(dadoVida);
 
-                    const numero = Number(dado.replace('d', ''));
-
-                    return isNaN(numero) ? 8 : numero;
-                }
 
                 function validarInput() {
                     const valor = Number(input.value);
-                    const max = obterMaxDadoVida(dadoVida);
-                    console.log("Valor digitado:", input.value);
-                    console.log("Max dado:", obterMaxDadoVida());
+                    const max = obterMaxDadoVidaFromString(dadoVida);
+
                     const valido = !isNaN(valor) && valor >= 1 && valor <= max;
 
                     botao.disabled = !valido;
@@ -6328,28 +6464,127 @@ Bônus de Proficiência: +${bonusProf}
 
             if (selecionados.size) sincronizarEquipamentosCombate();
         }
+        /**
+ * Calcula o CA total aplicando o tipo de bônus sobre o CA base.
+ *
+ * @param {number|string} caBase - CA base da armadura (ex: 14 ou "14").
+ * @param {string} bonusTipo - "0", "DES" ou "DES Max 2".
+ * @param {number} modDestreza - modificador de Destreza do personagem (ex: 0, 1, -1).
+ * @returns {number} CA total (inteiro).
+ */
+function calcularCATotal(caBase, bonusTipo, modDestreza) {
+  // Normaliza e valida CA base
+  const ca = Number(caBase);
+  const baseValida = Number.isFinite(ca) ? Math.floor(ca) : 0;
 
-        function formatarArmaduraEquipamento(armadura) {
-            const nome = armadura.armadura_nome?.trim() || "Armadura sem nome";
-            const ca = armadura.armadura_ca?.trim() || "0";
-            const bonus = armadura.armadura_bonus?.trim() || "0";
-            const furtividade = armadura.armadura_furtividade?.trim() || "Normal";
-            const tipo = armadura.armadura_tipo?.trim() || "-";
+  // Normaliza modificador de Destreza
+  const modDex = Number.isFinite(Number(modDestreza)) ? Math.trunc(Number(modDestreza)) : 0;
 
-            const proficiente = typeof armadura.proficiente === "boolean"
-                ? armadura.proficiente
-                : getTemProficienciaArmadura(tipo);
+  // Determina bônus conforme tipo
+  let bonus = 0;
+  const tipo = String(bonusTipo ?? "0").trim();
 
-            const emojiProf = proficiente
-                ? `<span title="Proficiente">⭐<br></span>`
-                : `<span title="Não proficiente">❌<br></span>`;
+  if (tipo === "DES") {
+    bonus = modDex;
+  } else if (tipo === "DES Max 2" || tipo.toUpperCase() === "DES MAX 2") {
+    // limita o bônus de Destreza a no máximo 2 (mas permite valores negativos)
+    bonus = Math.min(modDex, 2);
+  } else {
+    // qualquer outro valor (incluindo "0") => sem bônus
+    bonus = 0;
+  }
 
-            return {
-                linha1: `${nome} ${emojiProf} 🛡️ ${ca}`,
-                linha2: `Tipo: ${tipo} | Bônus: ${bonus} | Furtividade: ${furtividade}`,
-                proficiente
-            };
-        }
+  return baseValida + bonus;
+}
+
+
+function formatarArmaduraEquipamento(armadura, modDestreza = 0) {
+  const nome = armadura?.armadura_nome?.trim() || "Armadura sem nome";
+  const caRawStr = (armadura?.armadura_ca ?? "0").toString().trim();
+  const bonusRaw = (armadura?.armadura_bonus ?? "0").toString().trim();
+  const furtividade = armadura?.armadura_furtividade?.trim() || "Normal";
+  const tipo = armadura?.armadura_tipo?.trim() || "-";
+
+  const caBase = Number(caRawStr.replace(/[^\d\-+.]/g, ''));
+  const caBaseValida = Number.isFinite(caBase) ? Math.trunc(caBase) : 0;
+  const modDex = Number.isFinite(Number(modDestreza)) ? Math.trunc(Number(modDestreza)) : 0;
+
+  const bonusTipo = String(bonusRaw).trim().toUpperCase();
+  let bonusAplicado = 0;
+  if (bonusTipo === "DES") bonusAplicado = modDex;
+  else if (bonusTipo === "DES MAX 2" || bonusTipo === "DESMAX2" || bonusTipo === "DES MAX2") bonusAplicado = Math.min(modDex, 2);
+  else bonusAplicado = 0;
+
+  const caTotal = caBaseValida + bonusAplicado;
+
+  const proficiente = typeof armadura?.proficiente === "boolean"
+    ? armadura.proficiente
+    : (typeof getTemProficienciaArmadura === 'function' ? getTemProficienciaArmadura(tipo) : false);
+
+  const emojiProf = proficiente ? `<span title="Proficiente">⭐<br></span>` : `<span title="Não proficiente">❌<br></span>`;
+
+  return {
+    linha1: `${nome} ${emojiProf} 🛡️ ${caTotal} (${caBaseValida} + ${bonusAplicado})`,
+    linha2: `Tipo: ${tipo} | CA base: ${caBaseValida} | Bônus: ${bonusRaw} | Furtividade: ${furtividade}`,
+    proficiente,
+    caBase: caBaseValida,
+    caBonusTipo: bonusRaw,
+    caBonusAplicado: bonusAplicado,
+    caTotal,
+    tipo
+  };
+}
+
+// utilitário para calcular modificador a partir do valor do atributo
+function calcularModificadorAtributo(valorAtributo) {
+  const v = Number(valorAtributo);
+  if (!Number.isFinite(v)) return 0;
+  return Math.floor((v - 10) / 2);
+}
+
+// função que atualiza os campos da armadura selecionada
+function atualizarCamposArmaduraSelecionada(armaduraSelecionada) {
+  try {
+    const desEl = document.getElementById('des');
+    const desValorRaw = desEl ? desEl.value : null;
+    const modDestreza = desValorRaw !== null && desValorRaw !== '' ? Math.floor((Number(desValorRaw)-10)/2) : 0;
+
+    const info = armaduraSelecionada ? formatarArmaduraEquipamento(armaduraSelecionada, modDestreza) : null;
+
+    if (typeof aplicarEstiloProficienciaCampos === 'function') {
+      aplicarEstiloProficienciaCampos(
+        ['armaduraNome', 'armaduraCA', 'armaduraFurtividade'],
+        info ? info.proficiente : null
+      );
+    }
+
+    const elNome = document.getElementById('armaduraNome');
+    const elCA = document.getElementById('armaduraCA');
+    const elFurt = document.getElementById('armaduraFurtividade');
+    const elLinha2 = document.getElementById('armaduraLinha2');
+
+    if (elNome) { if ('value' in elNome) elNome.value = info ? info.linha1 : ''; else elNome.textContent = info ? info.linha1 : ''; }
+    if (elCA)   { if ('value' in elCA) elCA.value = info ? String(info.caTotal) : ''; else elCA.textContent = info ? String(info.caTotal) : ''; }
+    if (elFurt) { if ('value' in elFurt) elFurt.value = info ? (armaduraSelecionada.armadura_furtividade || '') : ''; else elFurt.textContent = info ? (armaduraSelecionada.armadura_furtividade || '') : ''; }
+    if (elLinha2) elLinha2.textContent = info ? `Tipo: ${info.tipo || '-'} | CA base: ${info.caBase} | Bônus: ${info.caBonusTipo}` : '';
+
+  } catch (err) {
+    console.error('Erro em atualizarCamposArmaduraSelecionada', err);
+  }
+}
+
+// quando mudar Destreza
+document.getElementById('des')?.addEventListener('input', () => {
+  atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual); // ajuste a variável conforme seu código
+});
+
+// quando mudar seleção de armadura
+document.getElementById('armaduraSelect')?.addEventListener('change', () => {
+  const indice = Number(document.getElementById('armaduraSelect').value);
+  const arm = personagem?.armaduras?.[indice] || null;
+  atualizarCamposArmaduraSelecionada(arm);
+});
+
 
         function obterResumoCombateArma(arma) {
             if (!arma) return "";
@@ -6989,7 +7224,7 @@ Bônus de Proficiência: +${bonusProf}
                 container.appendChild(botao);
             });
         }
-
+        // ========================= FIM EQUIPAMENTOS COMBATE =========================
         function sincronizarEquipamentosCombate() {
             const armas = coletarArmas();
             const armaduras = coletarArmaduras();
@@ -7059,17 +7294,13 @@ Bônus de Proficiência: +${bonusProf}
             atualizarSeletoresAtaqueEquipados();
 
             const armaduraSelecionadaInput = document.querySelector('#lista-armaduras-equipamento input:checked');
-            const armaduraSelecionada = armaduraSelecionadaInput
-                ? armaduras[parseInt(armaduraSelecionadaInput.dataset.index, 10)]
+            const indice = armaduraSelecionadaInput
+                ? parseInt(armaduraSelecionadaInput.dataset.index, 10)
                 : null;
 
-            preencherCampo('armaduraNome', armaduraSelecionada?.armadura_nome?.trim() || "");
-            preencherCampo('armaduraCA', armaduraSelecionada?.armadura_ca?.trim() || "");
-            preencherCampo('armaduraFurtividade', armaduraSelecionada?.armadura_furtividade?.trim() || "Normal");
-            aplicarEstiloProficienciaCampos(
-                ['armaduraNome', 'armaduraCA', 'armaduraFurtividade'],
-                armaduraSelecionada ? formatarArmaduraEquipamento(armaduraSelecionada).proficiente : null
-            );
+            if (indice !== null) {
+                equiparArmadura(indice);
+            }
 
             const escudoPainel = Number.isInteger(indiceEscudoAtivo) ? escudos[indiceEscudoAtivo] : null;
             preencherCampo('escudoNome', escudoPainel?.escudo_nome?.trim() || "");
@@ -7796,7 +8027,7 @@ Bônus de Proficiência: +${bonusProf}
             if (!dados || typeof dados !== "object") return;
 
             dados = normalizarDadosImportacao(dados);
-
+            personagem = dados;
             // 🔥 CAMPOS ESPECIAIS
             const camposEspeciais = {
                 xp: (valor) => setXP(valor ?? 0),
@@ -7985,13 +8216,29 @@ Bônus de Proficiência: +${bonusProf}
             marcarFichaComoSalva();
             atualizarBonusProficiencia();
             atualizarDadosVidaTotal();
+            atualizarDadoVida();
             bloqueandoLevelUp = false;
+            armaduraEquipadaIndice = dados.armaduraEquipadaIndice ?? null;
+
+            if (armaduraEquipadaIndice !== null) {
+                equiparArmadura(armaduraEquipadaIndice);
+            }
+            window.personagem = dados; // se ainda não fizer isso
+window.armaduraSelecionadaAtual = window.personagem?.armaduras?.[0] || null;
+atualizarCamposArmaduraSelecionada(window.armaduraSelecionadaAtual);
+
         }
+// Uso: obterArmaduraSeguro(0)
+function obterArmaduraSeguro(indice = 0) {
+  const p = window.personagem;
+  if (!p || !Array.isArray(p.armaduras)) return null;
+  return p.armaduras[indice] || null;
+}
+window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
         function carregarFicha(personagem) {
             aplicarDadosFicha(personagem)
         }
-
         function coletarDadosFicha() {
 
             const dados = {}
@@ -8029,6 +8276,7 @@ Bônus de Proficiência: +${bonusProf}
             dados.armaduras = coletarArmaduras();
             dados.escudos = coletarEscudos();
             dados.outros = coletarOutros();
+            dados.armaduraEquipadaIndice = armaduraEquipadaIndice;
 
             const nome = document.getElementById("nomePersonagem").value || "Personagem"
             const jogador = document.getElementById("jogador").value || "Jogador"
@@ -8058,6 +8306,8 @@ Bônus de Proficiência: +${bonusProf}
 
 
         function importarFicha(json) {
+            window.importarFicha = importarFicha;
+
             // Se recebeu JSON diretamente, aplica imediatamente
             if (json !== undefined && json !== null) {
                 try {
@@ -8129,6 +8379,7 @@ Bônus de Proficiência: +${bonusProf}
             }
 
         }
+        window.importarFicha = importarFicha;
         // ===== Atributos, radar e navegacao principal =====
         function atualizarAtributos() {
 
@@ -8243,13 +8494,18 @@ Bônus de Proficiência: +${bonusProf}
         }
 
 
+        function getBonusProficiencia() {
+            const input = document.getElementById("bonusProf");
+            const valor = Number(input?.dataset.valor ?? input?.value ?? 0);
+
+            return Number.isFinite(valor) ? valor : 0;
+        }
         function formatarBonusProf() {
-            const valor = getBonusProficiencia();
-            setBonusProficiencia(valor);
+            setBonusProficiencia(getBonusProficiencia());
         }
 
         function getBonusProf() {
-            return formatarBonusProf();
+            return getBonusProficiencia(); // ✔ retorna número
         }
 
         function formatarPvTemporario() {
