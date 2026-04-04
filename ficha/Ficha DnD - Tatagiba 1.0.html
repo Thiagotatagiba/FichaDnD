@@ -5609,70 +5609,55 @@
     </div>
 
     <script>
-        // Variáveis Globai
+        // Variáveis Globais
         let bloqueandoLevelUp = false;
         let armaduraEquipadaIndice = null;
         let personagem = {};
-        let idsPocoesDesequipadasManualmente = new Set(); 
+        let armaduraSelecionadaAtual = null;
 
-function renderizarOutrosEquipamento(listaOutros) {
-    const container = document.getElementById("lista-outros-equipamento");
-    if (!container) return;
-    
-    // Agora a variável 'idsPocoesDesequipadasManualmente' já estará inicializada
-    // ... restante do seu código de renderização ...
-}
-        // 1. No topo do seu <script>, adicione:
-let armaduraSelecionadaAtual = null; 
+        function atualizarCamposArmaduraSelecionada(armadura) {
+            armaduraSelecionadaAtual = armadura;
+            try {
+                const desEl = document.getElementById('des');
+                const desValorRaw = desEl ? desEl.value : null;
+                const modDestreza = desValorRaw !== null && desValorRaw !== '' ? Math.floor((Number(desValorRaw)-10)/2) : 0;
 
-// 2. Substitua a função e o listener por estes:
-function atualizarCamposArmaduraSelecionada(armadura) {
-    armaduraSelecionadaAtual = armadura; // Atualiza a referência global
-    try {
-        const desEl = document.getElementById('des');
-        const desValorRaw = desEl ? desEl.value : null;
-        const modDestreza = desValorRaw !== null && desValorRaw !== '' ? Math.floor((Number(desValorRaw)-10)/2) : 0;
-        
-        const info = armadura ? formatarArmaduraEquipamento(armadura, modDestreza) : null;
+                const info = armadura ? formatarArmaduraEquipamento(armadura, modDestreza) : null;
 
-        // Atualiza os elementos da interface
-        const elNome = document.getElementById('armaduraNome');
-        const elCA = document.getElementById('armaduraCA');
-        const elFurt = document.getElementById('armaduraFurtividade');
-        
-        if (elNome) elNome.value = info ? info.linha1 : '';
-        if (elCA) elCA.value = info ? String(info.caTotal) : '';
-        if (elFurt) elFurt.value = info ? (armadura.armadura_furtividade || '') : '';
-        
-    } catch (err) {
-        console.error('Erro em atualizarCamposArmaduraSelecionada', err);
-    }
-}
+                const elNome = document.getElementById('armaduraNome');
+                const elCA = document.getElementById('armaduraCA');
+                const elFurt = document.getElementById('armaduraFurtividade');
 
-// 3. Ajuste o listener de Destreza (perto da linha 6610):
-document.getElementById('des')?.addEventListener('input', () => {
-    if (armaduraSelecionadaAtual) {
-        atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual);
-    }
-});
+                if (elNome) elNome.value = info ? info.linha1 : '';
+                if (elCA) elCA.value = info ? String(info.caTotal) : '';
+                if (elFurt) elFurt.value = info ? (armadura.armadura_furtividade || '') : '';
+
+            } catch (err) {
+                console.error('Erro em atualizarCamposArmaduraSelecionada', err);
+            }
+        }
+
+        document.getElementById('des')?.addEventListener('input', () => {
+            if (armaduraSelecionadaAtual) {
+                atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual);
+            }
+        });
+
         // ===== Lógica de Bônus de Proficiência =====
         const bonusInput = document.getElementById("bonusProf");
-        // Retorna o modificador a partir do valor do atributo (ex: 18 -> 4)
-function calcularModificadorAtributo(valorAtributo) {
-  const v = Number(valorAtributo);
-  if (!Number.isFinite(v)) return 0;
-  return Math.floor((v - 10) / 2);
-}
 
+        function calcularModificadorAtributo(valorAtributo) {
+            const v = Number(valorAtributo);
+            if (!Number.isFinite(v)) return 0;
+            return Math.floor((v - 10) / 2);
+        }
 
-// Utilitário único para obter o máximo do dado de vida a partir da string "d8", "d10", etc.
-function obterMaxDadoVidaFromString(dado) {
-  if (!dado || typeof dado !== 'string') return 8; // fallback seguro
-  const numero = Number(dado.replace(/\s*/g, '').toLowerCase().replace(/^d/, ''));
-  if (!Number.isFinite(numero) || numero <= 0) return 8;
-  return Math.floor(numero);
-}
-
+        function obterMaxDadoVidaFromString(dado) {
+            if (!dado || typeof dado !== 'string') return 8;
+            const numero = Number(dado.replace(/\s*/g, '').toLowerCase().replace(/^d/, ''));
+            if (!Number.isFinite(numero) || numero <= 0) return 8;
+            return Math.floor(numero);
+        }
 
         // ===== Integracao e inicializacao =====
         window.api?.receberPersonagem((data) => {
