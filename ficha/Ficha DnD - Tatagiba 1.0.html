@@ -932,6 +932,19 @@
             border-color: #4a7a4a;
         }
 
+        .salv-valor-input {
+            width: 100%;
+            text-align: center;
+            border: 1px solid #c8b9a5;
+            border-radius: 4px;
+            background: #f6f2ea;
+            font-family: 'MedievalSharp';
+            font-size: 13px;
+            color: #5a3a1a;
+            padding: 2px 4px;
+            margin-top: 4px;
+        }
+
         .salvaguarda-caixa .prof-checkbox {
             margin: 0;
             accent-color: #8b4513;
@@ -4452,67 +4465,103 @@
                     </div>
 
                     <div class="coluna-salvaguardas">
-                        <div class="status-titulo">Salvaguardas</div>
+                        <div class="status-titulo">Atributos</div>
 
                         <div class="salvaguardas-grid">
-                            <div class="salvaguarda-caixa" id="caixa-for">
-                                <div class="atributo-label">FOR <input id="prof_for" type="checkbox"
-                                        aria-label="Proficiência em salvaguarda de Força" class="prof-checkbox"
-                                        data-atributo="for" title="Proficiência"></div>
-                                <div class="valor-atributo"><input id="salv_for" type="number"
-                                        class="valor-atributo-input" value="10" min="0"
-                                        aria-label="Salvaguarda de Força"></div>
-                                <div class="modificador-orbe" id="mod_for">+2</div>
+                            <div class="atrib-coluna">
+                                <div class="salvaguarda-caixa" id="caixa-for">
+                                    <div class="atributo-label">FOR <input id="prof_salv_for" type="checkbox"
+                                            aria-label="Proficiência em salvaguarda de Força" class="prof-checkbox"
+                                            data-atributo="for" title="Proficiência"></div>
+                                    <div class="valor-atributo"><input id="atrib_for" type="number"
+                                            class="valor-atributo-input" value="10" min="0"
+                                            aria-label="Força"></div>
+                                    <div class="modificador-orbe" id="mod_for">+0</div>
+                                </div>
+                                <div class="salv-linha">
+                                    <input id="salv_for" class="salv-valor-input" value="+0" readonly
+                                        aria-label="Salvaguarda de Força">
+                                </div>
                             </div>
 
-                            <div class="salvaguarda-caixa" id="caixa-des">
-                                <div class="atributo-label">DES <input id="prof_des" type="checkbox"
-                                        aria-label="Proficiência em salvaguarda de Destreza" class="prof-checkbox"
-                                        data-atributo="des" title="Proficiência"></div>
-                                <div class="valor-atributo"><input id="salv_des" type="number"
-                                        class="valor-atributo-input" value="10" min="0"
-                                        aria-label="Salvaguarda de Destreza"></div>
-                                <div class="modificador-orbe" id="mod_des">+2</div>
+                            <div class="atrib-coluna">
+                                <div class="salvaguarda-caixa" id="caixa-des">
+                                    <div class="atributo-label">DES <input id="prof_salv_des" type="checkbox"
+                                            aria-label="Proficiência em salvaguarda de Destreza" class="prof-checkbox"
+                                            data-atributo="des" title="Proficiência"></div>
+                                    <div class="valor-atributo"><input id="atrib_des" type="number"
+                                            class="valor-atributo-input" value="10" min="0"
+                                            aria-label="Destreza"></div>
+                                    <div class="modificador-orbe" id="mod_des">+0</div>
+                                </div>
+                                <div class="salv-linha">
+                                    <input id="salv_des" class="salv-valor-input" value="+0" readonly
+                                        aria-label="Salvaguarda de Destreza">
+                                </div>
                             </div>
 
-                            <div class="salvaguarda-caixa" id="caixa-con">
-                                <div class="atributo-label">CON <input id="prof_con" type="checkbox"
-                                        aria-label="Proficiência em salvaguarda de Constituição" class="prof-checkbox"
-                                        data-atributo="con" title="Proficiência"></div>
-                                <div class="valor-atributo"><input id="salv_con" type="number"
-                                        class="valor-atributo-input" value="10" min="0"
-                                        aria-label="Salvaguarda de Constituição"></div>
-                                <div class="modificador-orbe" id="mod_con">+2</div>
+                            <div class="atrib-coluna">
+                                <div class="salvaguarda-caixa" id="caixa-con">
+                                    <div class="atributo-label">CON <input id="prof_salv_con" type="checkbox"
+                                            aria-label="Proficiência em salvaguarda de Constituição" class="prof-checkbox"
+                                            data-atributo="con" title="Proficiência"></div>
+                                    <div class="valor-atributo"><input id="atrib_con" type="number"
+                                            class="valor-atributo-input" value="10" min="0"
+                                            aria-label="Constituição"></div>
+                                    <div class="modificador-orbe" id="mod_con">+0</div>
+                                </div>
+                                <div class="salv-linha">
+                                    <input id="salv_con" class="salv-valor-input" value="+0" readonly
+                                        aria-label="Salvaguarda de Constituição">
+                                </div>
                             </div>
 
-                            <div class="salvaguarda-caixa" id="caixa-int">
-                                <div class="atributo-label">INT <input id="prof_int" type="checkbox"
-                                        aria-label="Proficiência em salvaguarda de Inteligência" class="prof-checkbox"
-                                        data-atributo="int" title="Proficiência"></div>
-                                <div class="valor-atributo"><input id="salv_int" type="number"
-                                        class="valor-atributo-input" value="10" min="0"
-                                        aria-label="Salvaguarda de Inteligência"></div>
-                                <div class="modificador-orbe" id="mod_int">+2</div>
+                            <div class="atrib-coluna">
+                                <div class="salvaguarda-caixa" id="caixa-int">
+                                    <div class="atributo-label">INT <input id="prof_salv_int" type="checkbox"
+                                            aria-label="Proficiência em salvaguarda de Inteligência" class="prof-checkbox"
+                                            data-atributo="int" title="Proficiência"></div>
+                                    <div class="valor-atributo"><input id="atrib_int" type="number"
+                                            class="valor-atributo-input" value="10" min="0"
+                                            aria-label="Inteligência"></div>
+                                    <div class="modificador-orbe" id="mod_int">+0</div>
+                                </div>
+                                <div class="salv-linha">
+                                    <input id="salv_int" class="salv-valor-input" value="+0" readonly
+                                        aria-label="Salvaguarda de Inteligência">
+                                </div>
                             </div>
 
-                            <div class="salvaguarda-caixa" id="caixa-sab">
-                                <div class="atributo-label">SAB <input id="prof_sab" type="checkbox"
-                                        aria-label="Proficiência em salvaguarda de Sabedoria" class="prof-checkbox"
-                                        data-atributo="sab" title="Proficiência"></div>
-                                <div class="valor-atributo"><input id="salv_sab" type="number"
-                                        class="valor-atributo-input" value="10" min="0"
-                                        aria-label="Salvaguarda de Sabedoria"></div>
-                                <div class="modificador-orbe" id="mod_sab">+2</div>
+                            <div class="atrib-coluna">
+                                <div class="salvaguarda-caixa" id="caixa-sab">
+                                    <div class="atributo-label">SAB <input id="prof_salv_sab" type="checkbox"
+                                            aria-label="Proficiência em salvaguarda de Sabedoria" class="prof-checkbox"
+                                            data-atributo="sab" title="Proficiência"></div>
+                                    <div class="valor-atributo"><input id="atrib_sab" type="number"
+                                            class="valor-atributo-input" value="10" min="0"
+                                            aria-label="Sabedoria"></div>
+                                    <div class="modificador-orbe" id="mod_sab">+0</div>
+                                </div>
+                                <div class="salv-linha">
+                                    <input id="salv_sab" class="salv-valor-input" value="+0" readonly
+                                        aria-label="Salvaguarda de Sabedoria">
+                                </div>
                             </div>
 
-                            <div class="salvaguarda-caixa" id="caixa-car">
-                                <div class="atributo-label">CAR <input id="prof_car" type="checkbox"
-                                        aria-label="Proficiência em salvaguarda de Carisma" class="prof-checkbox"
-                                        data-atributo="car" title="Proficiência"></div>
-                                <div class="valor-atributo"><input id="salv_car" type="number"
-                                        class="valor-atributo-input" value="10" min="0"
-                                        aria-label="Salvaguarda de Carisma"></div>
-                                <div class="modificador-orbe" id="mod_car">+2</div>
+                            <div class="atrib-coluna">
+                                <div class="salvaguarda-caixa" id="caixa-car">
+                                    <div class="atributo-label">CAR <input id="prof_salv_car" type="checkbox"
+                                            aria-label="Proficiência em salvaguarda de Carisma" class="prof-checkbox"
+                                            data-atributo="car" title="Proficiência"></div>
+                                    <div class="valor-atributo"><input id="atrib_car" type="number"
+                                            class="valor-atributo-input" value="10" min="0"
+                                            aria-label="Carisma"></div>
+                                    <div class="modificador-orbe" id="mod_car">+0</div>
+                                </div>
+                                <div class="salv-linha">
+                                    <input id="salv_car" class="salv-valor-input" value="+0" readonly
+                                        aria-label="Salvaguarda de Carisma">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -4783,7 +4832,7 @@
                                         <div class="equipados-grid-cabecalho-centro">CA</div>
                                         <div class="equipados-grid-cabecalho">Furtividade</div>
 
-                                        <input id="armaduraNome" aria-label="Nome da armadura">
+                                        <select id="armaduraNome" aria-label="Nome da armadura"></select>
                                         <input id="armaduraCA" class="campo-ca"
                                             aria-label="Classe de armadura da armadura">
                                         <select id="armaduraFurtividade" aria-label="Efeito da armadura na furtividade">
@@ -5622,39 +5671,8 @@ function renderizarOutrosEquipamento(listaOutros) {
     // Agora a variável 'idsPocoesDesequipadasManualmente' já estará inicializada
     // ... restante do seu código de renderização ...
 }
-        // 1. No topo do seu <script>, adicione:
-let armaduraSelecionadaAtual = null; 
+        let armaduraSelecionadaAtual = null;
 
-// 2. Substitua a função e o listener por estes:
-function atualizarCamposArmaduraSelecionada(armadura) {
-    armaduraSelecionadaAtual = armadura; // Atualiza a referência global
-    try {
-        const desEl = document.getElementById('des');
-        const desValorRaw = desEl ? desEl.value : null;
-        const modDestreza = desValorRaw !== null && desValorRaw !== '' ? Math.floor((Number(desValorRaw)-10)/2) : 0;
-        
-        const info = armadura ? formatarArmaduraEquipamento(armadura, modDestreza) : null;
-
-        // Atualiza os elementos da interface
-        const elNome = document.getElementById('armaduraNome');
-        const elCA = document.getElementById('armaduraCA');
-        const elFurt = document.getElementById('armaduraFurtividade');
-        
-        if (elNome) elNome.value = info ? info.linha1 : '';
-        if (elCA) elCA.value = info ? String(info.caTotal) : '';
-        if (elFurt) elFurt.value = info ? (armadura.armadura_furtividade || '') : '';
-        
-    } catch (err) {
-        console.error('Erro em atualizarCamposArmaduraSelecionada', err);
-    }
-}
-
-// 3. Ajuste o listener de Destreza (perto da linha 6610):
-document.getElementById('des')?.addEventListener('input', () => {
-    if (armaduraSelecionadaAtual) {
-        atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual);
-    }
-});
         // ===== Lógica de Bônus de Proficiência =====
         const bonusInput = document.getElementById("bonusProf");
         // Retorna o modificador a partir do valor do atributo (ex: 18 -> 4)
@@ -5723,46 +5741,14 @@ function obterMaxDadoVidaFromString(dado) {
             dadosVidaTotalInput.value = nivel;
         }
         function equiparArmadura(indice) {
-            const armaduraSelecionada = personagem.armaduras[indice];
-
-            armaduraEquipadaIndice = indice; // 🔥 salva qual está equipada
-
-            preencherCampo('armaduraNome', armaduraSelecionada?.armadura_nome?.trim() || "");
-            preencherCampo('armaduraCA', armaduraSelecionada?.armadura_ca?.trim() || "");
-            preencherCampo('armaduraFurtividade', armaduraSelecionada?.armadura_furtividade?.trim() || "Normal");
-
-
-// obter modificador de Destreza do personagem (ajuste o seletor conforme seu HTML)
-const desValor = Number(document.getElementById('des')?.value) || 0;
-const modDestreza = calcularModificadorAtributo(desValor);
-
-// formatar e obter infos
-const infoArmadura = armaduraSelecionada
-  ? formatarArmaduraEquipamento(armaduraSelecionada, modDestreza)
-  : null;
-
-// aplicar estilo de proficiência (mantendo sua API)
-aplicarEstiloProficienciaCampos(
-  ['armaduraNome', 'armaduraCA', 'armaduraFurtividade'],
-  infoArmadura ? infoArmadura.proficiente : null
-);
-
-// atualizar campos visuais com CA total e CA base
-if (infoArmadura) {
-  // atualiza o campo que mostra o CA (use .value ou .textContent conforme seu input/elemento)
-  const elCA = document.getElementById('armaduraCA');
-  if (elCA) {
-    // se for input
-    if ('value' in elCA) elCA.value = String(infoArmadura.caTotal);
-    else elCA.textContent = String(infoArmadura.caTotal);
-  }
-
-  // opcional: mostrar CA base e tipo de bônus em outros campos
-  const elLinha2 = document.getElementById('armaduraLinha2');
-  if (elLinha2) elLinha2.textContent = `Tipo: ${infoArmadura.tipo || '-'} | CA base: ${infoArmadura.caBase} | Bônus: ${infoArmadura.caBonusTipo}`;
-}
-
-
+            const select = document.getElementById('armaduraNome');
+            if (select) select.value = indice !== null && indice !== undefined ? String(indice) : '';
+            const armaduraSelecionada = (indice !== null && indice !== undefined)
+                ? personagem.armaduras?.[indice] || null
+                : null;
+            armaduraSelecionadaAtual = armaduraSelecionada;
+            armaduraEquipadaIndice = indice;
+            atualizarCamposArmaduraSelecionada(armaduraSelecionada);
         }
 
         // ===== Lógica de Level Up e Modal =====
@@ -6304,6 +6290,7 @@ const max = obterMaxDadoVidaFromString(dadoVida);
             renderizarEscudosEquipamento(coletarEscudos());
             renderizarOutrosEquipamento(coletarOutros());
             atualizarTodasMunicoesArmas();
+            atualizarSelectNomeArmaduraEquipada(coletarArmaduras(), armaduraEquipadaIndice);
         }
 
         function obterTextoDanoArma(arma) {
@@ -6524,6 +6511,7 @@ function formatarArmaduraEquipamento(armadura, modDestreza = 0) {
   const emojiProf = proficiente ? `<span title="Proficiente">⭐<br></span>` : `<span title="Não proficiente">❌<br></span>`;
 
   return {
+    nome,
     linha1: `${nome} ${emojiProf} 🛡️ ${caTotal} (${caBaseValida} + ${bonusAplicado})`,
     linha2: `Tipo: ${tipo} | CA base: ${caBaseValida} | Bônus: ${bonusRaw} | Furtividade: ${furtividade}`,
     proficiente,
@@ -6545,44 +6533,43 @@ function calcularModificadorAtributo(valorAtributo) {
 // função que atualiza os campos da armadura selecionada
 function atualizarCamposArmaduraSelecionada(armaduraSelecionada) {
   try {
-    const desEl = document.getElementById('des');
-    const desValorRaw = desEl ? desEl.value : null;
+    armaduraSelecionadaAtual = armaduraSelecionada || null;
+
+    const desValorRaw = document.getElementById('atrib_des')?.value ?? document.getElementById('des')?.value ?? null;
     const modDestreza = desValorRaw !== null && desValorRaw !== '' ? Math.floor((Number(desValorRaw)-10)/2) : 0;
 
     const info = armaduraSelecionada ? formatarArmaduraEquipamento(armaduraSelecionada, modDestreza) : null;
+    const caSemArmadura = 10 + modDestreza;
 
     if (typeof aplicarEstiloProficienciaCampos === 'function') {
       aplicarEstiloProficienciaCampos(
-        ['armaduraNome', 'armaduraCA', 'armaduraFurtividade'],
+        ['armaduraCA', 'armaduraFurtividade'],
         info ? info.proficiente : null
       );
     }
 
-    const elNome = document.getElementById('armaduraNome');
     const elCA = document.getElementById('armaduraCA');
     const elFurt = document.getElementById('armaduraFurtividade');
     const elLinha2 = document.getElementById('armaduraLinha2');
 
-    if (elNome) { if ('value' in elNome) elNome.value = info ? info.linha1 : ''; else elNome.textContent = info ? info.linha1 : ''; }
-    if (elCA)   { if ('value' in elCA) elCA.value = info ? String(info.caTotal) : ''; else elCA.textContent = info ? String(info.caTotal) : ''; }
-    if (elFurt) { if ('value' in elFurt) elFurt.value = info ? (armaduraSelecionada.armadura_furtividade || '') : ''; else elFurt.textContent = info ? (armaduraSelecionada.armadura_furtividade || '') : ''; }
-    if (elLinha2) elLinha2.textContent = info ? `Tipo: ${info.tipo || '-'} | CA base: ${info.caBase} | Bônus: ${info.caBonusTipo}` : '';
+    if (elCA)   { if ('value' in elCA) elCA.value = info ? String(info.caTotal) : String(caSemArmadura); else elCA.textContent = info ? String(info.caTotal) : String(caSemArmadura); }
+    if (elFurt) { if ('value' in elFurt) elFurt.value = info ? (armaduraSelecionada.armadura_furtividade || 'Normal') : 'Normal'; else elFurt.textContent = info ? (armaduraSelecionada.armadura_furtividade || 'Normal') : 'Normal'; }
+    if (elLinha2) elLinha2.textContent = info ? `Tipo: ${info.tipo || '-'} | CA base: ${info.caBase} | Bônus: ${info.caBonusTipo}` : `Sem armadura | CA: 10 + ${modDestreza} (DES)`;
+
+    if (typeof atualizarClasseArmaduraEquipada === 'function') atualizarClasseArmaduraEquipada();
 
   } catch (err) {
     console.error('Erro em atualizarCamposArmaduraSelecionada', err);
   }
 }
 
-// quando mudar Destreza
-document.getElementById('des')?.addEventListener('input', () => {
-  atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual); // ajuste a variável conforme seu código
-});
-
-// quando mudar seleção de armadura
-document.getElementById('armaduraSelect')?.addEventListener('change', () => {
-  const indice = Number(document.getElementById('armaduraSelect').value);
-  const arm = personagem?.armaduras?.[indice] || null;
-  atualizarCamposArmaduraSelecionada(arm);
+// quando mudar a armadura equipada pelo select
+document.getElementById('armaduraNome')?.addEventListener('change', function () {
+  const indice = this.value !== '' ? parseInt(this.value, 10) : null;
+  const armadura = (indice !== null && personagem?.armaduras?.[indice]) ? personagem.armaduras[indice] : null;
+  armaduraSelecionadaAtual = armadura;
+  armaduraEquipadaIndice = indice;
+  atualizarCamposArmaduraSelecionada(armadura);
 });
 
 
@@ -6770,10 +6757,12 @@ document.getElementById('armaduraSelect')?.addEventListener('change', () => {
         }
 
         function renderizarArmadurasEquipamento(listaArmaduras) {
+            const desValor = Number(document.getElementById('atrib_des')?.value ?? document.getElementById('des')?.value) || 0;
+            const modDexAtual = Math.floor((desValor - 10) / 2);
             renderizarListaEquipamento({
                 containerId: "lista-armaduras-equipamento",
                 itens: listaArmaduras,
-                formatarItem: formatarArmaduraEquipamento,
+                formatarItem: (armadura) => formatarArmaduraEquipamento(armadura, modDexAtual),
                 inputType: "checkbox",
                 inputName: "equipamento-armadura",
                 ariaLabel: "Selecionar armadura para equipamento",
@@ -7018,6 +7007,32 @@ document.getElementById('armaduraSelect')?.addEventListener('change', () => {
             select.value = Array.from(select.options).some(option => option.value === valorSelecionado) ? valorSelecionado : '';
         }
 
+        function atualizarSelectNomeArmaduraEquipada(armaduras, indiceSelecionado) {
+            const select = document.getElementById('armaduraNome');
+            if (!select) return;
+
+            const valorAtual = select.value;
+            select.innerHTML = '';
+
+            const opcaoVazia = document.createElement('option');
+            opcaoVazia.value = '';
+            opcaoVazia.textContent = 'Sem Armadura';
+            select.appendChild(opcaoVazia);
+
+            (armaduras || []).forEach((armadura, indice) => {
+                if (!armadura?.armadura_nome?.trim()) return;
+                const option = document.createElement('option');
+                option.value = String(indice);
+                option.textContent = `🛡️ ${armadura.armadura_nome.trim()}`;
+                select.appendChild(option);
+            });
+
+            const valorParaSetar = indiceSelecionado !== null && indiceSelecionado !== undefined
+                ? String(indiceSelecionado)
+                : (Array.from(select.options).some(o => o.value === valorAtual) ? valorAtual : '');
+            select.value = Array.from(select.options).some(o => o.value === valorParaSetar) ? valorParaSetar : '';
+        }
+
         function sincronizarMarcacaoArmasPorSlots() {
             const slot1 = document.getElementById('arma1Nome')?.value || '';
             const slot2 = document.getElementById('arma2Nome')?.value || '';
@@ -7146,8 +7161,6 @@ document.getElementById('armaduraSelect')?.addEventListener('change', () => {
             const numero = parseInt(String(valor || "").replace(/[^\d-]/g, ""), 10) || 0;
             return numero;
         }
-
-        const idsPocoesDesequipadasManualmente = new Set();
 
         function obterPocoesEquipadas(outrosSelecionados) {
             return (outrosSelecionados || [])
@@ -7962,7 +7975,21 @@ document.getElementById('armaduraSelect')?.addEventListener('change', () => {
                 conBase: "con",
                 intBase: "int",
                 sabBase: "sab",
-                carBase: "car"
+                carBase: "car",
+                // compatibilidade: salv_* antigo → atrib_*
+                salv_for: "atrib_for",
+                salv_des: "atrib_des",
+                salv_con: "atrib_con",
+                salv_int: "atrib_int",
+                salv_sab: "atrib_sab",
+                salv_car: "atrib_car",
+                // compatibilidade: prof_* antigo → prof_salv_*
+                prof_for: "prof_salv_for",
+                prof_des: "prof_salv_des",
+                prof_con: "prof_salv_con",
+                prof_int: "prof_salv_int",
+                prof_sab: "prof_salv_sab",
+                prof_car: "prof_salv_car"
             }
 
             Object.entries(aliases).forEach(([origem, destino]) => {
@@ -7999,6 +8026,19 @@ document.getElementById('armaduraSelect')?.addEventListener('change', () => {
             dados.intBase = dados.int ?? ""
             dados.sabBase = dados.sab ?? ""
             dados.carBase = dados.car ?? ""
+            // aliases legados para atrib_* e prof_salv_*
+            dados.salv_for = dados.atrib_for ?? ""
+            dados.salv_des = dados.atrib_des ?? ""
+            dados.salv_con = dados.atrib_con ?? ""
+            dados.salv_int = dados.atrib_int ?? ""
+            dados.salv_sab = dados.atrib_sab ?? ""
+            dados.salv_car = dados.atrib_car ?? ""
+            dados.prof_for = dados.prof_salv_for ?? false
+            dados.prof_des = dados.prof_salv_des ?? false
+            dados.prof_con = dados.prof_salv_con ?? false
+            dados.prof_int = dados.prof_salv_int ?? false
+            dados.prof_sab = dados.prof_salv_sab ?? false
+            dados.prof_car = dados.prof_salv_car ?? false
 
             return dados
         }
@@ -8062,7 +8102,7 @@ document.getElementById('armaduraSelect')?.addEventListener('change', () => {
                 }
 
                 // 🔹 IGNORAR CAMPOS ESPECÍFICOS
-                if (['arma1Nome', 'arma2Nome', 'arma1Dano', 'arma2Dano'].includes(key)) {
+                if (['arma1Nome', 'arma2Nome', 'arma1Dano', 'arma2Dano', 'armaduraNome'].includes(key)) {
                     continue;
                 }
 
@@ -8218,14 +8258,14 @@ document.getElementById('armaduraSelect')?.addEventListener('change', () => {
             atualizarDadosVidaTotal();
             atualizarDadoVida();
             bloqueandoLevelUp = false;
-            armaduraEquipadaIndice = dados.armaduraEquipadaIndice ?? null;
+            window.personagem = dados;
 
-            if (armaduraEquipadaIndice !== null) {
-                equiparArmadura(armaduraEquipadaIndice);
-            }
-            window.personagem = dados; // se ainda não fizer isso
-window.armaduraSelecionadaAtual = window.personagem?.armaduras?.[0] || null;
-atualizarCamposArmaduraSelecionada(window.armaduraSelecionadaAtual);
+            armaduraEquipadaIndice = dados.armaduraEquipadaIndice ?? null;
+            atualizarSelectNomeArmaduraEquipada(dados.armaduras, armaduraEquipadaIndice);
+
+            const indiceArmadura = armaduraEquipadaIndice !== null ? armaduraEquipadaIndice : null;
+            armaduraSelecionadaAtual = (indiceArmadura !== null && dados.armaduras?.[indiceArmadura]) ? dados.armaduras[indiceArmadura] : null;
+            atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual);
 
         }
 // Uso: obterArmaduraSeguro(0)
@@ -8254,6 +8294,7 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
             dados.arma2Nome = arma2Equipada.nome
             dados.arma1EquipadaIndice = arma1Equipada.indice
             dados.arma2EquipadaIndice = arma2Equipada.indice
+            dados.armaduraEquipadaIndice = armaduraEquipadaIndice
 
             return adicionarAliasesLegacyAoSave(dados)
         }
@@ -8324,60 +8365,58 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
                 return;
             }
 
-            // Sem argumento: abrir file picker
-            let fileInput = document.getElementById('fileInput');
-
-            // cria input se não existir
+            // Cria input e label ocultos se não existirem
+            let fileInput = document.getElementById('importarFichaInput');
             if (!fileInput) {
                 fileInput = document.createElement('input');
                 fileInput.type = 'file';
                 fileInput.accept = '.json,application/json';
-                fileInput.id = 'fileInput';
-                fileInput.style.display = 'none';
+                fileInput.id = 'importarFichaInput';
+                fileInput.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;width:1px;height:1px;';
+
+                const label = document.createElement('label');
+                label.htmlFor = 'importarFichaInput';
+                label.id = 'importarFichaLabel';
+                label.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;overflow:hidden;';
+
                 document.body.appendChild(fileInput);
-            }
+                document.body.appendChild(label);
 
-            // remove listeners antigos (clonar é a forma mais simples)
-            const newInput = fileInput.cloneNode(true);
-            fileInput.parentNode.replaceChild(newInput, fileInput);
-            fileInput = newInput;
-
-            // adiciona listener de leitura
-            fileInput.addEventListener('change', function (evt) {
-                const file = evt.target.files && evt.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        const dados = JSON.parse(e.target.result);
-                        if (typeof aplicarDadosFicha === 'function') {
-                            aplicarDadosFicha(dados);
-                        } else {
-                            console.warn('aplicarDadosFicha não definida; arquivo lido:', dados);
+                fileInput.addEventListener('change', function (evt) {
+                    const file = evt.target.files && evt.target.files[0];
+                    if (!file) return;
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        try {
+                            const dados = JSON.parse(e.target.result);
+                            if (typeof aplicarDadosFicha === 'function') {
+                                aplicarDadosFicha(dados);
+                            } else {
+                                console.warn('aplicarDadosFicha não definida; arquivo lido:', dados);
+                            }
+                        } catch (err) {
+                            console.error('importarFicha: erro ao parsear JSON do arquivo', err);
+                            alert('Erro ao importar: arquivo inválido. Selecione um arquivo .json exportado pela ficha.');
+                        } finally {
+                            try { fileInput.value = ''; } catch (ignore) { }
                         }
-                    } catch (err) {
-                        console.error('importarFicha: erro ao parsear JSON do arquivo', err);
-                        alert('Erro ao importar: JSON inválido.');
-                    } finally {
+                    };
+                    reader.onerror = function (e) {
+                        console.error('importarFicha: FileReader error', e);
+                        alert('Erro ao ler o arquivo.');
                         try { fileInput.value = ''; } catch (ignore) { }
-                    }
-                };
-                reader.onerror = function (e) {
-                    console.error('importarFicha: FileReader error', e);
-                    alert('Erro ao ler o arquivo.');
-                    try { fileInput.value = ''; } catch (ignore) { }
-                };
-                reader.readAsText(file, 'utf-8');
-            });
-
-            // abre o diálogo
-            try {
-                fileInput.click();
-            } catch (err) {
-                console.error('importarFicha: falha ao abrir file picker', err);
-                alert('Não foi possível abrir o seletor de arquivos.');
+                    };
+                    reader.readAsText(file, 'utf-8');
+                });
             }
 
+            // Dispara via label (compatível com file://)
+            const label = document.getElementById('importarFichaLabel');
+            if (label) {
+                label.click();
+            } else {
+                fileInput.click();
+            }
         }
         window.importarFicha = importarFicha;
         // ===== Atributos, radar e navegacao principal =====
@@ -8402,12 +8441,14 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
             atualizarIniciativa()
             atualizarSeletoresAtaqueEquipados()
+            atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual)
+            if (typeof renderizarArmadurasEquipamento === 'function') renderizarArmadurasEquipamento(coletarArmaduras())
         }
 
         function atualizarIniciativa() {
 
             const campoIniciativa = document.getElementById("iniciativa")
-            const valorDestreza = parseInt(document.getElementById("salv_des")?.value) || 0
+            const valorDestreza = parseInt(document.getElementById("atrib_des")?.value) || 0
             const modificadorDestreza = Math.floor((valorDestreza - 10) / 2)
 
             campoIniciativa.value = (modificadorDestreza >= 0 ? "+" : "") + modificadorDestreza
@@ -9609,27 +9650,27 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
         function sincronizarAtributosComSalvaguardas() {
             ["for", "des", "con", "int", "sab", "car"].forEach(atributo => {
-                const campoSalvaguarda = document.getElementById("salv_" + atributo);
+                const campoAtrib = document.getElementById("atrib_" + atributo);
                 const atributoBase = document.getElementById(atributo);
 
-                if (!campoSalvaguarda || !atributoBase) return;
+                if (!campoAtrib || !atributoBase) return;
 
-                let valor = parseInt(campoSalvaguarda.value) || 0;
+                let valor = parseInt(campoAtrib.value) || 0;
 
                 if (valor > 20) valor = 20;
                 if (valor < 0) valor = 0;
 
-                campoSalvaguarda.value = valor;
+                campoAtrib.value = valor;
                 atributoBase.value = valor;
             });
         }
 
         function sincronizarSalvaguardasComAtributosBase() {
             ["for", "des", "con", "int", "sab", "car"].forEach(atributo => {
-                const campoSalvaguarda = document.getElementById("salv_" + atributo);
+                const campoAtrib = document.getElementById("atrib_" + atributo);
                 const atributoBase = document.getElementById(atributo);
 
-                if (!campoSalvaguarda || !atributoBase) return;
+                if (!campoAtrib || !atributoBase) return;
 
                 let valor = parseInt(atributoBase.value, 10) || 0;
 
@@ -9637,7 +9678,7 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
                 if (valor < 0) valor = 0;
 
                 atributoBase.value = valor;
-                campoSalvaguarda.value = valor;
+                campoAtrib.value = valor;
             });
         }
         //atualiza as pericias com base nos atributos e proficiencia
@@ -9648,7 +9689,7 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
                 const atributo = pericia.dataset.atributo;
                 const checkbox = pericia.querySelector('input[type="checkbox"]');
                 const campoValor = pericia.querySelector('.pericia-valor');
-                const valorBase = parseInt(document.getElementById('salv_' + atributo)?.value) || 0;
+                const valorBase = parseInt(document.getElementById('atrib_' + atributo)?.value) || 0;
                 const modificadorBase = Math.floor((valorBase - 10) / 2);
                 const total = modificadorBase + (checkbox?.checked ? bonusProf : 0);
 
@@ -9658,9 +9699,9 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
         function atualizarPassivas() {
             const bonusProf = getBonusProf();
-            const sabValor = parseInt(document.getElementById('salv_sab')?.value) || 0;
+            const sabValor = parseInt(document.getElementById('atrib_sab')?.value) || 0;
             const sabMod = Math.floor((sabValor - 10) / 2);
-            const sabProf = document.getElementById('prof_sab')?.checked ? bonusProf : 0;
+            const sabProf = document.getElementById('prof_salv_sab')?.checked ? bonusProf : 0;
             const percepcao = parseInt(document.getElementById('periciaPercepcaoValor')?.value) || 0;
             const intuicao = parseInt(document.getElementById('periciaIntuicaoValor')?.value) || 0;
 
@@ -10226,13 +10267,16 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
             document.querySelectorAll('.salvaguarda-caixa').forEach(caixa => {
                 const atributo = caixa.querySelector('.prof-checkbox').dataset.atributo;
-                let valor = parseInt(document.getElementById('salv_' + atributo).value) || 0;
+                const valor = parseInt(document.getElementById('atrib_' + atributo)?.value) || 0;
                 const prof = caixa.querySelector('.prof-checkbox').checked ? bonusProf : 0;
-                let mod = Math.floor((valor - 10) / 2) + prof;
+                const mod = Math.floor((valor - 10) / 2);
+                const salvMod = mod + prof;
 
                 caixa.querySelector('.modificador-orbe').innerText = (mod >= 0 ? "+" : "") + mod;
 
-                // altera cor se proficiente
+                const campoSalv = document.getElementById('salv_' + atributo);
+                if (campoSalv) campoSalv.value = salvMod;
+
                 if (caixa.querySelector('.prof-checkbox').checked) {
                     caixa.classList.add('proficiente');
                 } else {
