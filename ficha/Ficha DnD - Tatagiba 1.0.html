@@ -83,6 +83,28 @@
             font-family: 'Metamorphous';
         }
 
+        .xp-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .xp-container input {
+            flex: 1;
+        }
+
+        #btnAddXP {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: transform 0.2s ease;
+        }
+
+        #btnAddXP:hover {
+            transform: scale(1.2);
+        }
+
         .jogador-xp {
             display: flex;
             flex-direction: column;
@@ -575,7 +597,7 @@
             padding: 1px;
             text-align: center;
             box-sizing: border-box;
-            font-size: 12px;
+            font-size: 16px;
             font-weight: bold;
             font-family: 'MedievalSharp';
             -moz-appearance: textfield;
@@ -783,17 +805,7 @@
             box-sizing: border-box;
         }
 
-        .bonus-orbe-prof::before {
-            content: "+";
-            position: absolute;
-            left: 1px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-weight: bold;
-            font-size: 18px;
-            color: #3b2f1b;
-            pointer-events: none;
-        }
+
 
         .bonus-orbe input {
             border: none;
@@ -808,9 +820,7 @@
             margin: 0;
         }
 
-        .bonus-orbe-prof input {
-            padding-left: 10px;
-        }
+
 
         .bonus-orbe input[readonly] {
             background: none;
@@ -3900,10 +3910,167 @@
         .armadura-linha-2-cols {
             grid-template-columns: 1fr 1fr;
         }
+
+
+        .xp-bar-container {
+            width: 100%;
+            height: 12px;
+            background: #ddd;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #999;
+        }
+
+        .xp-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4caf50, #8bc34a);
+            transition: width 0.3s ease;
+        }
+
+        .xp-texto {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 4px;
+            color: #6f3610;
+        }
+
+        /* esconder visualmente o input */
+        #xp {
+            display: none;
+        }
+
+        .xp-info {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .levelup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        /* Box LevelUP */
+        .levelup-box {
+            background: #1e1e1e;
+            border: 2px solid #c8a95e;
+            border-radius: 12px;
+            padding: 20px;
+            width: 320px;
+            text-align: center;
+            color: #f5e6c8;
+            box-shadow: 0 0 20px rgba(200, 169, 94, 0.5);
+        }
+
+        .levelup-box h2 {
+            margin-bottom: 10px;
+        }
+
+        .frase-levelup {
+            font-style: italic;
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .vida-input-area {
+            margin-top: 10px;
+        }
+
+        .vida-input-linha {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #inputVidaLevelUp {
+            width: 100px;
+            height: 40px;
+            font-size: 18px;
+            text-align: center;
+            border-radius: 6px;
+            border: 2px solid #c8a95e;
+            background: #2a2a2a;
+            color: #fff;
+        }
+
+        #inputVidaLevelUp.invalido {
+            border-color: red;
+            box-shadow: 0 0 5px red;
+        }
+
+        #btnConfirmarLevelUp {
+            margin-top: 15px;
+            padding: 6px 12px;
+            cursor: pointer;
+            background: #c8a95e;
+            border: none;
+            border-radius: 6px;
+
+
+        }
+
+        #btnRolarDado {
+            font-size: 22px;
+            cursor: pointer;
+
+            border: none;
+            outline: none;
+            background: transparent;
+
+            padding: 4px;
+        }
+
+        #btnRolarDado:focus {
+            outline: none;
+        }
+
+        #btnRolarDado:active {
+            transform: scale(0.9);
+        }
+
+        #btnRolarDado.rolando {
+            animation: girar 0.5s linear infinite;
+        }
+
+        @keyframes girar {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #inputVidaLevelUp {
+            width: 80px;
+            height: 40px;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .levelup-info {
+            text-align: left;
+            margin-top: 10px;
+            line-height: 1.5;
+        }
     </style>
 </head>
 
 <body>
+    <! /=====Modal de Ataque=====* />
     <div id="modalAtaqueOverlay" class="ataque-modal-overlay oculto" aria-hidden="true">
         <div class="ataque-modal" role="dialog" aria-modal="true" aria-labelledby="modalAtaqueTitulo">
             <div id="modalAtaqueTitulo" class="ataque-modal-titulo">Ataque com arma</div>
@@ -3946,7 +4113,30 @@
             </div>
         </div>
     </div>
+    <!=====Modal de Level Up=====* />
+    <div id="levelUpModal" class="levelup-overlay">
+        <div class="levelup-box">
+            <h2 id="levelUpTitulo">🎉 LEVEL UP!</h2>
 
+            <p id="levelUpFrase" class="frase-levelup"></p>
+
+            <div id="levelUpInfo" class="levelup-info"></div>
+
+            <div class="vida-input-area">
+                <label>Valor do dado</label>
+                <div class="vida-input-linha">
+                    <div class="vida-input-linha">
+                        <button id="btnRolarDado">🎲</button>
+                        <input type="text" id="inputVidaLevelUp">
+                        <span id="modConTexto"></span>
+                    </div> <span id="modConTexto"></span>
+                </div>
+            </div>
+
+            <button id="btnConfirmarLevelUp">Confirmar</button>
+        </div>
+    </div>
+    <! /=====ficha principal=====* />
     <div class="ficha">
 
         <!-- BOTÕES -->
@@ -3965,8 +4155,22 @@
             <div class="jogador-xp">
                 <label for="jogador">Jogador</label>
                 <input id="jogador" placeholder="Nome do Jogador">
+
                 <label for="xp">XP</label>
+
+                <!-- input continua existindo -->
                 <input id="xp" value="0">
+
+                <!-- barra -->
+                <div class="xp-bar-container">
+                    <div class="xp-bar-fill" id="xpBar"></div>
+                </div>
+
+                <!-- linha com texto + botão -->
+                <div class="xp-info">
+                    <span id="xpTexto">0/300 XP</span>
+                    <button id="btnAddXP" type="button" aria-label="Adicionar experiência">⬆️</button>
+                </div>
             </div>
 
         </div>
@@ -3978,8 +4182,7 @@
                 <div class="campo-duplo">
                     <input id="classeNomeID" class="classe-nome" placeholder="Classe (Subclasse)">
                     <span class="classe-separador">NV</span>
-                    <input id="classeNivelID" class="classe-nivel" type="number" min="1" value="1"
-                        aria-label="Nível da classe">
+                    <input id="classeNivelID" class="classe-nivel" value="1" type="number" readonly>
                 </div>
             </div>
             <div class="campo">
@@ -4147,7 +4350,7 @@
                                     <div class="dv-secao-total">
                                         <div class="dv-label">Total</div>
                                         <input id="dadosVidaTotal" title="Total de Dados de Vida" class="dv-total-input"
-                                            type="number" min="0" step="1" value="1">
+                                            type="number" readonly min="0" step="1" value="1">
                                     </div>
 
                                     <div class="dv-orbe-overlay">
@@ -4202,8 +4405,8 @@
 
                         <div class="passivas-linha">
                             <div class="bonus-orbe-container">
-                                <div class="bonus-orbe bonus-orbe-prof"><input id="bonusProf" type="number" min="0"
-                                        step="1" value="2" aria-label="Bônus de proficiência"></div>
+                                <div class="bonus-orbe bonus-orbe-prof"><input id="bonusProf" readonly value="+2"
+                                        aria-label="Bônus de proficiência"></div>
                                 <div class="bonus-retangulo">Bônus de Proficiência</div>
                             </div>
 
@@ -5389,10 +5592,232 @@
     </div>
 
     <script>
+        // Variáveis Globai
+        let bloqueandoLevelUp = false;
+
+        // ===== Lógica de Bônus de Proficiência =====
+        const bonusInput = document.getElementById("bonusProf");
+        // 🔥 redefinir getter e setter para controlar o formato do valor exibido
+        Object.defineProperty(bonusInput, "value", {
+            set(v) {
+                console.trace("SETANDO bonusProf:", v);
+                this.setAttribute("value", v);
+            },
+            get() {
+                return this.getAttribute("value");
+            }
+        });
+
+
         // ===== Integracao e inicializacao =====
         window.api?.receberPersonagem((data) => {
             const personagem = JSON.parse(data);
             carregarFicha(personagem);
+        });
+
+        function atualizarDadosVidaTotal() {
+            const nivelInput = document.getElementById('classeNivelID');
+            const dadosVidaTotalInput = document.getElementById('dadosVidaTotal');
+
+            const nivel = Number(nivelInput.value) || 1;
+
+            dadosVidaTotalInput.value = nivel;
+        }
+        // ===== Lógica de Level Up e Modal =====
+        function obterMaxDadoVida() {
+            const select = document.querySelector('[id="dadosVidaTipo"]');
+            const valor = select?.value;
+
+            const numero = Number(valor.replace('d', ''));
+
+            return numero;
+        }
+
+        /// ===== Frases épicas para o level up =====
+        const frasesLevelUP = [
+            "Seu poder ecoa pelos reinos!",
+            "Uma nova lenda começa a ser escrita!",
+            "Os deuses observam seu crescimento!",
+            "Seu nome será lembrado nas eras!",
+            "A batalha te fortaleceu!",
+            "Seu destino se revela mais grandioso!",
+            "Você transcende seus limites!",
+            "O mundo sente sua evolução!",
+            "Uma nova força desperta em você!",
+            "Seu poder acaba de subir de nível!"
+        ];
+
+        function pegarFraseLevelUP() {
+            return frasesLevelUP[Math.floor(Math.random() * frasesLevelUP.length)];
+        }
+
+        function abrirModalLevelUp({ nivelAnterior, nivelAtual, bonusProf, dadoVida }) {
+            return new Promise((resolve) => {
+
+                const modal = document.getElementById('levelUpModal');
+                const frase = document.getElementById('levelUpFrase');
+                const info = document.getElementById('levelUpInfo');
+                const input = document.getElementById('inputVidaLevelUp');
+                const btnDado = document.getElementById('btnRolarDado');
+
+                btnDado.onclick = () => {
+                    const max = obterMaxDadoVida(dadoVida);
+
+                    input.value = "🎲";
+                    btnDado.classList.add('rolando');
+
+                    setTimeout(() => {
+                        const resultado = Math.floor(Math.random() * max) + 1;
+
+                        btnDado.classList.remove('rolando');
+                        input.value = resultado;
+
+                        input.dispatchEvent(new Event('input')); // 🔥 revalida
+                    }, 3000);
+                };
+                const modTexto = document.getElementById('modConTexto');
+
+                const modCon = calcularModCon();
+                const dadoBase = dadoVida; // ex: d10
+                const dadoQuantidade = `${nivelAtual}${dadoBase}`;
+
+
+                frase.textContent = pegarFraseLevelUP();
+
+                info.innerHTML = `
+<strong>Você subiu do nível ${nivelAnterior} para o nível ${nivelAtual}!</strong><br><br>
+
+Dados de Vida: ${dadoQuantidade} <br>
+Bônus de Proficiência: +${bonusProf}
+`;
+
+                modTexto.textContent = modCon >= 0 ? `+${modCon}` : modCon;
+
+                input.value = "";
+
+                modal.style.display = "flex";
+
+                const botao = document.getElementById('btnConfirmarLevelUp');
+
+                function obterMaxDadoVida(dado) {
+                    if (!dado) return 8; // fallback seguro
+
+                    const numero = Number(dado.replace('d', ''));
+
+                    return isNaN(numero) ? 8 : numero;
+                }
+
+                function validarInput() {
+                    const valor = Number(input.value);
+                    const max = obterMaxDadoVida(dadoVida);
+                    console.log("Valor digitado:", input.value);
+                    console.log("Max dado:", obterMaxDadoVida());
+                    const valido = !isNaN(valor) && valor >= 1 && valor <= max;
+
+                    botao.disabled = !valido;
+
+                    if (valido) {
+                        input.classList.remove('invalido');
+                    } else {
+                        input.classList.add('invalido');
+                    }
+
+                    return valido;
+                }
+
+                // valida enquanto digita
+                input.addEventListener('input', validarInput);
+
+                // inicia bloqueado
+                botao.disabled = true;
+                input.classList.add('invalido');
+
+                // botão confirmar
+                botao.onclick = () => {
+                    if (!validarInput()) return;
+
+                    const valor = Number(input.value);
+
+                    modal.style.display = "none";
+
+                    resolve(valor);
+                };
+            });
+        }
+        // ===== Lógica de Cálculo de Vida e Dado de Vida =====
+        function calcularModCon() {
+            const conInput = document.getElementById('con');
+            const con = Number(conInput.value) || 10;
+
+            return Math.floor((con - 10) / 2);
+        }
+
+        function obterDadoDeVida() {
+            const dado = document.getElementById('dadosVidaTipo')?.value || "1d8";
+            return dado;
+        }
+
+        function formatarDadoVidaTexto() {
+            const dado = obterDadoDeVida();
+            const mod = calcularModCon();
+
+            if (mod >= 0) {
+                return `${dado} +${mod}`;
+            } else {
+                return `${dado} ${mod}`; // já vem negativo
+            }
+        }
+
+        // ===== Lógica de Level Up =====
+        async function processarLevelUp(nivelAntigo, nivelNovo) {
+
+            if (bloqueandoLevelUp) return;
+
+            for (let nivel = nivelAntigo + 1; nivel <= nivelNovo; nivel++) {
+
+                let bonusProf = 2;
+                if (nivel >= 5) bonusProf = 3;
+                if (nivel >= 9) bonusProf = 4;
+                if (nivel >= 13) bonusProf = 5;
+                if (nivel >= 17) bonusProf = 6;
+
+                const ganhoHP = await abrirModalLevelUp({
+                    nivelAnterior: nivel - 1,
+                    nivelAtual: nivel,
+                    bonusProf,
+                    dadoVida: document.getElementById('dadosVidaTipo')?.value
+                });
+
+                const hpMaxInput = document.getElementById('pvTotal');
+                let hpAtual = Number(hpMaxInput.value) || 0;
+
+                const modCon = calcularModCon();
+                hpMaxInput.value = hpAtual + ganhoHP + modCon;
+                hpMaxInput.dispatchEvent(new Event('input'));
+            }
+        }
+
+        // 🔥 para testes rápidos sem backend, descomente a linha abaixo e comente a linha acima
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('classeNivelID')
+                .addEventListener('input', atualizarDadosVidaTotal);
+
+            document.getElementById('btnAddXP').addEventListener('click', () => {
+                const xpAtual = Number(document.getElementById('xp').value);
+
+                const ganho = prompt("Quanto XP deseja adicionar?");
+                const valor = Number(ganho);
+
+                if (!isNaN(valor)) {
+                    setXP(xpAtual + valor);
+                }
+            });
+
+            document.getElementById('xp').addEventListener('input', () => {
+                setXP(document.getElementById('xp').value);
+            });
+
+            atualizarXPENivel();
         });
         window.addEventListener('DOMContentLoaded', () => {
             adicionarNovaArma();
@@ -5406,6 +5831,14 @@
             });
         });
 
+        function setXP(valor) {
+            const xpInput = document.getElementById('xp');
+
+            xpInput.value = Number(valor) || 0;
+
+            atualizarXPENivel(); // 🔥 sempre atualiza tudo
+        }
+
         document.addEventListener('change', (e) => {
             if (e.target.matches('[data-campo="arma_tipo"]')) {
                 const card = e.target.closest('.arma-card');
@@ -5415,35 +5848,150 @@
             }
         });
 
-        document.getElementById("classeNivelID")
-            .addEventListener("input", atualizarBonusProficiencia);
-        // atualizar proficiência ao mudar nível
-        function atualizarBonusProficiencia() {
-            const nivelInput = document.getElementById("classeNivelID");
-            const profInput = document.getElementById("bonusProf");
 
-            if (!nivelInput || !profInput) return;
 
-            const nivel = parseInt(nivelInput.value);
+        function atualizarXPENivel() {
+            const xpInput = document.getElementById('xp');
+            const nivelInput = document.getElementById('classeNivelID');
+            const xpBar = document.getElementById('xpBar');
+            const xpTexto = document.getElementById('xpTexto');
 
-            if (isNaN(nivel) || nivel < 1) {
-                profInput.value = "+0";
-                return;
+            const xp = parseInt(xpInput.value) || 0;
+
+            // 🔹 calcular nível
+            let nivelAtual = 1;
+            let xpNivelAtual = 0;
+            let xpProximoNivel = tabelaXP[tabelaXP.length - 1].xp;
+
+            for (let i = 0; i < tabelaXP.length; i++) {
+                if (xp >= tabelaXP[i].xp) {
+                    nivelAtual = tabelaXP[i].nivel;
+                    xpNivelAtual = tabelaXP[i].xp;
+
+                    if (tabelaXP[i + 1]) {
+                        xpProximoNivel = tabelaXP[i + 1].xp;
+                    }
+                }
             }
 
-            let bonus = 2;
+            const nivelAnterior = Number(nivelInput.value) || 1;
 
-            if (nivel >= 5 && nivel <= 8) {
-                bonus = 3;
-            } else if (nivel >= 9 && nivel <= 12) {
-                bonus = 4;
-            } else if (nivel >= 13 && nivel <= 16) {
-                bonus = 5;
+            nivelInput.value = nivelAtual;
+            atualizarDadosVidaTotal();
+
+            // 🔥 DETECTAR LEVEL UP
+            if (nivelAtual > nivelAnterior) {
+                processarLevelUp(nivelAnterior, nivelAtual);
+            }
+
+            // 🔹 calcular progresso
+            let progresso = 1;
+
+            if (nivelAtual < 20) {
+                progresso = (xp - xpNivelAtual) / (xpProximoNivel - xpNivelAtual);
+            }
+
+            progresso = Math.max(0, Math.min(1, progresso));
+
+            // 🔹 aplicar barra
+            xpBar.style.width = (progresso * 100) + "%";
+
+            // 🔹 texto
+            if (nivelAtual < 20) {
+                xpTexto.textContent = `${xp}/${xpProximoNivel} XP`;
+            } else {
+                xpTexto.textContent = `MAX`;
+            }
+        }
+
+        document.getElementById('xp').addEventListener('input', atualizarXPENivel);
+
+
+
+        const tabelaXP = [
+            { xp: 0, nivel: 1 },
+            { xp: 300, nivel: 2 },
+            { xp: 900, nivel: 3 },
+            { xp: 2700, nivel: 4 },
+            { xp: 6500, nivel: 5 },
+            { xp: 14000, nivel: 6 },
+            { xp: 23000, nivel: 7 },
+            { xp: 34000, nivel: 8 },
+            { xp: 48000, nivel: 9 },
+            { xp: 64000, nivel: 10 },
+            { xp: 85000, nivel: 11 },
+            { xp: 100000, nivel: 12 },
+            { xp: 120000, nivel: 13 },
+            { xp: 140000, nivel: 14 },
+            { xp: 165000, nivel: 15 },
+            { xp: 195000, nivel: 16 },
+            { xp: 225000, nivel: 17 },
+            { xp: 265000, nivel: 18 },
+            { xp: 305000, nivel: 19 },
+            { xp: 355000, nivel: 20 }
+        ];
+
+        function calcularNivelPorXP(xp) {
+            let nivel = 1;
+
+            for (let i = 0; i < tabelaXP.length; i++) {
+                if (xp >= tabelaXP[i].xp) {
+                    nivel = tabelaXP[i].nivel;
+                } else {
+                    break;
+                }
+            }
+
+            return nivel;
+        }
+
+        function atualizarNivel() {
+            const xpInput = document.getElementById('xp');
+            const nivelInput = document.getElementById('classeNivelID');
+
+            const xp = parseInt(xpInput.value) || 0;
+
+            const nivel = calcularNivelPorXP(xp);
+
+            nivelInput.value = nivel;
+        }
+
+        // ===== Lógica de Bônus de Proficiência =====
+        function setBonusProficiencia(valor) {
+            const input = document.getElementById("bonusProf");
+            if (!input) return;
+
+            input.dataset.valor = valor; // valor real
+            input.value = valor >= 0 ? `+${valor}` : `${valor}`;
+        }
+        function getBonusProficiencia() {
+            const valor = document.getElementById("bonusProf")?.value || "0";
+            return Number(valor); // "+2" → 2
+        }
+
+
+        document
+            .getElementById("classeNivelID")
+            .addEventListener("input", atualizarBonusProficiencia);
+
+        function atualizarBonusProficiencia() {
+            const nivel = Number(document.getElementById("classeNivelID")?.value);
+
+            let bonus = 2
+
+            if (!Number.isFinite(nivel) || nivel < 1) {
+                bonus = 0;
             } else if (nivel >= 17) {
                 bonus = 6;
+            } else if (nivel >= 13) {
+                bonus = 5;
+            } else if (nivel >= 9) {
+                bonus = 4;
+            } else if (nivel >= 5) {
+                bonus = 3;
             }
 
-            profInput.value = `+${bonus}`;
+            setBonusProficiencia(bonus);
         }
 
         // ===== Função: Gerar ID único para cada item =====
@@ -7244,185 +7792,201 @@
         }
 
         function aplicarDadosFicha(dados) {
+            bloqueandoLevelUp = true;
+            if (!dados || typeof dados !== "object") return;
 
-            if (!dados || typeof dados !== "object") return
+            dados = normalizarDadosImportacao(dados);
 
-            dados = normalizarDadosImportacao(dados)
+            // 🔥 CAMPOS ESPECIAIS
+            const camposEspeciais = {
+                xp: (valor) => setXP(valor ?? 0),
+                magiaAtributoConjuracao: (valor, campo) => campo.value = normalizarChaveAtributo(valor),
+                alinhamentoID: (valor, campo) => campo.value = normalizarValorAlinhamento(valor),
+                dadosVidaTipo: (valor, campo) => campo.value = normalizarTipoDadoVida(valor)
+            };
 
-            for (let key in dados) {
-                const campo = document.getElementById(key)
-                if (!campo) continue
-                if (['arma1Nome', 'arma2Nome', 'arma1Dano', 'arma2Dano'].includes(key)) continue
-
-                if (key === "magiaAtributoConjuracao") campo.value = normalizarChaveAtributo(dados[key])
-                else if (key === "alinhamentoID") campo.value = normalizarValorAlinhamento(dados[key])
-                else if (key === "dadosVidaTipo") campo.value = normalizarTipoDadoVida(dados[key])
-                else if (campo.type === "checkbox") campo.checked = dados[key]
-                else if (campo.type === "number") {
-                    const valorNumerico = parseInt(String(dados[key] ?? "").replace(/[^\d-]/g, ""), 10)
-                    campo.value = Number.isNaN(valorNumerico) ? "" : Math.abs(valorNumerico)
+            // 🔹 FUNÇÃO AUXILIAR
+            function preencherCampo(campo, valor) {
+                if (campo.type === "checkbox") {
+                    campo.checked = valor;
+                } else if (campo.type === "number") {
+                    const num = parseInt(String(valor ?? "").replace(/[^\d-]/g, ""), 10);
+                    campo.value = Number.isNaN(num) ? "" : Math.abs(num);
+                } else {
+                    campo.value = valor;
                 }
-                else campo.value = dados[key]
             }
 
             // =========================
-            // 🟢 1. CARREGAR MUNIÇÕES PRIMEIRO
+            // 🟢 1. CAMPOS SIMPLES + ESPECIAIS
+            // =========================
+            for (let key in dados) {
+                const campo = document.getElementById(key);
+                if (!campo) continue;
+
+                // 🔥 CAMPOS ESPECIAIS
+                if (camposEspeciais[key]) {
+                    camposEspeciais[key](dados[key], campo);
+                    continue;
+                }
+
+                // 🔹 IGNORAR CAMPOS ESPECÍFICOS
+                if (['arma1Nome', 'arma2Nome', 'arma1Dano', 'arma2Dano'].includes(key)) {
+                    continue;
+                }
+
+                preencherCampo(campo, dados[key]);
+            }
+
+            // =========================
+            // 🟢 2. CARREGAR MUNIÇÕES (OUTROS)
             // =========================
             if (dados.outros && Array.isArray(dados.outros)) {
-                const containerOutros = document.getElementById('listaOutros')
+                const containerOutros = document.getElementById('listaOutros');
 
                 if (containerOutros) {
-                    const outrosAtuais = containerOutros.querySelectorAll('.armadura-card')
-                    outrosAtuais.forEach(o => o.remove())
+                    const outrosAtuais = containerOutros.querySelectorAll('.armadura-card');
+                    outrosAtuais.forEach(o => o.remove());
 
                     dados.outros.forEach(dadosOutro => {
-                        const novoCard = adicionarNovoOutro()
-
-                        if (!novoCard) return
+                        const novoCard = adicionarNovoOutro();
+                        if (!novoCard) return;
 
                         novoCard.querySelectorAll('[data-campo]').forEach(campo => {
-                            const valor = dadosOutro[campo.dataset.campo]
-                            if (valor !== undefined) campo.value = valor
-                        })
+                            const valor = dadosOutro[campo.dataset.campo];
+                            if (valor !== undefined) campo.value = valor;
+                        });
 
-                        // ⭐ CORREÇÃO PRINCIPAL
                         if (dadosOutro.id) {
-                            novoCard.dataset.id = dadosOutro.id
+                            novoCard.dataset.id = dadosOutro.id;
                         }
+
                         atualizarOpcoesMunicao(novoCard);
-                    })
+                    });
                 }
             }
 
             // =========================
-            // 🔫 2. AGORA CARREGAR ARMAS
+            // 🔫 3. ARMAS
             // =========================
             if (dados.armas && Array.isArray(dados.armas)) {
-                const containerArmas = document.getElementById('listaArmas')
+                const containerArmas = document.getElementById('listaArmas');
 
                 if (containerArmas) {
-                    const armasAtuais = containerArmas.querySelectorAll('.arma-card:not(#armaModelo)')
-                    armasAtuais.forEach(a => a.remove())
+                    const armasAtuais = containerArmas.querySelectorAll('.arma-card:not(#armaModelo)');
+                    armasAtuais.forEach(a => a.remove());
 
                     dados.armas.forEach(dadosArma => {
-                        const novoCard = adicionarNovaArma()
-                        if (!novoCard) return
+                        const novoCard = adicionarNovaArma();
+                        if (!novoCard) return;
 
-                        // propriedades
                         if (dadosArma.propriedades) {
                             novoCard.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                                const prop = checkbox.dataset.propriedade
+                                const prop = checkbox.dataset.propriedade;
                                 if (prop && dadosArma.propriedades[prop] !== undefined) {
-                                    checkbox.checked = dadosArma.propriedades[prop]
-                                    checkbox.dispatchEvent(new Event('change'))
+                                    checkbox.checked = dadosArma.propriedades[prop];
+                                    checkbox.dispatchEvent(new Event('change'));
                                 }
-                            })
+                            });
                         }
 
-                        // campos básicos
                         novoCard.querySelectorAll('[data-campo]').forEach(campo => {
-                            const valor = dadosArma[campo.dataset.campo]
-                            if (valor !== undefined) campo.value = valor
-                        })
+                            const valor = dadosArma[campo.dataset.campo];
+                            if (valor !== undefined) campo.value = valor;
+                        });
 
-                        // ⭐ CORREÇÃO PRINCIPAL (munição)
-                        atualizarOpcoesMunicao(novoCard)
+                        atualizarOpcoesMunicao(novoCard);
 
                         setTimeout(() => {
-                            const selectMunicao = novoCard.querySelector('[data-campo="arma_municao_id"]')
+                            const selectMunicao = novoCard.querySelector('[data-campo="arma_municao_id"]');
 
                             if (selectMunicao && dadosArma.arma_municao_id) {
-                                selectMunicao.value = String(dadosArma.arma_municao_id)
-                                selectMunicao.dispatchEvent(new Event('change'))
+                                selectMunicao.value = String(dadosArma.arma_municao_id);
+                                selectMunicao.dispatchEvent(new Event('change'));
                             }
-                        }, 0)
+                        }, 0);
 
-                        // proficiência
                         if (typeof dadosArma.proficiente === "boolean") {
-                            const indicadorProficiencia = novoCard.querySelector('.arma-proficiencia')
-                            if (indicadorProficiencia) {
-                                indicadorProficiencia.classList.toggle('nao', !dadosArma.proficiente)
-                                indicadorProficiencia.classList.toggle('ativo', dadosArma.proficiente)
+                            const indicador = novoCard.querySelector('.arma-proficiencia');
+                            if (indicador) {
+                                indicador.classList.toggle('nao', !dadosArma.proficiente);
+                                indicador.classList.toggle('ativo', dadosArma.proficiente);
                             }
                         }
-                    })
+                    });
                 }
             }
 
             // =========================
-            // 🛡️ 3. CARREGAR ARMADURAS
+            // 🛡️ 4. ARMADURAS
             // =========================
             if (dados.armaduras && Array.isArray(dados.armaduras)) {
-                const containerArmaduras = document.getElementById('listaArmaduras')
+                const containerArmaduras = document.getElementById('listaArmaduras');
 
                 if (containerArmaduras) {
-                    const armadurasAtuais = containerArmaduras.querySelectorAll('.armadura-card:not(#armaduraModelo)')
-                    armadurasAtuais.forEach(a => a.remove())
+                    const atuais = containerArmaduras.querySelectorAll('.armadura-card:not(#armaduraModelo)');
+                    atuais.forEach(a => a.remove());
 
                     dados.armaduras.forEach(dadosArmadura => {
-                        const novoCard = adicionarNovaArmadura()
-                        if (!novoCard) return
+                        const novoCard = adicionarNovaArmadura();
+                        if (!novoCard) return;
 
                         novoCard.querySelectorAll('[data-campo]').forEach(campo => {
-                            const valor = dadosArmadura[campo.dataset.campo]
+                            const valor = dadosArmadura[campo.dataset.campo];
 
                             if (valor !== undefined) {
-                                campo.value = valor
-
-                                // 🔥 ESSENCIAL (mesmo padrão das armas)
-                                campo.dispatchEvent(new Event('change'))
+                                campo.value = valor;
+                                campo.dispatchEvent(new Event('change'));
                             }
-                        })
+                        });
 
                         if (typeof dadosArmadura.proficiente === "boolean") {
-                            const indicadorProficiencia = novoCard.querySelector('.arma-proficiencia')
-
-                            if (indicadorProficiencia) {
-                                indicadorProficiencia.classList.toggle('nao', !dadosArmadura.proficiente)
-                                indicadorProficiencia.classList.toggle('ativo', dadosArmadura.proficiente)
+                            const indicador = novoCard.querySelector('.arma-proficiencia');
+                            if (indicador) {
+                                indicador.classList.toggle('nao', !dadosArmadura.proficiente);
+                                indicador.classList.toggle('ativo', dadosArmadura.proficiente);
                             }
                         }
-                    })
+                    });
                 }
             }
 
             // =========================
-            // RESTO DO SEU CÓDIGO (SEM MUDANÇA)
+            // 🔄 5. PÓS-PROCESSAMENTO
             // =========================
+            atualizarListaArmasEquipamento();
 
-            atualizarListaArmasEquipamento()
+            const armasImportadas = coletarArmas();
+            const indiceArma1 = resolverIndiceArmaSalva(dados, 1, armasImportadas);
+            const indiceArma2Base = resolverIndiceArmaSalva(dados, 2, armasImportadas);
+            const indiceArma2 = indiceArma2Base === indiceArma1 ? null : indiceArma2Base;
 
-            const armasImportadas = coletarArmas()
-            const indiceArma1 = resolverIndiceArmaSalva(dados, 1, armasImportadas)
-            const indiceArma2Base = resolverIndiceArmaSalva(dados, 2, armasImportadas)
-            const indiceArma2 = indiceArma2Base === indiceArma1 ? null : indiceArma2Base
+            atualizarSelectNomeArmaEquipada(1, armasImportadas, indiceArma1);
+            atualizarSelectNomeArmaEquipada(2, armasImportadas, indiceArma2);
 
-            atualizarSelectNomeArmaEquipada(1, armasImportadas, indiceArma1)
-            atualizarSelectNomeArmaEquipada(2, armasImportadas, indiceArma2)
+            sincronizarMarcacaoArmasPorSlots();
+            sincronizarEquipamentosCombate();
 
-            sincronizarMarcacaoArmasPorSlots()
-            sincronizarEquipamentosCombate()
-
-            sincronizarSalvaguardasComAtributosBase()
-            atualizarAtributos()
-            desenharRadar()
-            atualizarModificadoresSalvaguarda()
-            atualizarPericias()
-            atualizarPassivas()
-            atualizarClasseArmaduraEquipada()
-            atualizarSubAbaArmas()
-            sincronizarClasseNivel(true)
-            sincronizarResumoCaracteristicas(true)
-            sincronizarCamposMagia()
-            atualizarMagias()
-            normalizarPontosDeVida()
-            normalizarDadosVida()
-            atualizarPesoAtualInventario()
-            marcarFichaComoSalva()
-            atualizarBonusProficiencia()
+            sincronizarSalvaguardasComAtributosBase();
+            atualizarAtributos();
+            desenharRadar();
+            atualizarModificadoresSalvaguarda();
+            atualizarPericias();
+            atualizarPassivas();
+            atualizarClasseArmaduraEquipada();
+            atualizarSubAbaArmas();
+            sincronizarClasseNivel(true);
+            sincronizarResumoCaracteristicas(true);
+            sincronizarCamposMagia();
+            atualizarMagias();
+            normalizarPontosDeVida();
+            normalizarDadosVida();
+            atualizarPesoAtualInventario();
+            marcarFichaComoSalva();
+            atualizarBonusProficiencia();
+            atualizarDadosVidaTotal();
+            bloqueandoLevelUp = false;
         }
-
-
 
         function carregarFicha(personagem) {
             aplicarDadosFicha(personagem)
@@ -7680,14 +8244,8 @@
 
 
         function formatarBonusProf() {
-            const input = document.getElementById("bonusProf");
-            if (!input) return 0;
-
-            let valor = parseInt(String(input.value).replace(/[^\d-]/g, ""), 10) || 0;
-            if (valor < 0) valor = Math.abs(valor);
-
-            input.value = String(valor);
-            return valor;
+            const valor = getBonusProficiencia();
+            setBonusProficiencia(valor);
         }
 
         function getBonusProf() {
@@ -9472,26 +10030,24 @@
             });
         });
 
+
+
         // Atualiza automaticamente quando o Orbe do bônus de proficiência muda
         const bonusOrbeInput = document.getElementById("bonusProf");
-        bonusOrbeInput.addEventListener('input', () => {
-            formatarBonusProf();
+        function atualizarTudoDerivado() {
+            atualizarBonusProficiencia();
             atualizarModificadoresSalvaguarda();
             atualizarPericias();
             atualizarPassivas();
             atualizarMagias();
             atualizarSeletoresAtaqueEquipados();
             atualizarSubAbaArmas();
-        });
-        bonusOrbeInput.addEventListener('change', () => {
-            formatarBonusProf();
-            atualizarModificadoresSalvaguarda();
-            atualizarPericias();
-            atualizarPassivas();
-            atualizarMagias();
-            atualizarSeletoresAtaqueEquipados();
-            atualizarSubAbaArmas();
-        });
+        }
+
+        document
+            .getElementById("classeNivelID")
+            .addEventListener("input", atualizarTudoDerivado);
+
 
         document.getElementById('classeNomeID').addEventListener('input', () => {
             sincronizarClasseNivel();
@@ -9499,6 +10055,7 @@
             sincronizarCamposMagia();
             atualizarMagias();
         });
+
         document.getElementById('classeNivelID').addEventListener('input', () => sincronizarClasseNivel());
         document.getElementById('classeNivelID').addEventListener('change', () => sincronizarClasseNivel());
         document.getElementById('racaID').addEventListener('input', () => sincronizarResumoCaracteristicas());
@@ -9636,6 +10193,8 @@
             campoPosicaoAtaque.addEventListener('input', normalizarPosicaoAtaque);
             campoPosicaoAtaque.addEventListener('change', normalizarPosicaoAtaque);
         }
+
+
 
         // Inicializa ao carregar
         formatarBonusProf();
