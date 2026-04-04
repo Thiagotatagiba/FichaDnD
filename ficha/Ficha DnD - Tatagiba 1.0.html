@@ -4129,7 +4129,7 @@
                         <button id="btnRolarDado">🎲</button>
                         <input type="text" id="inputVidaLevelUp">
                         <span id="modConTexto"></span>
-                    </div> <span id="modConTexto"></span>
+                    </div>
                 </div>
             </div>
 
@@ -5725,6 +5725,10 @@ Bônus de Proficiência: +${bonusProf}
                     return valido;
                 }
 
+                // remove listener anterior para evitar vazamento de memória
+                input.removeEventListener('input', input._validarInput);
+                input._validarInput = validarInput;
+
                 // valida enquanto digita
                 input.addEventListener('input', validarInput);
 
@@ -5739,6 +5743,7 @@ Bônus de Proficiência: +${bonusProf}
                     const valor = Number(input.value);
 
                     modal.style.display = "none";
+                    input.removeEventListener('input', validarInput);
 
                     resolve(valor);
                 };
