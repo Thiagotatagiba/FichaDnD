@@ -4474,8 +4474,7 @@
                                             aria-label="Proficiência em salvaguarda de Força" class="prof-checkbox"
                                             data-atributo="for" title="Proficiência"></div>
                                     <div class="valor-atributo"><input id="atrib_for" type="number"
-                                            class="valor-atributo-input" value="10" min="0"
-                                            aria-label="Força"></div>
+                                            class="valor-atributo-input" value="10" min="0" aria-label="Força"></div>
                                     <div class="modificador-orbe" id="mod_for">+0</div>
                                 </div>
                                 <div class="salv-linha">
@@ -4490,8 +4489,7 @@
                                             aria-label="Proficiência em salvaguarda de Destreza" class="prof-checkbox"
                                             data-atributo="des" title="Proficiência"></div>
                                     <div class="valor-atributo"><input id="atrib_des" type="number"
-                                            class="valor-atributo-input" value="10" min="0"
-                                            aria-label="Destreza"></div>
+                                            class="valor-atributo-input" value="10" min="0" aria-label="Destreza"></div>
                                     <div class="modificador-orbe" id="mod_des">+0</div>
                                 </div>
                                 <div class="salv-linha">
@@ -4503,11 +4501,11 @@
                             <div class="atrib-coluna">
                                 <div class="salvaguarda-caixa" id="caixa-con">
                                     <div class="atributo-label">CON <input id="prof_salv_con" type="checkbox"
-                                            aria-label="Proficiência em salvaguarda de Constituição" class="prof-checkbox"
-                                            data-atributo="con" title="Proficiência"></div>
+                                            aria-label="Proficiência em salvaguarda de Constituição"
+                                            class="prof-checkbox" data-atributo="con" title="Proficiência"></div>
                                     <div class="valor-atributo"><input id="atrib_con" type="number"
-                                            class="valor-atributo-input" value="10" min="0"
-                                            aria-label="Constituição"></div>
+                                            class="valor-atributo-input" value="10" min="0" aria-label="Constituição">
+                                    </div>
                                     <div class="modificador-orbe" id="mod_con">+0</div>
                                 </div>
                                 <div class="salv-linha">
@@ -4519,11 +4517,11 @@
                             <div class="atrib-coluna">
                                 <div class="salvaguarda-caixa" id="caixa-int">
                                     <div class="atributo-label">INT <input id="prof_salv_int" type="checkbox"
-                                            aria-label="Proficiência em salvaguarda de Inteligência" class="prof-checkbox"
-                                            data-atributo="int" title="Proficiência"></div>
+                                            aria-label="Proficiência em salvaguarda de Inteligência"
+                                            class="prof-checkbox" data-atributo="int" title="Proficiência"></div>
                                     <div class="valor-atributo"><input id="atrib_int" type="number"
-                                            class="valor-atributo-input" value="10" min="0"
-                                            aria-label="Inteligência"></div>
+                                            class="valor-atributo-input" value="10" min="0" aria-label="Inteligência">
+                                    </div>
                                     <div class="modificador-orbe" id="mod_int">+0</div>
                                 </div>
                                 <div class="salv-linha">
@@ -4538,8 +4536,8 @@
                                             aria-label="Proficiência em salvaguarda de Sabedoria" class="prof-checkbox"
                                             data-atributo="sab" title="Proficiência"></div>
                                     <div class="valor-atributo"><input id="atrib_sab" type="number"
-                                            class="valor-atributo-input" value="10" min="0"
-                                            aria-label="Sabedoria"></div>
+                                            class="valor-atributo-input" value="10" min="0" aria-label="Sabedoria">
+                                    </div>
                                     <div class="modificador-orbe" id="mod_sab">+0</div>
                                 </div>
                                 <div class="salv-linha">
@@ -4554,8 +4552,7 @@
                                             aria-label="Proficiência em salvaguarda de Carisma" class="prof-checkbox"
                                             data-atributo="car" title="Proficiência"></div>
                                     <div class="valor-atributo"><input id="atrib_car" type="number"
-                                            class="valor-atributo-input" value="10" min="0"
-                                            aria-label="Carisma"></div>
+                                            class="valor-atributo-input" value="10" min="0" aria-label="Carisma"></div>
                                     <div class="modificador-orbe" id="mod_car">+0</div>
                                 </div>
                                 <div class="salv-linha">
@@ -4812,7 +4809,7 @@
                                                 <select id="arma2Nome" aria-label="Arma secundária equipada"></select>
                                                 <select id="arma2Ataque"
                                                     aria-label="Atributo de ataque da arma secundária">
-                                                    <option value="for"></option>
+
                                                     <option value="for">FOR</option>
                                                     <option value="des">DES</option>
                                                 </select>
@@ -5326,7 +5323,7 @@
 
                                         <div class="arma-nome-container">
 
-                                            <input type="text" data-campo="arma_nome" aria-label="Nome da arma"
+                                            <input type="text" data-campo="nome" aria-label="Nome da arma"
                                                 placeholder="Nome da arma">
                                         </div>
                                         <span class="arma-toggle">🔽</span>
@@ -5658,38 +5655,361 @@
     </div>
 
     <script>
+
+        function normalizarArma(armaBruta = {}, slot = null) {
+            if (!armaBruta) return null;
+
+            const nome = (armaBruta.nome || armaBruta.arma_nome || "").trim() || "Arma";
+            const tipo = (armaBruta.tipo || armaBruta.arma_tipo || "").trim() || "Corpo a Corpo/Distância";
+
+            // atributo automático
+            let chaveAtributo = armaBruta.chaveAtributo || armaBruta.atributo;
+            if (!["for", "des"].includes(chaveAtributo)) {
+                chaveAtributo = tipo.toLowerCase().includes("distancia") ? "des" : "for";
+            }
+
+            const dano = [
+                armaBruta.dano || armaBruta.arma_dano,
+                armaBruta.tipo_dano || armaBruta.arma_tipo_dano
+            ].filter(Boolean).map(v => v.trim()).join(" ") || "-";
+
+            const propriedade = montarTextoPropriedadeArma(
+                armaBruta,
+                resumirMunicaoNoTexto(obterResumoPropriedadesArma(armaBruta, false))
+            ) || "-";
+
+            return {
+                // 🔹 PADRÃO FINAL
+                nome,
+                tipo,
+                dano,
+                propriedade,
+                chaveAtributo,
+                proficiente: !!armaBruta.proficiente,
+
+                // 🔹 extras
+                slot,
+                bruto: armaBruta
+            };
+        }
+
+        // ============================
+        // 1️⃣ Calcula o modificador de ataque baseado no atributo
+        // ============================
+        function getModificadorBaseAtributo(chaveAtributo) {
+            console.log("=== DEBUG getModificadorBaseAtributo ===");
+
+
+
+            const camposPermitidos = {
+                for: "atrib_for",
+                des: "atrib_des",
+                con: "atrib_con",
+                int: "atrib_int",
+                sab: "atrib_sab",
+                car: "atrib_car"
+            };
+
+            const idCampo = camposPermitidos[chaveAtributo.toLowerCase()] || camposPermitidos.for;
+            const campo = document.getElementById(idCampo);
+            if (!campo) {
+                console.warn("Campo de atributo não encontrado:", idCampo);
+                return 0;
+            }
+
+            const valor = parseInt(campo.value.replace(/\+/g, ""), 10);
+            if (isNaN(valor)) return 0;
+
+            const mod = Math.floor((valor - 10) / 2);
+            console.log(`Modificador base de ${chaveAtributo} (atrib):`, mod);
+            return mod;
+        }
+
+
+
+        // ============================
+        // 3️⃣ Obtém todas as armas equipadas ativas
+        // ============================
+        function obterArmasEquipadasAtivas() {
+            const armas = coletarArmas?.() || [];
+
+            const selecionados = Array.from(
+                document.querySelectorAll('#lista-armas-equipamento input:checked')
+            ).map(input => parseInt(input.dataset.index, 10));
+
+            return selecionados.map((index, i) => {
+                const arma = armas[index];
+                if (!arma) return null;
+
+                const nome = (arma.nome || "").trim();
+                if (!nome) return null;
+
+                const tipo = (arma.arma_tipo || "").toLowerCase();
+
+                // 🔥 REGRA CORRETA D&D
+                let atributo = arma.atributo;
+                if (!["for", "des"].includes(atributo)) {
+                    atributo = tipo.includes("distancia") ? "des" : "for";
+                }
+
+                // 🔥 DANO
+                const dano = [
+                    arma.arma_dano,
+                    arma.arma_tipo_dano
+                ].filter(Boolean).join(" ") || "-";
+
+                // 🔥 PROPRIEDADE COMPLETA
+                const propriedade = montarTextoPropriedadeArma
+                    ? montarTextoPropriedadeArma(arma,
+                        resumirMunicaoNoTexto(
+                            obterResumoPropriedadesArma(arma, false)
+                        )
+                    )
+                    : "-";
+
+                return {
+                    nome,
+                    chaveAtributo: atributo,
+                    ataque: atributo,
+                    dano,
+                    propriedade,
+                    proficiente: !!arma.proficiente,
+                    usaMunicao: !!arma.propriedades?.municao,
+                    arma_municao_id: arma.arma_municao_id || null,
+                    slot: i + 1
+                };
+            }).filter(Boolean);
+        }
+
+
+        function atualizarSelectAtaqueArma() {
+            const armasAtivas = obterArmasEquipadasAtivas();
+
+            armasAtivas.forEach(arma => {
+                const slot = arma.slot;
+
+                const select = document.getElementById(`arma${slot}Ataque`);
+                if (!select) return;
+
+                const valorAtual = select.value || arma.chaveAtributo;
+
+                const resumoFor = getResumoCalculoAtaque({ ...arma, chaveAtributo: 'for' });
+                const resumoDes = getResumoCalculoAtaque({ ...arma, chaveAtributo: 'des' });
+
+                select.innerHTML = '';
+
+                const opcoes = [
+                    {
+                        value: 'for',
+                        label: `FOR (${formatarBonusCalculado(resumoFor.totalAtaque)})`
+                    },
+                    {
+                        value: 'des',
+                        label: `DES (${formatarBonusCalculado(resumoDes.totalAtaque)})`
+                    }
+                ];
+
+                opcoes.forEach(op => {
+                    const option = document.createElement('option');
+                    option.value = op.value;
+                    option.textContent = op.label;
+                    select.appendChild(option);
+                });
+
+                select.value = ["for", "des"].includes(valorAtual)
+                    ? valorAtual
+                    : arma.chaveAtributo;
+            });
+        }
+
+        function getResumoCalculoAtaque(arma, chaveForcada = null) {
+            if (!arma) {
+                return { totalAtaque: 0, textoResumo: "-" };
+            }
+
+            const nome = arma.nome || "Arma";
+
+            // 🔥 DETECÇÃO INTELIGENTE DE ATRIBUTO
+            let chave =
+                chaveForcada ||
+                arma.ataque ||
+                arma.chaveAtributo;
+
+            const tipo = (arma.tipo || "").toLowerCase();
+            const props = (arma.propriedade || "").toLowerCase();
+
+            const ehDistancia =
+                tipo.includes("distancia") ||
+                props.includes("distância") ||
+                props.includes("alcance") ||
+                arma.usaMunicao;
+
+            // 🔥 FORÇA CORREÇÃO AUTOMÁTICA
+            if (!["for", "des"].includes(chave)) {
+                chave = ehDistancia ? "des" : "for";
+            }
+
+            // 🔥 CORREÇÃO CRÍTICA
+            if (ehDistancia) {
+                chave = "des";
+            }
+
+            const modBase = getModificadorBaseAtributo(chave) || 0;
+            const bonusProf = arma.proficiente ? (window.personagem?.bonusProf || 0) : 0;
+
+            const total = modBase + bonusProf;
+
+            const formatado = total >= 0 ? `+${total}` : `${total}`;
+
+            const textoResumo = `${chave.toUpperCase()} (${formatado})`;
+
+            console.log("=== DEBUG ATAQUE FINAL ===");
+            console.log("Arma:", nome);
+            console.log("Tipo:", tipo);
+            console.log("Props:", props);
+            console.log("É distância?", ehDistancia);
+            console.log("Chave FINAL:", chave);
+
+            return {
+                nome,
+                chaveAtributo: chave,
+                modBase,
+                bonusProf,
+                totalAtaque: total,
+                textoResumo
+            };
+        }
+
+
+        // ==========================
+        // FUNÇÃO: getResumoCalculoAtaque
+        // ==========================
+        function calcularResumoAtaque(arma = {}, personagem = {}) {
+            console.log("=== DEBUG calcularResumoAtaque ===");
+
+            // 🔹 garante objeto válido
+            const armaValida = arma && typeof arma === "object" ? arma : {};
+
+            // 🔹 nome padronizado (LEGADO + NOVO)
+            const nomeArma = (armaValida.nome || armaValida.arma_nome || "").trim() || "Arma";
+
+            // 🔹 tipo padronizado
+            const tipoArma = (armaValida.tipo || armaValida.propriedade || armaValida.arma_tipo || "").trim() || "Corpo a Corpo/Distância";
+
+            // 🔹 chave de atributo (corrigida)
+            let chaveAttr = armaValida.chaveAtributo || armaValida.ataque || "for";
+
+            if (!["for", "des"].includes(chaveAttr)) {
+                console.warn("Chave de atributo inválida, usando 'for'");
+                chaveAttr = "for";
+            }
+
+            // 🔹 usa NOVO sistema (atrib_for / atrib_des)
+            let modBase = 0;
+
+            if (typeof getModificadorBaseAtributo === "function") {
+                modBase = getModificadorBaseAtributo(chaveAttr) || 0;
+            } else {
+                console.warn("getModificadorBaseAtributo não encontrada");
+            }
+
+            // 🔹 proficiência
+            const prof = !!armaValida.proficiente;
+            const bonusProf = prof ? (personagem?.bonusProf || 0) : 0;
+
+            const totalAtk = modBase + bonusProf;
+
+            // 🔹 texto formatado (evita undefined na UI)
+            const textoResumo =
+                (totalAtk >= 0 ? "+" : "") + totalAtk;
+
+            const resumo = {
+                nome: nomeArma,
+                tipo: tipoArma,
+                chaveAtributo: chaveAttr,
+                modBase,
+                proficiente: prof,
+                bonusProf,
+                totalAtaque: totalAtk,
+                textoResumo
+            };
+
+            // 🔹 DEBUG LIMPO
+            console.log("Arma:", nomeArma);
+            console.log("Tipo:", tipoArma);
+            console.log("Atributo:", chaveAttr);
+            console.log("ModBase:", modBase);
+            console.log("Prof:", prof);
+            console.log("BonusProf:", bonusProf);
+            console.log("Total:", totalAtk);
+
+            return resumo;
+        }
+
+        // Função de bônus de proficiência
+        function calcularBonusProf(nivel) {
+            if (nivel >= 17) return 6;
+            if (nivel >= 13) return 5;
+            if (nivel >= 9) return 4;
+            if (nivel >= 5) return 3;
+            return 2;
+        }
+
+        // Função exemplo de cálculo de bônus de proficiência
+        function calcularBonusProf(nivel) {
+            if (nivel >= 17) return 6;
+            if (nivel >= 13) return 5;
+            if (nivel >= 9) return 4;
+            if (nivel >= 5) return 3;
+            return 2;
+        }
+
+        /**
+         * Exemplo de função getBonusProf que você já deve ter.
+         * Substitua com sua implementação real se necessário.
+         */
+        function getBonusProf() {
+            const nivel = parseInt(document.getElementById("classeNivelID")?.value || 1, 10);
+            if (nivel >= 17) return 6;
+            if (nivel >= 13) return 5;
+            if (nivel >= 9) return 4;
+            if (nivel >= 5) return 3;
+            return 2;
+        }
+
+
         // Variáveis Globai
         let bloqueandoLevelUp = false;
         let armaduraEquipadaIndice = null;
         let personagem = {};
-        let idsPocoesDesequipadasManualmente = new Set(); 
+        let idsPocoesDesequipadasManualmente = new Set();
 
-function renderizarOutrosEquipamento(listaOutros) {
-    const container = document.getElementById("lista-outros-equipamento");
-    if (!container) return;
-    
-    // Agora a variável 'idsPocoesDesequipadasManualmente' já estará inicializada
-    // ... restante do seu código de renderização ...
-}
+        function renderizarOutrosEquipamento(listaOutros) {
+            const container = document.getElementById("lista-outros-equipamento");
+            if (!container) return;
+
+            // Agora a variável 'idsPocoesDesequipadasManualmente' já estará inicializada
+            // ... restante do seu código de renderização ...
+        }
         let armaduraSelecionadaAtual = null;
 
         // ===== Lógica de Bônus de Proficiência =====
         const bonusInput = document.getElementById("bonusProf");
         // Retorna o modificador a partir do valor do atributo (ex: 18 -> 4)
-function calcularModificadorAtributo(valorAtributo) {
-  const v = Number(valorAtributo);
-  if (!Number.isFinite(v)) return 0;
-  return Math.floor((v - 10) / 2);
-}
+        function calcularModificadorAtributo(valorAtributo) {
+            const v = Number(valorAtributo);
+            if (!Number.isFinite(v)) return 0;
+            return Math.floor((v - 10) / 2);
+        }
 
 
-// Utilitário único para obter o máximo do dado de vida a partir da string "d8", "d10", etc.
-function obterMaxDadoVidaFromString(dado) {
-  if (!dado || typeof dado !== 'string') return 8; // fallback seguro
-  const numero = Number(dado.replace(/\s*/g, '').toLowerCase().replace(/^d/, ''));
-  if (!Number.isFinite(numero) || numero <= 0) return 8;
-  return Math.floor(numero);
-}
+        // Utilitário único para obter o máximo do dado de vida a partir da string "d8", "d10", etc.
+        function obterMaxDadoVidaFromString(dado) {
+            if (!dado || typeof dado !== 'string') return 8; // fallback seguro
+            const numero = Number(dado.replace(/\s*/g, '').toLowerCase().replace(/^d/, ''));
+            if (!Number.isFinite(numero) || numero <= 0) return 8;
+            return Math.floor(numero);
+        }
 
 
         // ===== Integracao e inicializacao =====
@@ -5827,7 +6147,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 const botao = document.getElementById('btnConfirmarLevelUp');
 
-const max = obterMaxDadoVidaFromString(dadoVida);
+                const max = obterMaxDadoVidaFromString(dadoVida);
 
 
                 function validarInput() {
@@ -6371,7 +6691,7 @@ const max = obterMaxDadoVidaFromString(dadoVida);
         }
 
         function formatarArma(arma) {
-            const nome = arma.arma_nome?.trim() || "Arma sem nome";
+            const nome = arma.nome?.trim() || "Arma sem nome";
             const tipo = arma.arma_tipo_dano?.trim() || "-";
             const tipoArma = arma.arma_tipo?.trim() || "";
 
@@ -6398,44 +6718,60 @@ const max = obterMaxDadoVidaFromString(dadoVida);
             const container = document.getElementById("lista-armas-equipamento");
             if (!container) return;
 
+            // mantém seleção atual
             const selecionados = new Set(
-                Array.from(container.querySelectorAll('input:checked')).map(input => input.dataset.index)
+                Array.from(container.querySelectorAll('input:checked'))
+                    .map(input => input.dataset.index)
             );
 
             container.innerHTML = "";
 
             listaArmas.forEach((arma, index) => {
-                if (!arma?.arma_nome?.trim()) return;
+                if (!arma) return;
 
-                const { linha1, linha2, proficiente } = formatarArma(arma);
+                const nome = String(arma?.nome ?? arma?.arma_nome ?? "").trim();
+                if (!nome) return;
+
+                const { linha1, linha2, proficiente } = formatarArma({
+                    ...arma,
+                    nome,
+                    arma_nome: nome
+                });
 
                 const div = document.createElement("div");
                 div.classList.add("arma-equipamento");
 
-
                 const label = document.createElement("label");
-                if (!proficiente) label.classList.add("arma-equipamento-nao-proficiente");
+                if (!proficiente) {
+                    label.classList.add("arma-equipamento-nao-proficiente");
+                }
 
                 const checkbox = document.createElement("input");
                 checkbox.type = "checkbox";
                 checkbox.dataset.index = String(index);
                 checkbox.setAttribute("aria-label", "Selecionar arma para equipamento");
                 checkbox.checked = selecionados.has(String(index));
+
                 checkbox.addEventListener('change', () => {
                     const marcados = Array.from(container.querySelectorAll('input:checked'));
+
                     if (marcados.length > 2) {
                         checkbox.checked = false;
                         sincronizarEquipamentosCombate();
                         return;
                     }
+
                     sincronizarEquipamentosCombate();
                 });
 
                 const textoPrincipal = document.createElement("span");
                 textoPrincipal.innerHTML = linha1;
+
                 const quebra = document.createElement("br");
+
                 const textoSecundario = document.createElement("small");
                 textoSecundario.textContent = linha2;
+
                 const separador = document.createElement("hr");
 
                 label.appendChild(checkbox);
@@ -6443,13 +6779,17 @@ const max = obterMaxDadoVidaFromString(dadoVida);
                 label.appendChild(textoPrincipal);
                 label.appendChild(quebra);
                 label.appendChild(textoSecundario);
+
                 div.appendChild(label);
                 div.appendChild(separador);
 
                 container.appendChild(div);
             });
 
-            if (selecionados.size) sincronizarEquipamentosCombate();
+            // re-sincroniza seleção
+            if (selecionados.size) {
+                sincronizarEquipamentosCombate();
+            }
         }
         /**
  * Calcula o CA total aplicando o tipo de bônus sobre o CA base.
@@ -6459,118 +6799,118 @@ const max = obterMaxDadoVidaFromString(dadoVida);
  * @param {number} modDestreza - modificador de Destreza do personagem (ex: 0, 1, -1).
  * @returns {number} CA total (inteiro).
  */
-function calcularCATotal(caBase, bonusTipo, modDestreza) {
-  // Normaliza e valida CA base
-  const ca = Number(caBase);
-  const baseValida = Number.isFinite(ca) ? Math.floor(ca) : 0;
+        function calcularCATotal(caBase, bonusTipo, modDestreza) {
+            // Normaliza e valida CA base
+            const ca = Number(caBase);
+            const baseValida = Number.isFinite(ca) ? Math.floor(ca) : 0;
 
-  // Normaliza modificador de Destreza
-  const modDex = Number.isFinite(Number(modDestreza)) ? Math.trunc(Number(modDestreza)) : 0;
+            // Normaliza modificador de Destreza
+            const modDex = Number.isFinite(Number(modDestreza)) ? Math.trunc(Number(modDestreza)) : 0;
 
-  // Determina bônus conforme tipo
-  let bonus = 0;
-  const tipo = String(bonusTipo ?? "0").trim();
+            // Determina bônus conforme tipo
+            let bonus = 0;
+            const tipo = String(bonusTipo ?? "0").trim();
 
-  if (tipo === "DES") {
-    bonus = modDex;
-  } else if (tipo === "DES Max 2" || tipo.toUpperCase() === "DES MAX 2") {
-    // limita o bônus de Destreza a no máximo 2 (mas permite valores negativos)
-    bonus = Math.min(modDex, 2);
-  } else {
-    // qualquer outro valor (incluindo "0") => sem bônus
-    bonus = 0;
-  }
+            if (tipo === "DES") {
+                bonus = modDex;
+            } else if (tipo === "DES Max 2" || tipo.toUpperCase() === "DES MAX 2") {
+                // limita o bônus de Destreza a no máximo 2 (mas permite valores negativos)
+                bonus = Math.min(modDex, 2);
+            } else {
+                // qualquer outro valor (incluindo "0") => sem bônus
+                bonus = 0;
+            }
 
-  return baseValida + bonus;
-}
+            return baseValida + bonus;
+        }
 
 
-function formatarArmaduraEquipamento(armadura, modDestreza = 0) {
-  const nome = armadura?.armadura_nome?.trim() || "Armadura sem nome";
-  const caRawStr = (armadura?.armadura_ca ?? "0").toString().trim();
-  const bonusRaw = (armadura?.armadura_bonus ?? "0").toString().trim();
-  const furtividade = armadura?.armadura_furtividade?.trim() || "Normal";
-  const tipo = armadura?.armadura_tipo?.trim() || "-";
+        function formatarArmaduraEquipamento(armadura, modDestreza = 0) {
+            const nome = armadura?.armadura_nome?.trim() || "Armadura sem nome";
+            const caRawStr = (armadura?.armadura_ca ?? "0").toString().trim();
+            const bonusRaw = (armadura?.armadura_bonus ?? "0").toString().trim();
+            const furtividade = armadura?.armadura_furtividade?.trim() || "Normal";
+            const tipo = armadura?.armadura_tipo?.trim() || "-";
 
-  const caBase = Number(caRawStr.replace(/[^\d\-+.]/g, ''));
-  const caBaseValida = Number.isFinite(caBase) ? Math.trunc(caBase) : 0;
-  const modDex = Number.isFinite(Number(modDestreza)) ? Math.trunc(Number(modDestreza)) : 0;
+            const caBase = Number(caRawStr.replace(/[^\d\-+.]/g, ''));
+            const caBaseValida = Number.isFinite(caBase) ? Math.trunc(caBase) : 0;
+            const modDex = Number.isFinite(Number(modDestreza)) ? Math.trunc(Number(modDestreza)) : 0;
 
-  const bonusTipo = String(bonusRaw).trim().toUpperCase();
-  let bonusAplicado = 0;
-  if (bonusTipo === "DES") bonusAplicado = modDex;
-  else if (bonusTipo === "DES MAX 2" || bonusTipo === "DESMAX2" || bonusTipo === "DES MAX2") bonusAplicado = Math.min(modDex, 2);
-  else bonusAplicado = 0;
+            const bonusTipo = String(bonusRaw).trim().toUpperCase();
+            let bonusAplicado = 0;
+            if (bonusTipo === "DES") bonusAplicado = modDex;
+            else if (bonusTipo === "DES MAX 2" || bonusTipo === "DESMAX2" || bonusTipo === "DES MAX2") bonusAplicado = Math.min(modDex, 2);
+            else bonusAplicado = 0;
 
-  const caTotal = caBaseValida + bonusAplicado;
+            const caTotal = caBaseValida + bonusAplicado;
 
-  const proficiente = typeof armadura?.proficiente === "boolean"
-    ? armadura.proficiente
-    : (typeof getTemProficienciaArmadura === 'function' ? getTemProficienciaArmadura(tipo) : false);
+            const proficiente = typeof armadura?.proficiente === "boolean"
+                ? armadura.proficiente
+                : (typeof getTemProficienciaArmadura === 'function' ? getTemProficienciaArmadura(tipo) : false);
 
-  const emojiProf = proficiente ? `<span title="Proficiente">⭐<br></span>` : `<span title="Não proficiente">❌<br></span>`;
+            const emojiProf = proficiente ? `<span title="Proficiente">⭐<br></span>` : `<span title="Não proficiente">❌<br></span>`;
 
-  return {
-    nome,
-    linha1: `${nome} ${emojiProf} 🛡️ ${caTotal} (${caBaseValida} + ${bonusAplicado})`,
-    linha2: `Tipo: ${tipo} | CA base: ${caBaseValida} | Bônus: ${bonusRaw} | Furtividade: ${furtividade}`,
-    proficiente,
-    caBase: caBaseValida,
-    caBonusTipo: bonusRaw,
-    caBonusAplicado: bonusAplicado,
-    caTotal,
-    tipo
-  };
-}
+            return {
+                nome,
+                linha1: `${nome} ${emojiProf} 🛡️ ${caTotal} (${caBaseValida} + ${bonusAplicado})`,
+                linha2: `Tipo: ${tipo} | CA base: ${caBaseValida} | Bônus: ${bonusRaw} | Furtividade: ${furtividade}`,
+                proficiente,
+                caBase: caBaseValida,
+                caBonusTipo: bonusRaw,
+                caBonusAplicado: bonusAplicado,
+                caTotal,
+                tipo
+            };
+        }
 
-// utilitário para calcular modificador a partir do valor do atributo
-function calcularModificadorAtributo(valorAtributo) {
-  const v = Number(valorAtributo);
-  if (!Number.isFinite(v)) return 0;
-  return Math.floor((v - 10) / 2);
-}
+        // utilitário para calcular modificador a partir do valor do atributo
+        function calcularModificadorAtributo(valorAtributo) {
+            const v = Number(valorAtributo);
+            if (!Number.isFinite(v)) return 0;
+            return Math.floor((v - 10) / 2);
+        }
 
-// função que atualiza os campos da armadura selecionada
-function atualizarCamposArmaduraSelecionada(armaduraSelecionada) {
-  try {
-    armaduraSelecionadaAtual = armaduraSelecionada || null;
+        // função que atualiza os campos da armadura selecionada
+        function atualizarCamposArmaduraSelecionada(armaduraSelecionada) {
+            try {
+                armaduraSelecionadaAtual = armaduraSelecionada || null;
 
-    const desValorRaw = document.getElementById('atrib_des')?.value ?? document.getElementById('des')?.value ?? null;
-    const modDestreza = desValorRaw !== null && desValorRaw !== '' ? Math.floor((Number(desValorRaw)-10)/2) : 0;
+                const desValorRaw = document.getElementById('atrib_des')?.value ?? document.getElementById('des')?.value ?? null;
+                const modDestreza = desValorRaw !== null && desValorRaw !== '' ? Math.floor((Number(desValorRaw) - 10) / 2) : 0;
 
-    const info = armaduraSelecionada ? formatarArmaduraEquipamento(armaduraSelecionada, modDestreza) : null;
-    const caSemArmadura = 10 + modDestreza;
+                const info = armaduraSelecionada ? formatarArmaduraEquipamento(armaduraSelecionada, modDestreza) : null;
+                const caSemArmadura = 10 + modDestreza;
 
-    if (typeof aplicarEstiloProficienciaCampos === 'function') {
-      aplicarEstiloProficienciaCampos(
-        ['armaduraCA', 'armaduraFurtividade'],
-        info ? info.proficiente : null
-      );
-    }
+                if (typeof aplicarEstiloProficienciaCampos === 'function') {
+                    aplicarEstiloProficienciaCampos(
+                        ['armaduraCA', 'armaduraFurtividade'],
+                        info ? info.proficiente : null
+                    );
+                }
 
-    const elCA = document.getElementById('armaduraCA');
-    const elFurt = document.getElementById('armaduraFurtividade');
-    const elLinha2 = document.getElementById('armaduraLinha2');
+                const elCA = document.getElementById('armaduraCA');
+                const elFurt = document.getElementById('armaduraFurtividade');
+                const elLinha2 = document.getElementById('armaduraLinha2');
 
-    if (elCA)   { if ('value' in elCA) elCA.value = info ? String(info.caTotal) : String(caSemArmadura); else elCA.textContent = info ? String(info.caTotal) : String(caSemArmadura); }
-    if (elFurt) { if ('value' in elFurt) elFurt.value = info ? (armaduraSelecionada.armadura_furtividade || 'Normal') : 'Normal'; else elFurt.textContent = info ? (armaduraSelecionada.armadura_furtividade || 'Normal') : 'Normal'; }
-    if (elLinha2) elLinha2.textContent = info ? `Tipo: ${info.tipo || '-'} | CA base: ${info.caBase} | Bônus: ${info.caBonusTipo}` : `Sem armadura | CA: 10 + ${modDestreza} (DES)`;
+                if (elCA) { if ('value' in elCA) elCA.value = info ? String(info.caTotal) : String(caSemArmadura); else elCA.textContent = info ? String(info.caTotal) : String(caSemArmadura); }
+                if (elFurt) { if ('value' in elFurt) elFurt.value = info ? (armaduraSelecionada.armadura_furtividade || 'Normal') : 'Normal'; else elFurt.textContent = info ? (armaduraSelecionada.armadura_furtividade || 'Normal') : 'Normal'; }
+                if (elLinha2) elLinha2.textContent = info ? `Tipo: ${info.tipo || '-'} | CA base: ${info.caBase} | Bônus: ${info.caBonusTipo}` : `Sem armadura | CA: 10 + ${modDestreza} (DES)`;
 
-    if (typeof atualizarClasseArmaduraEquipada === 'function') atualizarClasseArmaduraEquipada();
+                if (typeof atualizarClasseArmaduraEquipada === 'function') atualizarClasseArmaduraEquipada();
 
-  } catch (err) {
-    console.error('Erro em atualizarCamposArmaduraSelecionada', err);
-  }
-}
+            } catch (err) {
+                console.error('Erro em atualizarCamposArmaduraSelecionada', err);
+            }
+        }
 
-// quando mudar a armadura equipada pelo select
-document.getElementById('armaduraNome')?.addEventListener('change', function () {
-  const indice = this.value !== '' ? parseInt(this.value, 10) : null;
-  const armadura = (indice !== null && personagem?.armaduras?.[indice]) ? personagem.armaduras[indice] : null;
-  armaduraSelecionadaAtual = armadura;
-  armaduraEquipadaIndice = indice;
-  atualizarCamposArmaduraSelecionada(armadura);
-});
+        // quando mudar a armadura equipada pelo select
+        document.getElementById('armaduraNome')?.addEventListener('change', function () {
+            const indice = this.value !== '' ? parseInt(this.value, 10) : null;
+            const armadura = (indice !== null && personagem?.armaduras?.[indice]) ? personagem.armaduras[indice] : null;
+            armaduraSelecionadaAtual = armadura;
+            armaduraEquipadaIndice = indice;
+            atualizarCamposArmaduraSelecionada(armadura);
+        });
 
 
         function obterResumoCombateArma(arma) {
@@ -6896,54 +7236,10 @@ document.getElementById('armaduraNome')?.addEventListener('change', function () 
             return Math.floor((valor - 10) / 2);
         }
 
-        function getResumoCalculoAtaque(arma, chaveAtributo = arma?.ataque) {
-            const rotuloAtributo = formatarRotuloAtributo(chaveAtributo) || "-";
-            const modificadorBase = getModificadorBaseAtributo(chaveAtributo);
-            const proficiente = !!arma?.proficiente;
-            const bonusProfAplicado = proficiente ? getBonusProf() : 0;
-            const totalAtaque = modificadorBase === null ? null : modificadorBase + bonusProfAplicado;
 
-            let textoResumo = rotuloAtributo;
-            if (totalAtaque !== null) {
-                textoResumo = proficiente && bonusProfAplicado > 0
-                    ? `${formatarBonusCalculado(totalAtaque)} (${rotuloAtributo} + ${bonusProfAplicado})`
-                    : `${formatarBonusCalculado(totalAtaque)} (${rotuloAtributo})`;
-            }
 
-            return {
-                rotuloAtributo,
-                modificadorBase,
-                proficiente,
-                bonusProfAplicado,
-                totalAtaque,
-                textoResumo
-            };
-        }
 
-        function atualizarSelectAtaqueArma(indice, arma) {
-            const select = document.getElementById(`arma${indice}Ataque`);
-            if (!select) return;
 
-            const valorAtual = select.value || 'for';
-            const resumoFor = getResumoCalculoAtaque(arma, 'for');
-            const resumoDes = getResumoCalculoAtaque(arma, 'des');
-
-            select.innerHTML = '';
-
-            const opcoes = [
-                { value: 'for', label: `FOR (${resumoFor.totalAtaque === null ? '-' : formatarBonusCalculado(resumoFor.totalAtaque)})` },
-                { value: 'des', label: `DES (${resumoDes.totalAtaque === null ? '-' : formatarBonusCalculado(resumoDes.totalAtaque)})` }
-            ];
-
-            opcoes.forEach(opcao => {
-                const option = document.createElement('option');
-                option.value = opcao.value;
-                option.textContent = opcao.label;
-                select.appendChild(option);
-            });
-
-            select.value = ['for', 'des'].includes(valorAtual) ? valorAtual : 'for';
-        }
 
         function atualizarSeletoresAtaqueEquipados() {
             const armas = coletarArmas();
@@ -6970,41 +7266,86 @@ document.getElementById('armaduraNome')?.addEventListener('change', function () 
                 .filter(indice => Number.isInteger(indice));
         }
 
-        function atualizarSelectNomeArmaEquipada(indiceSlot, armas, indiceSelecionado, escudos = []) {
+        function atualizarSelectNomeArmaEquipada(indiceSlot, armas = [], indiceSelecionado, escudos = []) {
             const select = document.getElementById(`arma${indiceSlot}Nome`);
             if (!select) return;
 
-            const placeholder = indiceSlot === 1 ? 'Mão Principal' : 'Mão Secundária / Escudo';
+            // 🔥 limpa UMA vez só
             select.innerHTML = '';
 
+            const placeholder = indiceSlot === 1
+                ? 'Mão Principal'
+                : 'Mão Secundária / Escudo';
+
+            // 🔹 opção vazia
             const opcaoVazia = document.createElement('option');
             opcaoVazia.value = '';
             opcaoVazia.textContent = placeholder;
             select.appendChild(opcaoVazia);
 
+            // 🛡️ ESCUDOS (somente slot 2)
             if (indiceSlot === 2) {
                 escudos.forEach((escudo, indiceEscudo) => {
-                    if (!escudo?.escudo_nome?.trim()) return;
-                    const optionEscudo = document.createElement('option');
-                    optionEscudo.value = criarValorSlotEscudo(indiceEscudo);
-                    const nomeEscudo = escudo.escudo_nome.trim();
-                    const caEscudo = escudo.escudo_ca?.trim() || '+0';
-                    optionEscudo.textContent = `🛡️ ${nomeEscudo} ${caEscudo}`;
-                    select.appendChild(optionEscudo);
+                    const nomeEscudo = (escudo?.nome || escudo?.escudo_nome || "").trim();
+                    if (!nomeEscudo) return;
+
+                    const option = document.createElement('option');
+                    option.value = criarValorSlotEscudo(indiceEscudo);
+
+                    const ca = (escudo?.ca || escudo?.escudo_ca || "+0").trim();
+
+                    option.textContent = `🛡️ ${nomeEscudo} ${ca}`;
+                    select.appendChild(option);
                 });
             }
 
+            // ⚔️ ARMAS
             armas.forEach((arma, indice) => {
-                if (!arma?.arma_nome?.trim()) return;
+                const nome = String(arma?.nome ?? arma?.arma_nome ?? "").trim();
+                if (!nome) return;
+
                 const option = document.createElement('option');
                 option.value = String(indice);
+
                 const icone = arma?.propriedades?.municao ? '🏹' : '⚔️';
-                option.textContent = `${icone} ${arma.arma_nome.trim()}`;
+                option.textContent = `${icone} ${nome}`;
+
                 select.appendChild(option);
             });
 
-            const valorSelecionado = indiceSelecionado !== null && indiceSelecionado !== undefined ? String(indiceSelecionado) : '';
-            select.value = Array.from(select.options).some(option => option.value === valorSelecionado) ? valorSelecionado : '';
+            // 🎯 seleção atual
+            const valorSelecionado =
+                indiceSelecionado !== null && indiceSelecionado !== undefined
+                    ? String(indiceSelecionado)
+                    : '';
+
+            const existe = Array.from(select.options)
+                .some(option => option.value === valorSelecionado);
+
+            select.value = existe ? valorSelecionado : '';
+        }
+
+        function getNomeArmaSeguro(arma) {
+            if (!arma) return "";
+
+            // prioridade absoluta: padrão novo
+            let nome = "";
+
+            if (typeof arma.nome === "string") {
+                nome = arma.nome.trim();
+            }
+
+            // fallback legado (UMA ÚNICA VEZ)
+            if (!nome && typeof arma.arma_nome === "string") {
+                nome = arma.arma_nome.trim();
+            }
+
+            // 🔥 padroniza permanentemente o objeto
+            if (nome) {
+                arma.nome = nome;
+            }
+
+            return nome;
         }
 
         function atualizarSelectNomeArmaduraEquipada(armaduras, indiceSelecionado) {
@@ -7085,69 +7426,30 @@ document.getElementById('armaduraNome')?.addEventListener('change', function () 
         function resolverIndiceArmaSalva(dados, indiceSlot, armas) {
             const chaveIndice = `arma${indiceSlot}EquipadaIndice`;
             const chaveNome = `arma${indiceSlot}Nome`;
+
             const valorIndice = parseInt(dados[chaveIndice], 10);
 
-            if (Number.isInteger(valorIndice) && armas[valorIndice]?.arma_nome?.trim()) {
+            // 🔹 valida índice diretamente
+            if (
+                Number.isInteger(valorIndice) &&
+                armas[valorIndice] &&
+                getNomeArmaSeguro(armas[valorIndice])
+            ) {
                 return valorIndice;
             }
 
-            const nomeSalvo = String(dados[chaveNome] || "").trim();
+            // 🔹 fallback por nome
+            const nomeSalvo = String(dados[chaveNome] ?? "").trim();
             if (!nomeSalvo) return null;
 
-            const indicePorNome = armas.findIndex(arma => arma?.arma_nome?.trim() === nomeSalvo);
+            const indicePorNome = armas.findIndex(arma =>
+                getNomeArmaSeguro(arma) === nomeSalvo
+            );
+
             return indicePorNome >= 0 ? indicePorNome : null;
         }
 
-        function obterArmasEquipadasAtivas() {
-            const armas = coletarArmas();
-            const indicesMarcados = obterIndicesArmasMarcadas();
-            const indicesSlots = [1, 2].map(indiceSlot => {
-                const valor = document.getElementById(`arma${indiceSlot}Nome`)?.value || "";
-                if (extrairIndiceSlotEscudo(valor) !== null) return null;
-                const indice = parseInt(valor, 10);
-                return Number.isInteger(indice) && indicesMarcados.includes(indice) ? indice : null;
-            });
-            const faltantes = indicesMarcados.filter(indice => !indicesSlots.includes(indice));
-            const indicesEquipados = indicesSlots.map(indice => indice ?? (faltantes.shift() ?? null));
 
-            return indicesEquipados
-                .map((indiceArma, indiceSlot) => {
-                    const arma = Number.isInteger(indiceArma) ? armas[indiceArma] : null;
-                    if (!arma) return null;
-
-                    return {
-                        nome: arma.arma_nome?.trim() || "",
-                        ataque: obterTextoCampoOuBloco(`arma${indiceSlot + 1}Ataque`) || "for",
-                        dano: [obterTextoDanoArma(arma), arma.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "),
-                        propriedade: montarTextoPropriedadeArma(arma, resumirMunicaoNoTexto(obterResumoPropriedadesArma(arma, false))),
-                        proficiente: !!arma.proficiente,
-                        usaMunicao: !!arma.propriedades?.municao,
-
-                        // 🔥 NOVO PADRÃO
-                        arma_municao_id: arma.arma_municao_id || null,
-
-                        // 🔽 dados derivados (somente visual)
-                        nomeMunicao: (() => {
-                            if (!arma.arma_municao_id) return "";
-
-                            const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
-                                .find(el => el.dataset.id === arma.arma_municao_id);
-
-                            return item?.querySelector('[data-campo="outro_nome"]')?.value || "";
-                        })(),
-
-                        qtdMunicao: (() => {
-                            if (!arma.arma_municao_id) return "";
-
-                            const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
-                                .find(el => el.dataset.id === arma.arma_municao_id);
-
-                            return item?.querySelector('[data-campo="outro_quantidade"]')?.value || "";
-                        })()
-                    };
-                })
-                .filter(arma => arma && arma.nome);
-        }
 
         function aplicarEstiloProficienciaCampos(ids, proficiente) {
             ids.forEach(id => {
@@ -7239,6 +7541,7 @@ document.getElementById('armaduraNome')?.addEventListener('change', function () 
         }
         // ========================= FIM EQUIPAMENTOS COMBATE =========================
         function sincronizarEquipamentosCombate() {
+            normalizarTodasArmas();
             const armas = coletarArmas();
             const armaduras = coletarArmaduras();
             const escudos = coletarEscudos();
@@ -8268,13 +8571,13 @@ document.getElementById('armaduraNome')?.addEventListener('change', function () 
             atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual);
 
         }
-// Uso: obterArmaduraSeguro(0)
-function obterArmaduraSeguro(indice = 0) {
-  const p = window.personagem;
-  if (!p || !Array.isArray(p.armaduras)) return null;
-  return p.armaduras[indice] || null;
-}
-window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
+        // Uso: obterArmaduraSeguro(0)
+        function obterArmaduraSeguro(indice = 0) {
+            const p = window.personagem;
+            if (!p || !Array.isArray(p.armaduras)) return null;
+            return p.armaduras[indice] || null;
+        }
+        window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
         function carregarFicha(personagem) {
             aplicarDadosFicha(personagem)
@@ -8700,17 +9003,7 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
             }
         }
 
-        function getModificadorBaseAtributo(chaveAtributo) {
-            const chaveNormalizada = normalizarChaveAtributo(chaveAtributo);
-            if (!chaveNormalizada) return null;
 
-            const campoAtributo = document.getElementById("salv_" + chaveNormalizada);
-            const valorBase = parseInt(campoAtributo?.value);
-
-            if (Number.isNaN(valorBase)) return null;
-
-            return Math.floor((valorBase - 10) / 2);
-        }
 
         function formatarRotuloAtributo(chaveAtributo) {
             const chaveNormalizada = normalizarChaveAtributo(chaveAtributo);
@@ -9590,8 +9883,14 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
             if (!campoAtributo || !campoCD || !campoAtaque) return;
 
-            const modificadorBase = getModificadorBaseAtributo(campoAtributo.value);
+            let chave = (campoAtributo.value || "").toLowerCase();
 
+            // extrai 'for' ou 'des' mesmo se vier "FOR (+3)"
+            if (chave.includes("des")) chave = "des";
+            else if (chave.includes("for")) chave = "for";
+            else chave = "for"; // fallback seguro
+
+            const modificadorBase = getModificadorBaseAtributo(chave);
             if (modificadorBase === null) {
                 campoCD.value = "";
                 campoAtaque.value = "";
@@ -9901,11 +10200,15 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
             lista.className = 'arma-resumo-lista';
 
             armas.forEach(arma => {
+                if (!arma?.nome) return;
+
                 const item = document.createElement('div');
                 item.className = 'arma-resumo-item';
+
                 if (!arma.proficiente) {
                     item.classList.add('nao-proficiente');
                 }
+
                 item.tabIndex = 0;
                 item.setAttribute('role', 'button');
                 item.setAttribute('aria-label', `Atacar com ${arma.nome}`);
@@ -9913,15 +10216,18 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
                 const topo = document.createElement('div');
                 topo.className = 'arma-resumo-topo';
 
-                const icone = arma.usaMunicao ? '🏹' : '⚔️';
+                const nome = (arma.nome || "").trim();
+
+                const icone = arma.propriedade?.toLowerCase().includes("munição")
+                    ? '🏹'
+                    : '⚔️';
+
                 let municaoTitulo = '';
 
-                if (arma.usaMunicao) {
-
+                if (icone === '🏹') {
                     const idMunicao = arma.arma_municao_id;
 
                     if (idMunicao) {
-
                         const itemMunicao = [...document.querySelectorAll('#listaOutros .armadura-card')]
                             .find(el => el.dataset.id === idMunicao);
 
@@ -9936,12 +10242,21 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
                         }
                     }
                 }
-                topo.textContent = [arma.nome, icone, municaoTitulo].filter(Boolean).join('  ');
+
+                topo.textContent = [nome, icone, municaoTitulo]
+                    .filter(Boolean)
+                    .join('  ');
 
                 const detalhes = document.createElement('div');
                 detalhes.className = 'arma-resumo-detalhes';
-                const { textoResumo: textoAtaque } = getResumoCalculoAtaque(arma, arma.ataque);
-                detalhes.innerHTML = `<strong>Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}</strong><br>Propriedade: ${arma.propriedade || "-"}`;
+
+                // 🔥 CORREÇÃO PRINCIPAL
+                const resumo = getResumoCalculoAtaque(arma);
+                const textoAtaque = resumo?.textoResumo || "-";
+
+                detalhes.innerHTML =
+                    `<strong>Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}</strong>` +
+                    `<br>Propriedade: ${arma.propriedade || "-"}`;;
 
                 item.addEventListener('click', () => abrirModalAtaqueArma(arma));
                 item.addEventListener('keydown', evento => {
@@ -10520,6 +10835,48 @@ window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
         atualizarResumoAtaquesConjuracao();
         atualizarSubAbaArmas();
 
+        // limpeza
+        function normalizarTodasArmas() {
+            const armas = coletarArmas?.() || [];
+
+            armas.forEach((arma, index) => {
+                if (!arma) return;
+
+                // nome seguro
+                let nome = (
+                    arma.nome ||
+                    arma.arma_nome ||
+                    arma.arma ||
+                    ""
+                );
+
+                arma.nome = String(nome).trim() || `Arma ${index + 1}`;
+
+                // limpa legado
+                delete arma.arma_nome;
+                delete arma.arma;
+
+                // 🔥 atributo automático INTELIGENTE
+                const tipo = (arma.tipo || arma.arma_tipo || "").toLowerCase();
+                const props = JSON.stringify(arma.propriedades || {}).toLowerCase();
+
+                const ehDistancia =
+                    tipo.includes("dist") ||
+                    props.includes("distancia") ||
+                    props.includes("municao");
+
+                // 🔥 FORÇA correção se for arma à distância
+                if (ehDistancia) {
+                    arma.atributo = "des";
+                } else if (!["for", "des"].includes(arma.atributo)) {
+                    arma.atributo = "for";
+                }
+
+                arma.proficiente = !!arma.proficiente;
+            });
+
+            console.log("Armas normalizadas!");
+        }
 
 
     </script>
