@@ -2,29 +2,17 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Attach to Edge",
-            "port": 9222,
-            "request": "attach",
-            "type": "msedge",
-            "webRoot": "${workspaceFolder}"
-        },
-        {
-            "name": "Run Ficha DnD (Electron)",
-            "type": "node",
-            "request": "launch",
-            "runtimeExecutable": "C:/Program Files/nodejs/npm.cmd",
-            "args": [
-                "run",
-                "start"
-            ],
-            "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
-        },
-        {
-            "name": "Open Ficha DnD in Edge",
+            "name": "Edge Debug CLEAN",
             "type": "msedge",
             "request": "launch",
-            "file": "${workspaceFolder}/ficha/Ficha DnD - Tatagiba 1.0.html"
+            "url": "file:///${workspaceFolder}/ficha/Ficha%20DnD%20-%20Tatagiba%201.0.html",
+            "webRoot": "${workspaceFolder}",
+            "userDataDir": "${env:TEMP}/vscode-edge-debug",
+            "runtimeArgs": [
+                "--disable-extensions",
+                "--disable-default-apps"
+            ]
         }
     ]
 }
+``
