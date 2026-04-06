@@ -2165,7 +2165,7 @@
 
         .magia-modal-preparada-topo input {
             width: auto;
-            min-height: auto;
+            
         }
 
         .magia-modal-acoes {
@@ -2334,9 +2334,9 @@
         }
 
         .magia-formulario-campo select {
-            appearance: none;
             -webkit-appearance: none;
             -moz-appearance: none;
+            appearance: none;
             cursor: pointer;
         }
 
@@ -2464,7 +2464,7 @@
 
         .magia-formulario-campo.concentracao-inline input {
             width: auto;
-            min-height: auto;
+            
         }
 
         .magia-propriedades-checks {
@@ -2488,7 +2488,7 @@
 
         .magia-propriedades-checks input {
             width: auto;
-            min-height: auto;
+            
         }
 
         .magia-componentes-checks {
@@ -2508,7 +2508,7 @@
 
         .magia-componentes-checks input {
             width: auto;
-            min-height: auto;
+            
         }
 
         @media (max-width: 720px) {
@@ -4195,8 +4195,8 @@
             <div class="campo">
                 <div class="campo-titulo">Classe e Nível</div>
                 <input id="classeID" type="hidden">
-                <div class="campo-duplo">
-                    <select id="classeNomeID" class="classe-nome">
+                <div class="campo-duplo" title="Selecione a classe e o nível do personagem">
+                    <select id="classeNomeID" title="Selecione a classe" class="classe-nome">
                         <option value="">Selecione uma classe</option>
                         <option value="barbaro">Bárbaro</option>
                         <option value="bardo">Bardo</option>
@@ -4211,7 +4211,7 @@
                         <option value="paladino">Paladino</option>
                         <option value="patrulheiro">Patrulheiro</option>
                     </select>
-                    <span class="classe-separador">NV</span>
+                    <span class="classe-separador" title="Nível">NV</span>
                     <input id="classeNivelID" class="classe-nivel" value="1" type="number" readonly>
                 </div>
             </div>
@@ -4221,7 +4221,7 @@
             </div>
             <div class="campo">
                 <div class="campo-titulo">Antecedente</div><input id="antecedenteID"
-                    placeholder="Antecedente ou Origerm">
+                    placeholder="Antecedente ou Origem">
             </div>
             <div class="campo">
                 <div class="campo-titulo">Alinhamento</div>
