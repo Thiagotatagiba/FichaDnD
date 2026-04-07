@@ -26,6 +26,24 @@
             margin: 0;
         }
 
+        /* Remove spinner (Chrome, Edge, Safari) */
+        .item-preco-peso::-webkit-outer-spin-button,
+        .item-preco-peso::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Remove spinner + define aparência padrão */
+        .item-preco-peso {
+
+            -webkit-appearance: textfield;
+            /* Safari/Chrome antigos */
+            -moz-appearance: textfield;
+            /* Firefox */
+            appearance: textfield;
+            /* padrão moderno */
+        }
+
         /* ===== Estrutura principal da ficha ===== */
         .arma-equipamento {
             margin-bottom: 8px;
@@ -3585,36 +3603,43 @@
             z-index: 1;
         }
 
-        .arma-proficiencia {
+        .item-tipo-emoji {
             display: flex !important;
             position: absolute;
-            top: -15px;
-            left: -15px;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #3b2f1b, #1f170d);
-            border: 2px solid #d6c7a1;
-            color: #f4ecd8;
-            font-family: 'Metamorphous', serif;
-            display: flex;
+            left: -14px;
+            top: -16px;
+            text-shadow: #1a140d 1px 1px 2px, #1a140d 0 0 1px;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            font-size: 20px;
+
+        }
+
+        .item-proficiencia {
+            display: flex !important;
+            position: absolute;
+            left: 9px;
+            top: 32px;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-weight: bold;
             z-index: 10;
+            font-size: 11px;
+            text-shadow: #1a140d 1px 1px 2px, #1a140d 0 0 4px;
         }
 
-        .arma-proficiencia.nao::after {
-            content: "X";
-            position: absolute;
-            background: radial-gradient(circle, #7a1c1c, #3a0d0d);
+        .item-proficiencia.nao::after {
+            content: "⛔";
             color: red;
-            font-weight: bold;
-            font-size: 18px;
+            position: absolute;
+            font-size: 12px;
+            text-shadow: #1a140d 1px 1px 2px, #1a140d 0 0 6px;
         }
 
-        .arma-linha {
+        .item-linha {
             display: grid;
             gap: 12px;
             margin-bottom: 12px;
@@ -3622,19 +3647,19 @@
             z-index: 2;
         }
 
-        .arma-linha-3 {
+        .item-linha-3 {
             grid-template-columns: 2fr 1fr 1.3fr;
         }
 
-        .arma-linha-2 {
+        .item-linha-2 {
             grid-template-columns: 1fr 1.2fr 1.5fr;
         }
 
-        .arma-linha-1 {
+        .item-linha-1 {
             grid-template-columns: 1fr;
         }
 
-        .arma-linha-2-cols {
+        .item-linha-2-cols {
             grid-template-columns: 1fr 1fr;
         }
 
@@ -3730,7 +3755,7 @@
             gap: 4px;
         }
 
-        .arma-linha-inferior {
+        .item-linha-inferior {
             font-size: 20px;
             position: absolute;
             bottom: -10px;
@@ -3741,7 +3766,7 @@
             z-index: 4;
         }
 
-        .arma-campo-icone {
+        .item-campo-icone {
             display: flex;
             align-items: flex-start;
             gap: 0;
@@ -3749,35 +3774,51 @@
             position: relative;
         }
 
-        .arma-emoji {
+        .item-emoji {
             display: flex;
             align-items: flex-end;
             justify-content: center;
             width: 25px;
             height: 25px;
-            background: radial-gradient(circle, #2d2416, #1a140d);
-            border: 1px solid #3b2f1b;
-            border-radius: 50%;
             flex-shrink: 0;
-            font-size: 18px;
-            color: #f4ecd8;
+            font-size: 16px;
             position: absolute;
-            left: -2;
-            top: -3px;
+            left: -6px;
+            top: 2px;
             z-index: 3;
+            text-shadow: #1a140d 1px 1px 2px, #1a140d 0 0 4px;
         }
 
-        .arma-campo-pequeno {
+        .item-emoji.moeda {
+            cursor: pointer;
+            transition: transform 0.15s ease, filter 0.15s ease;
+        }
+
+        .item-emoji.moeda:hover {
+            transform: scale(1.15);
+            filter: brightness(1.2);
+        }
+
+        .item-emoji.moeda:active {
+            transform: scale(0.95);
+        }
+
+        .item-preco-peso {
             width: 50px;
             height: 32px;
             font-size: 12px;
-            text-align: center;
+            text-align: right;
             border: 1px solid #3b2f1b;
             background: #fdfaf2;
-            padding: 0px 0px 0px 8px !important;
             box-sizing: border-box;
             border-radius: 4px;
-            margin-left: 16px;
+            padding-right: 13px !IMPORTANT;
+            margin-left: 9px !important;
+        }
+
+        .item-quantidade {
+            padding: 0px 0px 0px 8px !important;
+            border-radius: 4px;
         }
 
         .arma-container-descricao {
@@ -3791,7 +3832,7 @@
             margin-bottom: 4px;
         }
 
-        .arma-descricao {
+        .item-descricao {
             width: 100%;
             height: 60px;
             resize: none;
@@ -3802,6 +3843,30 @@
             font-family: 'Metamorphous', serif;
             box-sizing: border-box;
         }
+
+        .campo-com-sufixo {
+            position: relative;
+            display: inline-block;
+        }
+
+        .campo-com-sufixo .item-preco-peso {
+            padding-right: 28px;
+            /* espaço pro sufixo */
+        }
+
+        .campo-com-sufixo .sufixo {
+            position: absolute;
+            right: 2px;
+            top: 73%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            font-size: 8px;
+            color: #5a4a2f;
+            font-weight: bold;
+            z-index: 10;
+        }
+
+
 
         .armas-container {
             position: relative;
@@ -3846,23 +3911,23 @@
             padding-top: 45px;
         }
 
-        .arma-card .arma-campo-pequeno,
-        .armadura-card .arma-campo-pequeno {
+        .arma-card .item-preco-peso,
+        .armadura-card .item-preco-peso {
             width: 45px !important;
             text-align: center;
             height: 20px !important;
-            font-size: 10px !important;
+            font-size: 9px !important;
         }
 
-        .arma-nome-container {
+        .item-nome-container {
             flex: 1;
         }
 
-        .arma-nome-container input {
+        .item-nome-container input {
             width: 100%;
         }
 
-        .arma-toggle {
+        .item-toggle {
             font-size: 16px;
             margin-left: auto;
             cursor: pointer;
@@ -3874,7 +3939,7 @@
             display: none;
         }
 
-        .arma-header {
+        .item-header {
             display: flex;
             gap: 5px;
             justify-content: space-between;
@@ -3883,7 +3948,7 @@
             cursor: pointer;
         }
 
-        .outro-header {
+        .item-header {
             justify-content: flex-start;
             align-items: flex-end;
             gap: 8px;
@@ -3899,7 +3964,7 @@
             margin-left: 0;
         }
 
-        .btn-remover-arma {
+        .btn-remover-item {
             position: relative;
             color: #8b4513;
             background: #3b2f1b;
@@ -3913,7 +3978,7 @@
             left: -88px;
         }
 
-        .btn-remover-arma:hover {
+        .btn-remover-item:hover {
             color: #ff4d4d;
             transform: scale(1.2);
             background: red;
@@ -4084,6 +4149,7 @@
             pointer-events: none;
         }
     </style>
+
 </head>
 
 <body>
@@ -5301,37 +5367,45 @@
                                 <div id="armaModelo" class="arma-card fechado oculto">
 
 
-                                    <div class="arma-linha-inferior">
-                                        <!-- Botão de Remover Arma -->
-                                        <button type="button" class="btn-remover-arma" title="Remover Arma">🗑️</button>
+                                    <div class="item-linha-inferior">
 
-                                        <div class="arma-campo-icone">
-                                            <span class="arma-emoji">🪙</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="arma_preco"
-                                                aria-label="Preço da arma">
+                                        <!-- Botão de Remover Arma -->
+                                        <button type="button" class="btn-remover-item" title="Remover Arma">🗑️</button>
+
+                                        <div class="item-campo-icone">
+                                            <span class="item-emoji moeda">🪙</span>
+                                            <div class="campo-com-sufixo">
+                                                <input type="number" min="0" step="0.1" value="0"
+                                                    class="item-preco-peso" data-campo="arma_preco">
+                                                <span class="sufixo">PO</span>
+                                            </div>
                                         </div>
-                                        <div class="arma-campo-icone">
-                                            <span class="arma-emoji">⚖️</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="arma_peso"
-                                                aria-label="Peso da arma" type="text">
+                                        <div class="item-campo-icone">
+                                            <span class="item-emoji">⚖️</span>
+                                            <div class="campo-com-sufixo">
+                                                <input type="number" class="item-preco-peso" value="0" min="0"
+                                                    step="0.1" data-campo="arma_peso">
+                                                <span class="sufixo">kg</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="arma-proficiencia nao">P</div>
-                                    <div class="arma-header"></div>
+                                    <div class="item-tipo-emoji">⚔️</div>
 
+                                    <div class="item-header"></div>
+                                    <div title="Proficiência" class="item-proficiencia nao">🅿️</div>
                                     <!-- LINHA 1: Nome -->
-                                    <div class="arma-linha arma-linha-1 arma-header" onclick="toggleArma(this, event)">
+                                    <div class="item-linha item-linha-1 item-header" onclick="toggleArma(this, event)">
 
-                                        <div class="arma-nome-container">
+                                        <div class="item-nome-container">
 
                                             <input type="text" data-campo="nome" aria-label="Nome da arma"
                                                 placeholder="Nome da arma">
                                         </div>
-                                        <span class="arma-toggle">🔽</span>
+                                        <span class="item-toggle">🔽</span>
                                     </div>
 
                                     <div class="arma-conteudo"> <!-- LINHA 2: Dano + Tipo de Dano -->
-                                        <div class="arma-linha arma-linha-2-cols">
+                                        <div class="item-linha item-linha-2-cols">
                                             <div>
                                                 <label>Dano</label>
                                                 <div class="container_dano">
@@ -5359,7 +5433,7 @@
                                         </div>
 
                                         <!-- LINHA 3: Tipo de Arma + Distância -->
-                                        <div class="arma-linha arma-linha-2-cols">
+                                        <div class="item-linha item-linha-2-cols">
                                             <div>
                                                 <select data-campo="arma_tipo" aria-label="Tipo da arma">
                                                     <option value="">Tipo de Arma</option>
@@ -5380,7 +5454,7 @@
                                         </div>
 
                                         <!-- LINHA 4: Munição (se necessário) -->
-                                        <div class="container_municao arma-linha arma-linha-1 oculto">
+                                        <div class="container_municao item-linha item-linha-1 oculto">
                                             <div>
                                                 <label>Munição</label>
                                                 <div class="arma-distancia">
@@ -5391,7 +5465,7 @@
                                         </div>
 
                                         <!-- PROPRIEDADES -->
-                                        <div class="arma-linha">
+                                        <div class="item-linha">
                                             <label>Propriedades</label>
                                             <div class="arma-propriedades">
                                                 <label><input class="propriedade-checkbox" data-propriedade="acuidade"
@@ -5425,7 +5499,7 @@
                                         </div>
                                         <div class="arma-container-descricao container_descricao oculto">
                                             <label>Descrição do efeito Especial</label>
-                                            <textarea class="arma-descricao" data-campo="arma_descricao"
+                                            <textarea class="item-descricao" data-campo="arma_descricao"
                                                 aria-label="Descrição especial da arma"></textarea>
                                         </div>
                                     </div>
@@ -5443,35 +5517,43 @@
                                 </div>
 
                                 <div id="armaduraModelo" class="armadura-card fechado oculto">
-                                    <div class="arma-linha-inferior">
-                                        <button type="button" class="btn-remover-arma"
+                                    <div class="item-linha-inferior">
+                                        <button type="button" class="btn-remover-item"
                                             title="Remover Armadura">🗑️</button>
 
-                                        <div class="arma-campo-icone">
-                                            <span class="arma-emoji">🪙</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="armadura_preco"
-                                                aria-label="Preço da armadura">
+                                        <div class="item-campo-icone">
+                                            <span class="item-emoji moeda">🪙</span>
+                                            <div class="campo-com-sufixo">
+                                                <input type="number" class="item-preco-peso" min="0" step="0.1"
+                                                    value="0" data-campo="armadura_preco"
+                                                    aria-label="Preço da armadura">
+                                                <span class="sufixo">PO</span>
+                                            </div>
+
                                         </div>
-                                        <div class="arma-campo-icone">
-                                            <span class="arma-emoji">⚖️</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="armadura_peso"
-                                                aria-label="Peso da armadura">
+                                        <div class="item-campo-icone">
+                                            <span class="item-emoji">⚖️</span>
+                                            <div class="campo-com-sufixo">
+                                                <input type="number" class="item-preco-peso" value="0" min="0"
+                                                    step="0.1" data-campo="armadura_peso">
+                                                <span class="sufixo">kg</span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="arma-proficiencia nao">P</div>
-
-                                    <div class="arma-linha arma-linha-1 arma-header"
+                                    <div class="item-tipo-emoji">👕</div>
+                                    <div title="Proficiência" class="item-proficiencia nao">🅿️</div>
+                                    <div class="item-linha item-linha-1 item-header"
                                         onclick="toggleArmadura(this, event)">
-                                        <div class="arma-nome-container">
+                                        <div class="item-nome-container">
                                             <input type="text" data-campo="armadura_nome" aria-label="Nome da armadura"
                                                 placeholder="Nome da armadura">
                                         </div>
-                                        <span class="arma-toggle">🔽</span>
+                                        <span class="item-toggle">🔽</span>
                                     </div>
 
                                     <div class="arma-conteudo">
-                                        <div class="arma-linha armadura-linha-2-cols">
+                                        <div class="item-linha armadura-linha-2-cols">
                                             <div>
                                                 <label>CA</label>
                                                 <input type="number" data-campo="armadura_ca" min="0" step="1"
@@ -5487,7 +5569,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="arma-linha armadura-linha-2-cols">
+                                        <div class="item-linha armadura-linha-2-cols">
                                             <div>
                                                 <label>Força</label>
                                                 <input type="text" data-campo="armadura_forca" placeholder="Ex: 15"
@@ -5504,7 +5586,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="arma-linha arma-linha-1">
+                                        <div class="item-linha item-linha-1">
                                             <div>
                                                 <label>Tipo de Armadura</label>
                                                 <select data-campo="armadura_tipo" aria-label="Tipo de armadura">
@@ -5525,40 +5607,47 @@
                                     <button type="button" class="inventario-botao-add" onclick="adicionarNovoEscudo()"
                                         title="Adicionar novo escudo ou vestimento"
                                         aria-label="Adicionar novo escudo ou vestimento">+</button>
-                                    </div>
+                                </div>
 
-                                     <div id="escudoModelo" class="armadura-card escudo-card fechado oculto">
-                                    <div class="arma-linha-inferior">
-                                        <button type="button" class="btn-remover-arma"
+                                <div id="escudoModelo" class="armadura-card escudo-card fechado oculto">
+                                    <div class="item-linha-inferior">
+                                        <button type="button" class="btn-remover-item"
                                             title="Remover Escudo ou Vestimento">🗑️</button>
 
-                                        <div class="arma-campo-icone">
-                                            <span class="arma-emoji">🪙</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="escudo_preco"
-                                                aria-label="Preço do escudo ou vestimento">
+                                        <div class="item-campo-icone">
+                                            <span class="item-emoji moeda">🪙</span>
+                                            <div class="campo-com-sufixo">
+                                                <input type="number" min="0" step="0.1" value="0"
+                                                    class="item-preco-peso" data-campo="escudo_preco">
+                                                <span class="sufixo">PO</span>
+                                            </div>
                                         </div>
-                                        <div class="arma-campo-icone">
-                                            <span class="arma-emoji">⚖️</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="escudo_peso"
-                                                aria-label="Peso do escudo ou vestimento">
+                                        <div class="item-campo-icone">
+                                            <span class="item-emoji">⚖️</span>
+                                            <div class="campo-com-sufixo">
+                                                <input type="number" class="item-preco-peso" value="0" min="0"
+                                                    step="0.1" data-campo="escudo_peso"
+                                                    aria-label="Peso do escudo ou vestimento">
+                                                <span class="sufixo">kg</span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="arma-proficiencia nao">P</div>
-
-                                    <div class="arma-linha arma-linha-1 arma-header"
+                                    <div class="item-tipo-emoji">🛡️</div>
+                                    <div title="Proficiência" class="item-proficiencia nao">🅿️</div>
+                                    <div class="item-linha item-linha-1 item-header"
                                         onclick="toggleEscudo(this, event)">
-                                        <div class="arma-nome-container">
+                                        <div class="item-nome-container">
 
                                             <input type="text" data-campo="escudo_nome"
                                                 aria-label="Nome do escudo ou vestimento"
                                                 placeholder="Nome do escudo ou vestimento">
                                         </div>
-                                        <span class="arma-toggle">🔽</span>
+                                        <span class="item-toggle">🔽</span>
                                     </div>
 
                                     <div class="arma-conteudo">
-                                        <div class="arma-linha armadura-linha-2-cols">
+                                        <div class="item-linha armadura-linha-2-cols">
                                             <div>
                                                 <label>CA</label>
                                                 <input type="text" data-campo="escudo_ca" placeholder="+2"
@@ -5589,42 +5678,46 @@
                                 </div>
 
                                 <div id="outroModelo" class="armadura-card outro-card fechado oculto">
-                                    <div class="outro-linha-inferior">
-                                        <button type="button" class="btn-remover-outro"
-                                            title="Remover Item">🗑️</button>
+                                    <div class="item-linha-inferior">
+                                        <button type="button" class="btn-remover-item" title="Remover Item">🗑️</button>
 
-                                        <div class="outro-campo-icone">
-                                            <span class="outro-emoji">🪙</span>
-                                            <input type="text" class="outro-campo-pequeno" data-campo="outro_preco"
-                                                aria-label="Preço do item">
+                                        <div class="item-campo-icone">
+                                            <span class="item-emoji moeda">🪙</span>
+                                            <div class="campo-com-sufixo">
+                                                <input type="number" min="0" step="0.1" value="0"
+                                                    class="item-preco-peso" data-campo="outro_preco"
+                                                    aria-label="Preço do item">
+                                                <span class="sufixo">PO</span>
+                                            </div>
                                         </div>
-                                        <div class="outro-campo-icone">
-                                            <span class="outro-emoji">⚖️</span>
-                                            <input type="text" class="outro-campo-pequeno" data-campo="outro_peso"
-                                                aria-label="Peso do item">
+                                        <div class="item-campo-icone">
+                                            <span class="item-emoji">⚖️</span>
+                                            <div class="campo-com-sufixo">
+                                                <input type="number" min="0" step="0.1" value="0"
+                                                    class="item-preco-peso" data-campo="outro_peso"
+                                                    aria-label="Peso do item">
+                                                <span class="sufixo">kg</span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <!-- placeholder proficiência para manter layout igual aos outros cards -->
-                                    <div class="arma-proficiencia nao" style="display:none;">P</div>
-
+                                    <div class="item-tipo-emoji" style="display:none;">📦</div>
                                     <!-- Header do card -->
-                                    <div class="arma-linha arma-linha-1 outro-header"
-                                        onclick="toggleOutro(this, event)">
+                                    <div class="item-linha item-linha-1 item-header" onclick="toggleOutro(this, event)">
                                         <div class="outro-quantidade-container">
-                                            <input type="number" min="0" step="1" class="outro-campo-pequeno"
+                                            <input type="number" min="0" step="1" class="item-quantidade"
                                                 data-campo="outro_quantidade" value="1" aria-label="Quantidade do item">
                                         </div>
-                                        <div class="outro-nome-container">
+                                        <div class="item-nome-container">
                                             <input type="text" data-campo="outro_nome" aria-label="Nome do item"
                                                 placeholder="Nome do item">
                                         </div>
-                                        <span class="outro-toggle">🔽</span>
+                                        <span class="item-toggle">🔽</span>
                                     </div>
 
                                     <!-- Conteúdo do card -->
                                     <div class="arma-conteudo">
-                                        <div class="arma-linha arma-linha-2-cols">
+                                        <div class="item-linha item-linha-2-cols">
                                             <div>
                                                 <label>Tipo</label>
                                                 <select data-campo="outro_tipo" aria-label="Tipo do item">
@@ -5632,17 +5725,17 @@
                                                     <option value="Ferramentas">🔧 Ferramentas</option>
                                                     <option value="Ingrediente">🌿 Ingrediente</option>
                                                     <option value="Kit">🧰 Kit</option>
-                                                    <option value="Municao">🏹 Munição</option>
-                                                    <option value="Outros">📦 Outros</option>
+                                                    <option value="Municao">🎯 Munição</option>
+                                                    <option value="Outros" selected>📦 Outros</option>
                                                     <option value="Pocao">🧪 Poção</option>
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <div class="arma-linha">
+                                        <div class="item-linha">
                                             <div>
                                                 <label>Descrição</label>
-                                                <textarea class="outro-descricao" data-campo="outro_descricao"
+                                                <textarea class="item-descricao" data-campo="outro_descricao"
                                                     aria-label="Descrição do item"></textarea>
                                             </div>
                                         </div>
@@ -5661,6 +5754,66 @@
     </div>
 
     <script>
+        document.addEventListener('click', function (e) {
+    const moedaIcon = e.target.closest('.item-emoji.moeda');
+    if (!moedaIcon) return;
+
+    e.stopPropagation();
+
+    const bloco = moedaIcon.closest('.item-linha') || moedaIcon.closest('div');
+    if (!bloco) return;
+
+    const input = bloco.querySelector('[data-campo*="preco"]');
+    const sufixo = bloco.querySelector('.sufixo');
+
+    if (!input) return;
+
+    trocarMoeda(input, sufixo);
+});
+
+        function trocarMoeda(input, sufixo) {
+            const TIPOS = ["PO", "PL", "PE", "PP", "PC"];
+
+            let atual = input.dataset.moeda || "PO";
+            let index = TIPOS.indexOf(atual);
+            let proximo = TIPOS[(index + 1) % TIPOS.length];
+
+            input.dataset.moeda = proximo;
+
+            if (sufixo) {
+                sufixo.textContent = proximo;
+            }
+        }
+
+        function atualizarEmojiItem(select) {
+            // pega o option selecionado
+            const optionSelecionado = select.options[select.selectedIndex];
+
+            // extrai o emoji (primeiro caractere do texto)
+            const emoji = optionSelecionado.textContent.trim().split(" ")[0];
+
+            // encontra o container do item (subindo no DOM)
+            const itemContainer = select.closest('.arma-conteudo').parentElement;
+
+            // encontra o div do emoji
+            const emojiDiv = itemContainer.querySelector('.item-tipo-emoji');
+
+            if (emojiDiv) {
+                emojiDiv.textContent = emoji;
+            }
+        }
+        document.addEventListener('change', function (e) {
+            if (e.target.matches('select[data-campo="outro_tipo"]')) {
+                atualizarEmojiItem(e.target);
+            }
+        });
+        function atualizarTodosEmojis() {
+            const selects = document.querySelectorAll('select[data-campo="outro_tipo"]');
+
+            selects.forEach(select => {
+                atualizarEmojiItem(select);
+            });
+        }
         const campo = document.getElementById("bonusProf");
 
         Object.defineProperty(campo, "value", {
@@ -6714,8 +6867,8 @@ Bônus de Proficiência: +${bonusProf}
             const dano = obterTextoDanoArma(arma) || "-";
 
             const emojiProf = proficiente
-                ? `<span title="Proficiente">⭐<br>💥</span>`
-                : `<span title="Não proficiente">❌<br>💥</span>`;
+                ? `<span title="Proficiente">🅿️<br>💥</span>`
+                : `<span title="Não proficiente">⛔<br>💥</span>`;
 
             const linha1 = `${nome} ${emojiProf} ${dano} ${tipo}`;
 
@@ -6860,7 +7013,7 @@ Bônus de Proficiência: +${bonusProf}
                 ? armadura.proficiente
                 : (typeof getTemProficienciaArmadura === 'function' ? getTemProficienciaArmadura(tipo) : false);
 
-            const emojiProf = proficiente ? `<span title="Proficiente">⭐<br></span>` : `<span title="Não proficiente">❌<br></span>`;
+            const emojiProf = proficiente ? `<span title="Proficiente">🅿️<br></span>` : `<span title="Não proficiente">⛔<br></span>`;
 
             return {
                 nome,
@@ -6993,7 +7146,7 @@ Bônus de Proficiência: +${bonusProf}
                 : getTemProficienciaEscudo(tipo);
 
             return {
-                linha1: `${nome} ${proficiente ? "⭐" : "❌"} ${ca}`,
+                linha1: `${nome} ${proficiente ? "🅿️" : "⛔"} ${ca}`,
                 linha2: `Tipo: ${tipo}`,
                 proficiente
             };
@@ -7664,7 +7817,7 @@ Bônus de Proficiência: +${bonusProf}
         // atualiza o "P" de proficiência quando o tipo de arma muda, verificando os checkboxes de proficiência
         function atualizarProficienciaCard(card) {
             const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
-            const divP = card.querySelector('.arma-proficiencia');
+            const divP = card.querySelector('.item-proficiencia');
 
             if (!selectTipo || !divP) return;
 
@@ -7685,7 +7838,7 @@ Bônus de Proficiência: +${bonusProf}
             // ==========================================
             // 1. LÓGICA DE REMOVER A ARMA
             // ==========================================
-            const btnRemover = card.querySelector('.btn-remover-arma');
+            const btnRemover = card.querySelector('.btn-remover-item');
             if (btnRemover) {
                 btnRemover.addEventListener('click', function (e) {
                     e.stopPropagation(); // Impede que o card abra/feche ao clicar no X
@@ -7699,7 +7852,7 @@ Bônus de Proficiência: +${bonusProf}
             // ==========================================
             // 2. LÓGICA DO "P" DE PROFICIÊNCIA
             // ==========================================
-            const divP = card.querySelector('.arma-proficiencia');
+            const divP = card.querySelector('.item-proficiencia');
             const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
 
             function atualizarStatusP() {
@@ -7850,7 +8003,7 @@ Bônus de Proficiência: +${bonusProf}
 
                     document.querySelectorAll('.arma-card:not(#armaModelo)').forEach(card => {
                         const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
-                        const divP = card.querySelector('.arma-proficiencia');
+                        const divP = card.querySelector('.item-proficiencia');
 
                         if (selectTipo && divP && selectTipo.value === tipoAlvo) {
                             if (el.checked) {
@@ -7917,7 +8070,7 @@ Bônus de Proficiência: +${bonusProf}
 
             lista.forEach(card => {
                 const arma = {};
-                const indicadorProficiencia = card.querySelector('.arma-proficiencia');
+                const indicadorProficiencia = card.querySelector('.item-proficiencia');
 
                 // 1. Campos normais
                 card.querySelectorAll('[data-campo]').forEach(campo => {
@@ -7947,7 +8100,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function atualizarProficienciaCardArmadura(card) {
             const selectTipo = card.querySelector('[data-campo="armadura_tipo"]');
-            const divP = card.querySelector('.arma-proficiencia');
+            const divP = card.querySelector('.item-proficiencia');
 
             if (!selectTipo || !divP) return;
 
@@ -7957,7 +8110,7 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         function inicializarEventosArmadura(card) {
-            const btnRemover = card.querySelector('.btn-remover-arma');
+            const btnRemover = card.querySelector('.btn-remover-item');
             if (btnRemover) {
                 btnRemover.addEventListener('click', function (e) {
                     e.stopPropagation();
@@ -7969,7 +8122,7 @@ Bônus de Proficiência: +${bonusProf}
                 });
             }
 
-            const divP = card.querySelector('.arma-proficiencia');
+            const divP = card.querySelector('.item-proficiencia');
             const selectTipo = card.querySelector('[data-campo="armadura_tipo"]');
 
             if (divP) {
@@ -8022,7 +8175,7 @@ Bônus de Proficiência: +${bonusProf}
 
             lista.forEach(card => {
                 const armadura = {};
-                const indicadorProficiencia = card.querySelector('.arma-proficiencia');
+                const indicadorProficiencia = card.querySelector('.item-proficiencia');
 
                 card.querySelectorAll('[data-campo]').forEach(campo => {
                     armadura[campo.dataset.campo] = campo.value;
@@ -8040,7 +8193,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function atualizarProficienciaCardEscudo(card) {
             const selectTipo = card.querySelector('[data-campo="escudo_tipo"]');
-            const divP = card.querySelector('.arma-proficiencia');
+            const divP = card.querySelector('.item-proficiencia');
 
             if (!selectTipo || !divP) return;
 
@@ -8050,7 +8203,7 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         function inicializarEventosEscudo(card) {
-            const btnRemover = card.querySelector('.btn-remover-arma');
+            const btnRemover = card.querySelector('.btn-remover-item');
             if (btnRemover) {
                 btnRemover.addEventListener('click', function (e) {
                     e.stopPropagation();
@@ -8062,7 +8215,7 @@ Bônus de Proficiência: +${bonusProf}
                 });
             }
 
-            const divP = card.querySelector('.arma-proficiencia');
+            const divP = card.querySelector('.item-proficiencia');
             const selectTipo = card.querySelector('[data-campo="escudo_tipo"]');
 
             if (divP) {
@@ -8113,7 +8266,7 @@ Bônus de Proficiência: +${bonusProf}
             const lista = document.querySelectorAll('#listaEscudos .escudo-card');
             lista.forEach(card => {
                 const escudo = {};
-                const indicadorProficiencia = card.querySelector('.arma-proficiencia');
+                const indicadorProficiencia = card.querySelector('.item-proficiencia');
 
                 card.querySelectorAll('[data-campo]').forEach(campo => {
                     escudo[campo.dataset.campo] = campo.value;
@@ -8131,7 +8284,7 @@ Bônus de Proficiência: +${bonusProf}
 
         // O card de "outros" é mais simples, sem proficiência ou propriedades, então a lógica é mais direta
         function inicializarEventosOutro(card) {
-            const btnRemover = card.querySelector('.btn-remover-arma');
+            const btnRemover = card.querySelector('.btn-remover-item');
             if (btnRemover) {
                 btnRemover.addEventListener('click', function (e) {
                     e.stopPropagation();
@@ -8217,7 +8370,7 @@ Bônus de Proficiência: +${bonusProf}
             if (event.target.tagName === 'INPUT') return;
 
             const card = header.closest('.arma-card');
-            const icon = header.querySelector('.arma-toggle');
+            const icon = header.querySelector('.item-toggle');
 
             card.classList.toggle('fechado');
 
@@ -8231,8 +8384,8 @@ Bônus de Proficiência: +${bonusProf}
         function toggleArmadura(header, event) {
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
 
-            const card = header.closest('.arma-card');
-            const icon = header.querySelector('.arma-toggle');
+            const card = header.closest('.armadura-card');
+            const icon = header.querySelector('.item-toggle');
 
             card.classList.toggle('fechado');
 
@@ -8247,7 +8400,7 @@ Bônus de Proficiência: +${bonusProf}
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
 
             const card = header.closest('.escudo-card');
-            const icon = header.querySelector('.arma-toggle');
+            const icon = header.querySelector('.item-toggle');
 
             card.classList.toggle('fechado');
 
@@ -8261,8 +8414,8 @@ Bônus de Proficiência: +${bonusProf}
         function toggleOutro(header, event) {
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT' || event.target.tagName === 'TEXTAREA') return;
 
-            const card = header.closest('.equipamento-card');
-            const icon = header.querySelector('.arma-toggle');
+            const card = header.closest('.outro-card');
+            const icon = header.querySelector('.item-toggle');
 
             card.classList.toggle('fechado');
 
@@ -10665,7 +10818,7 @@ Bônus de Proficiência: +${bonusProf}
             aplicarFormatoCA('armaduraCA');
             aplicarFormatoCA('outroEquipadoCA');
             aplicarFormatoCA('escudoCA');
-
+            atualizarTodosEmojis()
             normalizarPosicaoAtaque();
             desenharRadar();
         }
@@ -10829,7 +10982,7 @@ Bônus de Proficiência: +${bonusProf}
                         }, 0);
 
                         if (typeof dadosArma.proficiente === "boolean") {
-                            const indicador = novoCard.querySelector('.arma-proficiencia');
+                            const indicador = novoCard.querySelector('.item-proficiencia');
                             if (indicador) {
                                 indicador.classList.toggle('nao', !dadosArma.proficiente);
                                 indicador.classList.toggle('ativo', dadosArma.proficiente);
@@ -10863,7 +11016,7 @@ Bônus de Proficiência: +${bonusProf}
                         });
 
                         if (typeof dadosArmadura.proficiente === "boolean") {
-                            const indicador = novoCard.querySelector('.arma-proficiencia');
+                            const indicador = novoCard.querySelector('.item-proficiencia');
                             if (indicador) {
                                 indicador.classList.toggle('nao', !dadosArmadura.proficiente);
                                 indicador.classList.toggle('ativo', dadosArmadura.proficiente);
@@ -10897,7 +11050,7 @@ Bônus de Proficiência: +${bonusProf}
                         });
 
                         if (typeof dadosEscudo.proficiente === "boolean") {
-                            const indicador = novoCard.querySelector('.arma-proficiencia');
+                            const indicador = novoCard.querySelector('.item-proficiencia');
                             if (indicador) {
                                 indicador.classList.toggle('nao', !dadosEscudo.proficiente);
                                 indicador.classList.toggle('ativo', dadosEscudo.proficiente);
