@@ -5525,9 +5525,9 @@
                                     <button type="button" class="inventario-botao-add" onclick="adicionarNovoEscudo()"
                                         title="Adicionar novo escudo ou vestimento"
                                         aria-label="Adicionar novo escudo ou vestimento">+</button>
-                                </div>
+                                    </div>
 
-                                <div id="escudoModelo" class="armadura-card fechado oculto">
+                                     <div id="escudoModelo" class="armadura-card escudo-card fechado oculto">
                                     <div class="arma-linha-inferior">
                                         <button type="button" class="btn-remover-arma"
                                             title="Remover Escudo ou Vestimento">🗑️</button>
@@ -5579,6 +5579,7 @@
 
                                 <div id="listaEscudos"></div>
                             </div>
+
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo-barra">
                                     <div class="inventario-subtitulo">📦 Outros</div>
@@ -5587,39 +5588,43 @@
                                         aria-label="Adicionar novo item em outros">+</button>
                                 </div>
 
-                                <div id="outroModelo" class="armadura-card fechado oculto">
-                                    <div class="arma-linha-inferior">
-                                        <button type="button" class="btn-remover-arma" title="Remover Item">🗑️</button>
+                                <div id="outroModelo" class="armadura-card outro-card fechado oculto">
+                                    <div class="outro-linha-inferior">
+                                        <button type="button" class="btn-remover-outro"
+                                            title="Remover Item">🗑️</button>
 
-                                        <div class="arma-campo-icone">
-                                            <span class="arma-emoji">🪙</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="outro_preco"
+                                        <div class="outro-campo-icone">
+                                            <span class="outro-emoji">🪙</span>
+                                            <input type="text" class="outro-campo-pequeno" data-campo="outro_preco"
                                                 aria-label="Preço do item">
                                         </div>
-                                        <div class="arma-campo-icone">
-                                            <span class="arma-emoji">⚖️</span>
-                                            <input type="text" class="arma-campo-pequeno" data-campo="outro_peso"
+                                        <div class="outro-campo-icone">
+                                            <span class="outro-emoji">⚖️</span>
+                                            <input type="text" class="outro-campo-pequeno" data-campo="outro_peso"
                                                 aria-label="Peso do item">
                                         </div>
                                     </div>
 
-                                    <div class="arma-linha arma-linha-1 arma-header outro-header"
+                                    <!-- placeholder proficiência para manter layout igual aos outros cards -->
+                                    <div class="arma-proficiencia nao" style="display:none;">P</div>
+
+                                    <!-- Header do card -->
+                                    <div class="arma-linha arma-linha-1 outro-header"
                                         onclick="toggleOutro(this, event)">
                                         <div class="outro-quantidade-container">
-
-                                            <input type="number" min="0" step="1" class="arma-campo-pequeno"
+                                            <input type="number" min="0" step="1" class="outro-campo-pequeno"
                                                 data-campo="outro_quantidade" value="1" aria-label="Quantidade do item">
                                         </div>
-                                        <div class="arma-nome-container">
-
+                                        <div class="outro-nome-container">
                                             <input type="text" data-campo="outro_nome" aria-label="Nome do item"
                                                 placeholder="Nome do item">
                                         </div>
-                                        <span class="arma-toggle">🔽</span>
+                                        <span class="outro-toggle">🔽</span>
                                     </div>
 
+                                    <!-- Conteúdo do card -->
                                     <div class="arma-conteudo">
-                                        <div class="arma-linha armadura-linha-2-cols">
+                                        <div class="arma-linha arma-linha-2-cols">
                                             <div>
                                                 <label>Tipo</label>
                                                 <select data-campo="outro_tipo" aria-label="Tipo do item">
@@ -5634,10 +5639,10 @@
                                             </div>
                                         </div>
 
-                                        <div class="arma-linha arma-linha-1">
+                                        <div class="arma-linha">
                                             <div>
                                                 <label>Descrição</label>
-                                                <textarea class="arma-descricao" data-campo="outro_descricao"
+                                                <textarea class="outro-descricao" data-campo="outro_descricao"
                                                     aria-label="Descrição do item"></textarea>
                                             </div>
                                         </div>
@@ -6180,7 +6185,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 // botão confirmar
                 botao.onclick = () => {
-                    
+
                     if (!validarInput()) return;
 
                     const valor = Number(input.value);
@@ -6470,7 +6475,7 @@ Bônus de Proficiência: +${bonusProf}
 
             selectMunicao.innerHTML = '<option value="">Sem Munição</option>';
 
-            const outrosItens = document.querySelectorAll('#listaOutros .armadura-card');
+            const outrosItens = document.querySelectorAll('#listaOutros .equipamento-card');
 
             outrosItens.forEach(item => {
                 const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
@@ -6523,7 +6528,7 @@ Bônus de Proficiência: +${bonusProf}
 
             const idMunicao = arma.arma_municao_id;
 
-            const itens = document.querySelectorAll('#listaOutros .armadura-card');
+            const itens = document.querySelectorAll('#listaOutros .equipamento-card');
 
             const item = [...itens].find(itemInventario => itemInventario.dataset.id === idMunicao);
 
@@ -6678,7 +6683,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 if (idMunicao) {
 
-                    const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
+                    const item = [...document.querySelectorAll('#listaOutros .equipamento-card')]
                         .find(el => el.dataset.id === idMunicao);
 
                     const nome = item?.querySelector('[data-campo="outro_nome"]')?.value;
@@ -6955,7 +6960,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 if (idMunicao) {
 
-                    const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
+                    const item = [...document.querySelectorAll('#listaOutros .equipamento-card')]
                         .find(el => el.dataset.id === idMunicao);
 
                     const nome = item?.querySelector('[data-campo="outro_nome"]')?.value;
@@ -7189,7 +7194,7 @@ Bônus de Proficiência: +${bonusProf}
         function obterStatusMunicaoArma(arma) {
             if (!arma?.usaMunicao) return "";
 
-            const itemMunicao = [...document.querySelectorAll('#listaOutros .armadura-card')]
+            const itemMunicao = [...document.querySelectorAll('#listaOutros .equipamento-card')]
                 .find(item => item.dataset.id === arma.arma_municao_id);
 
             const nomeMunicao = itemMunicao?.querySelector('[data-campo="outro_nome"]')?.value?.trim();
@@ -7325,7 +7330,8 @@ Bônus de Proficiência: +${bonusProf}
                 indiceSelecionado !== null && indiceSelecionado !== undefined
                     ? String(indiceSelecionado)
                     : '';
-
+            console.log("SELECT VALOR:", valorSelecionado);
+            console.log("OPTIONS:", Array.from(select.options).map(o => o.value));
             const existe = Array.from(select.options)
                 .some(option => option.value === valorSelecionado);
 
@@ -7489,7 +7495,7 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         function consumirPocaoEquipada(idOutro) {
-            const item = [...document.querySelectorAll('#listaOutros .armadura-card')]
+            const item = [...document.querySelectorAll('#listaOutros .equipamento-card')]
                 .find(card => card.dataset.id === idOutro);
             if (!item) return;
 
@@ -7651,6 +7657,7 @@ Bônus de Proficiência: +${bonusProf}
             ['armaduraCA', 'outroEquipadoCA', 'escudoCA'].forEach(aplicarFormatoCA);
             atualizarClasseArmaduraEquipada();
             atualizarSubAbaArmas();
+            console.log("ESCUDOS COLETADOS:", escudos);
         }
 
 
@@ -7877,7 +7884,7 @@ Bônus de Proficiência: +${bonusProf}
         const campoProfEscudos = document.getElementById('profEscudos');
         if (campoProfEscudos) {
             campoProfEscudos.addEventListener('change', () => {
-                document.querySelectorAll('#listaEscudos .armadura-card').forEach(card => {
+                document.querySelectorAll('#listaEscudos .escudo-card:not(#escudoModelo)').forEach(card => {
                     atualizarProficienciaCardEscudo(card);
                 });
                 atualizarListaArmasEquipamento();
@@ -8103,8 +8110,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function coletarEscudos() {
             const escudos = [];
-            const lista = document.querySelectorAll('#listaEscudos .armadura-card');
-
+            const lista = document.querySelectorAll('#listaEscudos .escudo-card');
             lista.forEach(card => {
                 const escudo = {};
                 const indicadorProficiencia = card.querySelector('.arma-proficiencia');
@@ -8179,7 +8185,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function coletarOutros() {
             const outros = [];
-            const lista = document.querySelectorAll('#listaOutros .armadura-card');
+            const lista = document.querySelectorAll('#listaOutros .equipamento-card');
 
             lista.forEach(card => {
                 const outro = {};
@@ -8225,7 +8231,7 @@ Bônus de Proficiência: +${bonusProf}
         function toggleArmadura(header, event) {
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
 
-            const card = header.closest('.armadura-card');
+            const card = header.closest('.arma-card');
             const icon = header.querySelector('.arma-toggle');
 
             card.classList.toggle('fechado');
@@ -8240,7 +8246,7 @@ Bônus de Proficiência: +${bonusProf}
         function toggleEscudo(header, event) {
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
 
-            const card = header.closest('.armadura-card');
+            const card = header.closest('.escudo-card');
             const icon = header.querySelector('.arma-toggle');
 
             card.classList.toggle('fechado');
@@ -8255,7 +8261,7 @@ Bônus de Proficiência: +${bonusProf}
         function toggleOutro(header, event) {
             if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT' || event.target.tagName === 'TEXTAREA') return;
 
-            const card = header.closest('.armadura-card');
+            const card = header.closest('.equipamento-card');
             const icon = header.querySelector('.arma-toggle');
 
             card.classList.toggle('fechado');
@@ -8372,7 +8378,7 @@ Bônus de Proficiência: +${bonusProf}
             return mapa[texto] || texto
         }
 
-        
+
         // Uso: obterArmaduraSeguro(0)
         function obterArmaduraSeguro(indice = 0) {
             const p = window.personagem;
@@ -10032,7 +10038,7 @@ Bônus de Proficiência: +${bonusProf}
                     const idMunicao = arma.arma_municao_id;
 
                     if (idMunicao) {
-                        const itemMunicao = [...document.querySelectorAll('#listaOutros .armadura-card')]
+                        const itemMunicao = [...document.querySelectorAll('#listaOutros .equipamento-card')]
                             .find(el => el.dataset.id === idMunicao);
 
                         const nomeMunicao = itemMunicao
@@ -10761,7 +10767,7 @@ Bônus de Proficiência: +${bonusProf}
                 const containerOutros = document.getElementById('listaOutros');
 
                 if (containerOutros) {
-                    const outrosAtuais = containerOutros.querySelectorAll('.armadura-card');
+                    const outrosAtuais = containerOutros.querySelectorAll('.equipamento-card');
                     outrosAtuais.forEach(o => o.remove());
 
                     dados.outros.forEach(dadosOutro => {
@@ -10868,6 +10874,40 @@ Bônus de Proficiência: +${bonusProf}
             }
 
             // =========================
+            // 🛡️ 4.1 ESCUDOS
+            // =========================
+            if (dados.escudos && Array.isArray(dados.escudos)) {
+                const containerEscudos = document.getElementById('listaEscudos');
+
+                if (containerEscudos) {
+                    const atuais = containerEscudos.querySelectorAll('.escudo-card:not(#escudoModelo)');
+                    atuais.forEach(e => e.remove());
+
+                    dados.escudos.forEach(dadosEscudo => {
+                        const novoCard = adicionarNovoEscudo();
+                        if (!novoCard) return;
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosEscudo[campo.dataset.campo];
+
+                            if (valor !== undefined) {
+                                campo.value = valor;
+                                campo.dispatchEvent(new Event('change'));
+                            }
+                        });
+
+                        if (typeof dadosEscudo.proficiente === "boolean") {
+                            const indicador = novoCard.querySelector('.arma-proficiencia');
+                            if (indicador) {
+                                indicador.classList.toggle('nao', !dadosEscudo.proficiente);
+                                indicador.classList.toggle('ativo', dadosEscudo.proficiente);
+                            }
+                        }
+                    });
+                }
+            }
+
+            // =========================
             // 🔄 5. PÓS-PROCESSAMENTO
             // =========================
             atualizarListaArmasEquipamento();
@@ -10912,7 +10952,7 @@ Bônus de Proficiência: +${bonusProf}
             armaduraSelecionadaAtual = (indiceArmadura !== null && dados.armaduras?.[indiceArmadura]) ? dados.armaduras[indiceArmadura] : null;
             atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual);
 
-                        atualizarFicha();
+            atualizarFicha();
 
 
         }

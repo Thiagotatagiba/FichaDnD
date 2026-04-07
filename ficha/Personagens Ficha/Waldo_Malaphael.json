@@ -122,7 +122,7 @@
   "equipamentoArmas": "",
   "equipamentoArmadura": "",
   "equipamentoOutros": "",
-  "magiaClasseConjuradora": "Clérigo",
+  "magiaClasseConjuradora": "clerigo",
   "magiaAtributoConjuracao": "sab",
   "magiaCD": "10",
   "magiaAtaqueMagico": "+2",
@@ -172,7 +172,7 @@
   "moedaPO": "15",
   "moedaPL": "0",
   "moedaGemas": "0",
-  "pesoAtual": "21.2",
+  "pesoAtual": "18.5",
   "pesoMax": "0",
   "magiaModalPreparada": true,
   "magiaModalEscola": "Encantamento",
@@ -284,16 +284,7 @@
       "proficiente": true
     }
   ],
-  "escudos": [
-    {
-      "escudo_preco": "10 po",
-      "escudo_peso": "2,7",
-      "escudo_nome": "Escudo",
-      "escudo_ca": "+2",
-      "escudo_tipo": "Escudo",
-      "proficiente": true
-    }
-  ],
+  "escudos": [],
   "outros": [
     {
       "id": "id_1775492564034_347",
