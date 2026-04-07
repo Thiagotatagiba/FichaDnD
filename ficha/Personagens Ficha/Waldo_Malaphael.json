@@ -172,7 +172,7 @@
   "moedaPO": "15",
   "moedaPL": "0",
   "moedaGemas": "0",
-  "pesoAtual": "18.5",
+  "pesoAtual": "14.5",
   "pesoMax": "0",
   "magiaModalPreparada": true,
   "magiaModalEscola": "Encantamento",
@@ -220,7 +220,7 @@
   "armas": [
     {
       "arma_preco": "5 PO",
-      "arma_peso": "1,8 kg",
+      "arma_peso": "2 kg",
       "nome": "Maça",
       "arma_dano": "1d6",
       "arma_tipo_dano": "Concussão",
@@ -246,14 +246,14 @@
     },
     {
       "arma_preco": "25 PO",
-      "arma_peso": "2,2 kg",
+      "arma_peso": "2,5 kg",
       "nome": "Besta Leve",
       "arma_dano": "1d8",
       "arma_tipo_dano": "Perfurante",
       "arma_tipo": "Simples",
       "arma_dist_curto": "24",
       "arma_dist_longo": "96",
-      "arma_municao_id": "id_1775492564040_186",
+      "arma_municao_id": "",
       "arma_descricao": "",
       "propriedades": {
         "acuidade": false,
@@ -274,7 +274,7 @@
   "armaduras": [
     {
       "armadura_preco": "10 PO",
-      "armadura_peso": "4,5 kg",
+      "armadura_peso": "5 kg",
       "armadura_nome": "Armadura de Couro",
       "armadura_ca": "11",
       "armadura_bonus": "DES",
@@ -284,70 +284,15 @@
       "proficiente": true
     }
   ],
-  "escudos": [],
-  "outros": [
+  "escudos": [
     {
-      "id": "id_1775492564034_347",
-      "outro_preco": "5 po",
-      "outro_peso": "0",
-      "outro_quantidade": "1",
-      "outro_nome": "Moeda da Sorte (Símbolo Sagrado)",
-      "outro_tipo": "Outros",
-      "outro_descricao": "Moeda dada por Salys"
-    },
-    {
-      "id": "id_1775492564036_662",
-      "outro_preco": "",
-      "outro_peso": "",
-      "outro_quantidade": "1",
-      "outro_nome": "Kit de Disfarce",
-      "outro_tipo": "Kit",
-      "outro_descricao": ""
-    },
-    {
-      "id": "id_1775492564038_994",
-      "outro_preco": "",
-      "outro_peso": "",
-      "outro_quantidade": "1",
-      "outro_nome": "Kit de Falsificação",
-      "outro_tipo": "Kit",
-      "outro_descricao": ""
-    },
-    {
-      "id": "id_1775492564040_186",
-      "outro_preco": "",
-      "outro_peso": "",
-      "outro_quantidade": "20",
-      "outro_nome": "Virotes",
-      "outro_tipo": "Municao",
-      "outro_descricao": ""
-    },
-    {
-      "id": "id_1775496977278_331",
-      "outro_preco": "19 po",
-      "outro_peso": "10",
-      "outro_quantidade": "1",
-      "outro_nome": "Pacote de Sacerdote",
-      "outro_tipo": "Comida",
-      "outro_descricao": "Mochila\nCobertor\n10 velas\nCaixa de esmolas\n2 blocos de incenso\nIncensário\nVestes\nRações (2 dias)\nCantil"
-    },
-    {
-      "id": "id_1775497165963_30",
-      "outro_preco": "",
-      "outro_peso": "",
-      "outro_quantidade": "1",
-      "outro_nome": "Identidade Falsa",
-      "outro_tipo": "Outros",
-      "outro_descricao": ""
-    },
-    {
-      "id": "id_1775497185687_909",
-      "outro_preco": "",
-      "outro_peso": "",
-      "outro_quantidade": "1",
-      "outro_nome": "Roupas Finas",
-      "outro_tipo": "Comida",
-      "outro_descricao": ""
+      "escudo_preco": "10 po",
+      "escudo_peso": "5",
+      "escudo_nome": "Escudo",
+      "escudo_ca": "+2",
+      "escudo_tipo": "Escudo",
+      "proficiente": true
     }
-  ]
+  ],
+  "outros": []
 }
