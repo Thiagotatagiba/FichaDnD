@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Teste Descanso Curto</title>
+
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+
+<style>
+body {
+    background: #e7e1d5;
+    font-family: 'MedievalSharp';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* ===== BOTÃO ===== */
+.btn-abrir {
+    border: 2px solid #8b4513;
+    border-radius: 10px;
+    background: #d4c5ae;
+    padding: 12px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* ===== MODAL ===== */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.ativo {
+    display: flex;
+}
+
+/* ===== CARD ===== */
+.descanso-curto-card {
+    width: 260px;
+    border: 3px solid #8b4513;
+    border-radius: 12px;
+    background: #f4efe6;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.descanso-titulo {
+    text-align: center;
+    font-weight: bold;
+    color: #6f3610;
+}
+
+/* ===== LINHAS ===== */
+.descanso-linha {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.descanso-label {
+    font-size: 12px;
+}
+
+.descanso-valor input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    border-bottom: 1px solid #8b4513;
+    background: none;
+    font-family: 'MedievalSharp';
+    font-weight: bold;
+}
+
+/* ===== ORBES ===== */
+.dv-orbes {
+    display: flex;
+    gap: 4px;
+}
+
+.dv-orbe {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #8b4513;
+}
+
+.dv-orbe.ativo {
+    background: #8b4513;
+}
+
+/* ===== BOTÕES ===== */
+.btn {
+    border: 2px solid #8b4513;
+    border-radius: 8px;
+    background: #d4c5ae;
+    padding: 8px;
+    cursor: pointer;
+    font-family: 'MedievalSharp';
+    font-weight: bold;
+}
+
+.btn:hover {
+    background: #c7b79e;
+}
+
+.descanso-botoes {
+    display: flex;
+    gap: 6px;
+}
+
+/* ===== RESULTADO ===== */
+.resultado {
+    text-align: center;
+    font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<button class="btn-abrir" onclick="abrirModal()">Descanso Curto</button>
+
+<div class="modal" id="modal">
+    <div class="descanso-curto-card">
+
+        <div class="descanso-titulo">Descanso Curto</div>
+
+        <div class="descanso-linha">
+            <span>PV</span>
+            <div class="descanso-valor">
+                <input id="pvAtual" value="18"> /
+                <input id="pvMax" value="44">
+            </div>
+        </div>
+
+        <div class="descanso-linha">
+            <span>DV</span>
+            <div class="dv-orbes" id="dvOrbes"></div>
+            <span>d10</span>
+        </div>
+
+        <button class="btn" onclick="gastarDado()">🎲 +1 Dado</button>
+
+        <div class="resultado" id="resultado"></div>
+
+        <div class="descanso-botoes">
+            <button class="btn" onclick="autoCurar()">⚡ Auto</button>
+            <button class="btn" onclick="fecharModal()">Finalizar</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// ===== CONFIG INICIAL =====
+let dadosVida = 5;
+let tipoDado = 10;
+let conMod = 2;
+
+// ===== INIT =====
+const dvContainer = document.getElementById("dvOrbes");
+
+function renderDV() {
+    dvContainer.innerHTML = "";
+    for (let i = 0; i < dadosVida; i++) {
+        const orb = document.createElement("div");
+        orb.classList.add("dv-orbe", "ativo");
+        dvContainer.appendChild(orb);
+    }
+}
+
+// ===== MODAL =====
+function abrirModal() {
+    document.getElementById("modal").classList.add("ativo");
+    renderDV();
+}
+
+function fecharModal() {
+    document.getElementById("modal").classList.remove("ativo");
+}
+
+// ===== ROLAGEM =====
+function rolarDado(lados) {
+    return Math.floor(Math.random() * lados) + 1;
+}
+
+function gastarDado() {
+    if (dadosVida <= 0) return;
+
+    let pvAtual = parseInt(document.getElementById("pvAtual").value);
+    let pvMax = parseInt(document.getElementById("pvMax").value);
+
+    if (pvAtual >= pvMax) return;
+
+    let roll = rolarDado(tipoDado);
+    let cura = roll + conMod;
+
+    pvAtual += cura;
+    if (pvAtual > pvMax) pvAtual = pvMax;
+
+    dadosVida--;
+
+    document.getElementById("pvAtual").value = pvAtual;
+    document.getElementById("resultado").innerText = `+${cura} (${roll} + CON)`;
+
+    renderDV();
+}
+
+// ===== AUTO CURA =====
+function autoCurar() {
+    while (dadosVida > 0) {
+        let pvAtual = parseInt(pvAtualInput.value);
+        let pvMax = parseInt(pvMaxInput.value);
+
+        if (pvAtual >= pvMax) break;
+
+        gastarDado();
+    }
+}
+</script>
+
+</body>
+</html>
