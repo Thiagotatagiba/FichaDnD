@@ -139,7 +139,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 42px;
         }
 
         .campo-titulo {
@@ -156,6 +156,7 @@
             padding: 6px;
             display: flex;
             flex-direction: column;
+            position: relative;
         }
 
         .campo input,
@@ -192,6 +193,35 @@
         .classe-nivel {
             width: 34px;
             text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .subclasse-container {
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            top: calc(100% - 6px);
+            z-index: 2;
+            margin-top: 0;
+            padding: 0;
+            pointer-events: auto;
+        }
+
+        .subclasse-container input {
+            width: 100%;
+            border: 1px solid rgba(189, 166, 140, 0.95);
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            background: #efe7da;
+            font-size: 0.75rem;
+            font-weight: bold;
+            font-family: 'MedievalSharp';
+            padding: 4px 6px 3px;
+            opacity: 0.9;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
         }
 
         /* ===== Bloco superior, atributos e combate ===== */
@@ -438,6 +468,149 @@
             align-items: stretch;
             gap: 6px;
             text-align: center;
+        }
+
+        .pv-classico-widget {
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto;
+            border-radius: 14px;
+            background: linear-gradient(#f4efe6, #efe6d6);
+            padding: 12px;
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+            box-sizing: border-box;
+        }
+
+        .pv-current-shell {
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            border: 3px solid #2b2b2b;
+            border-radius: 12px;
+            background: white;
+            overflow: hidden;
+        }
+
+        .pv-ribbons {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .pv-ribbon {
+            flex: 1;
+            padding: 8px 6px;
+            background: linear-gradient(#f3e8d8, #e7d7bf);
+            border-right: 2px solid #8b4513;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .pv-ribbon-label {
+            font-size: 10px;
+            font-weight: bold;
+            color: #6f3610;
+            letter-spacing: 0.5px;
+        }
+
+        .pv-ribbon input {
+            width: 100%;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            background: transparent;
+            font-size: 18px;
+            color: #2b2b2b;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .pv-ribbon-temp-input {
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pv-ribbon-temp-plus {
+            position: absolute;
+            left: 18px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2b2b2b;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .pv-ribbon-temp-input input {
+            padding-left: 16px;
+        }
+
+        .pv-main {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: center;
+            padding: 10px 10px 14px;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .pv-main input {
+            font-size: 36px;
+            border: none;
+            text-align: center;
+            font-weight: bold;
+            margin: 0;
+            width: 100%;
+            background: transparent;
+            box-sizing: border-box;
+            color: #2b2b2b;
+            padding: 0;
+        }
+
+        .pv-hearts {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 6px;
+            width: 100%;
+            min-height: 18px;
+        }
+
+        .pv-heart {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            flex: 0 0 auto;
+        }
+
+        .pv-heart svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .pv-heart-bg {
+            fill: #e0e0e0;
+        }
+
+        .pv-heart-fill-red {
+            fill: url(#pvGradRed);
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path 0.2s ease;
+        }
+
+        .pv-heart-fill-blue {
+            fill: url(#pvGradBlue);
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path 0.2s ease;
+        }
+
+        .pv-heart-hidden {
+            display: none;
         }
 
         .pv-atual {
@@ -951,16 +1124,29 @@
         }
 
         .salv-valor-input {
+            width: 52px;
+            text-align: center;
+            border: none;
+            border-bottom: 2px solid #8b4513;
+            border-radius: 0;
+            background: transparent;
+            font-family: 'MedievalSharp';
+            font-size: 16px;
+            font-weight: bold;
+            color: #5a3a1a;
+            padding: 0 2px 3px;
+            margin-top: 8px;
+            box-shadow: none;
+        }
+
+        .salvaguardas-rodape {
             width: 100%;
             text-align: center;
-            border: 1px solid #c8b9a5;
-            border-radius: 4px;
-            background: #f6f2ea;
-            font-family: 'MedievalSharp';
-            font-size: 13px;
-            color: #5a3a1a;
-            padding: 2px 4px;
-            margin-top: 4px;
+            font-weight: bold;
+            color: #6f3610;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 12px;
         }
 
         .salvaguarda-caixa .prof-checkbox {
@@ -1041,7 +1227,7 @@
         .coluna-salvaguardas {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 12px;
             align-items: center;
         }
 
@@ -1054,6 +1240,13 @@
             grid-template-columns: repeat(6, 62px);
             gap: 10px;
             justify-content: center;
+            align-items: end;
+        }
+
+        .atrib-coluna {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .status-linha>div:last-child {
@@ -1840,6 +2033,15 @@
         .inventario-botao-add:hover {
             background: #eadfcf;
             transform: scale(1.05);
+        }
+
+        .inventario-botao-add-inferior {
+            width: 100%;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            padding: 8px 12px;
         }
 
         .inventario-texto {
@@ -3766,6 +3968,10 @@
             gap: 4px;
         }
 
+        .item-sintonizado-container.oculto {
+            display: none;
+        }
+
         .item-linha-inferior {
             font-size: 20px;
             position: absolute;
@@ -3833,7 +4039,7 @@
         }
 
         .arma-container-descricao {
-            display: none;
+            display: block;
             margin-top: 10px;
             position: relative;
             z-index: 2;
@@ -3965,6 +4171,21 @@
             justify-content: flex-start;
             align-items: flex-end;
             gap: 8px;
+        }
+
+        .item-card.item-magico-ativo {
+            border-color: #d4a93a;
+            box-shadow:
+                0 0 0 1px rgba(212, 169, 58, 0.65),
+                0 0 12px rgba(255, 215, 120, 0.55),
+                0 0 24px rgba(255, 215, 120, 0.28);
+        }
+
+        .item-card.item-magico-ativo::after {
+            opacity: 0.95;
+            box-shadow:
+                inset 0 0 18px rgba(255, 223, 140, 0.22),
+                0 0 18px rgba(255, 215, 120, 0.2);
         }
 
         .outro-quantidade-container {
@@ -4293,6 +4514,9 @@
                     <span class="classe-separador" title="Nível">NV</span>
                     <input id="classeNivelID" class="classe-nivel" value="1" type="number" readonly>
                 </div>
+                <div id="containerSubclasse" class="subclasse-container hidden">
+                    <input type="text" id="subclasse" placeholder="Subclasse">
+                </div>
             </div>
             <div class="campo">
                 <div class="campo-titulo">Raça</div>
@@ -4423,27 +4647,84 @@
 
                         <div class="campo-titulo">Pontos de Vida</div>
 
-                        <div class="pv-atual">
-                            <div class="pv-atual-titulo">PV Atual</div>
-                            <input id="pvAtual" value="0" aria-label="Pontos de vida atuais">
-                        </div>
+                        <div class="pv-classico-widget">
+                            <div class="pv-current-shell">
+                                <div class="pv-ribbons">
+                                    <div class="pv-ribbon">
+                                        <span class="pv-ribbon-label">MAX</span>
+                                        <input id="pvTotal" type="number" min="0" step="1" value="0"
+                                            aria-label="Pontos de vida totais">
+                                    </div>
+                                    <div class="pv-ribbon">
+                                        <span class="pv-ribbon-label">TEMP</span>
+                                        <div class="pv-ribbon-temp-input">
+                                            <span class="pv-ribbon-temp-plus">+</span>
+                                            <input id="pvTemporario" type="number" min="0" step="1" value="0"
+                                                aria-label="Pontos de vida temporários">
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div class="pv-linha">
+                                <div class="pv-main">
+                                    <input id="pvAtual" type="number" min="0" step="1" value="0"
+                                        aria-label="Pontos de vida atuais">
 
-                            <div class="pv-bloco pv-bloco-total">
-                                <div class="pv-bloco-titulo">PV Total</div>
-                                <input id="pvTotal" value="0" aria-label="Pontos de vida totais">
-                            </div>
+                                    <div class="pv-hearts" id="pvHearts">
+                                        <svg width="0" height="0" aria-hidden="true" focusable="false">
+                                            <defs>
+                                                <linearGradient id="pvGradRed" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="0%" stop-color="#ff5a5a" />
+                                                    <stop offset="100%" stop-color="#8b0000" />
+                                                </linearGradient>
+                                                <linearGradient id="pvGradBlue" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="0%" stop-color="#5ab0ff" />
+                                                    <stop offset="100%" stop-color="#003f8b" />
+                                                </linearGradient>
+                                            </defs>
+                                        </svg>
 
-                            <div class="pv-bloco pv-bloco-temp">
-                                <div class="pv-bloco-titulo">PV Temp</div>
-                                <div class="pv-temp-controle">
-                                    <span class="pv-temp-sinal">+</span>
-                                    <input id="pvTemporario" type="number" min="0" step="1" value="0"
-                                        aria-label="Pontos de vida temporários">
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
+                                                    class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
+                                                    class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        </div>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
+                                                    class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
+                                                    class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        </div>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
+                                                    class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
+                                                    class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        </div>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
+                                                    class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
+                                                    class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        </div>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
+                                                    class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
+                                                    class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        </div>
+
+                                        <div class="pv-heart pv-heart-hidden" id="pvTempHeart">
+                                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                                <path class="pv-heart-fill-blue"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-
                         </div>
 
                         <div class="dados-vida-container">
@@ -4641,6 +4922,7 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="salvaguardas-rodape">Salvaguardas (Teste de Resistência)</div>
                     </div>
 
                 </div>
@@ -4828,8 +5110,8 @@
                                     aria-label="Características e talentos de classe"></textarea>
                             </div>
 
-                            <div class="talento-secao">
-                                <div class="talento-subtitulo">Arquétipo: <input id="talentoArquetipoResumo"
+                            <div class="talento-secao hidden" id="talentoSubclasseSecao">
+                                <div class="talento-subtitulo">Subclasse: <input id="talentoArquetipoResumo"
                                         placeholder="Subclasse"></div>
                                 <textarea id="talentoArquetipo" class="talento-texto"
                                     aria-label="Características e talentos de arquétipo"></textarea>
@@ -5371,13 +5653,13 @@
                         <div class="inventario-colunas">
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo-barra">
-                                    <div class="inventario-subtitulo">⚔️ Armas</div>
+                                    <div class="inventario-subtitulo" id="inventarioTituloArmas">⚔️ Armas 0</div>
                                     <button type="button" class="inventario-botao-add" onclick="adicionarNovaArma()"
                                         title="Adicionar nova arma" aria-label="Adicionar nova arma">+</button>
                                 </div>
 
                                 <!-- CARD DE ARMAS CADASTRO -->
-                                <div id="armaModelo" class="arma-card fechado oculto">
+                                <div id="armaModelo" class="item-card fechado oculto" data-tipo="arma">
 
 
                                     <div class="item-linha-inferior">
@@ -5510,8 +5792,18 @@
                                                         type="checkbox">Especial</label>
                                             </div>
                                         </div>
-                                        <div class="arma-container-descricao container_descricao oculto">
-                                            <label>Descrição do efeito Especial</label>
+                                        <div class="item-linha">
+                                            <label>Propriedades do Item</label>
+                                            <div class="arma-propriedades">
+                                                <label><input class="item-flag-magico" data-flag="item_magico"
+                                                        aria-label="Item mágico" type="checkbox">Item Mágico</label>
+                                                <label class="item-sintonizado-container oculto"><input
+                                                        class="item-flag-sintonizado" data-flag="sintonizado"
+                                                        aria-label="Sintonizado" type="checkbox">Sintonizado</label>
+                                            </div>
+                                        </div>
+                                        <div class="arma-container-descricao container_descricao">
+                                            <label>Descrição</label>
                                             <textarea class="item-descricao" data-campo="arma_descricao"
                                                 aria-label="Descrição especial da arma"></textarea>
                                         </div>
@@ -5519,17 +5811,20 @@
                                 </div>
 
                                 <div id="listaArmas"></div>
+                                <button type="button" class="inventario-botao-add inventario-botao-add-inferior"
+                                    onclick="adicionarNovaArma()">+ nova arma</button>
 
                             </div>
 
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo-barra">
-                                    <div class="inventario-subtitulo">🛡️ Armadura</div>
+                                    <div class="inventario-subtitulo" id="inventarioTituloArmaduras">🛡️ Armaduras 0
+                                    </div>
                                     <button type="button" class="inventario-botao-add" onclick="adicionarNovaArmadura()"
                                         title="Adicionar nova armadura" aria-label="Adicionar nova armadura">+</button>
                                 </div>
 
-                                <div id="armaduraModelo" class="armadura-card fechado oculto">
+                                <div id="armaduraModelo" class="item-card fechado oculto" data-tipo="armadura">
                                     <div class="item-linha-inferior">
                                         <button type="button" class="btn-remover-item"
                                             title="Remover Armadura">🗑️</button>
@@ -5610,19 +5905,39 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="item-linha">
+                                            <label>Propriedades do Item</label>
+                                            <div class="arma-propriedades">
+                                                <label><input class="item-flag-magico" data-flag="item_magico"
+                                                        aria-label="Item mágico" type="checkbox">Item Mágico</label>
+                                                <label class="item-sintonizado-container oculto"><input
+                                                        class="item-flag-sintonizado" data-flag="sintonizado"
+                                                        aria-label="Sintonizado" type="checkbox">Sintonizado</label>
+                                            </div>
+                                        </div>
+                                        <div class="item-linha">
+                                            <div>
+                                                <label>Descrição</label>
+                                                <textarea class="item-descricao" data-campo="armadura_descricao"
+                                                    aria-label="Descrição da armadura"></textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div id="listaArmaduras"></div>
+                                <button type="button" class="inventario-botao-add inventario-botao-add-inferior"
+                                    onclick="adicionarNovaArmadura()">+ nova armadura</button>
 
                                 <div class="inventario-subtitulo-barra">
-                                    <div class="inventario-subtitulo">🛡️ Escudos e Vestimentos</div>
+                                    <div class="inventario-subtitulo" id="inventarioTituloEscudos">🛡️ Escudos e
+                                        Vestimentos 0</div>
                                     <button type="button" class="inventario-botao-add" onclick="adicionarNovoEscudo()"
                                         title="Adicionar novo escudo ou vestimento"
                                         aria-label="Adicionar novo escudo ou vestimento">+</button>
                                 </div>
 
-                                <div id="escudoModelo" class="armadura-card escudo-card fechado oculto">
+                                <div id="escudoModelo" class="item-card fechado oculto" data-tipo="escudo">
                                     <div class="item-linha-inferior">
                                         <button type="button" class="btn-remover-item"
                                             title="Remover Escudo ou Vestimento">🗑️</button>
@@ -5676,21 +5991,40 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="item-linha">
+                                            <label>Propriedades do Item</label>
+                                            <div class="arma-propriedades">
+                                                <label><input class="item-flag-magico" data-flag="item_magico"
+                                                        aria-label="Item mágico" type="checkbox">Item Mágico</label>
+                                                <label class="item-sintonizado-container oculto"><input
+                                                        class="item-flag-sintonizado" data-flag="sintonizado"
+                                                        aria-label="Sintonizado" type="checkbox">Sintonizado</label>
+                                            </div>
+                                        </div>
+                                        <div class="item-linha">
+                                            <div>
+                                                <label>Descrição</label>
+                                                <textarea class="item-descricao" data-campo="escudo_descricao"
+                                                    aria-label="Descrição do escudo ou vestimento"></textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div id="listaEscudos"></div>
+                                <button type="button" class="inventario-botao-add inventario-botao-add-inferior"
+                                    onclick="adicionarNovoEscudo()">+ novo escudo</button>
                             </div>
 
                             <div class="inventario-coluna">
                                 <div class="inventario-subtitulo-barra">
-                                    <div class="inventario-subtitulo">📦 Outros</div>
+                                    <div class="inventario-subtitulo" id="inventarioTituloOutros">📦 Outros 0</div>
                                     <button type="button" class="inventario-botao-add" onclick="adicionarNovoOutro()"
                                         title="Adicionar novo item em outros"
                                         aria-label="Adicionar novo item em outros">+</button>
                                 </div>
 
-                                <div id="outroModelo" class="item-card outro-card fechado oculto">
+                                <div id="outroModelo" class="item-card fechado oculto" data-tipo="outro">
                                     <div class="item-linha-inferior">
                                         <button type="button" class="btn-remover-item" title="Remover Item">🗑️</button>
 
@@ -5744,6 +6078,16 @@
                                                 </select>
                                             </div>
                                         </div>
+                                        <div class="item-linha">
+                                            <label>Propriedades do Item</label>
+                                            <div class="arma-propriedades">
+                                                <label><input class="item-flag-magico" data-flag="item_magico"
+                                                        aria-label="Item mágico" type="checkbox">Item Mágico</label>
+                                                <label class="item-sintonizado-container oculto"><input
+                                                        class="item-flag-sintonizado" data-flag="sintonizado"
+                                                        aria-label="Sintonizado" type="checkbox">Sintonizado</label>
+                                            </div>
+                                        </div>
 
                                         <div class="item-linha">
                                             <div>
@@ -5756,6 +6100,8 @@
                                 </div>
 
                                 <div id="listaOutros"></div>
+                                <button type="button" class="inventario-botao-add inventario-botao-add-inferior"
+                                    onclick="adicionarNovoOutro()">+ novo item</button>
                             </div>
                         </div>
                     </div>
@@ -6112,8 +6458,9 @@
             return resumo;
         }
 
-        // Função de bônus de proficiência
         function calcularBonusProf(nivel) {
+            nivel = parseInt(nivel, 10) || 1;
+
             if (nivel >= 17) return 6;
             if (nivel >= 13) return 5;
             if (nivel >= 9) return 4;
@@ -6121,19 +6468,9 @@
             return 2;
         }
 
-
-
-        /**
-         * Exemplo de função getBonusProf que você já deve ter.
-         * Substitua com sua implementação real se necessário.
-         */
         function getBonusProf() {
-            const nivel = parseInt(document.getElementById("classeNivelID")?.value || 1, 10);
-            if (nivel >= 17) return 6;
-            if (nivel >= 13) return 5;
-            if (nivel >= 9) return 4;
-            if (nivel >= 5) return 3;
-            return 2;
+            const nivel = document.getElementById("classeNivelID")?.value;
+            return calcularBonusProf(nivel);
         }
 
 
@@ -6194,6 +6531,70 @@
             mago: "d6",
             feiticeiro: "d6"
         };
+
+        const SUBCLASSES = {
+            "Arcanista": { nome: "Especialização de Artífice", nivel: 3 },
+            "Bárbaro": { nome: "Caminho Primitivo", nivel: 3 },
+            "Bardo": { nome: "Colégio de Bardo", nivel: 3 },
+            "Bruxo": { nome: "Patrono Transmundano", nivel: 1 },
+            "Clérigo": { nome: "Domínio Divino", nivel: 1 },
+            "Druida": { nome: "Círculo Druídico", nivel: 2 },
+            "Feiticeiro": { nome: "Origem Feiticeira", nivel: 1 },
+            "Guerreiro": { nome: "Arquétipo Marcial", nivel: 3 },
+            "Ladino": { nome: "Arquétipo Ladino", nivel: 3 },
+            "Mago": { nome: "Tradição Arcana", nivel: 2 },
+            "Monge": { nome: "Tradição Monástica", nivel: 3 },
+            "Paladino": { nome: "Juramento Sagrado", nivel: 3 },
+            "Patrulheiro": { nome: "Arquétipo de Patrulheiro", nivel: 3 }
+        };
+
+        function obterRegraSubclasse() {
+            const campoClasse = document.getElementById('classeNomeID');
+            if (!campoClasse) return null;
+
+            const textoClasse = campoClasse.options?.[campoClasse.selectedIndex]?.text?.trim() || "";
+            const valorClasse = String(campoClasse.value || "").trim().toLowerCase();
+            const regrasPorValor = {
+                arcanista: SUBCLASSES["Arcanista"],
+                barbaro: SUBCLASSES["Bárbaro"],
+                bardo: SUBCLASSES["Bardo"],
+                bruxo: SUBCLASSES["Bruxo"],
+                clerigo: SUBCLASSES["Clérigo"],
+                druida: SUBCLASSES["Druida"],
+                feiticeiro: SUBCLASSES["Feiticeiro"],
+                guerreiro: SUBCLASSES["Guerreiro"],
+                ladino: SUBCLASSES["Ladino"],
+                mago: SUBCLASSES["Mago"],
+                monge: SUBCLASSES["Monge"],
+                paladino: SUBCLASSES["Paladino"],
+                patrulheiro: SUBCLASSES["Patrulheiro"]
+            };
+
+            return SUBCLASSES[textoClasse] || regrasPorValor[valorClasse] || null;
+        }
+
+        function atualizarSubclasse() {
+            const container = document.getElementById('containerSubclasse');
+            const input = document.getElementById('subclasse');
+            const nivelCampo = document.getElementById('classeNivelID') || document.getElementById('nivel');
+
+            if (!container || !input || !nivelCampo) return;
+
+            const nivel = parseInt(nivelCampo.value, 10) || 1;
+            const regra = obterRegraSubclasse();
+
+            if (regra && nivel >= regra.nivel) {
+                container.classList.remove('hidden');
+                input.placeholder = regra.nome;
+                sincronizarResumoCaracteristicas(true);
+                return;
+            }
+
+            container.classList.add('hidden');
+            input.placeholder = "Subclasse";
+            input.value = "";
+            sincronizarResumoCaracteristicas(true);
+        }
 
         function atualizarDadoVida() {
             const classe = document.getElementById("classeNomeID").value;
@@ -6355,6 +6756,21 @@ Bônus de Proficiência: +${bonusProf}
             return Math.floor((con - 10) / 2);
         }
 
+        function atualizarVidaMaxNivelUm() {
+            const campoNivel = document.getElementById('classeNivelID');
+            const campoPvTotal = document.getElementById('pvTotal');
+            if (!campoNivel || !campoPvTotal) return;
+
+            const nivel = parseInt(campoNivel.value, 10) || 1;
+            if (nivel !== 1) return;
+
+            const dadoVida = obterMaxDadoVida();
+            const modCon = calcularModCon();
+            const novoPvMax = Math.max(1, dadoVida + modCon);
+
+            campoPvTotal.value = novoPvMax;
+        }
+
         function obterDadoDeVida() {
             const dado = document.getElementById('dadosVidaTipo')?.value || "1d8";
             return dado;
@@ -6378,11 +6794,7 @@ Bônus de Proficiência: +${bonusProf}
 
             for (let nivel = nivelAntigo + 1; nivel <= nivelNovo; nivel++) {
 
-                let bonusProf = 2;
-                if (nivel >= 5) bonusProf = 3;
-                if (nivel >= 9) bonusProf = 4;
-                if (nivel >= 13) bonusProf = 5;
-                if (nivel >= 17) bonusProf = 6;
+                const bonusProf = calcularBonusProf(nivel);
 
                 const ganhoHP = await abrirModalLevelUp({
                     nivelAnterior: nivel - 1,
@@ -6423,13 +6835,14 @@ Bônus de Proficiência: +${bonusProf}
             atualizarXPENivel();
         });
         window.addEventListener('DOMContentLoaded', () => {
-            adicionarNovaArma();
-            adicionarNovaArmadura();
-            adicionarNovoEscudo();
-            adicionarNovoOutro();
+            const armaInicial = adicionarNovaArma();
+            const armaduraInicial = adicionarNovaArmadura();
+            const escudoInicial = adicionarNovoEscudo();
+            const outroInicial = adicionarNovoOutro();
+            [armaInicial, armaduraInicial, escudoInicial, outroInicial].forEach(fecharItemCard);
         });
         window.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.arma-card').forEach(card => {
+            document.querySelectorAll('.item-card[data-tipo="arma"]').forEach(card => {
                 atualizarOpcoesMunicao(card);
             });
         });
@@ -6444,7 +6857,7 @@ Bônus de Proficiência: +${bonusProf}
 
         document.addEventListener('change', (e) => {
             if (e.target.matches('[data-campo="arma_tipo"]')) {
-                const card = e.target.closest('.arma-card');
+                const card = e.target.closest('.item-card[data-tipo="arma"]');
                 if (card) {
                     atualizarProficienciaCard(card);
                 }
@@ -6570,12 +6983,7 @@ Bônus de Proficiência: +${bonusProf}
             input.value = valor >= 0 ? `+${valor}` : `${valor}`;
         }
         function getBonusProficiencia() {
-            const nivel = parseInt(document.getElementById("classeNivelID")?.value || 1, 10);
-            if (nivel >= 17) return 6;
-            if (nivel >= 13) return 5;
-            if (nivel >= 9) return 4;
-            if (nivel >= 5) return 3;
-            return 2;
+            return getBonusProf();
         }
 
 
@@ -6606,7 +7014,7 @@ Bônus de Proficiência: +${bonusProf}
         // ===== Lógica de Munição Dinâmica =====
         function atualizarTodasMunicoesArmas() {
 
-            const armasItens = document.querySelectorAll('#listaArmas .arma-card');
+            const armasItens = document.querySelectorAll('#listaArmas .item-card[data-tipo="arma"]');
 
             armasItens.forEach(card => {
                 atualizarOpcoesMunicao(card);
@@ -6625,7 +7033,7 @@ Bônus de Proficiência: +${bonusProf}
 
             selectMunicao.innerHTML = '<option value="">Sem Munição</option>';
 
-            const outrosItens = document.querySelectorAll('#listaOutros .item-card');
+            const outrosItens = document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]');
 
             outrosItens.forEach(item => {
                 const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
@@ -6673,7 +7081,7 @@ Bônus de Proficiência: +${bonusProf}
 
             const idMunicao = arma.arma_municao_id;
 
-            const itens = document.querySelectorAll('#listaOutros .item-card');
+            const itens = document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]');
 
             const item = [...itens].find(itemInventario => itemInventario.dataset.id === idMunicao);
 
@@ -6699,19 +7107,19 @@ Bônus de Proficiência: +${bonusProf}
             inputQtd.dispatchEvent(new Event('change'));
 
             // 🔥 Atualiza selects
-            document.querySelectorAll('.arma-card').forEach(card => {
+            document.querySelectorAll('.item-card[data-tipo="arma"]').forEach(card => {
                 atualizarOpcoesMunicao(card);
             });
         }
 
-        document.querySelectorAll('.arma-card').forEach(card => {
+        document.querySelectorAll('.item-card[data-tipo="arma"]').forEach(card => {
             atualizarOpcoesMunicao(card);
         });
         //Atualizar automaticamente quando mudar
         document.addEventListener('change', (e) => {
             if (e.target.matches('[data-campo="outro_tipo"], [data-campo="outro_nome"], [data-campo="outro_quantidade"]')) {
 
-                document.querySelectorAll('.arma-card').forEach(card => {
+                document.querySelectorAll('.item-card[data-tipo="arma"]').forEach(card => {
                     atualizarOpcoesMunicao(card);
                 });
 
@@ -6768,6 +7176,7 @@ Bônus de Proficiência: +${bonusProf}
             renderizarOutrosEquipamento(coletarOutros());
             atualizarTodasMunicoesArmas();
             atualizarSelectNomeArmaduraEquipada(coletarArmaduras(), armaduraEquipadaIndice);
+            atualizarTitulosInventario();
         }
 
         function obterTextoDanoArma(arma) {
@@ -6828,7 +7237,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 if (idMunicao) {
 
-                    const item = [...document.querySelectorAll('#listaOutros .item-card')]
+                    const item = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')]
                         .find(el => el.dataset.id === idMunicao);
 
                     const nome = item?.querySelector('[data-campo="outro_nome"]')?.value;
@@ -7105,7 +7514,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 if (idMunicao) {
 
-                    const item = [...document.querySelectorAll('#listaOutros .item-card')]
+                    const item = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')]
                         .find(el => el.dataset.id === idMunicao);
 
                     const nome = item?.querySelector('[data-campo="outro_nome"]')?.value;
@@ -7339,7 +7748,7 @@ Bônus de Proficiência: +${bonusProf}
         function obterStatusMunicaoArma(arma) {
             if (!arma?.usaMunicao) return "";
 
-            const itemMunicao = [...document.querySelectorAll('#listaOutros .item-card')]
+            const itemMunicao = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')]
                 .find(item => item.dataset.id === arma.arma_municao_id);
 
             const nomeMunicao = itemMunicao?.querySelector('[data-campo="outro_nome"]')?.value?.trim();
@@ -7638,7 +8047,7 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         function consumirPocaoEquipada(idOutro) {
-            const item = [...document.querySelectorAll('#listaOutros .item-card')]
+            const item = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')]
                 .find(card => card.dataset.id === idOutro);
             if (!item) return;
 
@@ -7893,6 +8302,7 @@ Bônus de Proficiência: +${bonusProf}
             const distanciaContainer = card.querySelector('.container_distancia');
             const containerMunicao = card.querySelector('.container_municao');
             const containerDescricao = card.querySelector('.arma-container-descricao');
+            inicializarCamposCompartilhadosItem(card, 'arma');
             const registrarListenersCamposArma = () => {
                 card.querySelectorAll('[data-campo]').forEach(campo => {
                     if (campo.dataset.listenerResumoArma === 'true') return;
@@ -7952,20 +8362,17 @@ Bônus de Proficiência: +${bonusProf}
             function atualizarCamposArma() {
                 let temArremesso = false;
                 let temMunicao = false;
-                let temEspecial = false;
-
                 checkboxes.forEach(cb => {
                     const propriedade = cb.dataset.propriedade;
                     if (cb.checked) {
                         if (propriedade === 'arremesso') temArremesso = true;
                         if (propriedade === 'municao') temMunicao = true;
-                        if (propriedade === 'especial') temEspecial = true;
                     }
                 });
 
                 if (distanciaContainer) distanciaContainer.style.display = (temArremesso || temMunicao) ? 'block' : 'none';
                 if (containerMunicao) containerMunicao.style.display = temMunicao ? 'block' : 'none';
-                if (containerDescricao) containerDescricao.style.display = temEspecial ? 'block' : 'none';
+                if (containerDescricao) containerDescricao.style.display = 'block';
             }
 
             checkboxes.forEach(cb => cb.addEventListener('change', atualizarCamposArma));
@@ -7990,7 +8397,7 @@ Bônus de Proficiência: +${bonusProf}
                 el.addEventListener('change', () => {
                     const tipoAlvo = (id === 'profArmaSimples') ? 'Simples' : 'Marcial';
 
-                    document.querySelectorAll('.arma-card:not(#armaModelo)').forEach(card => {
+                    document.querySelectorAll('.item-card[data-tipo="arma"]:not(#armaModelo)').forEach(card => {
                         const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
                         const divP = card.querySelector('.item-proficiencia');
 
@@ -8015,7 +8422,7 @@ Bônus de Proficiência: +${bonusProf}
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('change', () => {
-                    document.querySelectorAll('#listaArmaduras .armadura-card').forEach(card => {
+                    document.querySelectorAll('#listaArmaduras .item-card[data-tipo="armadura"]').forEach(card => {
                         atualizarProficienciaCardArmadura(card);
                     });
                     atualizarListaArmasEquipamento();
@@ -8026,7 +8433,7 @@ Bônus de Proficiência: +${bonusProf}
         const campoProfEscudos = document.getElementById('profEscudos');
         if (campoProfEscudos) {
             campoProfEscudos.addEventListener('change', () => {
-                document.querySelectorAll('#listaEscudos .escudo-card:not(#escudoModelo)').forEach(card => {
+                document.querySelectorAll('#listaEscudos .item-card[data-tipo="escudo"]:not(#escudoModelo)').forEach(card => {
                     atualizarProficienciaCardEscudo(card);
                 });
                 atualizarListaArmasEquipamento();
@@ -8040,11 +8447,15 @@ Bônus de Proficiência: +${bonusProf}
             const novaArma = modelo.cloneNode(true);
             novaArma.removeAttribute('id');
             novaArma.style.display = 'block';
+            novaArma.classList.add('item-card');
+            novaArma.classList.remove('fechado', 'oculto');
+            novaArma.dataset.tipo = 'arma';
 
             container.appendChild(novaArma);
 
 
             inicializarEventosArma(novaArma);
+            abrirItemCard(novaArma);
             atualizarListaArmasEquipamento();
 
 
@@ -8055,7 +8466,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function coletarArmas() {
             const armas = [];
-            const lista = document.querySelectorAll('.arma-card:not(#armaModelo)');
+            const lista = document.querySelectorAll('.item-card[data-tipo="arma"]:not(#armaModelo)');
 
             lista.forEach(card => {
                 const arma = {};
@@ -8075,6 +8486,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 // 🔥 NOVO: FLAG DIRETA
                 arma.usaMunicao = !!arma.propriedades.municao;
+                coletarFlagsCompartilhadasItem(card, arma, 'arma');
 
                 // Proficiencia
                 arma.proficiente = indicadorProficiencia
@@ -8099,6 +8511,7 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         function inicializarEventosArmadura(card) {
+            inicializarCamposCompartilhadosItem(card, 'armadura');
             const btnRemover = card.querySelector('.btn-remover-item');
             if (btnRemover) {
                 btnRemover.addEventListener('click', function (e) {
@@ -8149,9 +8562,13 @@ Bônus de Proficiência: +${bonusProf}
             const novaArmadura = modelo.cloneNode(true);
             novaArmadura.removeAttribute('id');
             novaArmadura.style.display = 'block';
+            novaArmadura.classList.add('item-card');
+            novaArmadura.classList.remove('fechado', 'oculto');
+            novaArmadura.dataset.tipo = 'armadura';
 
             container.appendChild(novaArmadura);
             inicializarEventosArmadura(novaArmadura);
+            abrirItemCard(novaArmadura);
             atualizarPesoAtualInventario();
             atualizarListaArmasEquipamento();
 
@@ -8160,7 +8577,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function coletarArmaduras() {
             const armaduras = [];
-            const lista = document.querySelectorAll('#listaArmaduras .armadura-card');
+            const lista = document.querySelectorAll('#listaArmaduras .item-card[data-tipo="armadura"]');
 
             lista.forEach(card => {
                 const armadura = {};
@@ -8169,6 +8586,7 @@ Bônus de Proficiência: +${bonusProf}
                 card.querySelectorAll('[data-campo]').forEach(campo => {
                     armadura[campo.dataset.campo] = campo.value;
                 });
+                coletarFlagsCompartilhadasItem(card, armadura, 'armadura');
 
                 armadura.proficiente = indicadorProficiencia
                     ? !indicadorProficiencia.classList.contains('nao')
@@ -8192,6 +8610,7 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         function inicializarEventosEscudo(card) {
+            inicializarCamposCompartilhadosItem(card, 'escudo');
             const btnRemover = card.querySelector('.btn-remover-item');
             if (btnRemover) {
                 btnRemover.addEventListener('click', function (e) {
@@ -8242,9 +8661,13 @@ Bônus de Proficiência: +${bonusProf}
             const novoEscudo = modelo.cloneNode(true);
             novoEscudo.removeAttribute('id');
             novoEscudo.style.display = 'block';
+            novoEscudo.classList.add('item-card');
+            novoEscudo.classList.remove('fechado', 'oculto');
+            novoEscudo.dataset.tipo = 'escudo';
 
             container.appendChild(novoEscudo);
             inicializarEventosEscudo(novoEscudo);
+            abrirItemCard(novoEscudo);
             atualizarListaArmasEquipamento();
 
             return novoEscudo;
@@ -8252,7 +8675,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function coletarEscudos() {
             const escudos = [];
-            const lista = document.querySelectorAll('#listaEscudos .escudo-card');
+            const lista = document.querySelectorAll('#listaEscudos .item-card[data-tipo="escudo"]');
             lista.forEach(card => {
                 const escudo = {};
                 const indicadorProficiencia = card.querySelector('.item-proficiencia');
@@ -8260,6 +8683,7 @@ Bônus de Proficiência: +${bonusProf}
                 card.querySelectorAll('[data-campo]').forEach(campo => {
                     escudo[campo.dataset.campo] = campo.value;
                 });
+                coletarFlagsCompartilhadasItem(card, escudo, 'escudo');
 
                 escudo.proficiente = indicadorProficiencia
                     ? !indicadorProficiencia.classList.contains('nao')
@@ -8273,6 +8697,7 @@ Bônus de Proficiência: +${bonusProf}
 
         // O card de "outros" é mais simples, sem proficiência ou propriedades, então a lógica é mais direta
         function inicializarEventosOutro(card) {
+            inicializarCamposCompartilhadosItem(card, 'outro');
             const btnRemover = card.querySelector('.btn-remover-item');
             if (btnRemover) {
                 btnRemover.addEventListener('click', function (e) {
@@ -8317,11 +8742,15 @@ Bônus de Proficiência: +${bonusProf}
             const novoOutro = modelo.cloneNode(true);
             novoOutro.removeAttribute('id');
             novoOutro.style.display = 'block';
+            novoOutro.classList.add('item-card');
+            novoOutro.classList.remove('fechado', 'oculto');
+            novoOutro.dataset.tipo = 'outro';
 
             novoOutro.dataset.id = gerarId();
 
             container.appendChild(novoOutro);
             inicializarEventosOutro(novoOutro);
+            abrirItemCard(novoOutro);
             atualizarListaArmasEquipamento();
 
             return novoOutro;
@@ -8329,7 +8758,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function coletarOutros() {
             const outros = [];
-            const lista = document.querySelectorAll('#listaOutros .item-card');
+            const lista = document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]');
 
             lista.forEach(card => {
                 const outro = {};
@@ -8349,6 +8778,7 @@ Bônus de Proficiência: +${bonusProf}
                 card.querySelectorAll('[data-campo]').forEach(campo => {
                     outro[campo.dataset.campo] = campo.value;
                 });
+                coletarFlagsCompartilhadasItem(card, outro, 'outro');
 
                 outros.push(outro);
             });
@@ -8358,64 +8788,44 @@ Bônus de Proficiência: +${bonusProf}
 
         function toggleArma(header, event) {
             // 🔥 evita clicar no input ativar o toggle
-            if (event.target.tagName === 'INPUT') return;
+            if (['INPUT', 'SELECT', 'TEXTAREA', 'LABEL'].includes(event.target.tagName)) return;
 
-            const card = header.closest('.arma-card');
-            const icon = header.querySelector('.item-toggle');
-
-            card.classList.toggle('fechado');
-
-            if (card.classList.contains('fechado')) {
-                icon.textContent = '🔽';
-            } else {
-                icon.textContent = '🔼';
-            }
+            const card = header.closest('.item-card[data-tipo="arma"]');
+            if (card.classList.contains('fechado')) abrirItemCard(card);
+            else fecharItemCard(card);
         }
 
         function toggleArmadura(header, event) {
-            if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
+            if (['INPUT', 'SELECT', 'TEXTAREA', 'LABEL'].includes(event.target.tagName)) return;
 
-            const card = header.closest('.armadura-card');
-            const icon = header.querySelector('.item-toggle');
-
-            card.classList.toggle('fechado');
-
-            if (card.classList.contains('fechado')) {
-                icon.textContent = '🔽';
-            } else {
-                icon.textContent = '🔼';
-            }
+            const card = header.closest('.item-card[data-tipo="armadura"]');
+            if (card.classList.contains('fechado')) abrirItemCard(card);
+            else fecharItemCard(card);
         }
 
         function toggleEscudo(header, event) {
-            if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT') return;
+            if (['INPUT', 'SELECT', 'TEXTAREA', 'LABEL'].includes(event.target.tagName)) return;
 
-            const card = header.closest('.escudo-card');
-            const icon = header.querySelector('.item-toggle');
-
-            card.classList.toggle('fechado');
-
-            if (card.classList.contains('fechado')) {
-                icon.textContent = '🔽';
-            } else {
-                icon.textContent = '🔼';
-            }
+            const card = header.closest('.item-card[data-tipo="escudo"]');
+            if (card.classList.contains('fechado')) abrirItemCard(card);
+            else fecharItemCard(card);
         }
 
         function toggleOutro(header, event) {
-            if (event.target.tagName === 'INPUT' || event.target.tagName === 'SELECT' || event.target.tagName === 'TEXTAREA') return;
+            if (['INPUT', 'SELECT', 'TEXTAREA', 'LABEL'].includes(event.target.tagName)) return;
 
-            const card = header.closest('.outro-card');
-            const icon = header.querySelector('.item-toggle');
-
-            card.classList.toggle('fechado');
-
-            if (card.classList.contains('fechado')) {
-                icon.textContent = '🔽';
-            } else {
-                icon.textContent = '🔼';
-            }
+            const card = header.closest('.item-card[data-tipo="outro"]');
+            if (card.classList.contains('fechado')) abrirItemCard(card);
+            else fecharItemCard(card);
         }
+
+        document.addEventListener('click', (event) => {
+            const clicouEmCard = event.target.closest('.item-card');
+            const clicouEmBotaoAdicionar = event.target.closest('.inventario-botao-add');
+            if (clicouEmCard || clicouEmBotaoAdicionar) return;
+
+            document.querySelectorAll('.item-card[data-tipo="arma"], .item-card[data-tipo="armadura"], .item-card[data-tipo="escudo"], .item-card[data-tipo="outro"]').forEach(fecharItemCard);
+        });
 
         // ===== Persistencia da ficha =====
         function normalizarDadosImportacao(dadosOriginais) {
@@ -8790,15 +9200,6 @@ Bônus de Proficiência: +${bonusProf}
         }
 
 
-        function getBonusProficiencia() {
-            const nivel = parseInt(document.getElementById("classeNivelID")?.value || 1, 10);
-
-            if (nivel >= 17) return 6;
-            if (nivel >= 13) return 5;
-            if (nivel >= 9) return 4;
-            if (nivel >= 5) return 3;
-            return 2;
-        }
         function formatarBonusProf() {
             const valor = getBonusProficiencia();
             setBonusProficiencia(valor);
@@ -8815,6 +9216,41 @@ Bônus de Proficiência: +${bonusProf}
 
             input.value = valor;
             return valor;
+        }
+
+        function atualizarCoracoesVida() {
+            const campoAtual = document.getElementById("pvAtual");
+            const campoTotal = document.getElementById("pvTotal");
+            const campoTemporario = document.getElementById("pvTemporario");
+            if (!campoAtual || !campoTotal || !campoTemporario) return;
+
+            const atual = parseFloat(campoAtual.value) || 0;
+            const maxReal = Math.max(parseFloat(campoTotal.value) || 0, 0);
+            const max = maxReal > 0 ? maxReal : 1;
+            const temporario = Math.max(parseFloat(campoTemporario.value) || 0, 0);
+
+            const vidaBase = maxReal > 0 ? Math.min(atual, maxReal) : 0;
+            const ratioBase = maxReal > 0 ? Math.max(0, Math.min(1, vidaBase / maxReal)) : 0;
+
+            document.querySelectorAll('.pv-heart-fill-red').forEach((fill, i) => {
+                let valor = ratioBase * 5 - i;
+                valor = Math.max(0, Math.min(1, valor));
+                fill.style.clipPath = `inset(0 ${100 - valor * 100}% 0 0)`;
+            });
+
+            const tempHeart = document.getElementById('pvTempHeart');
+            const tempFill = tempHeart?.querySelector('.pv-heart-fill-blue');
+            if (!tempHeart || !tempFill) return;
+
+            if (temporario > 0) {
+                tempHeart.classList.remove('pv-heart-hidden');
+                const temporarioRestante = Math.max(0, atual - maxReal);
+                const tempRatio = Math.max(0, Math.min(1, temporarioRestante / max));
+                tempFill.style.clipPath = `inset(0 ${100 - tempRatio * 100}% 0 0)`;
+            } else {
+                tempHeart.classList.add('pv-heart-hidden');
+                tempFill.style.clipPath = 'inset(0 100% 0 0)';
+            }
         }
 
         function normalizarPontosDeVida() {
@@ -8836,6 +9272,7 @@ Bônus de Proficiência: +${bonusProf}
             campoAtual.value = pvAtual;
             campoTotal.value = pvTotal;
 
+            atualizarCoracoesVida();
             atualizarResumoAtaquesConjuracao();
             verificarStatusMorte();
         }
@@ -9882,6 +10319,7 @@ Bônus de Proficiência: +${bonusProf}
             const nome = campoNome.value.trim();
             const nivel = campoNivel.value.trim();
             campoCompleto.value = [nome, nivel ? `NV ${nivel}` : ""].filter(Boolean).join(" ");
+            atualizarSubclasse();
         }
 
         function sincronizarResumoCaracteristicas(forcar = false) {
@@ -9899,6 +10337,24 @@ Bônus de Proficiência: +${bonusProf}
 
                 campoDestino.textContent = campoOrigem.value.trim();
             });
+
+            const campoSubclasse = document.getElementById('subclasse');
+            const campoSubclasseResumo = document.getElementById('talentoArquetipoResumo');
+            const secaoSubclasse = document.getElementById('talentoSubclasseSecao');
+            const containerSubclasse = document.getElementById('containerSubclasse');
+
+            if (campoSubclasse && campoSubclasseResumo && secaoSubclasse) {
+                const subclasseDisponivel = !!containerSubclasse && !containerSubclasse.classList.contains('hidden');
+                secaoSubclasse.classList.toggle('hidden', !subclasseDisponivel);
+
+                if (subclasseDisponivel) {
+                    campoSubclasseResumo.value = campoSubclasse.value.trim();
+                    campoSubclasseResumo.placeholder = campoSubclasse.placeholder || 'Subclasse';
+                } else {
+                    campoSubclasseResumo.value = '';
+                    campoSubclasseResumo.placeholder = 'Subclasse';
+                }
+            }
         }
 
         function sincronizarAtributosComSalvaguardas() {
@@ -10017,6 +10473,106 @@ Bônus de Proficiência: +${bonusProf}
             rotuloAtributo: "",
             textoResumo: ""
         };
+
+        function abrirItemCard(card) {
+            if (!card) return;
+            card.classList.remove('fechado', 'oculto');
+            const icon = card.querySelector('.item-toggle');
+            if (icon) icon.textContent = '🔼';
+        }
+
+        function fecharItemCard(card) {
+            if (!card || card.id === 'armaModelo' || card.id === 'armaduraModelo' || card.id === 'escudoModelo' || card.id === 'outroModelo') return;
+            card.classList.add('fechado');
+            const icon = card.querySelector('.item-toggle');
+            if (icon) icon.textContent = '🔽';
+        }
+
+        function atualizarTitulosInventario() {
+            const contarItensPreenchidos = (seletor, campoNome) => Array.from(document.querySelectorAll(seletor))
+                .filter(card => card.querySelector(campoNome)?.value?.trim())
+                .length;
+
+            const contagens = {
+                inventarioTituloArmas: {
+                    emoji: '⚔️',
+                    nome: 'Armas',
+                    total: contarItensPreenchidos('#listaArmas .item-card[data-tipo="arma"]', '[data-campo="nome"]')
+                },
+                inventarioTituloArmaduras: {
+                    emoji: '🛡️',
+                    nome: 'Armaduras',
+                    total: contarItensPreenchidos('#listaArmaduras .item-card[data-tipo="armadura"]', '[data-campo="armadura_nome"]')
+                },
+                inventarioTituloEscudos: {
+                    emoji: '🛡️',
+                    nome: 'Escudos e Vestimentos',
+                    total: contarItensPreenchidos('#listaEscudos .item-card[data-tipo="escudo"]', '[data-campo="escudo_nome"]')
+                },
+                inventarioTituloOutros: {
+                    emoji: '📦',
+                    nome: 'Outros',
+                    total: contarItensPreenchidos('#listaOutros .item-card[data-tipo="outro"]', '[data-campo="outro_nome"]')
+                }
+            };
+
+            Object.entries(contagens).forEach(([id, info]) => {
+                const titulo = document.getElementById(id);
+                if (titulo) titulo.textContent = `${info.emoji} ${info.nome} ${info.total}`;
+            });
+        }
+
+        function atualizarCamposMagicosItem(card) {
+            if (!card) return;
+
+            const checkboxMagico = card.querySelector('.item-flag-magico');
+            const containerSintonizado = card.querySelector('.item-sintonizado-container');
+            const checkboxSintonizado = card.querySelector('.item-flag-sintonizado');
+
+            if (!checkboxMagico || !containerSintonizado || !checkboxSintonizado) return;
+
+            const exibirSintonizado = checkboxMagico.checked;
+            card.classList.toggle('item-magico-ativo', exibirSintonizado);
+            containerSintonizado.classList.toggle('oculto', !exibirSintonizado);
+            if (!exibirSintonizado) checkboxSintonizado.checked = false;
+        }
+
+        function inicializarCamposCompartilhadosItem(card, prefixo) {
+            if (!card) return;
+
+            const checkboxMagico = card.querySelector('.item-flag-magico');
+            const checkboxSintonizado = card.querySelector('.item-flag-sintonizado');
+
+            if (checkboxMagico && checkboxMagico.dataset.listenerItemMagico !== 'true') {
+                checkboxMagico.addEventListener('change', () => {
+                    atualizarCamposMagicosItem(card);
+                    atualizarListaArmasEquipamento();
+                });
+                checkboxMagico.dataset.listenerItemMagico = 'true';
+            }
+
+            if (checkboxSintonizado && checkboxSintonizado.dataset.listenerItemSintonizado !== 'true') {
+                checkboxSintonizado.addEventListener('change', atualizarListaArmasEquipamento);
+                checkboxSintonizado.dataset.listenerItemSintonizado = 'true';
+            }
+
+            atualizarCamposMagicosItem(card);
+        }
+
+        function coletarFlagsCompartilhadasItem(card, destino, prefixo) {
+            destino[`${prefixo}_item_magico`] = !!card.querySelector('.item-flag-magico')?.checked;
+            destino[`${prefixo}_sintonizado`] = !!card.querySelector('.item-flag-sintonizado')?.checked;
+        }
+
+        function aplicarFlagsCompartilhadasItem(card, dadosItem, prefixo) {
+            if (!card || !dadosItem) return;
+            const checkboxMagico = card.querySelector('.item-flag-magico');
+            const checkboxSintonizado = card.querySelector('.item-flag-sintonizado');
+
+            if (checkboxMagico) checkboxMagico.checked = !!dadosItem[`${prefixo}_item_magico`];
+            if (checkboxSintonizado) checkboxSintonizado.checked = !!dadosItem[`${prefixo}_sintonizado`];
+            atualizarCamposMagicosItem(card);
+        }
 
         function obterResumoBonusAtaqueArma(arma) {
             return getResumoCalculoAtaque(arma, arma?.ataque);
@@ -10182,7 +10738,7 @@ Bônus de Proficiência: +${bonusProf}
                     const idMunicao = arma.arma_municao_id;
 
                     if (idMunicao) {
-                        const itemMunicao = [...document.querySelectorAll('#listaOutros .item-card')]
+                        const itemMunicao = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')]
                             .find(el => el.dataset.id === idMunicao);
 
                         const nomeMunicao = itemMunicao
@@ -10544,7 +11100,7 @@ Bônus de Proficiência: +${bonusProf}
                 caixa.querySelector('.modificador-orbe').innerText = (mod >= 0 ? "+" : "") + mod;
 
                 const campoSalv = document.getElementById('salv_' + atributo);
-                if (campoSalv) campoSalv.value = salvMod;
+                if (campoSalv) campoSalv.value = formatarBonusCalculado(salvMod);
 
                 if (caixa.querySelector('.prof-checkbox').checked) {
                     caixa.classList.add('proficiente');
@@ -10582,6 +11138,8 @@ Bônus de Proficiência: +${bonusProf}
             input.addEventListener('input', () => {
                 sincronizarAtributosComSalvaguardas();
                 atualizarAtributos();
+                atualizarVidaMaxNivelUm();
+                normalizarPontosDeVida();
                 desenharRadar();
                 atualizarModificadoresSalvaguarda();
                 atualizarPericias();
@@ -10591,6 +11149,8 @@ Bônus de Proficiência: +${bonusProf}
             input.addEventListener('change', () => {
                 sincronizarAtributosComSalvaguardas();
                 atualizarAtributos();
+                atualizarVidaMaxNivelUm();
+                normalizarPontosDeVida();
                 desenharRadar();
                 atualizarModificadoresSalvaguarda();
                 atualizarPericias();
@@ -10616,9 +11176,36 @@ Bônus de Proficiência: +${bonusProf}
         document
             .getElementById("classeNivelID")
             .addEventListener("input", atualizarTudoDerivado);
+        document
+            .getElementById("classeNivelID")
+            .addEventListener("input", () => {
+                atualizarVidaMaxNivelUm();
+                normalizarPontosDeVida();
+            });
+        document
+            .getElementById("classeNivelID")
+            .addEventListener("change", () => {
+                atualizarVidaMaxNivelUm();
+                normalizarPontosDeVida();
+            });
+
+        document.getElementById('dadosVidaTipo')?.addEventListener('input', () => {
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
+        });
+        document.getElementById('dadosVidaTipo')?.addEventListener('change', () => {
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
+        });
 
 
         document.getElementById('classeNomeID').addEventListener('input', () => {
+            sincronizarClasseNivel();
+            sincronizarResumoCaracteristicas();
+            sincronizarCamposMagia();
+            atualizarMagias();
+        });
+        document.getElementById('classeNomeID').addEventListener('change', () => {
             sincronizarClasseNivel();
             sincronizarResumoCaracteristicas();
             sincronizarCamposMagia();
@@ -10629,6 +11216,8 @@ Bônus de Proficiência: +${bonusProf}
         document.getElementById('classeNivelID').addEventListener('change', () => sincronizarClasseNivel());
         document.getElementById('racaID').addEventListener('input', () => sincronizarResumoCaracteristicas());
         document.getElementById('antecedenteID').addEventListener('input', () => sincronizarResumoCaracteristicas());
+        document.getElementById('subclasse')?.addEventListener('input', () => sincronizarResumoCaracteristicas(true));
+        document.getElementById('subclasse')?.addEventListener('change', () => sincronizarResumoCaracteristicas(true));
         const campoClasseConjuradora = document.getElementById('magiaClasseConjuradora');
         if (campoClasseConjuradora) {
             campoClasseConjuradora.addEventListener('input', () => {
@@ -10802,6 +11391,7 @@ Bônus de Proficiência: +${bonusProf}
             atualizarMagias();
 
             // ===== 7. VIDA E DADOS =====
+            atualizarVidaMaxNivelUm();
             normalizarPontosDeVida();
             normalizarDadosVida();
 
@@ -10856,6 +11446,7 @@ Bônus de Proficiência: +${bonusProf}
 
         }
         atualizarFicha();
+        atualizarSubclasse();
 
         function aplicarDadosFicha(dados) {
             bloqueandoLevelUp = true;
@@ -10912,7 +11503,7 @@ Bônus de Proficiência: +${bonusProf}
                 const containerOutros = document.getElementById('listaOutros');
 
                 if (containerOutros) {
-                    const outrosAtuais = containerOutros.querySelectorAll('.item-card');
+                    const outrosAtuais = containerOutros.querySelectorAll('.item-card[data-tipo="outro"]');
                     outrosAtuais.forEach(o => o.remove());
 
                     dados.outros.forEach(dadosOutro => {
@@ -10928,6 +11519,7 @@ Bônus de Proficiência: +${bonusProf}
                             const valor = dadosOutro[campo.dataset.campo];
                             if (valor !== undefined) campo.value = valor;
                         });
+                        aplicarFlagsCompartilhadasItem(novoCard, dadosOutro, 'outro');
 
                         if (dadosOutro.id) {
                             novoCard.dataset.id = dadosOutro.id;
@@ -10945,7 +11537,7 @@ Bônus de Proficiência: +${bonusProf}
                 const containerArmas = document.getElementById('listaArmas');
 
                 if (containerArmas) {
-                    const armasAtuais = containerArmas.querySelectorAll('.arma-card:not(#armaModelo)');
+                    const armasAtuais = containerArmas.querySelectorAll('.item-card[data-tipo="arma"]:not(#armaModelo)');
                     armasAtuais.forEach(a => a.remove());
 
                     dados.armas.forEach(dadosArma => {
@@ -10966,6 +11558,7 @@ Bônus de Proficiência: +${bonusProf}
                             const valor = dadosArma[campo.dataset.campo];
                             if (valor !== undefined) campo.value = valor;
                         });
+                        aplicarFlagsCompartilhadasItem(novoCard, dadosArma, 'arma');
                         atualizarOpcoesMunicao(novoCard);
 
                         setTimeout(() => {
@@ -10995,7 +11588,7 @@ Bônus de Proficiência: +${bonusProf}
                 const containerArmaduras = document.getElementById('listaArmaduras');
 
                 if (containerArmaduras) {
-                    const atuais = containerArmaduras.querySelectorAll('.armadura-card:not(#armaduraModelo)');
+                    const atuais = containerArmaduras.querySelectorAll('.item-card[data-tipo="armadura"]:not(#armaduraModelo)');
                     atuais.forEach(a => a.remove());
 
                     dados.armaduras.forEach(dadosArmadura => {
@@ -11010,6 +11603,7 @@ Bônus de Proficiência: +${bonusProf}
                                 campo.dispatchEvent(new Event('change'));
                             }
                         });
+                        aplicarFlagsCompartilhadasItem(novoCard, dadosArmadura, 'armadura');
 
                         if (typeof dadosArmadura.proficiente === "boolean") {
                             const indicador = novoCard.querySelector('.item-proficiencia');
@@ -11029,7 +11623,7 @@ Bônus de Proficiência: +${bonusProf}
                 const containerEscudos = document.getElementById('listaEscudos');
 
                 if (containerEscudos) {
-                    const atuais = containerEscudos.querySelectorAll('.escudo-card:not(#escudoModelo)');
+                    const atuais = containerEscudos.querySelectorAll('.item-card[data-tipo="escudo"]:not(#escudoModelo)');
                     atuais.forEach(e => e.remove());
 
                     dados.escudos.forEach(dadosEscudo => {
@@ -11044,6 +11638,7 @@ Bônus de Proficiência: +${bonusProf}
                                 campo.dispatchEvent(new Event('change'));
                             }
                         });
+                        aplicarFlagsCompartilhadasItem(novoCard, dadosEscudo, 'escudo');
 
                         if (typeof dadosEscudo.proficiente === "boolean") {
                             const indicador = novoCard.querySelector('.item-proficiencia');
@@ -11059,6 +11654,7 @@ Bônus de Proficiência: +${bonusProf}
             // =========================
             // 🔄 5. PÓS-PROCESSAMENTO
             // =========================
+            document.querySelectorAll('#listaArmas .item-card[data-tipo="arma"], #listaArmaduras .item-card[data-tipo="armadura"], #listaEscudos .item-card[data-tipo="escudo"], #listaOutros .item-card[data-tipo="outro"]').forEach(fecharItemCard);
             atualizarListaArmasEquipamento();
 
             const armasImportadas = coletarArmas();
@@ -11084,6 +11680,7 @@ Bônus de Proficiência: +${bonusProf}
             sincronizarResumoCaracteristicas(true);
             sincronizarCamposMagia();
             atualizarMagias();
+            atualizarVidaMaxNivelUm();
             normalizarPontosDeVida();
             normalizarDadosVida();
             atualizarPesoAtualInventario();

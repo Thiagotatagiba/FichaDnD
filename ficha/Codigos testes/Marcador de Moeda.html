@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Sistema de Dinheiro</title>
+
+<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+
+<style>
+
+body {
+    background: #e7e1d5;
+    font-family: 'MedievalSharp';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CONTAINER HORIZONTAL */
+.container {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: #f6f2ea;
+    border: 3px solid #8b4513;
+    border-radius: 14px;
+    padding: 12px 18px;
+}
+
+/* ===== TOTAL (RETANGULO) ===== */
+.total-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #efe7da;
+    border: 3px solid #8b4513;
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 120px;
+}
+
+.total-box select {
+    border: none;
+    background: none;
+    font-family: 'MedievalSharp';
+    font-size: 14px;
+    text-align: center;
+    border-bottom: 1px solid #8b4513;
+}
+
+.total-valor {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 4px;
+}
+
+/* ===== MOEDAS (CIRCULOS) ===== */
+.moedas {
+    display: flex;
+    gap: 10px;
+}
+
+.moeda {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 3px solid #8b4513;
+    background: radial-gradient(circle, #fffaf2, #e0c79f);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.moeda:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.moeda input {
+    width: 40px;
+    border: none;
+    background: none;
+    text-align: center;
+    font-family: 'MedievalSharp';
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ===== GEMAS (LOSANGO) ===== */
+.gema {
+    width: 80px;
+    height: 80px;
+    transform: rotate(45deg);
+    border: 3px solid #8b4513;
+    background: linear-gradient(135deg, #fffaf2, #e8d9b5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.gema-conteudo {
+    transform: rotate(-45deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.gema input {
+    width: 40px;
+    border: none;
+    background: none;
+    text-align: center;
+    font-family: 'MedievalSharp';
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.gema label {
+    font-size: 11px;
+}
+
+/* REMOVE SPIN */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- TOTAL -->
+    <div class="total-box">
+        <select id="moedaSelect">
+            <option value="PO" selected>PO</option>
+            <option value="PL">PL</option>
+            <option value="PE">PE</option>
+            <option value="PP">PP</option>
+            <option value="PC">PC</option>
+        </select>
+        <div class="total-valor" id="totalValor">0</div>
+    </div>
+
+    <!-- MOEDAS -->
+    <div class="moedas">
+
+        <div class="moeda">
+            <label>PL</label>
+            <input type="number" id="pl" value="0">
+        </div>
+
+        <div class="moeda">
+            <label>PO</label>
+            <input type="number" id="po" value="0">
+        </div>
+
+        <div class="moeda">
+            <label>PE</label>
+            <input type="number" id="pe" value="0">
+        </div>
+
+        <div class="moeda">
+            <label>PP</label>
+            <input type="number" id="pp" value="0">
+        </div>
+
+        <div class="moeda">
+            <label>PC</label>
+            <input type="number" id="pc" value="0">
+        </div>
+
+    </div>
+
+    <!-- GEMAS -->
+    <div class="gema">
+        <div class="gema-conteudo">
+            <label id="labelGemas">Gemas (PO)</label>
+            <input type="number" id="gemas" value="0">
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+const taxasPO = {
+    PL: 10,
+    PO: 1,
+    PE: 0.5,
+    PP: 0.1,
+    PC: 0.01
+};
+
+function getVal(id) {
+    return parseFloat(document.getElementById(id).value) || 0;
+}
+
+function converterParaPO() {
+    return (
+        getVal("pl") * taxasPO.PL +
+        getVal("po") * taxasPO.PO +
+        getVal("pe") * taxasPO.PE +
+        getVal("pp") * taxasPO.PP +
+        getVal("pc") * taxasPO.PC +
+        getVal("gemas") * taxasPO.PO
+    );
+}
+
+function converterDePO(valorPO, moeda) {
+    return valorPO / taxasPO[moeda];
+}
+
+function atualizar() {
+    const moeda = document.getElementById("moedaSelect").value;
+
+    const totalPO = converterParaPO();
+    const totalConvertido = converterDePO(totalPO, moeda);
+
+    document.getElementById("totalValor").innerText =
+        totalConvertido.toFixed(2);
+
+    document.getElementById("labelGemas").innerText =
+        `Gemas (${moeda})`;
+}
+
+// eventos
+document.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", atualizar);
+});
+
+document.getElementById("moedaSelect")
+    .addEventListener("change", atualizar);
+
+atualizar();
+
+</script>
+
+</body>
+</html>
