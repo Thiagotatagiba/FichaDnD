@@ -3580,7 +3580,8 @@
 
         /* ===== Cards de armas cadastradas ===== */
         .arma-card,
-        .armadura-card {
+        .armadura-card,
+        .item-card {
             position: relative;
             background: linear-gradient(145deg, #f4ecd8, #e8dcc2);
             border: 3px solid #3b2f1b;
@@ -3593,7 +3594,8 @@
         }
 
         .arma-card::after,
-        .armadura-card::after {
+        .armadura-card::after,
+        .item-card::after {
             content: "";
             position: absolute;
             inset: 8px;
@@ -3664,7 +3666,8 @@
         }
 
         .arma-card label,
-        .armadura-card label {
+        .armadura-card label,
+        .item-card label {
             font-size: 11px;
             color: #3b2f1b;
             display: block;
@@ -3676,7 +3679,10 @@
         .arma-card select,
         .armadura-card input[type="text"],
         .armadura-card input[type="number"],
-        .armadura-card select {
+        .armadura-card select,
+        .item-card input[type="text"],
+        .item-card input[type="number"],
+        .item-card select {
             width: 100%;
             padding: 6px;
             height: 28px;
@@ -3689,12 +3695,14 @@
         }
 
         .arma-card input[type="number"],
-        .armadura-card input[type="number"] {
+        .armadura-card input[type="number"],
+        .item-card input[type="number"] {
             text-align: center;
         }
 
         .arma-card select,
-        .armadura-card select {
+        .armadura-card select,
+        .item-card select {
             appearance: none;
             padding-right: 20px;
             background-image: linear-gradient(45deg, transparent 50%, #3b2f1b 50%),
@@ -3705,7 +3713,8 @@
         }
 
         .arma-card input[type="checkbox"],
-        .armadura-card input[type="checkbox"] {
+        .armadura-card input[type="checkbox"],
+        .item-card input[type="checkbox"] {
             width: auto;
             height: auto;
             padding: 0;
@@ -3716,7 +3725,9 @@
         .arma-card input:focus,
         .arma-card select:focus,
         .armadura-card input:focus,
-        .armadura-card select:focus {
+        .armadura-card select:focus,
+        .item-card input:focus,
+        .item-card select:focus {
             outline: none;
             border-bottom: 2px solid #8b5a2b;
         }
@@ -3912,7 +3923,8 @@
         }
 
         .arma-card .item-preco-peso,
-        .armadura-card .item-preco-peso {
+        .armadura-card .item-preco-peso,
+        .item-card .item-preco-peso {
             width: 45px !important;
             text-align: center;
             height: 20px !important;
@@ -3935,7 +3947,8 @@
         }
 
         .arma-card.fechado .arma-conteudo,
-        .armadura-card.fechado .arma-conteudo {
+        .armadura-card.fechado .arma-conteudo,
+        .item-card.fechado .arma-conteudo {
             display: none;
         }
 
@@ -5677,7 +5690,7 @@
                                         aria-label="Adicionar novo item em outros">+</button>
                                 </div>
 
-                                <div id="outroModelo" class="armadura-card outro-card fechado oculto">
+                                <div id="outroModelo" class="item-card outro-card fechado oculto">
                                     <div class="item-linha-inferior">
                                         <button type="button" class="btn-remover-item" title="Remover Item">🗑️</button>
 
@@ -5755,21 +5768,21 @@
 
     <script>
         document.addEventListener('click', function (e) {
-    const moedaIcon = e.target.closest('.item-emoji.moeda');
-    if (!moedaIcon) return;
+            const moedaIcon = e.target.closest('.item-emoji.moeda');
+            if (!moedaIcon) return;
 
-    e.stopPropagation();
+            e.stopPropagation();
 
-    const bloco = moedaIcon.closest('.item-linha') || moedaIcon.closest('div');
-    if (!bloco) return;
+            const bloco = moedaIcon.closest('.item-linha') || moedaIcon.closest('div');
+            if (!bloco) return;
 
-    const input = bloco.querySelector('[data-campo*="preco"]');
-    const sufixo = bloco.querySelector('.sufixo');
+            const input = bloco.querySelector('[data-campo*="preco"]');
+            const sufixo = bloco.querySelector('.sufixo');
 
-    if (!input) return;
+            if (!input) return;
 
-    trocarMoeda(input, sufixo);
-});
+            trocarMoeda(input, sufixo);
+        });
 
         function trocarMoeda(input, sufixo) {
             const TIPOS = ["PO", "PL", "PE", "PP", "PC"];
@@ -5818,7 +5831,7 @@
 
         Object.defineProperty(campo, "value", {
             set(v) {
-                console.trace("ALTERARAM bonusProf PARA:", v);
+
                 this.setAttribute("value", v);
             },
             get() {
@@ -5866,7 +5879,6 @@
         // 1️⃣ Calcula o modificador de ataque baseado no atributo
         // ============================
         function getModificadorBaseAtributo(chaveAtributo) {
-            console.log("=== DEBUG getModificadorBaseAtributo ===");
 
 
 
@@ -5890,7 +5902,6 @@
             if (isNaN(valor)) return 0;
 
             const mod = Math.floor((valor - 10) / 2);
-            console.log(`Modificador base de ${chaveAtributo} (atrib):`, mod);
             return mod;
         }
 
@@ -6032,12 +6043,6 @@
 
             const textoResumo = `${chave.toUpperCase()} (${formatado})`;
 
-            console.log("=== DEBUG ATAQUE FINAL ===");
-            console.log("Arma:", nome);
-            console.log("Tipo:", tipo);
-            console.log("Props:", props);
-            console.log("É distância?", ehDistancia);
-            console.log("Chave FINAL:", chave);
 
             return {
                 nome,
@@ -6054,7 +6059,6 @@
         // FUNÇÃO: getResumoCalculoAtaque
         // ==========================
         function calcularResumoAtaque(arma = {}, personagem = {}) {
-            console.log("=== DEBUG calcularResumoAtaque ===");
 
             // 🔹 garante objeto válido
             const armaValida = arma && typeof arma === "object" ? arma : {};
@@ -6103,14 +6107,7 @@
                 textoResumo
             };
 
-            // 🔹 DEBUG LIMPO
-            console.log("Arma:", nomeArma);
-            console.log("Tipo:", tipoArma);
-            console.log("Atributo:", chaveAttr);
-            console.log("ModBase:", modBase);
-            console.log("Prof:", prof);
-            console.log("BonusProf:", bonusProf);
-            console.log("Total:", totalAtk);
+
 
             return resumo;
         }
@@ -6628,7 +6625,7 @@ Bônus de Proficiência: +${bonusProf}
 
             selectMunicao.innerHTML = '<option value="">Sem Munição</option>';
 
-            const outrosItens = document.querySelectorAll('#listaOutros .equipamento-card');
+            const outrosItens = document.querySelectorAll('#listaOutros .item-card');
 
             outrosItens.forEach(item => {
                 const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
@@ -6638,19 +6635,14 @@ Bônus de Proficiência: +${bonusProf}
 
                 let id = item.dataset.id;
 
-                if (!id) {
-                    id = gerarId();
-                    item.dataset.id = id;
-                }
 
-                if (tipo === 'Municao' && nome) {
+                if (tipo?.toLowerCase() === 'municao' && nome) {
                     const option = document.createElement('option');
                     option.value = id;
                     option.textContent = `${quantidade || '-'} ${nome}`;
 
                     selectMunicao.appendChild(option);
                 }
-
             });
 
             // 🔹 PASSO 2: restaurar valor
@@ -6681,7 +6673,7 @@ Bônus de Proficiência: +${bonusProf}
 
             const idMunicao = arma.arma_municao_id;
 
-            const itens = document.querySelectorAll('#listaOutros .equipamento-card');
+            const itens = document.querySelectorAll('#listaOutros .item-card');
 
             const item = [...itens].find(itemInventario => itemInventario.dataset.id === idMunicao);
 
@@ -6836,7 +6828,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 if (idMunicao) {
 
-                    const item = [...document.querySelectorAll('#listaOutros .equipamento-card')]
+                    const item = [...document.querySelectorAll('#listaOutros .item-card')]
                         .find(el => el.dataset.id === idMunicao);
 
                     const nome = item?.querySelector('[data-campo="outro_nome"]')?.value;
@@ -7113,7 +7105,7 @@ Bônus de Proficiência: +${bonusProf}
 
                 if (idMunicao) {
 
-                    const item = [...document.querySelectorAll('#listaOutros .equipamento-card')]
+                    const item = [...document.querySelectorAll('#listaOutros .item-card')]
                         .find(el => el.dataset.id === idMunicao);
 
                     const nome = item?.querySelector('[data-campo="outro_nome"]')?.value;
@@ -7347,7 +7339,7 @@ Bônus de Proficiência: +${bonusProf}
         function obterStatusMunicaoArma(arma) {
             if (!arma?.usaMunicao) return "";
 
-            const itemMunicao = [...document.querySelectorAll('#listaOutros .equipamento-card')]
+            const itemMunicao = [...document.querySelectorAll('#listaOutros .item-card')]
                 .find(item => item.dataset.id === arma.arma_municao_id);
 
             const nomeMunicao = itemMunicao?.querySelector('[data-campo="outro_nome"]')?.value?.trim();
@@ -7483,8 +7475,6 @@ Bônus de Proficiência: +${bonusProf}
                 indiceSelecionado !== null && indiceSelecionado !== undefined
                     ? String(indiceSelecionado)
                     : '';
-            console.log("SELECT VALOR:", valorSelecionado);
-            console.log("OPTIONS:", Array.from(select.options).map(o => o.value));
             const existe = Array.from(select.options)
                 .some(option => option.value === valorSelecionado);
 
@@ -7648,7 +7638,7 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         function consumirPocaoEquipada(idOutro) {
-            const item = [...document.querySelectorAll('#listaOutros .equipamento-card')]
+            const item = [...document.querySelectorAll('#listaOutros .item-card')]
                 .find(card => card.dataset.id === idOutro);
             if (!item) return;
 
@@ -7810,7 +7800,6 @@ Bônus de Proficiência: +${bonusProf}
             ['armaduraCA', 'outroEquipadoCA', 'escudoCA'].forEach(aplicarFormatoCA);
             atualizarClasseArmaduraEquipada();
             atualizarSubAbaArmas();
-            console.log("ESCUDOS COLETADOS:", escudos);
         }
 
 
@@ -8329,6 +8318,8 @@ Bônus de Proficiência: +${bonusProf}
             novoOutro.removeAttribute('id');
             novoOutro.style.display = 'block';
 
+            novoOutro.dataset.id = gerarId();
+
             container.appendChild(novoOutro);
             inicializarEventosOutro(novoOutro);
             atualizarListaArmasEquipamento();
@@ -8338,7 +8329,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function coletarOutros() {
             const outros = [];
-            const lista = document.querySelectorAll('#listaOutros .equipamento-card');
+            const lista = document.querySelectorAll('#listaOutros .item-card');
 
             lista.forEach(card => {
                 const outro = {};
@@ -10191,7 +10182,7 @@ Bônus de Proficiência: +${bonusProf}
                     const idMunicao = arma.arma_municao_id;
 
                     if (idMunicao) {
-                        const itemMunicao = [...document.querySelectorAll('#listaOutros .equipamento-card')]
+                        const itemMunicao = [...document.querySelectorAll('#listaOutros .item-card')]
                             .find(el => el.dataset.id === idMunicao);
 
                         const nomeMunicao = itemMunicao
@@ -10863,15 +10854,16 @@ Bônus de Proficiência: +${bonusProf}
                 arma.proficiente = !!arma.proficiente;
             });
 
-            console.log("Armas normalizadas!");
         }
         atualizarFicha();
+
         function aplicarDadosFicha(dados) {
             bloqueandoLevelUp = true;
             if (!dados || typeof dados !== "object") return;
 
             dados = normalizarDadosImportacao(dados);
             personagem = dados;
+            console.log("OUTROS COM ID:", dados.outros);
             // 🔥 CAMPOS ESPECIAIS
             const camposEspeciais = {
                 xp: (valor) => setXP(valor ?? 0),
@@ -10920,11 +10912,16 @@ Bônus de Proficiência: +${bonusProf}
                 const containerOutros = document.getElementById('listaOutros');
 
                 if (containerOutros) {
-                    const outrosAtuais = containerOutros.querySelectorAll('.equipamento-card');
+                    const outrosAtuais = containerOutros.querySelectorAll('.item-card');
                     outrosAtuais.forEach(o => o.remove());
 
                     dados.outros.forEach(dadosOutro => {
                         const novoCard = adicionarNovoOutro();
+
+                        // 🔥 GARANTIR ID ANTES DE QUALQUER COISA
+                        const id = dadosOutro.id || gerarId();
+                        novoCard.dataset.id = id;
+                        dadosOutro.id = id; // 🔥 MUITO IMPORTANTE
                         if (!novoCard) return;
 
                         novoCard.querySelectorAll('[data-campo]').forEach(campo => {
@@ -10969,7 +10966,6 @@ Bônus de Proficiência: +${bonusProf}
                             const valor = dadosArma[campo.dataset.campo];
                             if (valor !== undefined) campo.value = valor;
                         });
-
                         atualizarOpcoesMunicao(novoCard);
 
                         setTimeout(() => {
