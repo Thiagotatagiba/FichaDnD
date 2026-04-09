@@ -2,15 +2,16 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Tabela de Classe</title>
+<title>Card de Classe</title>
 
 <style>
 body {
-  font-family: 'MedievalSharp', serif;
+  font-family: 'Georgia', serif;
   background: #f2efe8;
   padding: 20px;
 }
 
+/* CARD */
 .container {
   background: #f6f2ea;
   border: 3px solid #8b4513;
@@ -18,15 +19,25 @@ body {
   padding: 15px;
 }
 
-h2 {
-  margin-bottom: 10px;
+/* HEADER */
+.topo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.subclasse {
+  font-size: 14px;
+  color: #5a3b1a;
+}
+
+/* CONTROLES */
 select, button {
-  margin: 5px 0 10px 0;
+  margin: 5px 0;
   padding: 6px;
 }
 
+/* TABELA */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -47,8 +58,49 @@ td:nth-child(3) {
   text-align: left;
 }
 
-tbody tr:nth-child(even) {
-  background: #efe7da;
+/* TAGS */
+.tag {
+  background: #d6c7a8;
+  padding: 3px 6px;
+  border-radius: 4px;
+  margin: 2px;
+  display: inline-block;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.tag:hover {
+  background: #c0ad88;
+}
+
+/* SLOTS */
+.slot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 1px;
+  background: #333;
+}
+
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
 }
 </style>
 </head>
@@ -56,63 +108,63 @@ tbody tr:nth-child(even) {
 <body>
 
 <div class="container">
-  <h2 id="tituloClasse">Classe</h2>
+  <div class="topo">
+    <h2 id="tituloClasse">Classe</h2>
+    <span id="nomeSubclasse" class="subclasse"></span>
+  </div>
 
   <button onclick="importarJSON()">Importar JSON</button>
-  <input type="file" id="fileInput" hidden accept=".json">
+  <input type="file" id="fileInput" hidden>
 
   <br>
 
-  <label>Subclasse:</label>
-  <select id="selectSubclasse" onchange="aplicarSubclasse()">
-    <option value="">Selecione</option>
-  </select>
+  <select id="selectSubclasse" onchange="aplicarSubclasse()"></select>
 
   <table>
     <thead>
       <tr>
-        <th rowspan="2">Nível</th>
-        <th rowspan="2">Prof.</th>
-        <th rowspan="2">Características</th>
-        <th rowspan="2">Truques</th>
-        <th colspan="9">Espaços de Magia</th>
-      </tr>
-      <tr>
-        <th>1°</th><th>2°</th><th>3°</th><th>4°</th>
-        <th>5°</th><th>6°</th><th>7°</th><th>8°</th><th>9°</th>
+        <th>Nível</th>
+        <th>Prof.</th>
+        <th>Características</th>
+        <th>Truques</th>
+        <th colspan="9">Magias</th>
       </tr>
     </thead>
     <tbody id="tbodyClasse"></tbody>
   </table>
 </div>
 
+<!-- MODAL -->
+<div id="modal" class="modal" onclick="fecharModal()">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <h3 id="modalTitulo"></h3>
+    <p id="modalTexto"></p>
+  </div>
+</div>
+
 <script>
 let dadosClasse = null;
+let subclasseAtual = "";
 
-// IMPORTAR JSON
+// IMPORTAR
 function importarJSON() {
   document.getElementById("fileInput").click();
 }
 
-document.getElementById("fileInput").addEventListener("change", function(e) {
-  const file = e.target.files[0];
+document.getElementById("fileInput").addEventListener("change", e => {
   const reader = new FileReader();
-
-  reader.onload = function(evt) {
+  reader.onload = evt => {
     dadosClasse = JSON.parse(evt.target.result);
     montarTabela();
     carregarSubclasses();
   };
-
-  reader.readAsText(file);
+  reader.readAsText(e.target.files[0]);
 });
 
-// MONTAR TABELA BASE
+// TABELA BASE
 function montarTabela() {
   const tbody = document.getElementById("tbodyClasse");
-  const titulo = document.getElementById("tituloClasse");
-
-  titulo.textContent = dadosClasse.nome;
+  document.getElementById("tituloClasse").textContent = dadosClasse.nome;
   tbody.innerHTML = "";
 
   dadosClasse.niveis.forEach(n => {
@@ -121,66 +173,89 @@ function montarTabela() {
     tr.innerHTML = `
       <td>${n.nivel}</td>
       <td>${n.proficiencia}</td>
-      <td>${n.caracteristicas || "–"}</td>
+      <td>${renderTags(n.caracteristicas)}</td>
       <td>${n.truques ?? "–"}</td>
-      ${gerarMagias(n.magias)}
+      ${renderSlots(n.magias)}
     `;
 
     tbody.appendChild(tr);
   });
 }
 
-// GERAR COLUNAS DE MAGIA
-function gerarMagias(magias) {
+// TAGS
+function renderTags(texto) {
+  if (!texto) return "–";
+
+  return texto.split(",").map(t => {
+    t = t.trim();
+    return `<span class="tag" onclick="abrirModal('${t}')">${t}</span>`;
+  }).join("");
+}
+
+// SLOTS VISUAL
+function renderSlots(magias) {
   let html = "";
   for (let i = 0; i < 9; i++) {
-    html += `<td>${magias?.[i] ?? "–"}</td>`;
+    let qtd = magias?.[i] || 0;
+    let slots = "";
+    for (let j = 0; j < qtd; j++) {
+      slots += `<span class="slot"></span>`;
+    }
+    html += `<td>${slots || "–"}</td>`;
   }
   return html;
 }
 
-// CARREGAR SUBCLASSES
+// SUBCLASSES
 function carregarSubclasses() {
   const select = document.getElementById("selectSubclasse");
-  select.innerHTML = `<option value="">Selecione</option>`;
+  select.innerHTML = `<option value="">Subclasse</option>`;
 
   for (let nome in dadosClasse.subclasses) {
-    const opt = document.createElement("option");
-    opt.value = nome;
-    opt.textContent = nome;
-    select.appendChild(opt);
+    select.innerHTML += `<option value="${nome}">${nome}</option>`;
   }
 }
 
 // APLICAR SUBCLASSE
 function aplicarSubclasse() {
-  const subclasse = document.getElementById("selectSubclasse").value;
-  if (!subclasse) {
-    montarTabela();
-    return;
-  }
+  subclasseAtual = document.getElementById("selectSubclasse").value;
+  document.getElementById("nomeSubclasse").textContent = subclasseAtual;
 
-  const tbody = document.getElementById("tbodyClasse");
-  const linhas = tbody.querySelectorAll("tr");
+  montarTabela();
+
+  if (!subclasseAtual) return;
+
+  const linhas = document.querySelectorAll("#tbodyClasse tr");
 
   linhas.forEach((tr, i) => {
     const nivel = parseInt(dadosClasse.niveis[i].nivel);
     let texto = dadosClasse.niveis[i].caracteristicas || "";
 
-    // Substitui nome da subclasse
-    texto = texto.replace(dadosClasse.TP_Subclasse, subclasse);
+    texto = texto.replace(dadosClasse.TP_Subclasse, subclasseAtual);
 
-    // Substitui característica específica
     if (texto.includes(dadosClasse.Car_Subclasse)) {
-      const habilidade = dadosClasse.subclasses[subclasse][nivel];
-
-      if (habilidade) {
-        texto = texto.replace(dadosClasse.Car_Subclasse, habilidade);
+      const hab = dadosClasse.subclasses[subclasseAtual][nivel];
+      if (hab) {
+        texto = texto.replace(dadosClasse.Car_Subclasse, hab);
       }
     }
 
-    tr.children[2].textContent = texto || "–";
+    tr.children[2].innerHTML = renderTags(texto);
   });
+}
+
+// MODAL
+function abrirModal(nome) {
+  document.getElementById("modalTitulo").textContent = nome;
+
+  const desc = dadosClasse.descricoes?.[nome] || "Sem descrição.";
+  document.getElementById("modalTexto").textContent = desc;
+
+  document.getElementById("modal").style.display = "flex";
+}
+
+function fecharModal() {
+  document.getElementById("modal").style.display = "none";
 }
 </script>
 

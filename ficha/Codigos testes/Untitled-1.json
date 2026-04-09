@@ -47,4 +47,11 @@
       "17": "Duplicidade Aprimorada"
     }
   }
+,
+  "descricoes": {
+  "Conjuração": "Você pode conjurar magias divinas.",
+  "Domínio da Guerra": "Foco em combate e força.",
+  "Sacerdote de Guerra": "Ataques bônus adicionais.",
+  "Discípulo da Vida": "Curas são mais eficazes."
+}
 }
