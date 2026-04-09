@@ -1,231 +1,331 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<title>Teste Descanso Curto</title>
+    <meta charset="UTF-8">
+    <title>Descanso Curto Teste</title>
 
-<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 
-<style>
-body {
-    background: #e7e1d5;
-    font-family: 'MedievalSharp';
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+    <style>
+        body {
+            background: #e7e1d5;
+            font-family: 'MedievalSharp';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-/* ===== BOTÃO ===== */
-.btn-abrir {
-    border: 2px solid #8b4513;
-    border-radius: 10px;
-    background: #d4c5ae;
-    padding: 12px 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
+        /* BOTÃO */
+        .btn-abrir {
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            background: #d4c5ae;
+            padding: 12px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
 
-/* ===== MODAL ===== */
-.modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
+        /* MODAL */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
 
-.modal.ativo {
-    display: flex;
-}
+        .modal.ativo {
+            display: flex;
+        }
 
-/* ===== CARD ===== */
-.descanso-curto-card {
-    width: 260px;
-    border: 3px solid #8b4513;
-    border-radius: 12px;
-    background: #f4efe6;
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
+        /* CONTAINER */
+        .modal-conteudo {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
 
-.descanso-titulo {
-    text-align: center;
-    font-weight: bold;
-    color: #6f3610;
-}
+        /* CARD */
+        .card {
+            width: 260px;
+            border: 3px solid #8b4513;
+            border-radius: 12px;
+            background: #f4efe6;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+        }
 
-/* ===== LINHAS ===== */
-.descanso-linha {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .titulo {
+            font-weight: bold;
+        }
 
-.descanso-label {
-    font-size: 12px;
-}
+        /* PV */
+        .pv-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-.descanso-valor input {
-    width: 40px;
-    text-align: center;
-    border: none;
-    border-bottom: 1px solid #8b4513;
-    background: none;
-    font-family: 'MedievalSharp';
-    font-weight: bold;
-}
+        .pv-container input {
+            width: 45px;
+            text-align: center;
+            border: none;
+            border-bottom: 2px solid #8b4513;
+            background: transparent;
+            font-family: 'MedievalSharp';
+            font-weight: bold;
+            font-size: 14px;
+        }
 
-/* ===== ORBES ===== */
-.dv-orbes {
-    display: flex;
-    gap: 4px;
-}
+        /* DV */
+        .dv-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-.dv-orbe {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    border: 2px solid #8b4513;
-}
+        .dv-orbes {
+            display: flex;
+            gap: 4px;
+        }
 
-.dv-orbe.ativo {
-    background: #8b4513;
-}
+        .dv-orbe {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid #8b4513;
+        }
 
-/* ===== BOTÕES ===== */
-.btn {
-    border: 2px solid #8b4513;
-    border-radius: 8px;
-    background: #d4c5ae;
-    padding: 8px;
-    cursor: pointer;
-    font-family: 'MedievalSharp';
-    font-weight: bold;
-}
+        .dv-orbe.ativo {
+            background: #8b4513;
+        }
 
-.btn:hover {
-    background: #c7b79e;
-}
+        /* BOTÕES */
+        .btn {
+            border: 2px solid #8b4513;
+            border-radius: 8px;
+            background: #d4c5ae;
+            padding: 6px 10px;
+            cursor: pointer;
+            font-family: 'MedievalSharp';
+            font-weight: bold;
+        }
 
-.descanso-botoes {
-    display: flex;
-    gap: 6px;
-}
+        /* ÁREA AÇÃO */
+        .acao {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
 
-/* ===== RESULTADO ===== */
-.resultado {
-    text-align: center;
-    font-size: 12px;
-}
-</style>
+        .acao input {
+            width: 60px;
+            text-align: center;
+            border: 1px solid #8b4513;
+            font-family: 'MedievalSharp';
+        }
+
+        /* TEXTO CON */
+        .con-texto {
+            font-size: 12px;
+            color: #6f3610;
+        }
+
+        /* RESULTADO */
+        .resultado {
+            font-size: 12px;
+            min-height: 16px;
+        }
+
+        /* HISTÓRICO */
+        .historico {
+            width: 125px;
+            border: 3px solid #8b4513;
+            border-radius: 12px;
+            background: #fffaf2;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .historico-header {
+            background: #8b4513;
+            color: white;
+            padding: 6px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .historico-lista {
+            max-height: 260px;
+            overflow-y: auto;
+            font-size: 12px;
+        }
+
+        .historico-item {
+            padding: 6px;
+            border-bottom: 1px solid #ccc;
+        }
+    </style>
 </head>
 
 <body>
 
-<button class="btn-abrir" onclick="abrirModal()">Descanso Curto</button>
+    <button class="btn-abrir" onclick="abrirModal()">Descanso Curto</button>
 
-<div class="modal" id="modal">
-    <div class="descanso-curto-card">
+    <div class="modal" id="modal">
+        <div class="modal-conteudo">
 
-        <div class="descanso-titulo">Descanso Curto</div>
+            <!-- CARD -->
+            <div class="card">
 
-        <div class="descanso-linha">
-            <span>PV</span>
-            <div class="descanso-valor">
-                <input id="pvAtual" value="18"> /
-                <input id="pvMax" value="44">
+                <div class="titulo">Descanso Curto</div>
+
+                <div class="pv-container">
+                    PV
+                    <input id="pvAtual" value="18">
+                    /
+                    <input id="pvMax" value="44">
+                </div>
+
+                <div class="dv-container">
+                    DV
+                    <div class="dv-orbes" id="dvOrbes"></div>
+                    d10
+                </div>
+
+                <div id="areaAcao"></div>
+
+                <button class="btn" onclick="toggleModo()" id="btnModo">Manual</button>
+
+                <div class="resultado" id="resultado"></div>
+
+                <button class="btn" onclick="fecharModal()">Finalizar</button>
+
             </div>
+
+            <!-- HISTÓRICO -->
+            <div class="historico">
+                <div class="historico-header">Histórico</div>
+                <div class="historico-lista" id="historico"></div>
+            </div>
+
         </div>
-
-        <div class="descanso-linha">
-            <span>DV</span>
-            <div class="dv-orbes" id="dvOrbes"></div>
-            <span>d10</span>
-        </div>
-
-        <button class="btn" onclick="gastarDado()">🎲 +1 Dado</button>
-
-        <div class="resultado" id="resultado"></div>
-
-        <div class="descanso-botoes">
-            <button class="btn" onclick="autoCurar()">⚡ Auto</button>
-            <button class="btn" onclick="fecharModal()">Finalizar</button>
-        </div>
-
     </div>
-</div>
 
-<script>
-// ===== CONFIG INICIAL =====
-let dadosVida = 5;
-let tipoDado = 10;
-let conMod = 2;
+    <script>
+        let dadosVida = 5;
+        let tipoDado = 10;
+        let conMod = 2;
+        let modoManual = false;
 
-// ===== INIT =====
-const dvContainer = document.getElementById("dvOrbes");
+        const dvContainer = document.getElementById("dvOrbes");
+        const areaAcao = document.getElementById("areaAcao");
+        const historico = document.getElementById("historico");
 
-function renderDV() {
-    dvContainer.innerHTML = "";
-    for (let i = 0; i < dadosVida; i++) {
-        const orb = document.createElement("div");
-        orb.classList.add("dv-orbe", "ativo");
-        dvContainer.appendChild(orb);
-    }
-}
+        function renderDV() {
+            dvContainer.innerHTML = "";
+            for (let i = 0; i < dadosVida; i++) {
+                const orb = document.createElement("div");
+                orb.classList.add("dv-orbe", "ativo");
+                dvContainer.appendChild(orb);
+            }
+        }
 
-// ===== MODAL =====
-function abrirModal() {
-    document.getElementById("modal").classList.add("ativo");
-    renderDV();
-}
+        function abrirModal() {
+            document.getElementById("modal").classList.add("ativo");
+            renderDV();
+            renderAcao();
+        }
 
-function fecharModal() {
-    document.getElementById("modal").classList.remove("ativo");
-}
+        function fecharModal() {
+            document.getElementById("modal").classList.remove("ativo");
+        }
 
-// ===== ROLAGEM =====
-function rolarDado(lados) {
-    return Math.floor(Math.random() * lados) + 1;
-}
+        function toggleModo() {
+            modoManual = !modoManual;
+            document.getElementById("btnModo").innerText = modoManual ? "Automático" : "Manual";
+            renderAcao();
+        }
 
-function gastarDado() {
-    if (dadosVida <= 0) return;
+        function renderAcao() {
+            if (modoManual) {
+                areaAcao.innerHTML = `
+            <div class="acao">
+                <input id="inputManual" type="number" min="1" max="${tipoDado}">
+                <button class="btn" onclick="confirmarManual()">OK</button>
+                <span class="con-texto">+ CON</span>
+            </div>
+        `;
+            } else {
+                areaAcao.innerHTML = `
+            <div class="acao">
+                <button class="btn" onclick="gastarDado()">🎲 +1 Dado</button>
+                <span class="con-texto">+ CON</span>
+            </div>
+        `;
+            }
+        }
 
-    let pvAtual = parseInt(document.getElementById("pvAtual").value);
-    let pvMax = parseInt(document.getElementById("pvMax").value);
+        function rolarDado(lados) {
+            return Math.floor(Math.random() * lados) + 1;
+        }
 
-    if (pvAtual >= pvMax) return;
+        function gastarDado() {
+            processarCura(rolarDado(tipoDado), "🎲");
+        }
 
-    let roll = rolarDado(tipoDado);
-    let cura = roll + conMod;
+        function confirmarManual() {
+            let valor = parseInt(document.getElementById("inputManual").value);
 
-    pvAtual += cura;
-    if (pvAtual > pvMax) pvAtual = pvMax;
+            if (!valor || valor < 1 || valor > tipoDado) {
+                alert("Valor inválido");
+                return;
+            }
 
-    dadosVida--;
+            processarCura(valor, "✍️");
+        }
 
-    document.getElementById("pvAtual").value = pvAtual;
-    document.getElementById("resultado").innerText = `+${cura} (${roll} + CON)`;
+        function processarCura(valorDado, origem) {
+            if (dadosVida <= 0) return;
 
-    renderDV();
-}
+            let pvAtualInput = document.getElementById("pvAtual");
+            let pvMaxInput = document.getElementById("pvMax");
 
-// ===== AUTO CURA =====
-function autoCurar() {
-    while (dadosVida > 0) {
-        let pvAtual = parseInt(pvAtualInput.value);
-        let pvMax = parseInt(pvMaxInput.value);
+            let pvAtual = parseInt(pvAtualInput.value);
+            let pvMax = parseInt(pvMaxInput.value);
 
-        if (pvAtual >= pvMax) break;
+            if (pvAtual >= pvMax) return;
 
-        gastarDado();
-    }
-}
-</script>
+            let cura = valorDado + conMod;
+
+            pvAtual += cura;
+            if (pvAtual > pvMax) pvAtual = pvMax;
+
+            dadosVida--;
+
+            pvAtualInput.value = pvAtual;
+
+            document.getElementById("resultado").innerText = `+${cura} (${valorDado} + CON)`;
+
+            adicionarHistorico(`${origem} ${valorDado} → +${cura} PV`);
+
+            renderDV();
+        }
+
+        function adicionarHistorico(texto) {
+            const item = document.createElement("div");
+            item.className = "historico-item";
+            item.innerText = texto;
+            historico.prepend(item);
+        }
+    </script>
 
 </body>
+
 </html>

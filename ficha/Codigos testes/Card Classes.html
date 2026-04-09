@@ -1,0 +1,389 @@
+<html lang="pt-BR" dir="ltr">
+
+<head>
+    <title>Classes</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        .tabela-clerigo {
+            font-family: 'MedievalSharp', serif;
+            background: #f6f2ea;
+            border: 3px solid #8b4513;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .tabela-clerigo h2 {
+            text-align: left;
+            margin-bottom: 10px;
+            font-size: 20px;
+            color: #4a2c0f;
+        }
+
+        .tabela-clerigo table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        .tabela-clerigo th,
+        .tabela-clerigo td {
+            border: 1px solid #bda68c;
+            padding: 6px;
+            text-align: center;
+        }
+
+        .tabela-clerigo th {
+            background: #d6c7a8;
+            color: #3b2a15;
+            font-weight: bold;
+        }
+
+        .tabela-clerigo td:nth-child(3) {
+            text-align: left;
+        }
+
+        .tabela-clerigo tbody tr:nth-child(even) {
+            background: #efe7da;
+        }
+
+        .tabela-clerigo tbody tr:nth-child(odd) {
+            background: #f8f3ea;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Conteúdo da página -->
+    <div class="tabela-clerigo">
+        <h2>O CLÉRIGO</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th rowspan="2">Nível</th>
+                    <th rowspan="2">Bônus de Proficiência</th>
+                    <th rowspan="2">Características</th>
+                    <th rowspan="2">Truques</th>
+                    <th colspan="9">Espaços de Magia por Nível</th>
+                </tr>
+                <tr>
+                    <th>1°</th>
+                    <th>2°</th>
+                    <th>3°</th>
+                    <th>4°</th>
+                    <th>5°</th>
+                    <th>6°</th>
+                    <th>7°</th>
+                    <th>8°</th>
+                    <th>9°</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>1°</td>
+                    <td>+2</td>
+                    <td>Conjuração, Domínio Divino</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>2°</td>
+                    <td>+2</td>
+                    <td>Canalizar Divindade (1/descanso), Característica de Domínio</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>3°</td>
+                    <td>+2</td>
+                    <td>–</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>2</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>4°</td>
+                    <td>+2</td>
+                    <td>Incremento no Valor de Habilidade</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>5°</td>
+                    <td>+3</td>
+                    <td>Destruir Mortos-Vivos (ND 1/2)</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>6°</td>
+                    <td>+3</td>
+                    <td>Canalizar Divindade (2/descanso), Característica de Domínio</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>7°</td>
+                    <td>+3</td>
+                    <td>–</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>8°</td>
+                    <td>+3</td>
+                    <td>Incremento no Valor de Habilidade, Destruir Mortos-Vivos (ND 1), Característica de Domínio</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>9°</td>
+                    <td>+4</td>
+                    <td>–</td>
+                    <td>4</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>10°</td>
+                    <td>+4</td>
+                    <td>Intervenção Divina</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>11°</td>
+                    <td>+4</td>
+                    <td>Destruir Mortos-Vivos (ND 2)</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>12°</td>
+                    <td>+4</td>
+                    <td>Incremento no Valor de Habilidade</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>–</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>13°</td>
+                    <td>+5</td>
+                    <td>–</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>14°</td>
+                    <td>+5</td>
+                    <td>Destruir Mortos-Vivos (ND 3)</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>–</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>15°</td>
+                    <td>+5</td>
+                    <td>–</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>16°</td>
+                    <td>+5</td>
+                    <td>Incremento no Valor de Habilidade</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>–</td>
+                </tr>
+                <tr>
+                    <td>17°</td>
+                    <td>+6</td>
+                    <td>Destruir Mortos-Vivos (ND 4), Característica de Domínio</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>18°</td>
+                    <td>+6</td>
+                    <td>Canalizar Divindade (3/descanso)</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>19°</td>
+                    <td>+6</td>
+                    <td>Incremento no Valor de Habilidade</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>20°</td>
+                    <td>+6</td>
+                    <td>Aprimoramento de Intervenção Divina</td>
+                    <td>5</td>
+                    <td>4</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>3</td>
+                    <td>2</td>
+                    <td>2</td>
+                    <td>1</td>
+                    <td>1</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

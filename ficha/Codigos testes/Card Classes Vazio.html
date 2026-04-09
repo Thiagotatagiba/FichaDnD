@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Tabela de Classe</title>
+
+<style>
+body {
+  font-family: 'MedievalSharp', serif;
+  background: #f2efe8;
+  padding: 20px;
+}
+
+.container {
+  background: #f6f2ea;
+  border: 3px solid #8b4513;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+select, button {
+  margin: 5px 0 10px 0;
+  padding: 6px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th, td {
+  border: 1px solid #bda68c;
+  padding: 6px;
+  text-align: center;
+}
+
+th {
+  background: #d6c7a8;
+}
+
+td:nth-child(3) {
+  text-align: left;
+}
+
+tbody tr:nth-child(even) {
+  background: #efe7da;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2 id="tituloClasse">Classe</h2>
+
+  <button onclick="importarJSON()">Importar JSON</button>
+  <input type="file" id="fileInput" hidden accept=".json">
+
+  <br>
+
+  <label>Subclasse:</label>
+  <select id="selectSubclasse" onchange="aplicarSubclasse()">
+    <option value="">Selecione</option>
+  </select>
+
+  <table>
+    <thead>
+      <tr>
+        <th rowspan="2">Nível</th>
+        <th rowspan="2">Prof.</th>
+        <th rowspan="2">Características</th>
+        <th rowspan="2">Truques</th>
+        <th colspan="9">Espaços de Magia</th>
+      </tr>
+      <tr>
+        <th>1°</th><th>2°</th><th>3°</th><th>4°</th>
+        <th>5°</th><th>6°</th><th>7°</th><th>8°</th><th>9°</th>
+      </tr>
+    </thead>
+    <tbody id="tbodyClasse"></tbody>
+  </table>
+</div>
+
+<script>
+let dadosClasse = null;
+
+// IMPORTAR JSON
+function importarJSON() {
+  document.getElementById("fileInput").click();
+}
+
+document.getElementById("fileInput").addEventListener("change", function(e) {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+
+  reader.onload = function(evt) {
+    dadosClasse = JSON.parse(evt.target.result);
+    montarTabela();
+    carregarSubclasses();
+  };
+
+  reader.readAsText(file);
+});
+
+// MONTAR TABELA BASE
+function montarTabela() {
+  const tbody = document.getElementById("tbodyClasse");
+  const titulo = document.getElementById("tituloClasse");
+
+  titulo.textContent = dadosClasse.nome;
+  tbody.innerHTML = "";
+
+  dadosClasse.niveis.forEach(n => {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${n.nivel}</td>
+      <td>${n.proficiencia}</td>
+      <td>${n.caracteristicas || "–"}</td>
+      <td>${n.truques ?? "–"}</td>
+      ${gerarMagias(n.magias)}
+    `;
+
+    tbody.appendChild(tr);
+  });
+}
+
+// GERAR COLUNAS DE MAGIA
+function gerarMagias(magias) {
+  let html = "";
+  for (let i = 0; i < 9; i++) {
+    html += `<td>${magias?.[i] ?? "–"}</td>`;
+  }
+  return html;
+}
+
+// CARREGAR SUBCLASSES
+function carregarSubclasses() {
+  const select = document.getElementById("selectSubclasse");
+  select.innerHTML = `<option value="">Selecione</option>`;
+
+  for (let nome in dadosClasse.subclasses) {
+    const opt = document.createElement("option");
+    opt.value = nome;
+    opt.textContent = nome;
+    select.appendChild(opt);
+  }
+}
+
+// APLICAR SUBCLASSE
+function aplicarSubclasse() {
+  const subclasse = document.getElementById("selectSubclasse").value;
+  if (!subclasse) {
+    montarTabela();
+    return;
+  }
+
+  const tbody = document.getElementById("tbodyClasse");
+  const linhas = tbody.querySelectorAll("tr");
+
+  linhas.forEach((tr, i) => {
+    const nivel = parseInt(dadosClasse.niveis[i].nivel);
+    let texto = dadosClasse.niveis[i].caracteristicas || "";
+
+    // Substitui nome da subclasse
+    texto = texto.replace(dadosClasse.TP_Subclasse, subclasse);
+
+    // Substitui característica específica
+    if (texto.includes(dadosClasse.Car_Subclasse)) {
+      const habilidade = dadosClasse.subclasses[subclasse][nivel];
+
+      if (habilidade) {
+        texto = texto.replace(dadosClasse.Car_Subclasse, habilidade);
+      }
+    }
+
+    tr.children[2].textContent = texto || "–";
+  });
+}
+</script>
+
+</body>
+</html>

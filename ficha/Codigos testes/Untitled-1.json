@@ -1,0 +1,50 @@
+{
+  "nome": "Clérigo",
+
+  "TP_Subclasse": "Domínio Divino",
+  "Car_Subclasse": "Característica de Domínio",
+
+  "niveis": [
+    {"nivel":"1°","proficiencia":"+2","caracteristicas":"Conjuração, Domínio Divino","truques":3,"magias":[2]},
+    {"nivel":"2°","proficiencia":"+2","caracteristicas":"Canalizar Divindade (1/descanso), Característica de Domínio","truques":3,"magias":[3]},
+    {"nivel":"3°","proficiencia":"+2","caracteristicas":"","truques":3,"magias":[4,2]},
+    {"nivel":"4°","proficiencia":"+2","caracteristicas":"Incremento no Valor de Habilidade","truques":4,"magias":[4,3]},
+    {"nivel":"5°","proficiencia":"+3","caracteristicas":"Destruir Mortos-Vivos (ND 1/2)","truques":4,"magias":[4,3,2]},
+    {"nivel":"6°","proficiencia":"+3","caracteristicas":"Canalizar Divindade (2/descanso), Característica de Domínio","truques":4,"magias":[4,3,3]},
+    {"nivel":"7°","proficiencia":"+3","caracteristicas":"","truques":4,"magias":[4,3,3,1]},
+    {"nivel":"8°","proficiencia":"+3","caracteristicas":"Incremento no Valor de Habilidade, Destruir Mortos-Vivos (ND 1), Característica de Domínio","truques":4,"magias":[4,3,3,2]},
+    {"nivel":"9°","proficiencia":"+4","caracteristicas":"","truques":4,"magias":[4,3,3,3,1]},
+    {"nivel":"10°","proficiencia":"+4","caracteristicas":"Intervenção Divina","truques":5,"magias":[4,3,3,3,2]},
+    {"nivel":"11°","proficiencia":"+4","caracteristicas":"Destruir Mortos-Vivos (ND 2)","truques":5,"magias":[4,3,3,3,2,1]},
+    {"nivel":"12°","proficiencia":"+4","caracteristicas":"Incremento no Valor de Habilidade","truques":5,"magias":[4,3,3,3,2,1]},
+    {"nivel":"13°","proficiencia":"+5","caracteristicas":"","truques":5,"magias":[4,3,3,3,2,1,1]},
+    {"nivel":"14°","proficiencia":"+5","caracteristicas":"Destruir Mortos-Vivos (ND 3)","truques":5,"magias":[4,3,3,3,2,1,1]},
+    {"nivel":"15°","proficiencia":"+5","caracteristicas":"","truques":5,"magias":[4,3,3,3,2,1,1,1]},
+    {"nivel":"16°","proficiencia":"+5","caracteristicas":"Incremento no Valor de Habilidade","truques":5,"magias":[4,3,3,3,2,1,1,1]},
+    {"nivel":"17°","proficiencia":"+6","caracteristicas":"Destruir Mortos-Vivos (ND 4), Característica de Domínio","truques":5,"magias":[4,3,3,3,2,1,1,1,1]},
+    {"nivel":"18°","proficiencia":"+6","caracteristicas":"Canalizar Divindade (3/descanso)","truques":5,"magias":[4,3,3,3,3,1,1,1,1]},
+    {"nivel":"19°","proficiencia":"+6","caracteristicas":"Incremento no Valor de Habilidade","truques":5,"magias":[4,3,3,3,3,2,1,1,1]},
+    {"nivel":"20°","proficiencia":"+6","caracteristicas":"Aprimoramento de Intervenção Divina","truques":5,"magias":[4,3,3,3,3,2,2,1,1]}
+  ],
+
+  "subclasses": {
+    "Domínio da Vida": {
+      "2": "Discípulo da Vida",
+      "6": "Cura Abençoada",
+      "8": "Golpe Divino",
+      "17": "Cura Suprema"
+    },
+    "Domínio da Guerra": {
+      "2": "Sacerdote de Guerra",
+      "6": "Golpe Guiado",
+      "8": "Golpe Divino",
+      "17": "Avatar da Batalha"
+    },
+    "Domínio da Enganação": {
+      "2": "Bênção do Trapaceiro",
+      "6": "Duplicidade",
+      "8": "Golpe Divino",
+      "17": "Duplicidade Aprimorada"
+    }
+  }
+}
