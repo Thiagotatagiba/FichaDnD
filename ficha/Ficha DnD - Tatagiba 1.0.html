@@ -211,7 +211,7 @@
         }
 
         .subclasse-container input {
-            width: 100%;
+            width: 70%;
             border: 1px solid rgba(189, 166, 140, 0.95);
             border-top: none;
             border-radius: 0 0 8px 8px;
@@ -267,6 +267,10 @@
             width: 100%;
             text-align: center;
             line-height: 1;
+        }
+
+        .atributo.proficiente-radar .atributo-nome {
+            font-weight: bold;
         }
 
         .atributo input {
@@ -395,7 +399,7 @@
 
         .bonus-escudo {
             position: absolute;
-            right: -18px;
+            right: -10px;
             bottom: -10px;
             display: flex;
             align-items: center;
@@ -1448,7 +1452,231 @@
             font-size: 14px;
             line-height: 1.35;
             box-sizing: border-box;
-            white-space: pre-wrap;
+
+        }
+
+        .talento-storage {
+            display: none;
+        }
+
+        .talento-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-height: 68px;
+            padding: 10px 12px;
+            border: 1px solid #bda68c;
+            border-radius: 8px;
+            background: #fffaf2;
+            box-sizing: border-box;
+        }
+
+        .talento-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            width: fit-content;
+            max-width: 100%;
+            border: none;
+            background: none;
+            padding: 0;
+            color: #8b5a2b;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            line-height: 1.3;
+            text-align: left;
+            cursor: pointer;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .talento-item::before {
+            content: "•";
+            color: #b8860b;
+            flex: 0 0 auto;
+        }
+
+        .talento-item:hover,
+        .talento-item:focus-visible {
+            color: #6f3610;
+            transform: translateX(2px);
+            text-decoration: underline;
+            outline: none;
+        }
+
+        .talento-lista-vazia {
+            color: #8a755d;
+            font-style: italic;
+        }
+
+        .talento-acoes {
+            display: none;
+        }
+
+        .talento-botao-add {
+            border: none;
+            background: none;
+            color: #8b5a2b;
+            font-family: 'MedievalSharp';
+            font-size: 13px;
+            padding: 0;
+            cursor: pointer;
+            text-align: left;
+            width: fit-content;
+        }
+
+        .talento-botao-add:hover,
+        .talento-botao-add:focus-visible {
+            color: #6f3610;
+            text-decoration: underline;
+            outline: none;
+        }
+
+        .talento-modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(33, 19, 10, 0.55);
+            z-index: 3000;
+        }
+
+        .talento-modal-overlay.ativo {
+            display: flex;
+        }
+
+        .talento-modal {
+            width: min(100%, 620px);
+            max-height: min(78vh, 620px);
+            overflow: auto;
+            border: 2px solid #8b4513;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #fff9ef 0%, #f6ead2 100%);
+            box-shadow: 0 24px 60px rgba(33, 19, 10, 0.32);
+            color: #3f2712;
+        }
+
+        .talento-modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px 12px;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.25);
+        }
+
+        .talento-modal-titulo {
+            font-size: 22px;
+            line-height: 1.1;
+            color: #6f3610;
+        }
+
+        .talento-modal-subtitulo {
+            margin-top: 4px;
+            color: #8b5a2b;
+            font-size: 14px;
+        }
+
+        .talento-modal-fechar {
+            border: 1px solid #8b4513;
+            border-radius: 10px;
+            background: #fffaf2;
+            color: #6f3610;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+
+        .talento-modal-acao-icone {
+            min-width: 38px;
+            padding: 7px 9px;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .talento-modal-fechar:hover,
+        .talento-modal-fechar:focus-visible {
+            background: #f3e3c5;
+            outline: none;
+        }
+
+        .talento-modal-corpo {
+            padding: 14px 18px 18px;
+            line-height: 1.5;
+        }
+
+        .talento-modal-formulario {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 250, 242, 0.75);
+            border: 1px solid rgba(139, 69, 19, 0.16);
+            border-radius: 14px;
+            padding: 14px;
+        }
+
+        .talento-modal-formulario label {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            color: #6f3610;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .talento-modal-formulario input,
+        .talento-modal-formulario textarea {
+            width: 100%;
+            border: 1px solid #bda68c;
+            border-radius: 8px;
+            padding: 10px 12px;
+            background: #fffaf2;
+            color: #3f2712;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .talento-modal-formulario textarea {
+            min-height: 170px;
+            resize: vertical;
+        }
+
+        .talento-modal-acoes {
+            display: flex;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 4px;
+        }
+
+        .talento-modal-conteudo {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .talento-modal-bloco {
+            padding: 12px 14px;
+            border: 1px solid rgba(139, 69, 19, 0.16);
+            border-radius: 14px;
+            background: rgba(255, 250, 242, 0.75);
+        }
+
+        .talento-modal-bloco-titulo {
+            margin-bottom: 6px;
+            color: #8b5a2b;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .talento-modal-sem-descricao {
+            color: #8a755d;
+            font-style: italic;
         }
 
         /* ===== Aba de combate ===== */
@@ -1522,7 +1750,7 @@
         }
 
         .ataque-mini-escudo .bonus-escudo {
-            right: -16px;
+            right: -8px;
             bottom: -8px;
         }
 
@@ -2497,7 +2725,6 @@
             border: 1px solid #bda68c;
             border-radius: 8px;
             padding: 12px;
-            white-space: pre-wrap;
             min-height: 90px;
         }
 
@@ -3130,6 +3357,36 @@
             gap: 2px;
         }
 
+        .equipados-municao-linha {
+            display: flex;
+            gap: 2px;
+            padding-left: 6px;
+        }
+
+        .equipados-municao-linha.oculto {
+            display: none;
+        }
+
+        .equipados-municao-icone {
+            color: #8b5a2b;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .equipados-municao-select {
+            flex: 1;
+            max-width: 132px;
+            height: 19px;
+            border: 1px solid #bda68c;
+            border-radius: 8px;
+            padding: 2px 8px;
+            background: #fffaf2;
+            font-family: 'MedievalSharp';
+            font-size: 10px;
+            color: #6f3610;
+            box-sizing: border-box;
+        }
+
         .equipados-grid.armadura {
             grid-template-columns: minmax(120px, 1.5fr) 70px minmax(110px, 1fr);
         }
@@ -3200,8 +3457,7 @@
             display: block;
             width: 100%;
             min-height: 18px;
-            margin-top: -4px;
-            padding: 2px 4px 4px;
+            margin-top: -2px;
             font-size: 12px;
             line-height: 1.25;
             color: #7a5a38;
@@ -3823,10 +4079,10 @@
         .item-proficiencia {
             display: flex !important;
             position: absolute;
-            left: 9px;
+            left: 220px;
             top: 32px;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
             cursor: pointer;
             font-weight: bold;
             z-index: 10;
@@ -4456,7 +4712,7 @@
 
         <!-- BOTÕES -->
         <div class="acoes">
-            <button type="button" onclick="salvarFicha()">Salvar</button>
+            <button type="button" onclick="salvarFicha()">💾 Salvar</button>
             <button type="button" onclick="importarFicha()">Importar</button>
             <input type="file" id="fileInput" hidden>
         </div>
@@ -4682,35 +4938,40 @@
                                             </defs>
                                         </svg>
 
-                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
-                                                    class="pv-heart-bg"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
-                                                    class="pv-heart-fill-red"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                                <path class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                            </svg>
                                         </div>
-                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
-                                                    class="pv-heart-bg"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
-                                                    class="pv-heart-fill-red"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                                <path class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                            </svg>
                                         </div>
-                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
-                                                    class="pv-heart-bg"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
-                                                    class="pv-heart-fill-red"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                                <path class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                            </svg>
                                         </div>
-                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
-                                                    class="pv-heart-bg"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
-                                                    class="pv-heart-fill-red"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                                <path class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                            </svg>
                                         </div>
-                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true"><path
-                                                    class="pv-heart-bg"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /><path
-                                                    class="pv-heart-fill-red"
-                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" /></svg>
+                                        <div class="pv-heart"><svg viewBox="0 0 24 24" aria-hidden="true">
+                                                <path class="pv-heart-bg"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                                <path class="pv-heart-fill-red"
+                                                    d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z" />
+                                            </svg>
                                         </div>
 
                                         <div class="pv-heart pv-heart-hidden" id="pvTempHeart">
@@ -5100,33 +5361,55 @@
                         </div>
                     </div>
                     <div class="status-coluna-card talentos-card">
-                        <div class="status-titulo">Características & Talentos</div>
+                        <div class="status-titulo">Características</div>
 
                         <div class="talentos-secoes">
-                            <div class="talento-secao">
+                            <div class="talento-secao" data-talento-categoria="classe">
                                 <div class="talento-subtitulo">Classe: <span id="talentoClasseResumo"></span></div>
-                                <textarea id="talentoClasse" class="talento-texto"
-                                    aria-label="Características e talentos de classe"></textarea>
+                                <textarea id="talentoClasse" class="talento-texto talento-storage"
+                                    aria-label="Características de classe"></textarea>
+                                <div id="talentoClasseLista" class="talento-lista" aria-live="polite"></div>
+                                <div class="talento-acoes"><button type="button" class="talento-botao-add"
+                                        data-talento-add="classe">+ Característica</button></div>
                             </div>
 
-                            <div class="talento-secao hidden" id="talentoSubclasseSecao">
+                            <div class="talento-secao hidden" id="talentoSubclasseSecao"
+                                data-talento-categoria="arquetipo">
                                 <div class="talento-subtitulo">Subclasse: <input id="talentoArquetipoResumo"
                                         placeholder="Subclasse"></div>
-                                <textarea id="talentoArquetipo" class="talento-texto"
-                                    aria-label="Características e talentos de arquétipo"></textarea>
+                                <textarea id="talentoArquetipo" class="talento-texto talento-storage"
+                                    aria-label="Características de arquétipo"></textarea>
+                                <div id="talentoArquetipoLista" class="talento-lista" aria-live="polite"></div>
+                                <div class="talento-acoes"><button type="button" class="talento-botao-add"
+                                        data-talento-add="arquetipo">+ Característica</button></div>
                             </div>
 
-                            <div class="talento-secao">
+                            <div class="talento-secao" data-talento-categoria="raca">
                                 <div class="talento-subtitulo">Raça: <span id="talentoRacaResumo"></span></div>
-                                <textarea id="talentoRaca" class="talento-texto"
-                                    aria-label="Características e talentos de raça"></textarea>
+                                <textarea id="talentoRaca" class="talento-texto talento-storage"
+                                    aria-label="Características de raça"></textarea>
+                                <div id="talentoRacaLista" class="talento-lista" aria-live="polite"></div>
+                                <div class="talento-acoes"><button type="button" class="talento-botao-add"
+                                        data-talento-add="raca">+ Característica</button></div>
                             </div>
 
-                            <div class="talento-secao">
+                            <div class="talento-secao" data-talento-categoria="antecedente">
                                 <div class="talento-subtitulo">Antecedente: <span id="talentoAntecedenteResumo"></span>
                                 </div>
-                                <textarea id="talentoAntecedente" class="talento-texto"
-                                    aria-label="Características e talentos de antecedente"></textarea>
+                                <textarea id="talentoAntecedente" class="talento-texto talento-storage"
+                                    aria-label="Características de antecedente"></textarea>
+                                <div id="talentoAntecedenteLista" class="talento-lista" aria-live="polite"></div>
+                                <div class="talento-acoes"><button type="button" class="talento-botao-add"
+                                        data-talento-add="antecedente">+ Característica</button></div>
+                            </div>
+
+                            <div class="talento-secao" data-talento-categoria="outros">
+                                <div class="talento-subtitulo">Talentos</div>
+                                <textarea id="talentoOutro" class="talento-texto talento-storage"
+                                    aria-label="Outros talentos e características"></textarea>
+                                <div id="talentoOutroLista" class="talento-lista" aria-live="polite"></div>
+                                <div class="talento-acoes"><button type="button" class="talento-botao-add"
+                                        data-talento-add="outros">+ Talento</button></div>
                             </div>
                         </div>
                     </div>
@@ -5162,8 +5445,15 @@
                                                     aria-label="Desequipar arma principal"
                                                     title="Desequipar arma principal">🚫</button>
                                             </div>
-                                            <div id="arma1Propriedade" class="equipados-propriedade-linha">Propriedade:
+                                            <div id="arma1MunicaoLinha" class="equipados-municao-linha oculto">
+                                                <span class="equipados-municao-icone">➹</span>
+                                                <select id="arma1MunicaoSelect" class="equipados-municao-select"
+                                                    aria-label="Munição da arma principal"></select>
+                                                <div id="arma1Propriedade" class="equipados-propriedade-linha">
+                                                    Propriedade:
+                                                </div>
                                             </div>
+
                                         </div>
                                         <div class="equipados-armas-item">
                                             <div class="equipados-grid armas">
@@ -5178,6 +5468,11 @@
                                                 <button type="button" id="arma2Desequipar" class="equipados-acao-botao"
                                                     aria-label="Desequipar arma secundária"
                                                     title="Desequipar arma secundária">🚫</button>
+                                            </div>
+                                            <div id="arma2MunicaoLinha" class="equipados-municao-linha oculto">
+                                                <span class="equipados-municao-icone">➹</span>
+                                                <select id="arma2MunicaoSelect" class="equipados-municao-select"
+                                                    aria-label="Munição da arma secundária"></select>
                                             </div>
                                             <div id="arma2Propriedade" class="equipados-propriedade-linha"></div>
                                         </div>
@@ -5234,7 +5529,8 @@
                                             aria-label="Classe de armadura no painel de ataque">
                                     </div>
                                     <div class="bonus-escudo" aria-hidden="true">
-                                        <span id="ataqueCaEscudoEmoji" class="bonus-escudo-emoji" title="Escudo equipado no painel de ataque">🛡️</span>
+                                        <span id="ataqueCaEscudoEmoji" class="bonus-escudo-emoji"
+                                            title="Escudo equipado no painel de ataque">🛡️</span>
                                         <input id="ataqueCaEscudo" type="hidden" aria-hidden="true">
                                     </div>
                                 </div>
@@ -7798,12 +8094,40 @@ Bônus de Proficiência: +${bonusProf}
                 .filter(Boolean)
                 .filter(parte => normalizarTextoComparacao(parte) !== "municao");
 
-            const statusMunicao = obterStatusMunicaoArma(arma);
-            if (statusMunicao) {
-                partes.push(statusMunicao);
+            return partes.join(", ");
+        }
+
+        function preencherMunicaoEquipada(slot, arma) {
+            const linha = document.getElementById(`arma${slot}MunicaoLinha`);
+            const select = document.getElementById(`arma${slot}MunicaoSelect`);
+            if (!linha || !select) return;
+
+            const usaMunicao = !!(arma?.usaMunicao || arma?.propriedades?.municao);
+            if (!usaMunicao) {
+                linha.classList.add('oculto');
+                select.innerHTML = '';
+                return;
             }
 
-            return partes.join(", ");
+            linha.classList.remove('oculto');
+            const valorAtual = arma?.arma_municao_id ? String(arma.arma_municao_id) : '';
+            select.innerHTML = '<option value="">Sem Munição</option>';
+
+            document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]').forEach(item => {
+                const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
+                const nome = item.querySelector('[data-campo="outro_nome"]')?.value?.trim();
+                const quantidade = item.querySelector('[data-campo="outro_quantidade"]')?.value?.trim();
+                const id = item.dataset.id;
+
+                if (String(tipo || '').toLowerCase() !== 'municao' || !nome || !id) return;
+
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = `${quantidade || '-'} ${nome}`;
+                select.appendChild(option);
+            });
+
+            select.value = Array.from(select.options).some(option => option.value === valorAtual) ? valorAtual : '';
         }
 
         function capitalizarTexto(texto) {
@@ -8243,6 +8567,7 @@ Bônus de Proficiência: +${bonusProf}
                 const usandoEscudo = !!escudoSelecionado;
                 const textoPropriedade = arma ? montarTextoPropriedadeArma(arma, resumirMunicaoNoTexto(obterResumoPropriedadesArma(arma, false))) : "";
                 preencherCampo(`arma${indice}Dano`, usandoEscudo ? "" : [obterTextoDanoArma(arma), arma?.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "));
+                preencherMunicaoEquipada(indice, usandoEscudo ? null : arma);
                 preencherPropriedadeEquipada(`arma${indice}Propriedade`, usandoEscudo
                     ? `Escudo empunhado${escudoSelecionado?.escudo_ca ? ` (${escudoSelecionado.escudo_ca})` : ""}`
                     : textoPropriedade);
@@ -8460,6 +8785,10 @@ Bônus de Proficiência: +${bonusProf}
                 if (distanciaContainer) distanciaContainer.style.display = (temArremesso || temMunicao) ? 'block' : 'none';
                 if (containerMunicao) containerMunicao.style.display = temMunicao ? 'block' : 'none';
                 if (containerDescricao) containerDescricao.style.display = 'block';
+                const emojiTipo = card.querySelector('.item-tipo-emoji');
+                if (emojiTipo) {
+                    emojiTipo.textContent = temMunicao ? '🏹' : '⚔️';
+                }
             }
 
             checkboxes.forEach(cb => cb.addEventListener('change', atualizarCamposArma));
@@ -8914,6 +9243,8 @@ Bônus de Proficiência: +${bonusProf}
             document.querySelectorAll('.item-card[data-tipo="arma"], .item-card[data-tipo="armadura"], .item-card[data-tipo="escudo"], .item-card[data-tipo="outro"]').forEach(fecharItemCard);
         });
 
+        let talentosEstruturados = { classe: [], arquetipo: [], raca: [], antecedente: [], outros: [] };
+
         // ===== Persistencia da ficha =====
         function normalizarDadosImportacao(dadosOriginais) {
             if (!dadosOriginais || typeof dadosOriginais !== "object") return {}
@@ -8964,6 +9295,10 @@ Bônus de Proficiência: +${bonusProf}
                 }
             });
 
+            if (!dados.talentosEstruturados || typeof dados.talentosEstruturados !== "object") {
+                dados.talentosEstruturados = montarTalentosEstruturados(dados);
+            }
+
             return dados
         }
 
@@ -8996,6 +9331,7 @@ Bônus de Proficiência: +${bonusProf}
             dados.prof_int = dados.prof_salv_int ?? false
             dados.prof_sab = dados.prof_salv_sab ?? false
             dados.prof_car = dados.prof_salv_car ?? false
+            dados.talentosEstruturados = JSON.parse(JSON.stringify(talentosEstruturados))
 
             return dados
         }
@@ -9047,6 +9383,7 @@ Bônus de Proficiência: +${bonusProf}
             dados.arma1EquipadaIndice = arma1Equipada.indice
             dados.arma2EquipadaIndice = arma2Equipada.indice
             dados.armaduraEquipadaIndice = armaduraEquipadaIndice
+            dados.talentosEstruturados = JSON.parse(JSON.stringify(talentosEstruturados))
 
             return adicionarAliasesLegacyAoSave(dados)
         }
@@ -9206,6 +9543,17 @@ Bônus de Proficiência: +${bonusProf}
             campoIniciativa.value = (modificadorDestreza >= 0 ? "+" : "") + modificadorDestreza
         }
 
+        function atualizarProficienciaNoRadar() {
+            ["for", "des", "con", "int", "sab", "car"].forEach(atributo => {
+                const blocoAtributo = document.querySelector(".atributo." + atributo);
+                const checkboxProf = document.getElementById("prof_salv_" + atributo);
+
+                if (!blocoAtributo || !checkboxProf) return;
+
+                blocoAtributo.classList.toggle("proficiente-radar", checkboxProf.checked);
+            });
+        }
+
         function desenharRadar() {
 
             const canvas = document.getElementById("radar")
@@ -9311,29 +9659,34 @@ Bônus de Proficiência: +${bonusProf}
             const campoTemporario = document.getElementById("pvTemporario");
             if (!campoAtual || !campoTotal || !campoTemporario) return;
 
-            const atual = parseFloat(campoAtual.value) || 0;
-            const maxReal = Math.max(parseFloat(campoTotal.value) || 0, 0);
-            const max = maxReal > 0 ? maxReal : 1;
-            const temporario = Math.max(parseFloat(campoTemporario.value) || 0, 0);
+            const vidaAtual = Math.max(parseFloat(campoAtual.value) || 0, 0);
+            const vidaMax = Math.max(parseFloat(campoTotal.value) || 0, 0);
+            const vidaTemp = Math.max(parseFloat(campoTemporario.value) || 0, 0);
 
-            const vidaBase = maxReal > 0 ? Math.min(atual, maxReal) : 0;
-            const ratioBase = maxReal > 0 ? Math.max(0, Math.min(1, vidaBase / maxReal)) : 0;
+            const vidaNormal = vidaMax > 0 ? Math.min(vidaAtual, vidaMax) : 0;
+            const valorPorCoracao = vidaMax > 0 ? (vidaMax / 5) : 0;
 
             document.querySelectorAll('.pv-heart-fill-red').forEach((fill, i) => {
-                let valor = ratioBase * 5 - i;
-                valor = Math.max(0, Math.min(1, valor));
-                fill.style.clipPath = `inset(0 ${100 - valor * 100}% 0 0)`;
+                let preenchimento = 0;
+
+                if (valorPorCoracao > 0) {
+                    const inicioCoracao = i * valorPorCoracao;
+                    preenchimento = (vidaNormal - inicioCoracao) / valorPorCoracao;
+                }
+
+                preenchimento = Math.max(0, Math.min(1, preenchimento));
+                fill.style.clipPath = `inset(0 ${100 - preenchimento * 100}% 0 0)`;
             });
 
             const tempHeart = document.getElementById('pvTempHeart');
             const tempFill = tempHeart?.querySelector('.pv-heart-fill-blue');
             if (!tempHeart || !tempFill) return;
 
-            if (temporario > 0) {
+            if (vidaTemp > 0) {
                 tempHeart.classList.remove('pv-heart-hidden');
-                const temporarioRestante = Math.max(0, atual - maxReal);
-                const tempRatio = Math.max(0, Math.min(1, temporarioRestante / max));
-                tempFill.style.clipPath = `inset(0 ${100 - tempRatio * 100}% 0 0)`;
+                const excesso = Math.max(0, vidaAtual - vidaMax);
+                const preenchimentoAzul = Math.max(0, Math.min(1, excesso / vidaTemp));
+                tempFill.style.clipPath = `inset(0 ${100 - preenchimentoAzul * 100}% 0 0)`;
             } else {
                 tempHeart.classList.add('pv-heart-hidden');
                 tempFill.style.clipPath = 'inset(0 100% 0 0)';
@@ -9509,7 +9862,363 @@ Bônus de Proficiência: +${bonusProf}
             indice: null,
             modo: "visualizar"
         };
+        const TALENTOS_CONFIG = {
+            classe: { campoId: "talentoClasse", listaId: "talentoClasseLista", rotulo: "Classe", resumoId: "talentoClasseResumo" },
+            arquetipo: { campoId: "talentoArquetipo", listaId: "talentoArquetipoLista", rotulo: "Subclasse", resumoId: "talentoArquetipoResumo" },
+            raca: { campoId: "talentoRaca", listaId: "talentoRacaLista", rotulo: "Raça", resumoId: "talentoRacaResumo" },
+            antecedente: { campoId: "talentoAntecedente", listaId: "talentoAntecedenteLista", rotulo: "Antecedente", resumoId: "talentoAntecedenteResumo" },
+            outros: { campoId: "talentoOutro", listaId: "talentoOutroLista", rotulo: "Outros Talentos", resumoId: null }
+        };
+        const estadoModalTalento = { categoria: null, indice: null, modo: "visualizar", itemOriginal: null, novoItem: false };
         let ultimoFocoModalMagia = null;
+        let ultimoFocoModalTalento = null;
+
+        function obterTextoCampoTalento(id) {
+            return String(document.getElementById(id)?.value || "").trim();
+        }
+
+        function obterOrigemTalento(categoria) {
+            const config = TALENTOS_CONFIG[categoria];
+            if (!config) return "";
+
+            if (config.resumoId) {
+                const campoResumo = document.getElementById(config.resumoId);
+                if (campoResumo) {
+                    const valor = ("value" in campoResumo ? campoResumo.value : campoResumo.textContent || "").trim();
+                    if (valor) return valor;
+                }
+            }
+
+            return config.rotulo;
+        }
+
+        function obterSubtituloTalento(categoria, talento) {
+            const config = TALENTOS_CONFIG[categoria];
+            const tipoPadrao = categoria === "outros" ? "Talento" : "Característica";
+            const tipo = talento?.tipo?.trim() || config?.rotulo || tipoPadrao;
+            const origem = obterOrigemTalento(categoria) || talento?.origem?.trim();
+            return origem ? `${tipo}: ${origem}` : tipo;
+        }
+
+        function normalizarItemTalento(item, categoria) {
+            if (!item) {
+                return {
+                    nome: "",
+                    descricao: "",
+                    tipo: TALENTOS_CONFIG[categoria]?.rotulo || (categoria === "outros" ? "Talento" : "Característica"),
+                    origem: obterOrigemTalento(categoria)
+                };
+            }
+
+            if (typeof item === "string") {
+                return {
+                    nome: item.trim(),
+                    descricao: "",
+                    tipo: TALENTOS_CONFIG[categoria]?.rotulo || (categoria === "outros" ? "Talento" : "Característica"),
+                    origem: obterOrigemTalento(categoria)
+                };
+            }
+
+            return {
+                ...item,
+                nome: String(item.nome || item.titulo || "").trim(),
+                descricao: String(item.descricao || "").trim(),
+                tipo: String(item.tipo || TALENTOS_CONFIG[categoria]?.rotulo || (categoria === "outros" ? "Talento" : "Característica")).trim(),
+                origem: String(item.origem || obterOrigemTalento(categoria)).trim()
+            };
+        }
+
+        function converterTextoParaTalentos(texto, categoria) {
+            return String(texto || "")
+                .split(/\r?\n|;|,/)
+                .map(parte => parte.trim())
+                .filter(Boolean)
+                .map(nome => normalizarItemTalento({ nome, descricao: "" }, categoria));
+        }
+
+        function normalizarListaTalentos(valor, categoria) {
+            if (Array.isArray(valor)) {
+                return valor
+                    .map(item => normalizarItemTalento(item, categoria))
+                    .filter(item => item.nome);
+            }
+
+            if (typeof valor === "string") {
+                return converterTextoParaTalentos(valor, categoria);
+            }
+
+            return [];
+        }
+
+        function montarTalentosEstruturados(dados = {}) {
+            const base = (dados && typeof dados.talentosEstruturados === "object" && dados.talentosEstruturados)
+                ? dados.talentosEstruturados
+                : {};
+
+            const estrutura = {};
+            Object.keys(TALENTOS_CONFIG).forEach(categoria => {
+                const config = TALENTOS_CONFIG[categoria];
+                const valorEstruturado = base[categoria];
+                const valorLegado = dados[config.campoId] ?? obterTextoCampoTalento(config.campoId);
+                estrutura[categoria] = normalizarListaTalentos(
+                    valorEstruturado !== undefined ? valorEstruturado : valorLegado,
+                    categoria
+                );
+            });
+
+            return estrutura;
+        }
+
+        function sincronizarCamposTalentos() {
+            Object.entries(TALENTOS_CONFIG).forEach(([categoria, config]) => {
+                const campo = document.getElementById(config.campoId);
+                if (!campo) return;
+
+                campo.value = (talentosEstruturados[categoria] || [])
+                    .map(item => item.nome)
+                    .filter(Boolean)
+                    .join(", ");
+            });
+        }
+
+        function montarModalTalento() {
+            if (document.getElementById("talentoModalOverlay")) return;
+
+            const overlay = document.createElement("div");
+            overlay.id = "talentoModalOverlay";
+            overlay.className = "talento-modal-overlay";
+            overlay.setAttribute("aria-hidden", "true");
+            overlay.innerHTML = `
+                <div class="talento-modal" role="dialog" aria-modal="true" aria-labelledby="talentoModalTitulo">
+                    <div class="talento-modal-header">
+                        <div>
+                            <div id="talentoModalTitulo" class="talento-modal-titulo">Talento</div>
+                            <div id="talentoModalSubtitulo" class="talento-modal-subtitulo"></div>
+                        </div>
+                        <div class="talento-modal-acoes">
+                            <button type="button" class="talento-modal-fechar talento-modal-acao-icone" id="talentoModalEditar" title="Editar">✏️</button>
+                            <button type="button" class="talento-modal-fechar talento-modal-acao-icone" id="talentoModalExcluir" title="Excluir">🗑️</button>
+                            <button type="button" class="talento-modal-fechar" id="talentoModalSalvar">💾 Salvar</button>
+                            <button type="button" class="talento-modal-fechar" id="talentoModalFechar">Fechar</button>
+                        </div>
+                    </div>
+                    <div id="talentoModalCorpo" class="talento-modal-corpo"></div>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+        }
+
+        function renderTalentos() {
+            if (!window.document) return;
+            sincronizarCamposTalentos();
+
+            Object.entries(TALENTOS_CONFIG).forEach(([categoria, config]) => {
+                const lista = document.getElementById(config.listaId);
+                if (!lista) return;
+
+                lista.replaceChildren();
+                const itens = talentosEstruturados[categoria] || [];
+
+                itens.forEach((talento, indice) => {
+                    const botao = document.createElement("button");
+                    botao.type = "button";
+                    botao.className = "talento-item";
+                    botao.textContent = talento.nome;
+                    botao.title = String(talento?.descricao || "").trim() || "Sem descrição cadastrada.";
+                    botao.addEventListener("click", () => abrirModalTalento(talento, categoria, indice));
+                    lista.appendChild(botao);
+                });
+
+                const botaoNovo = document.createElement("button");
+                botaoNovo.type = "button";
+                botaoNovo.className = "talento-botao-add";
+                botaoNovo.textContent = categoria === "outros" ? "+ novo talento" : "+ nova característica";
+                botaoNovo.addEventListener("click", () => adicionarNovaCaracteristica(categoria));
+                lista.appendChild(botaoNovo);
+            });
+        }
+
+        function renderizarVisualizacaoTalento(talento) {
+            const corpo = document.getElementById("talentoModalCorpo");
+            if (!corpo) return;
+
+            corpo.innerHTML = `
+                <div class="talento-modal-conteudo">
+                    <div class="talento-modal-bloco">
+                        <div id="talentoModalDescricaoTexto"></div>
+                    </div>
+                </div>
+            `;
+
+            const descricao = corpo.querySelector("#talentoModalDescricaoTexto");
+            if (!descricao) return;
+            if (talento?.descricao) {
+                descricao.textContent = talento.descricao;
+            } else {
+                descricao.className = "talento-modal-sem-descricao";
+                descricao.textContent = "Sem descrição cadastrada.";
+            }
+        }
+
+        function renderizarFormularioTalento(talento) {
+            const corpo = document.getElementById("talentoModalCorpo");
+            if (!corpo) return;
+
+            corpo.innerHTML = `
+                <div class="talento-modal-formulario">
+                    <label for="talentoModalNomeInput">Titulo
+                        <input id="talentoModalNomeInput" type="text">
+                    </label>
+                    <label for="talentoModalDescricaoInput">Descricao
+                        <textarea id="talentoModalDescricaoInput"></textarea>
+                    </label>
+                </div>
+            `;
+            document.getElementById("talentoModalNomeInput").value = String(talento?.nome || "");
+            document.getElementById("talentoModalDescricaoInput").value = String(talento?.descricao || "");
+        }
+
+        function abrirModalTalento(talento, categoria, indice = null, modo = "visualizar") {
+            const overlay = document.getElementById("talentoModalOverlay");
+            if (!overlay) return;
+
+            ultimoFocoModalTalento = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+            estadoModalTalento.categoria = categoria;
+            estadoModalTalento.indice = indice;
+            estadoModalTalento.modo = modo;
+            estadoModalTalento.itemOriginal = normalizarItemTalento(talento, categoria);
+            estadoModalTalento.novoItem = indice === null;
+
+            const titulo = document.getElementById("talentoModalTitulo");
+            const subtitulo = document.getElementById("talentoModalSubtitulo");
+            const botaoSalvar = document.getElementById("talentoModalSalvar");
+            const botaoEditar = document.getElementById("talentoModalEditar");
+            const botaoExcluir = document.getElementById("talentoModalExcluir");
+
+            if (titulo) titulo.textContent = talento?.nome || (categoria === "outros" ? "Talento" : "Característica");
+            if (subtitulo) subtitulo.textContent = obterSubtituloTalento(categoria, talento);
+            if (botaoSalvar) botaoSalvar.style.display = modo === "editar" ? "inline-flex" : "none";
+            if (botaoEditar) botaoEditar.style.display = modo === "visualizar" ? "inline-flex" : "none";
+            if (botaoExcluir) botaoExcluir.style.display = modo === "visualizar" ? "inline-flex" : "none";
+            if (modo === "editar") renderizarFormularioTalento(talento);
+            else renderizarVisualizacaoTalento(talento);
+
+            overlay.classList.add("ativo");
+            overlay.setAttribute("aria-hidden", "false");
+            if (modo === "editar") document.getElementById("talentoModalNomeInput")?.focus();
+            else document.getElementById("talentoModalFechar")?.focus();
+        }
+
+        function modalTalentoTemAlteracoes() {
+            if (estadoModalTalento.modo !== "editar") return false;
+            const original = estadoModalTalento.itemOriginal || {};
+            const nomeAtual = String(document.getElementById("talentoModalNomeInput")?.value || "").trim();
+            const descricaoAtual = String(document.getElementById("talentoModalDescricaoInput")?.value || "").trim();
+            return nomeAtual !== String(original.nome || "").trim()
+                || descricaoAtual !== String(original.descricao || "").trim();
+        }
+
+        function fecharModalTalento() {
+            const overlay = document.getElementById("talentoModalOverlay");
+            if (!overlay) return;
+
+            if (modalTalentoTemAlteracoes()) {
+                const desejaSair = window.confirm("Existem alterações não salvas. Deseja sair mesmo?");
+                if (!desejaSair) return;
+            }
+
+            const focoAtual = document.activeElement;
+            if (focoAtual instanceof HTMLElement && overlay.contains(focoAtual)) {
+                focoAtual.blur();
+            }
+
+            overlay.classList.remove("ativo");
+            overlay.setAttribute("aria-hidden", "true");
+
+            if (ultimoFocoModalTalento instanceof HTMLElement && document.contains(ultimoFocoModalTalento)) {
+                ultimoFocoModalTalento.focus();
+            }
+            ultimoFocoModalTalento = null;
+            estadoModalTalento.categoria = null;
+            estadoModalTalento.indice = null;
+            estadoModalTalento.modo = "visualizar";
+            estadoModalTalento.itemOriginal = null;
+            estadoModalTalento.novoItem = false;
+        }
+
+        function adicionarNovaCaracteristica(categoria) {
+            const item = normalizarItemTalento({
+                nome: "",
+                descricao: "",
+                tipo: categoria === "outros" ? "Talento" : "Característica",
+                origem: obterOrigemTalento(categoria)
+            }, categoria);
+
+            abrirModalTalento(item, categoria, null, "editar");
+        }
+
+        function salvarModalTalento() {
+            const categoria = estadoModalTalento.categoria;
+            if (!categoria) return;
+
+            const campoNome = document.getElementById("talentoModalNomeInput");
+            const campoDescricao = document.getElementById("talentoModalDescricaoInput");
+            const nome = String(campoNome?.value || "").trim();
+            const descricao = String(campoDescricao?.value || "").trim();
+            if (!nome) {
+                campoNome?.focus();
+                return;
+            }
+
+            const item = normalizarItemTalento({
+                nome,
+                descricao,
+                tipo: categoria === "outros" ? "Talento" : "Característica",
+                origem: obterOrigemTalento(categoria)
+            }, categoria);
+
+            talentosEstruturados[categoria] = talentosEstruturados[categoria] || [];
+            if (Number.isInteger(estadoModalTalento.indice) && talentosEstruturados[categoria][estadoModalTalento.indice]) {
+                talentosEstruturados[categoria][estadoModalTalento.indice] = item;
+            } else {
+                talentosEstruturados[categoria].push(item);
+                estadoModalTalento.indice = talentosEstruturados[categoria].length - 1;
+            }
+
+            renderTalentos();
+            estadoModalTalento.itemOriginal = item;
+            estadoModalTalento.modo = "visualizar";
+            fecharModalTalento();
+        }
+
+        function editarTalentoAtual() {
+            const categoria = estadoModalTalento.categoria;
+            const indice = estadoModalTalento.indice;
+            if (!categoria) return;
+            const item = Number.isInteger(indice) ? talentosEstruturados[categoria]?.[indice] : estadoModalTalento.itemOriginal;
+            abrirModalTalento(item || estadoModalTalento.itemOriginal, categoria, indice, "editar");
+        }
+
+        function excluirTalentoAtual() {
+            const categoria = estadoModalTalento.categoria;
+            const indice = estadoModalTalento.indice;
+            if (!categoria || !Number.isInteger(indice)) return;
+            const desejaExcluir = window.confirm("Deseja excluir este item?");
+            if (!desejaExcluir) return;
+            talentosEstruturados[categoria].splice(indice, 1);
+            renderTalentos();
+            fecharModalTalento();
+        }
+
+        function inicializarTalentos(dados = {}) {
+            try {
+                talentosEstruturados = montarTalentosEstruturados(dados);
+                renderTalentos();
+            } catch (erro) {
+                console.error("Falha ao inicializar talentos:", erro);
+            }
+        }
 
         function criarValorSlotEscudo(indice) {
             return `${PREFIXO_SLOT_ESCUDO}${indice}`;
@@ -9777,7 +10486,7 @@ Bônus de Proficiência: +${bonusProf}
                         <div class="magia-modal-acoes">
                             <button type="button" class="magia-modal-botao" id="magiaModalEditar">Editar</button>
                             <button type="button" class="magia-modal-botao perigo oculto" id="magiaModalExcluir">Excluir magia</button>
-                            <button type="button" class="magia-modal-botao primario oculto" id="magiaModalSalvar">Salvar magia</button>
+                            <button type="button" class="magia-modal-botao primario oculto" id="magiaModalSalvar">💾 Salvar</button>
                             <button type="button" class="magia-modal-botao" id="magiaModalFechar">Fechar</button>
                         </div>
                     </div>
@@ -10422,7 +11131,14 @@ Bônus de Proficiência: +${bonusProf}
 
                 if (!campoOrigem || !campoDestino) return;
 
-                campoDestino.textContent = campoOrigem.value.trim();
+                const valorBase = campoOrigem.value.trim();
+                if (destino === "talentoClasseResumo") {
+                    const nivel = String(document.getElementById("classeNivelID")?.value || "").trim();
+                    campoDestino.textContent = valorBase && nivel ? `${valorBase} Nv${nivel}` : valorBase;
+                    return;
+                }
+
+                campoDestino.textContent = valorBase;
             });
 
             const campoSubclasse = document.getElementById('subclasse');
@@ -11197,6 +11913,8 @@ Bônus de Proficiência: +${bonusProf}
                     caixa.classList.remove('proficiente');
                 }
             });
+
+            atualizarProficienciaNoRadar();
         }
 
         // Atualiza quando checkbox muda
@@ -11307,6 +12025,8 @@ Bônus de Proficiência: +${bonusProf}
         document.getElementById('antecedenteID').addEventListener('input', () => sincronizarResumoCaracteristicas());
         document.getElementById('subclasse')?.addEventListener('input', () => sincronizarResumoCaracteristicas(true));
         document.getElementById('subclasse')?.addEventListener('change', () => sincronizarResumoCaracteristicas(true));
+        document.getElementById('talentoArquetipoResumo')?.addEventListener('input', renderTalentos);
+        document.getElementById('talentoArquetipoResumo')?.addEventListener('change', renderTalentos);
         const campoClasseConjuradora = document.getElementById('magiaClasseConjuradora');
         if (campoClasseConjuradora) {
             campoClasseConjuradora.addEventListener('input', () => {
@@ -11326,11 +12046,25 @@ Bônus de Proficiência: +${bonusProf}
             campoAtributoConjuracao.addEventListener('change', atualizarMagias);
         }
         inicializarGerenciadorMagias();
+        try {
+            montarModalTalento();
+            inicializarTalentos();
+        } catch (erro) {
+            console.error("Falha ao preparar interface de talentos:", erro);
+        }
         const overlayMagia = document.getElementById('magiaModalOverlay');
         if (overlayMagia) {
             overlayMagia.addEventListener('click', evento => {
                 if (evento.target === overlayMagia) {
                     fecharModalMagia();
+                }
+            });
+        }
+        const overlayTalento = document.getElementById('talentoModalOverlay');
+        if (overlayTalento) {
+            overlayTalento.addEventListener('click', evento => {
+                if (evento.target === overlayTalento) {
+                    fecharModalTalento();
                 }
             });
         }
@@ -11341,6 +12075,10 @@ Bônus de Proficiência: +${bonusProf}
         document.getElementById('magiaModalExcluir')?.addEventListener('click', excluirMagiaAtual);
         document.getElementById('magiaModalSalvar')?.addEventListener('click', salvarModalMagia);
         document.getElementById('magiaModalFechar')?.addEventListener('click', fecharModalMagia);
+        document.getElementById('talentoModalEditar')?.addEventListener('click', editarTalentoAtual);
+        document.getElementById('talentoModalExcluir')?.addEventListener('click', excluirTalentoAtual);
+        document.getElementById('talentoModalSalvar')?.addEventListener('click', salvarModalTalento);
+        document.getElementById('talentoModalFechar')?.addEventListener('click', fecharModalTalento);
         ['magiaModalPropDano', 'magiaModalPropCura', 'magiaModalPropConcentracao', 'magiaModalResolucao'].forEach(id => {
             document.getElementById(id)?.addEventListener('change', atualizarVisibilidadeFormularioMagia);
         });
@@ -11385,6 +12123,27 @@ Bônus de Proficiência: +${bonusProf}
             if (!campo) return;
             campo.addEventListener('change', () => {
                 lidarSelecaoArmaEquipada(indice + 1);
+                atualizarSubAbaArmas();
+            });
+        });
+        ['arma1MunicaoSelect', 'arma2MunicaoSelect'].forEach((id, indice) => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('change', () => {
+                const slot = indice + 1;
+                const valorSlot = document.getElementById(`arma${slot}Nome`)?.value || '';
+                if (!valorSlot || extrairIndiceSlotEscudo(valorSlot) !== null) return;
+
+                const indiceArma = parseInt(valorSlot, 10);
+                if (!Number.isInteger(indiceArma)) return;
+
+                const cardArma = document.querySelectorAll('#listaArmas .item-card[data-tipo="arma"]:not(#armaModelo)')[indiceArma];
+                const selectOriginal = cardArma?.querySelector('[data-campo="arma_municao_id"]');
+                if (!selectOriginal) return;
+
+                selectOriginal.value = campo.value || '';
+                selectOriginal.dispatchEvent(new Event('change'));
+                sincronizarEquipamentosCombate();
                 atualizarSubAbaArmas();
             });
         });
@@ -11437,6 +12196,12 @@ Bônus de Proficiência: +${bonusProf}
                 const overlayMagiaAtivo = document.getElementById('magiaModalOverlay');
                 if (overlayMagiaAtivo && !overlayMagiaAtivo.classList.contains('oculto')) {
                     fecharModalMagia();
+                    return;
+                }
+
+                const overlayTalentoAtivo = document.getElementById('talentoModalOverlay');
+                if (overlayTalentoAtivo && overlayTalentoAtivo.classList.contains('ativo')) {
+                    fecharModalTalento();
                 }
             }
         });
@@ -11491,6 +12256,11 @@ Bônus de Proficiência: +${bonusProf}
             atualizarTodosEmojis()
             normalizarPosicaoAtaque();
             desenharRadar();
+            try {
+                renderTalentos();
+            } catch (erro) {
+                console.error("Falha ao renderizar talentos durante atualizarFicha:", erro);
+            }
         }
 
         // limpeza
@@ -11575,6 +12345,8 @@ Bônus de Proficiência: +${bonusProf}
 
                 preencherCampo(campo, dados[key]);
             }
+
+            inicializarTalentos(dados);
 
             // =========================
             // 🟢 2. CARREGAR MUNIÇÕES (OUTROS)
