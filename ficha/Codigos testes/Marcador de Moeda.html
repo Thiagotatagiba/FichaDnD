@@ -1,248 +1,335 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<title>Sistema de Dinheiro</title>
+    <meta charset="UTF-8">
+    <title>Sistema de Dinheiro</title>
 
-<link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap" rel="stylesheet">
 
-<style>
+    <style>
+        body {
+            background: #e7e1d5;
+            font-family: 'MedievalSharp';
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
 
-body {
-    background: #e7e1d5;
-    font-family: 'MedievalSharp';
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+        /* CONTAINER HORIZONTAL */
+        .container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f6f2ea;
+            border: 3px solid #8b4513;
+            border-radius: 14px;
+            padding: 10px 14px;
+        }
 
-/* CONTAINER HORIZONTAL */
-.container {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    background: #f6f2ea;
-    border: 3px solid #8b4513;
-    border-radius: 14px;
-    padding: 12px 18px;
-}
+        /* ===== TOTAL (RETANGULO) ===== */
+        .total-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #efe7da;
+            border: 3px solid #8b4513;
+            border-radius: 10px;
+            padding: 6px 10px;
+            min-width: 95px;
+        }
 
-/* ===== TOTAL (RETANGULO) ===== */
-.total-box {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #efe7da;
-    border: 3px solid #8b4513;
-    border-radius: 10px;
-    padding: 10px 14px;
-    min-width: 120px;
-}
+        .total-box select {
+            border: none;
+            background: none;
+            font-family: 'MedievalSharp';
+            font-size: 13px;
+            text-align: center;
+            border-bottom: 1px solid #8b4513;
+        }
 
-.total-box select {
-    border: none;
-    background: none;
-    font-family: 'MedievalSharp';
-    font-size: 14px;
-    text-align: center;
-    border-bottom: 1px solid #8b4513;
-}
+        .total-valor {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 3px;
+        }
 
-.total-valor {
-    font-size: 22px;
-    font-weight: bold;
-    margin-top: 4px;
-}
+        /* ===== MOEDAS (CIRCULOS) ===== */
+        .moedas {
+            display: flex;
+            gap: 6px;
+        }
 
-/* ===== MOEDAS (CIRCULOS) ===== */
-.moedas {
-    display: flex;
-    gap: 10px;
-}
+        .moeda {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #5a2d0c;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
 
-.moeda {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    border: 3px solid #8b4513;
-    background: radial-gradient(circle, #fffaf2, #e0c79f);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    transition: 0.2s;
-}
+        /* HOVER */
+        .moeda:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
 
-.moeda:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-}
+        /* LABEL FORA DO CIRCULO */
+        .moeda label {
+            position: absolute;
+            top: -8px;
+            font-size: 10px;
+            background: #f6f2ea;
+            padding: 0 3px;
+            color: #5a2d0c;
+        }
 
-.moeda input {
-    width: 40px;
-    border: none;
-    background: none;
-    text-align: center;
-    font-family: 'MedievalSharp';
-    font-size: 16px;
-    font-weight: bold;
-}
+        /* INPUT */
+        .moeda input {
+            width: 36px;
+            border: none;
+            background: none;
+            text-align: center;
+            font-family: 'MedievalSharp';
+            font-size: 16px;
+            font-weight: bold;
+            outline: none;
+        }
 
-/* ===== GEMAS (LOSANGO) ===== */
-.gema {
-    width: 80px;
-    height: 80px;
-    transform: rotate(45deg);
-    border: 3px solid #8b4513;
-    background: linear-gradient(135deg, #fffaf2, #e8d9b5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        /* CORES DAS MOEDAS */
+        .pl {
+            background: radial-gradient(circle, #e6f7ff, #9ed0e6);
+        }
 
-.gema-conteudo {
-    transform: rotate(-45deg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
+        /* platina */
+        .po {
+            background: radial-gradient(circle, #fff3b0, #d4a017);
+        }
 
-.gema input {
-    width: 40px;
-    border: none;
-    background: none;
-    text-align: center;
-    font-family: 'MedievalSharp';
-    font-size: 16px;
-    font-weight: bold;
-}
+        /* ouro */
+        .pe {
+            background: radial-gradient(circle, #fff8dc, #e6c97a);
+        }
 
-.gema label {
-    font-size: 11px;
-}
+        /* eletro */
+        .pp {
+            background: radial-gradient(circle, #f0f0f0, #bfbfbf);
+        }
 
-/* REMOVE SPIN */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
+        /* prata */
+        .pc {
+            background: radial-gradient(circle, #f5c6a5, #b87333);
+        }
 
-</style>
+        /* cobre */
+
+
+        .gema {
+            position: relative;
+            width: 60px;
+            height: 70px;
+        }
+
+        .gema-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* CONTEÚDO CENTRAL */
+        /* CONTAINER */
+        .gema {
+            position: relative;
+            width: 60px;
+            height: 70px;
+        }
+
+        /* LABEL FORA (igual moedas) */
+        .gema label {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            background: #f6f2ea;
+            padding: 0 4px;
+            color: #5a2d0c;
+            white-space: nowrap;
+        }
+
+        /* INPUT CENTRAL */
+        .gema-conteudo {
+            position: absolute;
+            top: 58%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .gema input {
+            width: 34px;
+            font-size: 14px;
+            text-align: center;
+            border: none;
+            background: none;
+            font-family: 'MedievalSharp';
+            font-weight: bold;
+            pointer-events: auto;
+            top: -6px;
+            position: relative;
+        }
+
+        /* REMOVE SPIN */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container">
+    <div class="container">
 
-    <!-- TOTAL -->
-    <div class="total-box">
-        <select id="moedaSelect">
-            <option value="PO" selected>PO</option>
-            <option value="PL">PL</option>
-            <option value="PE">PE</option>
-            <option value="PP">PP</option>
-            <option value="PC">PC</option>
-        </select>
-        <div class="total-valor" id="totalValor">0</div>
+        <!-- TOTAL -->
+        <div class="total-box">
+            <select id="moedaSelect">
+                <option value="PO" selected>PO</option>
+                <option value="PL">PL</option>
+                <option value="PE">PE</option>
+                <option value="PP">PP</option>
+                <option value="PC">PC</option>
+            </select>
+            <div class="total-valor" id="totalValor">0</div>
+        </div>
+
+        <!-- MOEDAS -->
+        <div class="moedas">
+
+            <div class="moeda pl">
+                <label>PL</label>
+                <input type="number" id="pl" value="0">
+            </div>
+
+            <div class="moeda po">
+                <label>PO</label>
+                <input type="number" id="po" value="0">
+            </div>
+
+            <div class="moeda pe">
+                <label>PE</label>
+                <input type="number" id="pe" value="0">
+            </div>
+
+            <div class="moeda pp">
+                <label>PP</label>
+                <input type="number" id="pp" value="0">
+            </div>
+
+            <div class="moeda pc">
+                <label>PC</label>
+                <input type="number" id="pc" value="0">
+            </div>
+
+        </div>
+
+        <!-- GEMAS -->
+        <div class="gema">
+            <svg viewBox="0 0 100 120" class="gema-svg">
+
+                <!-- corpo -->
+                <polygon points="50,5 85,30 70,80 50,115 30,80 15,30" fill="url(#grad)" stroke="#5a2d0c"
+                    stroke-width="2" />
+
+                <!-- facetas -->
+                <line x1="50" y1="5" x2="50" y2="115" stroke="rgba(255,255,255,0.6)" />
+                <line x1="15" y1="30" x2="85" y2="30" stroke="rgba(255,255,255,0.5)" />
+                <line x1="30" y1="80" x2="70" y2="80" stroke="rgba(255,255,255,0.4)" />
+
+                <!-- brilho -->
+                <polygon points="50,5 65,30 35,30" fill="rgba(255,255,255,0.6)" />
+
+                <!-- gradiente -->
+                <defs>
+                    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#ffffff" />
+                        <stop offset="50%" stop-color="#cfefff" />
+                        <stop offset="100%" stop-color="#8fd3ff" />
+                    </linearGradient>
+                </defs>
+
+            </svg>
+
+            <div class="gema-conteudo">
+                <label id="labelGemas">Gemas (PO)</label>
+                <input type="number" id="gemas" value="0">
+            </div>
+        </div>
+
     </div>
 
-    <!-- MOEDAS -->
-    <div class="moedas">
+    <script>
 
-        <div class="moeda">
-            <label>PL</label>
-            <input type="number" id="pl" value="0">
-        </div>
+        const taxasPO = {
+            PL: 10,
+            PO: 1,
+            PE: 0.5,
+            PP: 0.1,
+            PC: 0.01
+        };
 
-        <div class="moeda">
-            <label>PO</label>
-            <input type="number" id="po" value="0">
-        </div>
+        function getVal(id) {
+            return parseFloat(document.getElementById(id).value) || 0;
+        }
 
-        <div class="moeda">
-            <label>PE</label>
-            <input type="number" id="pe" value="0">
-        </div>
+        function converterParaPO() {
+            return (
+                getVal("pl") * taxasPO.PL +
+                getVal("po") * taxasPO.PO +
+                getVal("pe") * taxasPO.PE +
+                getVal("pp") * taxasPO.PP +
+                getVal("pc") * taxasPO.PC +
+                getVal("gemas") * taxasPO.PO
+            );
+        }
 
-        <div class="moeda">
-            <label>PP</label>
-            <input type="number" id="pp" value="0">
-        </div>
+        function converterDePO(valorPO, moeda) {
+            return valorPO / taxasPO[moeda];
+        }
 
-        <div class="moeda">
-            <label>PC</label>
-            <input type="number" id="pc" value="0">
-        </div>
+        function atualizar() {
+            const moeda = document.getElementById("moedaSelect").value;
 
-    </div>
+            const totalPO = converterParaPO();
+            const totalConvertido = converterDePO(totalPO, moeda);
 
-    <!-- GEMAS -->
-    <div class="gema">
-        <div class="gema-conteudo">
-            <label id="labelGemas">Gemas (PO)</label>
-            <input type="number" id="gemas" value="0">
-        </div>
-    </div>
+            document.getElementById("totalValor").innerText =
+                totalConvertido.toFixed(2);
 
-</div>
+            document.getElementById("labelGemas").innerText =
+                `Gemas (${moeda})`;
+        }
 
-<script>
+        // eventos
+        document.querySelectorAll("input").forEach(input => {
+            input.addEventListener("input", atualizar);
+        });
 
-const taxasPO = {
-    PL: 10,
-    PO: 1,
-    PE: 0.5,
-    PP: 0.1,
-    PC: 0.01
-};
+        document.getElementById("moedaSelect")
+            .addEventListener("change", atualizar);
 
-function getVal(id) {
-    return parseFloat(document.getElementById(id).value) || 0;
-}
+        atualizar();
 
-function converterParaPO() {
-    return (
-        getVal("pl") * taxasPO.PL +
-        getVal("po") * taxasPO.PO +
-        getVal("pe") * taxasPO.PE +
-        getVal("pp") * taxasPO.PP +
-        getVal("pc") * taxasPO.PC +
-        getVal("gemas") * taxasPO.PO
-    );
-}
-
-function converterDePO(valorPO, moeda) {
-    return valorPO / taxasPO[moeda];
-}
-
-function atualizar() {
-    const moeda = document.getElementById("moedaSelect").value;
-
-    const totalPO = converterParaPO();
-    const totalConvertido = converterDePO(totalPO, moeda);
-
-    document.getElementById("totalValor").innerText =
-        totalConvertido.toFixed(2);
-
-    document.getElementById("labelGemas").innerText =
-        `Gemas (${moeda})`;
-}
-
-// eventos
-document.querySelectorAll("input").forEach(input => {
-    input.addEventListener("input", atualizar);
-});
-
-document.getElementById("moedaSelect")
-    .addEventListener("change", atualizar);
-
-atualizar();
-
-</script>
+    </script>
 
 </body>
+
 </html>
