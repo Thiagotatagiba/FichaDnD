@@ -1,176 +1,194 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<title>Card de Classe</title>
+  <meta charset="UTF-8">
+  <title>Card de Classe</title>
 
-<style>
-body {
-  font-family: 'Georgia', serif;
-  background: #f2efe8;
-  padding: 20px;
-}
+  <style>
+    body {
+      font-family: 'Georgia', serif;
+      background: #f2efe8;
+      padding: 20px;
+    }
 
-/* CARD */
-.container {
-  background: #f6f2ea;
-  border: 3px solid #8b4513;
-  border-radius: 10px;
-  padding: 15px;
-}
+    #modalTexto {
+      white-space: pre-line;
+    }
 
-/* HEADER */
-.topo {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    /* CARD */
+    .container {
+      background: #f6f2ea;
+      border: 3px solid #8b4513;
+      border-radius: 10px;
+      padding: 15px;
+    }
 
-.subclasse {
-  font-size: 14px;
-  color: #5a3b1a;
-}
+    /* HEADER */
+    .topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-/* CONTROLES */
-select, button {
-  margin: 5px 0;
-  padding: 6px;
-}
+    .subclasse {
+      font-size: 14px;
+      color: #5a3b1a;
+    }
 
-/* TABELA */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
+    /* CONTROLES */
+    select,
+    button {
+      margin: 5px 0;
+      padding: 6px;
+    }
 
-th, td {
-  border: 1px solid #bda68c;
-  padding: 6px;
-  text-align: center;
-}
+    /* TABELA */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
 
-th {
-  background: #d6c7a8;
-}
+    th,
+    td {
+      border: 1px solid #bda68c;
+      padding: 6px;
+      text-align: center;
+    }
 
-td:nth-child(3) {
-  text-align: left;
-}
+    th {
+      background: #d6c7a8;
+    }
 
-/* TAGS */
-.tag {
-  background: #d6c7a8;
-  padding: 3px 6px;
-  border-radius: 4px;
-  margin: 2px;
-  display: inline-block;
-  cursor: pointer;
-  transition: 0.2s;
-}
+    td:nth-child(3) {
+      text-align: left;
+    }
 
-.tag:hover {
-  background: #c0ad88;
-}
+    /* TAGS */
+    .tag {
+      background: #d6c7a8;
+      padding: 3px 6px;
+      border-radius: 4px;
+      margin: 2px;
+      display: inline-block;
+      cursor: pointer;
+      transition: 0.2s;
+    }
 
-/* SLOTS */
-.slot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-  margin: 1px;
-  background: #333;
-}
+    .tag:hover {
+      background: #c0ad88;
+    }
 
-/* MODAL */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  display: none;
-  justify-content: center;
-  align-items: center;
-}
+    /* SLOTS */
+    .slot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 1px;
+      background: #333;
+    }
 
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 400px;
-}
-</style>
+    /* MODAL */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 400px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="container">
-  <div class="topo">
-    <h2 id="tituloClasse">Classe</h2>
-    <span id="nomeSubclasse" class="subclasse"></span>
+  <div class="container">
+    <div class="topo">
+      <h2 id="tituloClasse">Classe</h2>
+      <span id="nomeSubclasse" class="subclasse"></span>
+    </div>
+
+    <button onclick="importarJSON()">Importar JSON</button>
+    <input type="file" id="fileInput" hidden>
+
+    <br>
+
+    <select id="selectSubclasse" onchange="aplicarSubclasse()"></select>
+
+    <table>
+      <thead>
+        <tr>
+          <th rowspan="2">Nível</th>
+          <th rowspan="2">Prof.</th>
+          <th rowspan="2">Características</th>
+          <th rowspan="2">Truques</th>
+          <th colspan="9">Espaços de Magia por Nível</th>
+        </tr>
+        <tr>
+          <th>1°</th>
+          <th>2°</th>
+          <th>3°</th>
+          <th>4°</th>
+          <th>5°</th>
+          <th>6°</th>
+          <th>7°</th>
+          <th>8°</th>
+          <th>9°</th>
+        </tr>
+      </thead>
+      <tbody id="tbodyClasse"></tbody>
+    </table>
   </div>
 
-  <button onclick="importarJSON()">Importar JSON</button>
-  <input type="file" id="fileInput" hidden>
-
-  <br>
-
-  <select id="selectSubclasse" onchange="aplicarSubclasse()"></select>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Nível</th>
-        <th>Prof.</th>
-        <th>Características</th>
-        <th>Truques</th>
-        <th colspan="9">Magias</th>
-      </tr>
-    </thead>
-    <tbody id="tbodyClasse"></tbody>
-  </table>
-</div>
-
-<!-- MODAL -->
-<div id="modal" class="modal" onclick="fecharModal()">
-  <div class="modal-content" onclick="event.stopPropagation()">
-    <h3 id="modalTitulo"></h3>
-    <p id="modalTexto"></p>
+  <!-- MODAL -->
+  <div id="modal" class="modal" onclick="fecharModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <h3 id="modalTitulo"></h3>
+      <p id="modalTexto"></p>
+    </div>
   </div>
-</div>
 
-<script>
-let dadosClasse = null;
-let subclasseAtual = "";
+  <script>
+    let dadosClasse = null;
+    let subclasseAtual = "";
 
-// IMPORTAR
-function importarJSON() {
-  document.getElementById("fileInput").click();
-}
+    // IMPORTAR
+    function importarJSON() {
+      document.getElementById("fileInput").click();
+    }
 
-document.getElementById("fileInput").addEventListener("change", e => {
-  const reader = new FileReader();
-  reader.onload = evt => {
-    dadosClasse = JSON.parse(evt.target.result);
-    montarTabela();
-    carregarSubclasses();
-  };
-  reader.readAsText(e.target.files[0]);
-});
+    document.getElementById("fileInput").addEventListener("change", e => {
+      const reader = new FileReader();
+      reader.onload = evt => {
+        dadosClasse = JSON.parse(evt.target.result);
+        montarTabela();
+        carregarSubclasses();
+      };
+      reader.readAsText(e.target.files[0]);
+    });
 
-// TABELA BASE
-function montarTabela() {
-  const tbody = document.getElementById("tbodyClasse");
-  document.getElementById("tituloClasse").textContent = dadosClasse.nome;
-  tbody.innerHTML = "";
+    // TABELA BASE
+    function montarTabela() {
+      const tbody = document.getElementById("tbodyClasse");
+      document.getElementById("tituloClasse").textContent = dadosClasse.nome;
+      tbody.innerHTML = "";
 
-  dadosClasse.niveis.forEach(n => {
-    const tr = document.createElement("tr");
+      dadosClasse.niveis.forEach(n => {
+        const tr = document.createElement("tr");
 
-    tr.innerHTML = `
+        tr.innerHTML = `
       <td>${n.nivel}</td>
       <td>${n.proficiencia}</td>
       <td>${renderTags(n.caracteristicas)}</td>
@@ -178,86 +196,98 @@ function montarTabela() {
       ${renderSlots(n.magias)}
     `;
 
-    tbody.appendChild(tr);
-  });
-}
-
-// TAGS
-function renderTags(texto) {
-  if (!texto) return "–";
-
-  return texto.split(",").map(t => {
-    t = t.trim();
-    return `<span class="tag" onclick="abrirModal('${t}')">${t}</span>`;
-  }).join("");
-}
-
-// SLOTS VISUAL
-function renderSlots(magias) {
-  let html = "";
-  for (let i = 0; i < 9; i++) {
-    let qtd = magias?.[i] || 0;
-    let slots = "";
-    for (let j = 0; j < qtd; j++) {
-      slots += `<span class="slot"></span>`;
+        tbody.appendChild(tr);
+      });
     }
-    html += `<td>${slots || "–"}</td>`;
-  }
-  return html;
-}
 
-// SUBCLASSES
-function carregarSubclasses() {
-  const select = document.getElementById("selectSubclasse");
-  select.innerHTML = `<option value="">Subclasse</option>`;
+    // TAGS
+    function renderTags(texto) {
+      if (!texto) return "–";
 
-  for (let nome in dadosClasse.subclasses) {
-    select.innerHTML += `<option value="${nome}">${nome}</option>`;
-  }
-}
+      return texto.split(",").map(t => {
+        t = t.trim();
+        return `<span class="tag" onclick="abrirModal('${t}')">${t}</span>`;
+      }).join("");
+    }
 
-// APLICAR SUBCLASSE
-function aplicarSubclasse() {
-  subclasseAtual = document.getElementById("selectSubclasse").value;
-  document.getElementById("nomeSubclasse").textContent = subclasseAtual;
+    // SLOTS VISUAL
+    function renderSlots(magias) {
+      let html = "";
+      for (let i = 0; i < 9; i++) {
+        let valor = magias?.[i];
+        html += `<td>${valor ?? "–"}</td>`;
+      }
+      return html;
+    }
 
-  montarTabela();
+    // SUBCLASSES
+    function carregarSubclasses() {
+      const select = document.getElementById("selectSubclasse");
+      select.innerHTML = `<option value="">Subclasse</option>`;
 
-  if (!subclasseAtual) return;
-
-  const linhas = document.querySelectorAll("#tbodyClasse tr");
-
-  linhas.forEach((tr, i) => {
-    const nivel = parseInt(dadosClasse.niveis[i].nivel);
-    let texto = dadosClasse.niveis[i].caracteristicas || "";
-
-    texto = texto.replace(dadosClasse.TP_Subclasse, subclasseAtual);
-
-    if (texto.includes(dadosClasse.Car_Subclasse)) {
-      const hab = dadosClasse.subclasses[subclasseAtual][nivel];
-      if (hab) {
-        texto = texto.replace(dadosClasse.Car_Subclasse, hab);
+      for (let nome in dadosClasse.subclasses) {
+        select.innerHTML += `<option value="${nome}">${nome}</option>`;
       }
     }
 
-    tr.children[2].innerHTML = renderTags(texto);
-  });
-}
+    // APLICAR SUBCLASSE
+    function aplicarSubclasse() {
+      const subclasse = document.getElementById("selectSubclasse").value;
+      subclasseAtual = subclasse;
 
-// MODAL
-function abrirModal(nome) {
-  document.getElementById("modalTitulo").textContent = nome;
+      document.getElementById("nomeSubclasse").textContent = subclasse;
 
-  const desc = dadosClasse.descricoes?.[nome] || "Sem descrição.";
-  document.getElementById("modalTexto").textContent = desc;
+      montarTabela();
 
-  document.getElementById("modal").style.display = "flex";
-}
+      if (!subclasse) return;
 
-function fecharModal() {
-  document.getElementById("modal").style.display = "none";
-}
-</script>
+      const linhas = document.querySelectorAll("#tbodyClasse tr");
+
+      linhas.forEach((tr, i) => {
+        const nivel = parseInt(dadosClasse.niveis[i].nivel);
+        let texto = dadosClasse.niveis[i].caracteristicas || "";
+
+        // Nome da subclasse
+        texto = texto.replace(dadosClasse.TP_Subclasse, subclasse);
+
+        const regra = dadosClasse.subclasses[subclasse][nivel];
+
+        if (regra) {
+
+          // REPLACE
+          if (regra.replace && texto.includes(regra.replace)) {
+            texto = texto.replace(regra.replace, regra.value);
+          }
+
+          // ADD
+          if (regra.add) {
+            if (texto) {
+              texto += ", " + regra.add.join(", ");
+            } else {
+              texto = regra.add.join(", ");
+            }
+          }
+        }
+
+        tr.children[2].innerHTML = renderTags(texto);
+      });
+    }
+
+    // MODAL
+    function abrirModal(nome) {
+      document.getElementById("modalTitulo").textContent = nome;
+
+      const desc = dadosClasse.descricoes?.[nome] || "Sem descrição.";
+      document.getElementById("modalTexto").textContent = desc;
+
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    function fecharModal() {
+      document.getElementById("modal").style.display = "none";
+    }
+  </script>
 
 </body>
+
 </html>

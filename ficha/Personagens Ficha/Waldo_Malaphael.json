@@ -4,11 +4,12 @@
   "inputVidaLevelUp": "",
   "fileInput": "",
   "nomePersonagem": "Waldo Malaphael",
-  "jogador": "Thiago",
+  "jogador": "",
   "xp": "0",
   "classeID": "clerigo NV 1",
   "classeNomeID": "clerigo",
   "classeNivelID": "1",
+  "subclasse": "Domínio da Enganação",
   "racaID": "Meio-Elfo",
   "antecedenteID": "Charlatão",
   "alinhamentoID": "Caótico e Neutro (CN)",
@@ -18,13 +19,12 @@
   "int": "10",
   "sab": "10",
   "car": "10",
-  "ca_valor": "11",
-  "ca_escudo": "+0",
+  "ca_valor": "13",
   "iniciativa": "+0",
   "deslocamento": "9m",
-  "pvAtual": "8",
   "pvTotal": "8",
   "pvTemporario": "0",
+  "pvAtual": "8",
   "dadosVidaRestantes": "1",
   "dadosVidaTotal": "1",
   "dadosVidaTipo": "d8",
@@ -86,7 +86,7 @@
   "periciaReligiaoValor": "+2",
   "periciaSobrevivenciaProf": false,
   "periciaSobrevivenciaValor": "+0",
-  "proficienciaIdiomas": "Comum, Élfico, (1 a escolher)",
+  "proficienciaIdiomas": "Comum, Élfico e um idioma adicional",
   "profArmaSimples": true,
   "profArmaMarciais": false,
   "proficienciaArmas": "",
@@ -95,27 +95,30 @@
   "profArmaduraPesadas": false,
   "profEscudos": true,
   "proficienciaArmaduras": "",
-  "proficienciaFerramentas": "Kit de Disfarce, Kit de Falsificação",
-  "talentoClasse": "Conjuração",
+  "proficienciaFerramentas": "Kit de disfarce \nKit de falsificação\n",
+  "talentoClasse": "Perícia de Classe, Conjuração, CONJURAÇÃO DE RITUAL, FOCO DE CONJURAÇÃO",
   "talentoArquetipoResumo": "Domínio da Enganação",
-  "talentoArquetipo": "Domínio da Enganação (Bênção do Trapaceiro, Magias: Enfeitiçar Pessoa, Disfarçar-se)",
-  "talentoRaca": "Visão no Escuro, Ancestral Feérico, Versatilidade em Perícias",
-  "talentoAntecedente": "Identidade Falsa",
-  "arma1Nome": "⚔️ Maça",
+  "talentoArquetipo": "Magias de Domínio, Bênção do Trapaceiro",
+  "talentoRaca": "Aumento no Valor de Habilidade, Visão no Escuro, Ancestral Feérico, Versatilidade em Perícias",
+  "talentoAntecedente": "Proficiência em Perícias, ESQUEMAS PREDILETOS, CARACTERÍSTICA: IDENTIDADE FALSA",
+  "talentoOutro": "",
+  "arma1Nome": "Maça",
   "arma1Ataque": "for",
   "arma1Dano": "1d6 Concussão",
-  "arma2Nome": "",
+  "arma1MunicaoSelect": "",
+  "arma2Nome": "Escudo",
   "arma2Ataque": "for",
   "arma2Dano": "",
+  "arma2MunicaoSelect": "",
   "armaduraNome": "0",
   "armaduraCA": "11",
   "armaduraFurtividade": "Normal",
-  "escudoNome": "",
-  "escudoCA": "+0",
+  "escudoNome": "Escudo",
+  "escudoCA": "+2",
   "outroEquipadoTipo": "",
   "outroEquipadoCA": "0",
-  "ataqueCaTotal": "11",
-  "ataqueCaEscudo": "+0",
+  "ataqueCaTotal": "13",
+  "ataqueCaEscudo": "+2",
   "ataquePosicao": "0",
   "ataqueCondicao": "Normal",
   "combateRodada": "1",
@@ -126,10 +129,10 @@
   "magiaAtributoConjuracao": "sab",
   "magiaCD": "10",
   "magiaAtaqueMagico": "+2",
-  "magia0Texto": "[\n  {\n    \"id\": \"id_1775495546826_273\",\n    \"nivel\": 0,\n    \"preparada\": true,\n    \"nome\": \"Taumaturgia (Thaumaturgy)\",\n    \"escola\": \"Transmutação\",\n    \"tempo_conjuracao\": \"1 Ação\",\n    \"alcance\": \"9 m\",\n    \"duracao\": \"Até 1 minuto\",\n    \"propriedades\": {\n      \"dano\": false,\n      \"cura\": false,\n      \"concentracao\": false\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": false,\n      \"material\": false\n    },\n    \"resolucao\": \"\",\n    \"teste_resistencia\": \"\",\n    \"efeitos\": [],\n    \"descricao\": \"Você manifesta pequenos sinais sobrenaturais dentro do alcance. Você pode criar um dos seguintes efeitos:\\n\\n⚫ Sua voz fica até três vezes mais alta por 1 minuto\\n⚫ Faz com que chamas tremulem, brilhem ou mudem de cor\\n⚫ Provoca tremores inofensivos no chão\\n⚫ Cria um som instantâneo (estrondo, sussurro, trovão, etc.)\\n⚫ Faz portas ou janelas destrancadas se abrirem ou fecharem\\n⚫ Altera a aparência de seus olhos por 1 minuto\\n\\nVocê pode ter até 3 efeitos ativos ao mesmo tempo, e pode encerrar qualquer um deles como ação.\",\n    \"proximos_niveis\": \"\"\n  },\n  {\n    \"id\": \"id_1775495546826_782\",\n    \"nivel\": 0,\n    \"preparada\": true,\n    \"nome\": \"Orientação (Guidance)\",\n    \"escola\": \"Adivinhação\",\n    \"tempo_conjuracao\": \"1 Ação\",\n    \"alcance\": \"Toque\",\n    \"duracao\": \"até 1 min\",\n    \"propriedades\": {\n      \"dano\": false,\n      \"cura\": false,\n      \"concentracao\": true\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": true,\n      \"material\": false\n    },\n    \"resolucao\": \"\",\n    \"teste_resistencia\": \"\",\n    \"efeitos\": [],\n    \"descricao\": \"Você toca uma criatura voluntária e concede orientação divina.\\n\\nUma vez antes da magia terminar, o alvo pode rolar 1d4 adicional e somar ao resultado em um teste de habilidade à sua escolha.\\n\\nO jogador pode decidir usar o d4 após rolar o teste, mas antes de saber se foi bem-sucedido.\",\n    \"proximos_niveis\": \"\"\n  },\n  {\n    \"id\": \"id_1775495546826_797\",\n    \"nivel\": 0,\n    \"preparada\": true,\n    \"nome\": \"Chama Sagrada (Sacred Flame)\",\n    \"escola\": \"Evocação\",\n    \"tempo_conjuracao\": \"1 ação\",\n    \"alcance\": \"18 m\",\n    \"duracao\": \"instantâneo\",\n    \"propriedades\": {\n      \"dano\": true,\n      \"cura\": false,\n      \"concentracao\": false\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": true,\n      \"material\": false\n    },\n    \"resolucao\": \"Teste de Resistência\",\n    \"teste_resistencia\": \"DES\",\n    \"efeitos\": [\n      {\n        \"tipo\": \"dano\",\n        \"formula\": \"1d8\",\n        \"dano_tipo\": \"Radiante\",\n        \"regra\": \"\"\n      }\n    ],\n    \"descricao\": \"Radiação similar a uma chama desce sobre uma criatura que você possa ver, dentro do alcance. O alvo deve ser bem sucedido num teste de resistência de Destreza ou sofrerá 1d8 de dano radiante. O alvo não recebe qualquer benefício de cobertura contra esse teste de resistência.\",\n    \"proximos_niveis\": \"O dano da magia aumenta em 1d8 quando você alcança o 5° nível (2d8), 11° nível (3d8) e 17° nível (4d8).\"\n  }\n]",
+  "magia0Texto": "[\n  {\n    \"id\": \"id_1775657716380_263\",\n    \"nivel\": 0,\n    \"preparada\": false,\n    \"nome\": \"Taumaturgia (Thaumaturgy)\",\n    \"escola\": \"Transmutação\",\n    \"tempo_conjuracao\": \"1 Ação\",\n    \"alcance\": \"9 m\",\n    \"duracao\": \"Até 1 minuto\",\n    \"propriedades\": {\n      \"dano\": false,\n      \"cura\": false,\n      \"concentracao\": false\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": false,\n      \"material\": false\n    },\n    \"resolucao\": \"\",\n    \"teste_resistencia\": \"\",\n    \"efeitos\": [],\n    \"descricao\": \"Você manifesta pequenos sinais sobrenaturais dentro do alcance. Você pode criar um dos seguintes efeitos:\\n\\n⚫ Sua voz fica até três vezes mais alta por 1 minuto\\n⚫ Faz com que chamas tremulem, brilhem ou mudem de cor\\n⚫ Provoca tremores inofensivos no chão\\n⚫ Cria um som instantâneo (estrondo, sussurro, trovão, etc.)\\n⚫ Faz portas ou janelas destrancadas se abrirem ou fecharem\\n⚫ Altera a aparência de seus olhos por 1 minuto\\n\\nVocê pode ter até 3 efeitos ativos ao mesmo tempo, e pode encerrar qualquer um deles como ação.\",\n    \"proximos_niveis\": \"\"\n  },\n  {\n    \"id\": \"id_1775657807892_569\",\n    \"nivel\": 0,\n    \"preparada\": false,\n    \"nome\": \"Orientação (Guidance)\",\n    \"escola\": \"Adivinhação\",\n    \"tempo_conjuracao\": \"1 Ação\",\n    \"alcance\": \"Toque\",\n    \"duracao\": \"até 1 min\",\n    \"propriedades\": {\n      \"dano\": false,\n      \"cura\": false,\n      \"concentracao\": true\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": true,\n      \"material\": false\n    },\n    \"resolucao\": \"\",\n    \"teste_resistencia\": \"\",\n    \"efeitos\": [],\n    \"descricao\": \"Você toca uma criatura voluntária e concede orientação divina.\\n\\nUma vez antes da magia terminar, o alvo pode rolar 1d4 adicional e somar ao resultado em um teste de habilidade à sua escolha.\\n\\nO jogador pode decidir usar o d4 após rolar o teste, mas antes de saber se foi bem-sucedido.\",\n    \"proximos_niveis\": \"\"\n  },\n  {\n    \"id\": \"id_1775657883611_879\",\n    \"nivel\": 0,\n    \"preparada\": false,\n    \"nome\": \"Chama Sagrada (Sacred Flame)\",\n    \"escola\": \"Evocação\",\n    \"tempo_conjuracao\": \"1 ação\",\n    \"alcance\": \"18 m\",\n    \"duracao\": \"instantâneo\",\n    \"propriedades\": {\n      \"dano\": true,\n      \"cura\": false,\n      \"concentracao\": false\n    },\n    \"componentes\": {\n      \"verbal\": false,\n      \"somatico\": false,\n      \"material\": false\n    },\n    \"resolucao\": \"Teste de Resistência\",\n    \"teste_resistencia\": \"DES\",\n    \"efeitos\": [\n      {\n        \"tipo\": \"dano\",\n        \"formula\": \"1d8\",\n        \"dano_tipo\": \"Radiante\",\n        \"regra\": \"\"\n      }\n    ],\n    \"descricao\": \"Radiação similar a uma chama desce sobre uma criatura que você possa ver, dentro do alcance. O alvo deve ser bem sucedido num teste de resistência de Destreza ou sofrerá 1d8 de dano radiante. O alvo não recebe qualquer benefício de cobertura contra esse teste de resistência.\",\n    \"proximos_niveis\": \"O dano da magia aumenta em 1d8 quando você alcança o 5° nível (2d8), 11° nível (3d8) e 17° nível (4d8).\"\n  }\n]",
   "magia1Total": "2",
   "magia1Usado": "0",
-  "magia1Texto": "[\n  {\n    \"id\": \"id_1775493334032_749\",\n    \"nivel\": 1,\n    \"preparada\": true,\n    \"nome\": \"Enfeitiçar Pessoa (Charm Person) [DD]\",\n    \"escola\": \"Encantamento\",\n    \"tempo_conjuracao\": \"1 Ação\",\n    \"alcance\": \"9 m\",\n    \"duracao\": \"1 hora\",\n    \"propriedades\": {\n      \"dano\": false,\n      \"cura\": false,\n      \"concentracao\": false\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": true,\n      \"material\": false\n    },\n    \"resolucao\": \"Teste de Resistência\",\n    \"teste_resistencia\": \"SAB\",\n    \"efeitos\": [],\n    \"descricao\": \"✨ Efeito\\nVocê tenta enfeitiçar um humanoide à sua escolha dentro do alcance. Ele deve realizar um teste de resistência de Sabedoria.\\n#Falha: fica enfeitiçado por você até o fim da magia\\n#Sucesso: não é afetado\\n💡 Condição Enfeitiçado\\nNão pode atacar você\\nVocê tem vantagem em testes sociais contra ele\\n⚠️ Importante\\nSe você ou seus aliados atacarem o alvo, a magia acaba\\nQuando a magia termina, o alvo sabe que foi enfeitiçado\",\n    \"proximos_niveis\": \"Afeta +1 criatura por nível acima do 1º\"\n  },\n  {\n    \"id\": \"id_1775493334032_159\",\n    \"nivel\": 1,\n    \"preparada\": true,\n    \"nome\": \"Disfarçar-se (Disguise Self) [DD]\",\n    \"escola\": \"Ilusão\",\n    \"tempo_conjuracao\": \"1 Ação\",\n    \"alcance\": \"Pessoal\",\n    \"duracao\": \"1 hora\",\n    \"propriedades\": {\n      \"dano\": false,\n      \"cura\": false,\n      \"concentracao\": false\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": true,\n      \"material\": false\n    },\n    \"resolucao\": \"\",\n    \"teste_resistencia\": \"\",\n    \"efeitos\": [],\n    \"descricao\": \"✨ Efeito\\nVocê muda sua aparência (roupas, rosto, cabelo, altura, etc.).\\nPode parecer:\\n#outra pessoa\\n#outra raça (dentro de limites)\\nAlteração visual completa\\n⚠️ Limitações\\nNão muda sua forma física real\\nNão altera sua voz automaticamente\\nInteração física revela a ilusão\\n🧠 Teste para descobrir\\nCriaturas podem fazer teste de Investigação contra sua CD de magia\\nSó acontece se suspeitarem\",\n    \"proximos_niveis\": \"\"\n  }\n]",
+  "magia1Texto": "[\n  {\n    \"id\": \"id_1775485806600_491\",\n    \"nivel\": 1,\n    \"preparada\": true,\n    \"nome\": \"Enfeitiçar Pessoa (Charm Person) [DD]\",\n    \"escola\": \"Encantamento\",\n    \"tempo_conjuracao\": \"1 Ação\",\n    \"alcance\": \"9 m\",\n    \"duracao\": \"1 hora\",\n    \"propriedades\": {\n      \"dano\": false,\n      \"cura\": false,\n      \"concentracao\": false\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": true,\n      \"material\": false\n    },\n    \"resolucao\": \"\",\n    \"teste_resistencia\": \"\",\n    \"efeitos\": [],\n    \"descricao\": \"Você tenta enfeitiçar um humanoide à sua escolha dentro do alcance. Ele deve realizar um teste de resistência de Sabedoria.\\n\\nFalha: fica enfeitiçado por você até o fim da magia\\nSucesso: não é afetado\\n💡 Condição Enfeitiçado\\nNão pode atacar você\\nVocê tem vantagem em testes sociais contra ele\\n⚠️ Importante\\nSe você ou seus aliados atacarem o alvo, a magia acaba\\nQuando a magia termina, o alvo sabe que foi enfeitiçado\",\n    \"proximos_niveis\": \"Afeta +1 criatura por nível acima do 1º\"\n  },\n  {\n    \"id\": \"id_1775486036478_838\",\n    \"nivel\": 1,\n    \"preparada\": true,\n    \"nome\": \"Disfarçar-se (Disguise Self) [DD]\",\n    \"escola\": \"Ilusão\",\n    \"tempo_conjuracao\": \"1 Ação\",\n    \"alcance\": \"Pessoal\",\n    \"duracao\": \"1 hora\",\n    \"propriedades\": {\n      \"dano\": false,\n      \"cura\": false,\n      \"concentracao\": false\n    },\n    \"componentes\": {\n      \"verbal\": true,\n      \"somatico\": true,\n      \"material\": false\n    },\n    \"resolucao\": \"\",\n    \"teste_resistencia\": \"\",\n    \"efeitos\": [],\n    \"descricao\": \"✨ Efeito\\nVocê muda sua aparência (roupas, rosto, cabelo, altura, etc.).\\nPode parecer: outra pessoa ou outra raça (dentro de limites)\\nAlteração visual completa\\n\\n⚠️ Limitações\\nNão muda sua forma física real\\nNão altera sua voz automaticamente\\nInteração física revela a ilusão\\n\\n🧠 Teste para descobrir\\nCriaturas podem fazer teste de Investigação contra sua CD de magia\\nSó acontece se suspeitarem\",\n    \"proximos_niveis\": \"\"\n  }\n]",
   "magia2Total": "0",
   "magia2Usado": "0",
   "magia2Texto": "",
@@ -155,15 +158,15 @@
   "magia9Usado": "0",
   "magia9Texto": "",
   "historiaIdade": "27 anos",
-  "historiaAltura": "1,78 m",
-  "historiaPeso": "72 kg",
-  "historiaOlhos": "Verdes com tom dourado",
-  "historiaPele": "Bronzeada",
+  "historiaAltura": "1,78",
+  "historiaPeso": "72 Kg",
+  "historiaOlhos": "Verdes com Dourado",
+  "historiaPele": "Bronzeado Claro",
   "historiaCabelo": "Castanho escuro",
-  "historiaTracosPersonalidade": "Eu sou um jogador nato que não consegue resistir a se arriscar por uma possível recompensa.",
-  "historiaIdeais": "Criatividade. Eu nunca faço a mesma trapaça duas vezes.",
-  "historiaVinculos": "Eu devo tudo ao meu mentor — um homem terrível que já morreu, mas ainda guia minhas escolhas.",
-  "historiaFraquezas": "Eu sou ganancioso demais pra meu próprio bem. Eu não consigo resistir a me arriscar se tiver dinheiro envolvido.",
+  "historiaTracosPersonalidade": "“Eu sou um jogador nato que não consegue resistir a se arriscar por uma possível recompensa.”",
+  "historiaIdeais": "“Criatividade. Eu nunca faço a mesma trapaça duas vezes.”",
+  "historiaVinculos": "“Eu devo tudo ao meu mentor — um homem terrível que já morreu, mas ainda guia minhas escolhas.”",
+  "historiaFraquezas": "“Eu sou ganancioso demais pra meu próprio bem. Eu não consigo resistir a me arriscar se tiver dinheiro envolvido.”",
   "historiaAliadosOrganizacoes": "Salys (mentor falecido). Seguidores de Tymora (não reconhecido oficialmente).",
   "historiaPersonagem": "Waldo cresceu órfão em Luskan e foi acolhido por Salys, um sacerdote que o ensinou fé e enganação. Após sua morte, continua pregando em nome de Tymora, mesmo sem nunca ter recebido um sinal da deusa.",
   "moedaPC": "0",
@@ -172,13 +175,13 @@
   "moedaPO": "15",
   "moedaPL": "0",
   "moedaGemas": "0",
-  "pesoAtual": "14.5",
-  "pesoMax": "0",
+  "pesoAtual": "46",
+  "pesoMax": "150",
   "magiaModalPreparada": true,
-  "magiaModalEscola": "Encantamento",
-  "magiaModalNome": "Enfeitiçar Pessoa (Charm Person) [DD]",
+  "magiaModalEscola": "Ilusão",
+  "magiaModalNome": "Disfarçar-se (Disguise Self) [DD]",
   "magiaModalTempo": "1 Ação",
-  "magiaModalAlcance": "9 m",
+  "magiaModalAlcance": "Pessoal",
   "magiaModalDuracao": "1 hora",
   "magiaModalPropConcentracao": false,
   "magiaModalCompVerbal": true,
@@ -188,17 +191,106 @@
   "magiaModalPropCura": false,
   "magiaModalDanoFormula": "",
   "magiaModalDanoTipo": "",
-  "magiaModalResolucao": "Teste de Resistência",
+  "magiaModalResolucao": "",
   "magiaModalAtaqueMagico": "+2",
-  "magiaModalTesteResistencia": "SAB",
+  "magiaModalTesteResistencia": "",
   "magiaModalCuraRegra": "",
-  "magiaModalDescricao": "✨ Efeito\nVocê tenta enfeitiçar um humanoide à sua escolha dentro do alcance. Ele deve realizar um teste de resistência de Sabedoria.\n#Falha: fica enfeitiçado por você até o fim da magia\n#Sucesso: não é afetado\n💡 Condição Enfeitiçado\nNão pode atacar você\nVocê tem vantagem em testes sociais contra ele\n⚠️ Importante\nSe você ou seus aliados atacarem o alvo, a magia acaba\nQuando a magia termina, o alvo sabe que foi enfeitiçado",
-  "magiaModalProximosNiveis": "Afeta +1 criatura por nível acima do 1º",
+  "magiaModalDescricao": "✨ Efeito\nVocê muda sua aparência (roupas, rosto, cabelo, altura, etc.).\nPode parecer: outra pessoa ou outra raça (dentro de limites)\nAlteração visual completa\n\n⚠️ Limitações\nNão muda sua forma física real\nNão altera sua voz automaticamente\nInteração física revela a ilusão\n\n🧠 Teste para descobrir\nCriaturas podem fazer teste de Investigação contra sua CD de magia\nSó acontece se suspeitarem",
+  "magiaModalProximosNiveis": "",
   "importarFichaInput": "",
   "arma1EquipadaIndice": "0",
-  "arma2EquipadaIndice": "",
+  "arma2EquipadaIndice": "__escudo__0",
   "armaduraEquipadaIndice": 0,
-  "nomePlayer": "Thiago",
+  "talentosEstruturados": {
+    "classe": [
+      {
+        "nome": "Perícia de Classe",
+        "descricao": "Persuasão e Religião",
+        "tipo": "Característica",
+        "origem": "clerigo"
+      },
+      {
+        "nome": "Conjuração",
+        "descricao": "Truques Conhecidos: 3\n\nEspaço de Magia\nNível 1: 2",
+        "tipo": "Característica",
+        "origem": "clerigo"
+      },
+      {
+        "nome": "CONJURAÇÃO DE RITUAL",
+        "descricao": "Você pode conjurar qualquer magia de Clérigo que você conheça como um ritual se ela possuir o descritor ritual.",
+        "tipo": "Característica",
+        "origem": "clerigo"
+      },
+      {
+        "nome": "FOCO DE CONJURAÇÃO",
+        "descricao": "Moeda da Sorte\nVocê pode usar um símbolo sagrado (encontrado no capítulo 5) como foco de conjuração das suas magias de clérigo.",
+        "tipo": "Característica",
+        "origem": "clerigo"
+      }
+    ],
+    "arquetipo": [
+      {
+        "nome": "Magias de Domínio",
+        "descricao": "(sempre preparadas)\n- Enfeitiçar Pessoa (Charm Person)\n- Disfarçar-se (Disguise Self)",
+        "tipo": "Característica",
+        "origem": "Subclasse"
+      },
+      {
+        "nome": "Bênção do Trapaceiro",
+        "descricao": "A partir do momento em que você escolhe esse domínio, no 1° nível, você pode usar sua ação para tocar uma criatura voluntária além de você mesmo para conceder vantagem em testes de Destreza (Furtividade).\nEssa bênção dura por 1 hora ou até você usar essa característica novamente.",
+        "tipo": "Característica",
+        "origem": "Subclasse"
+      }
+    ],
+    "raca": [
+      {
+        "nome": "Aumento no Valor de Habilidade",
+        "descricao": "Seu valor de Carisma aumenta em 2 e outros dois valores de habilidade, à sua escolha, aumentam em 1.",
+        "tipo": "Característica",
+        "origem": "Meio-Elfo"
+      },
+      {
+        "nome": "Visão no Escuro",
+        "descricao": "Graças ao seu sangue élfico, você tem uma visão superior no escuro e na penumbra. Você enxerga na penumbra a até 18 metros como se fosse luz plena, e no escuro como se fosse na penumbra. Você não pode discernir cores no escuro, apenas tons de cinza.",
+        "tipo": "Característica",
+        "origem": "Meio-Elfo"
+      },
+      {
+        "nome": "Ancestral Feérico",
+        "descricao": "Você possui vantagem em testes de resistência contra encantamento e magia não pode colocar você pra dormir.",
+        "tipo": "Característica",
+        "origem": "Meio-Elfo"
+      },
+      {
+        "nome": "Versatilidade em Perícias",
+        "descricao": "Você ganha proficiência em duas perícias, à sua escolha.\nPersuasão e Intuição",
+        "tipo": "Característica",
+        "origem": "Meio-Elfo"
+      }
+    ],
+    "antecedente": [
+      {
+        "nome": "Proficiência em Perícias",
+        "descricao": "Enganação e Prestidigitação",
+        "tipo": "Característica",
+        "origem": "Charlatão"
+      },
+      {
+        "nome": "ESQUEMAS PREDILETOS",
+        "descricao": "Eu convenço as pessoas que tranqueiras inúteis valem seu suado dinheiro",
+        "tipo": "Característica",
+        "origem": "Charlatão"
+      },
+      {
+        "nome": "CARACTERÍSTICA: IDENTIDADE FALSA",
+        "descricao": "Você criou uma segunda identidade que inclui  documentos, conhecidos estabelecidos e disfarces que possibilitam que você assuma essa persona. Além disso, você pode forjar documentos, incluindo papeis oficiais e cartas pessoais, contanto que você tenha visto um exemplo desse tipo de documento ou a caligrafia de quem você está tentando copiar.",
+        "tipo": "Característica",
+        "origem": "Charlatão"
+      }
+    ],
+    "outros": []
+  },
+  "nomePlayer": "",
   "classeNome": "clerigo",
   "classeNivel": "1",
   "raca": "Meio-Elfo",
@@ -219,8 +311,8 @@
   "prof_car": true,
   "armas": [
     {
-      "arma_preco": "5 PO",
-      "arma_peso": "2 kg",
+      "arma_preco": "5",
+      "arma_peso": "2",
       "nome": "Maça",
       "arma_dano": "1d6",
       "arma_tipo_dano": "Concussão",
@@ -242,18 +334,20 @@
         "especial": false
       },
       "usaMunicao": false,
+      "arma_item_magico": false,
+      "arma_sintonizado": false,
       "proficiente": true
     },
     {
-      "arma_preco": "25 PO",
-      "arma_peso": "2,5 kg",
+      "arma_preco": "25",
+      "arma_peso": "2.5",
       "nome": "Besta Leve",
       "arma_dano": "1d8",
-      "arma_tipo_dano": "Perfurante",
+      "arma_tipo_dano": "Concussão",
       "arma_tipo": "Simples",
       "arma_dist_curto": "24",
       "arma_dist_longo": "96",
-      "arma_municao_id": "",
+      "arma_municao_id": "id_1775483752618_657",
       "arma_descricao": "",
       "propriedades": {
         "acuidade": false,
@@ -268,31 +362,117 @@
         "especial": false
       },
       "usaMunicao": true,
+      "arma_item_magico": false,
+      "arma_sintonizado": false,
       "proficiente": true
     }
   ],
   "armaduras": [
     {
-      "armadura_preco": "10 PO",
-      "armadura_peso": "5 kg",
-      "armadura_nome": "Armadura de Couro",
+      "armadura_preco": "10",
+      "armadura_peso": "5",
+      "armadura_nome": "Armadura de couro",
       "armadura_ca": "11",
       "armadura_bonus": "DES",
       "armadura_forca": "0",
       "armadura_furtividade": "Normal",
       "armadura_tipo": "Leve",
+      "armadura_descricao": "",
+      "armadura_item_magico": false,
+      "armadura_sintonizado": false,
       "proficiente": true
     }
   ],
   "escudos": [
     {
-      "escudo_preco": "10 po",
-      "escudo_peso": "5",
+      "escudo_preco": "10",
+      "escudo_peso": "3",
       "escudo_nome": "Escudo",
       "escudo_ca": "+2",
       "escudo_tipo": "Escudo",
+      "escudo_descricao": "",
+      "escudo_item_magico": false,
+      "escudo_sintonizado": false,
       "proficiente": true
     }
   ],
-  "outros": []
+  "outros": [
+    {
+      "id": "id_1775477747744_393",
+      "outro_preco": "15",
+      "outro_peso": "3",
+      "outro_quantidade": "1",
+      "outro_nome": "Roupas Finas (conjunto)",
+      "outro_tipo": "Outros",
+      "outro_descricao": "Vestuário elegante usado para aparentar status social elevado. Pode ajudar em interações sociais dependendo da situação.\n➡️ Origem: (Antecedente – Charlatão)",
+      "outro_item_magico": false,
+      "outro_sintonizado": false
+    },
+    {
+      "id": "id_1775479177581_219",
+      "outro_preco": "25",
+      "outro_peso": "1.5",
+      "outro_quantidade": "1",
+      "outro_nome": "Kit de disfarce",
+      "outro_tipo": "Kit",
+      "outro_descricao": "Usado para mudar aparência e criar identidades.\n\n➡️ Origem: (Antecedente – Charlatão)",
+      "outro_item_magico": false,
+      "outro_sintonizado": false
+    },
+    {
+      "id": "id_1775479300157_500",
+      "outro_preco": "5",
+      "outro_peso": "0",
+      "outro_quantidade": "1",
+      "outro_nome": "Anel de Sinete de um duque imaginário",
+      "outro_tipo": "Ferramentas",
+      "outro_descricao": "Anel com brasão falso usado para fingir nobreza.\n\n➡️ Origem: (Antecedente – Charlatão)",
+      "outro_item_magico": false,
+      "outro_sintonizado": false
+    },
+    {
+      "id": "id_1775483752618_657",
+      "outro_preco": "1",
+      "outro_peso": "0.75",
+      "outro_quantidade": "20",
+      "outro_nome": "Virotes",
+      "outro_tipo": "Municao",
+      "outro_descricao": "Munição utilizada por bestas. São pequenos projéteis de madeira com ponta metálica, armazenados em estojo ou aljava. São consumidos a cada disparo.\n➡️ Origem: (Classe – Clérigo)",
+      "outro_item_magico": false,
+      "outro_sintonizado": false
+    },
+    {
+      "id": "id_1775483858617_754",
+      "outro_preco": "0",
+      "outro_peso": "0",
+      "outro_quantidade": "1",
+      "outro_nome": "Moeda da Sorte (Símbolo Sagrado)",
+      "outro_tipo": "Ferramentas",
+      "outro_descricao": "Moeda da sorte (Símbolo sagrado)\nMoeda usada como foco para conjurar magias.\n\n➡️ Origem: (Função – Classe - Salys)",
+      "outro_item_magico": false,
+      "outro_sintonizado": false
+    },
+    {
+      "id": "id_1775484089401_502",
+      "outro_preco": "19",
+      "outro_peso": "11.5",
+      "outro_quantidade": "1",
+      "outro_nome": "Pacote de Sacerdote",
+      "outro_tipo": "Kit",
+      "outro_descricao": "Mochila\nCobertorConjunto de itens voltados para atividades religiosas e sobrevivência básica. Inclui utensílios para rituais, viagem e manutenção diária.\n➡️ Origem: (Classe – Clérigo)\n\nConteúdo:\n\nMochila\nCobertor\n10 velas\nCaixa de pederneira (para acender fogo)\nCaixa de esmolas\n2 blocos de incenso\nIncensário\nVestes\n2 dias de rações\nCantil\n10 velas\nCaixa de esmolas\n2 blocos de incenso\nIncensário\nVestes\nRações (2 dias)\nCantil",
+      "outro_item_magico": false,
+      "outro_sintonizado": false
+    },
+    {
+      "id": "id_1775659161159_12",
+      "outro_preco": "15",
+      "outro_peso": "2.5",
+      "outro_quantidade": "1",
+      "outro_nome": "Kit de Falsificação ",
+      "outro_tipo": "Kit",
+      "outro_descricao": "Usado para criar documentos e assinaturas falsas.\n\n➡️ Origem: (Antecedente – Charlatão)",
+      "outro_item_magico": false,
+      "outro_sintonizado": false
+    }
+  ]
 }

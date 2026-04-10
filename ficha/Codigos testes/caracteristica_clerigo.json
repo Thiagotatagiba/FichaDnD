@@ -29,29 +29,47 @@
 
   "subclasses": {
     "Domínio da Vida": {
-      "2": "Discípulo da Vida",
-      "6": "Cura Abençoada",
-      "8": "Golpe Divino",
-      "17": "Cura Suprema"
+      "1": {
+        "add": ["Discípulo da Vida"]
+      },
+      "2": {
+        "replace": "Característica de Domínio",
+        "value": "Preservar Vida"
+      }
     },
+
     "Domínio da Guerra": {
-      "2": "Sacerdote de Guerra",
-      "6": "Golpe Guiado",
-      "8": "Golpe Divino",
-      "17": "Avatar da Batalha"
+      "1": {
+        "add": ["Sacerdote de Guerra"]
+      },
+      "2": {
+        "replace": "Característica de Domínio",
+        "value": "Golpe Guiado"
+      }
     },
+
     "Domínio da Enganação": {
-      "2": "Bênção do Trapaceiro",
-      "6": "Duplicidade",
-      "8": "Golpe Divino",
-      "17": "Duplicidade Aprimorada"
+      "1": {
+        "add": ["Bênção do Trapaceiro"]
+      },
+      "2": {
+        "replace": "Característica de Domínio",
+        "value": "Invocar Duplicidade"
+      }
     }
-  }
-,
+  },
+
   "descricoes": {
-  "Conjuração": "Você pode conjurar magias divinas.",
-  "Domínio da Guerra": "Foco em combate e força.",
-  "Sacerdote de Guerra": "Ataques bônus adicionais.",
-  "Discípulo da Vida": "Curas são mais eficazes."
-}
+    "Conjuração": "Você pode conjurar magias divinas baseadas em Sabedoria.",
+    "Domínio Divino": "Você escolhe um domínio que define seus poderes.",
+    "Domínio da Enganação": "Focado em ilusões e enganos. \n\n**MAGIAS DO DOMÍNIO DA ENGANAÇÃO**\n\nNV 1 enfeitiçar pessoa, disfarçar-se\nNV3 - reflexos, passos sem pegadas\nNV 5 - piscar, dissipar magia\nNV 7 - porta dimensional, metamorfose\nNV 9 - dominar pessoa, modificar memória",
+    "Domínio da Guerra": "Focado em combate e táticas militares.",
+    "Domínio da Vida": "Focado em cura e regeneração.",
+    "Discípulo da Vida": "Suas magias de cura são mais eficazes.",
+    "Preservar Vida": "Cura múltiplas criaturas com Canalizar Divindade.",
+    "Sacerdote de Guerra": "Você pode fazer ataques bônus adicionais.",
+    "Golpe Guiado": "Você ganha +10 em uma jogada de ataque.",
+    "Bênção do Trapaceiro": "Concede vantagem em testes de Furtividade.",
+    "Invocar Duplicidade": "Cria uma ilusão para confundir inimigos."
+  }
 }
