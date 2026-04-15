@@ -184,6 +184,12 @@
             flex: 1;
         }
 
+        #racaID {
+            border: none;
+            border-bottom: 1px solid #999;
+            background: none;
+        }
+
         .classe-separador {
             font-weight: bold;
             color: #6f3610;
@@ -210,7 +216,21 @@
             pointer-events: auto;
         }
 
-        .subclasse-container input {
+        .subraca-container {
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            top: calc(100% - 6px);
+            z-index: 2;
+            margin-top: 0;
+            padding: 0;
+            pointer-events: auto;
+        }
+
+        .subclasse-container input,
+        .subclasse-container select,
+        .subraca-container input,
+        .subraca-container select {
             width: 70%;
             border: 1px solid rgba(189, 166, 140, 0.95);
             border-top: none;
@@ -1426,18 +1446,22 @@
             flex-wrap: wrap;
         }
 
-        .talento-subtitulo input {
+        .talento-subtitulo input,
+        .talento-subtitulo span {
             flex: 1;
             min-width: 120px;
-            border: none;
-            border-bottom: 1px solid #8b4513;
-            background: none;
             color: inherit;
             font-weight: bold;
             font-family: 'MedievalSharp';
             font-size: 14px;
             padding: 0 2px;
             outline: none;
+        }
+
+        .talento-subtitulo input {
+            border: none;
+            border-bottom: 1px solid #8b4513;
+            background: none;
         }
 
         .talento-texto {
@@ -1677,6 +1701,253 @@
         .talento-modal-sem-descricao {
             color: #8a755d;
             font-style: italic;
+        }
+
+        :root {
+            --modal-bg: linear-gradient(180deg, #fff9ef 0%, #f6ead2 100%);
+            --modal-border: 2px solid #8b4513;
+            --modal-radius: 16px;
+            --modal-shadow: 0 24px 60px rgba(33, 19, 10, 0.32);
+            --modal-overlay-bg: rgba(33, 19, 10, 0.55);
+            --modal-header-border: 1px solid rgba(139, 69, 19, 0.25);
+            --modal-button-bg: #fffaf2;
+            --modal-button-hover: #f3e3c5;
+            --modal-text: #3f2712;
+            --modal-title: #6f3610;
+            --modal-subtitle: #8b5a2b;
+        }
+
+        .modal-overlay-base {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: var(--modal-overlay-bg);
+        }
+
+        .modal-base {
+            max-width: 100%;
+            max-height: min(82vh, 980px);
+            overflow: auto;
+            border: var(--modal-border);
+            border-radius: var(--modal-radius);
+            background: var(--modal-bg);
+            box-shadow: var(--modal-shadow);
+            color: var(--modal-text);
+            box-sizing: border-box;
+        }
+
+        .modal-header-base {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px 12px;
+            border-bottom: var(--modal-header-border);
+        }
+
+        .modal-body-base {
+            padding: 14px 18px 18px;
+            line-height: 1.5;
+        }
+
+        .modal-close-base {
+            border: 1px solid #8b4513;
+            border-radius: 10px;
+            background: var(--modal-button-bg);
+            color: var(--modal-title);
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+
+        .modal-close-base:hover,
+        .modal-close-base:focus-visible {
+            background: var(--modal-button-hover);
+            outline: none;
+        }
+
+        @media (max-width: 640px) {
+            .modal-overlay-base {
+                padding: 12px;
+            }
+
+            .modal-base {
+                max-height: min(90vh, 980px);
+            }
+
+            .modal-header-base {
+                padding: 14px 14px 10px;
+            }
+
+            .modal-body-base {
+                padding: 12px 14px 14px;
+            }
+        }
+
+        .config-modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(33, 19, 10, 0.55);
+            z-index: 3050;
+        }
+
+        .config-modal-overlay.ativo {
+            display: flex;
+        }
+
+        .config-modal {
+            width: min(100%, 720px);
+            max-height: min(82vh, 760px);
+            overflow: auto;
+            border: 2px solid #8b4513;
+            border-radius: 16px;
+            background: linear-gradient(180deg, #fff9ef 0%, #f6ead2 100%);
+            box-shadow: 0 24px 60px rgba(33, 19, 10, 0.32);
+            color: #3f2712;
+        }
+
+        .config-modal-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px 12px;
+            border-bottom: 1px solid rgba(139, 69, 19, 0.25);
+        }
+
+        .config-modal-titulo {
+            font-size: 22px;
+            line-height: 1.1;
+            color: #6f3610;
+        }
+
+        .config-modal-subtitulo {
+            margin-top: 4px;
+            color: #8b5a2b;
+            font-size: 14px;
+        }
+
+        .config-modal-fechar,
+        .config-bloco button,
+        #configBtn {
+            border: 1px solid #8b4513;
+            border-radius: 10px;
+            background: #fffaf2;
+            color: #6f3610;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+
+        .config-modal-fechar:hover,
+        .config-modal-fechar:focus-visible,
+        .config-bloco button:hover,
+        .config-bloco button:focus-visible,
+        #configBtn:hover,
+        #configBtn:focus-visible {
+            background: #f3e3c5;
+            outline: none;
+        }
+
+        .config-modal-corpo {
+            padding: 14px 18px 18px;
+            line-height: 1.5;
+        }
+
+        .config-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .config-tab {
+            border: 1px solid rgba(139, 69, 19, 0.28);
+            border-radius: 999px;
+            background: rgba(255, 250, 242, 0.92);
+            color: #7a4c1f;
+            font-family: 'MedievalSharp';
+            font-size: 13px;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+
+        .config-tab.active {
+            background: linear-gradient(180deg, #8b4513 0%, #6f3610 100%);
+            color: #fff8ef;
+            border-color: #6f3610;
+            box-shadow: 0 6px 16px rgba(111, 54, 16, 0.25);
+        }
+
+        .config-conteudo {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .config-aba {
+            display: none;
+        }
+
+        .config-aba.ativa {
+            display: block;
+        }
+
+        .config-bloco {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px;
+            border: 1px solid rgba(139, 69, 19, 0.16);
+            border-radius: 14px;
+            background: rgba(255, 250, 242, 0.78);
+        }
+
+        .config-bloco h3 {
+            margin: 0;
+            color: #6f3610;
+            font-size: 18px;
+        }
+
+        .config-linha {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .config-linha label {
+            color: #6f3610;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .config-linha input {
+            width: 100%;
+            border: 1px solid #bda68c;
+            border-radius: 8px;
+            padding: 10px 12px;
+            background: #fffaf2;
+            color: #3f2712;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .config-aba-placeholder {
+            padding: 14px 16px;
+            border: 1px dashed rgba(139, 69, 19, 0.28);
+            border-radius: 14px;
+            background: rgba(255, 250, 242, 0.62);
+            color: #7b664f;
         }
 
         /* ===== Aba de combate ===== */
@@ -2544,8 +2815,8 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 18px;
-            background: rgba(28, 18, 8, 0.6);
+            padding: 24px;
+            background: var(--modal-overlay-bg);
             z-index: 2100;
         }
 
@@ -2557,10 +2828,10 @@
             width: min(760px, 100%);
             max-height: min(92vh, 980px);
             overflow: auto;
-            border: 3px solid #8b4513;
-            border-radius: 16px;
-            background: linear-gradient(145deg, #f6eee0, #ead9bd);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+            border: var(--modal-border);
+            border-radius: var(--modal-radius);
+            background: var(--modal-bg);
+            box-shadow: var(--modal-shadow);
             padding: 18px;
             box-sizing: border-box;
         }
@@ -2570,7 +2841,9 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            margin-bottom: 14px;
+            margin: -18px -18px 14px;
+            padding: 16px 18px 12px;
+            border-bottom: var(--modal-header-border);
         }
 
         .magia-modal-topo-info {
@@ -2625,10 +2898,10 @@
         .magia-modal-botao {
             min-height: 36px;
             padding: 8px 12px;
-            border: 2px solid #8b4513;
+            border: 1px solid #8b4513;
             border-radius: 10px;
-            background: #efe1c0;
-            color: #6f3610;
+            background: var(--modal-button-bg);
+            color: var(--modal-title);
             font-family: 'MedievalSharp';
             font-size: 13px;
             cursor: pointer;
@@ -3107,8 +3380,8 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 16px;
-            background: rgba(28, 18, 8, 0.55);
+            padding: 24px;
+            background: var(--modal-overlay-bg);
             z-index: 2000;
         }
 
@@ -3118,10 +3391,10 @@
 
         .ataque-modal {
             width: min(420px, 100%);
-            border: 3px solid #3b2f1b;
-            border-radius: 16px;
-            background: linear-gradient(145deg, #f6eee0, #ead9bd);
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32);
+            border: var(--modal-border);
+            border-radius: var(--modal-radius);
+            background: var(--modal-bg);
+            box-shadow: var(--modal-shadow);
             padding: 18px;
             box-sizing: border-box;
         }
@@ -3355,6 +3628,55 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+        }
+
+        .equipados-slot-com-emoji {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .equipados-mao-emoji {
+            width: 32px;
+            height: 32px;
+            flex: 0 0 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #bda68c;
+            border-radius: 10px;
+            background: #fffaf2;
+            color: #6f3610;
+            font-size: 18px;
+            line-height: 1;
+            cursor: default;
+            padding: 0;
+        }
+
+        .equipados-mao-emoji.clicavel {
+            cursor: pointer;
+            border-color: #8b4513;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.08);
+        }
+
+        .equipados-mao-emoji.clicavel:hover,
+        .equipados-mao-emoji.clicavel:focus-visible {
+            background: #f3e3c5;
+            outline: none;
+        }
+
+        .equipados-mao-emoji.secundaria {
+            cursor: default;
+        }
+
+        .equipados-slot-com-emoji select {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .equipados-armas-item.secundaria-bloqueada {
+            opacity: 0.55;
         }
 
         .equipados-municao-linha {
@@ -4521,7 +4843,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: var(--modal-overlay-bg);
             display: none;
             align-items: center;
             justify-content: center;
@@ -4530,23 +4852,24 @@
 
         /* Box LevelUP */
         .levelup-box {
-            background: #1e1e1e;
-            border: 2px solid #c8a95e;
-            border-radius: 12px;
+            background: var(--modal-bg);
+            border: var(--modal-border);
+            border-radius: var(--modal-radius);
             padding: 20px;
             width: 320px;
             text-align: center;
-            color: #f5e6c8;
-            box-shadow: 0 0 20px rgba(200, 169, 94, 0.5);
+            color: var(--modal-text);
+            box-shadow: var(--modal-shadow);
         }
 
         .levelup-box h2 {
             margin-bottom: 10px;
+            color: var(--modal-title);
         }
 
         .frase-levelup {
             font-style: italic;
-            color: #ffd700;
+            color: #8b5a2b;
             margin-bottom: 10px;
         }
 
@@ -4642,8 +4965,8 @@
 </head>
 
 <body>
-    <div id="modalAtaqueOverlay" class="ataque-modal-overlay oculto" aria-hidden="true">
-        <div class="ataque-modal" role="dialog" aria-modal="true" aria-labelledby="modalAtaqueTitulo">
+    <div id="modalAtaqueOverlay" class="ataque-modal-overlay modal-overlay-base oculto" aria-hidden="true">
+        <div class="ataque-modal modal-base" role="dialog" aria-modal="true" aria-labelledby="modalAtaqueTitulo">
             <div id="modalAtaqueTitulo" class="ataque-modal-titulo">Ataque com arma</div>
             <div id="modalAtaqueSubtitulo" class="ataque-modal-subtitulo">Digite o dado tirado.
             </div>
@@ -4685,8 +5008,8 @@
         </div>
     </div>
 
-    <div id="levelUpModal" class="levelup-overlay">
-        <div class="levelup-box">
+    <div id="levelUpModal" class="levelup-overlay modal-overlay-base">
+        <div class="levelup-box modal-base">
             <h2 id="levelUpTitulo">🎉 LEVEL UP!</h2>
 
             <p id="levelUpFrase" class="frase-levelup"></p>
@@ -4708,12 +5031,71 @@
         </div>
     </div>
 
+    <div id="configModalOverlay" class="config-modal-overlay modal-overlay-base" aria-hidden="true">
+        <div class="config-modal modal-base" role="dialog" aria-modal="true" aria-labelledby="configModalTitulo">
+            <div class="config-modal-header modal-header-base">
+                <div>
+                    <div id="configModalTitulo" class="config-modal-titulo">⚙️ Configurações</div>
+                    <div class="config-modal-subtitulo">Personalize sua ficha</div>
+                </div>
+                <button id="configFecharBtn" class="config-modal-fechar modal-close-base" type="button">Fechar</button>
+            </div>
+
+            <div class="config-modal-corpo modal-body-base">
+                <div class="config-tabs">
+                    <button class="config-tab active" data-tab="customizacao" type="button">🧩 Customização</button>
+                    <button class="config-tab" data-tab="automacao" type="button">⚙️ Automação</button>
+                    <button class="config-tab" data-tab="combate" type="button">🎲 Combate</button>
+                </div>
+
+                <div class="config-conteudo">
+                    <div class="config-aba ativa" id="aba-customizacao">
+                        <div class="config-bloco">
+                            <h3>Customização</h3>
+
+                            <div class="config-linha">
+                                <label for="customClasse">Classe Customizada</label>
+                                <input type="text" id="customClasse">
+                            </div>
+
+                            <div class="config-linha">
+                                <label for="customSubclasse">Subclasse Customizada</label>
+                                <input type="text" id="customSubclasse">
+                            </div>
+
+                            <div class="config-linha">
+                                <label for="customRaca">Raça Customizada</label>
+                                <input type="text" id="customRaca">
+                            </div>
+
+                            <div class="config-linha">
+                                <label for="customSubraca">Subraça Customizada</label>
+                                <input type="text" id="customSubraca">
+                            </div>
+
+                            <button id="salvarCustomizacao" type="button">Salvar</button>
+                        </div>
+                    </div>
+
+                    <div class="config-aba" id="aba-automacao">
+                        <div class="config-aba-placeholder">Espaço reservado para automações futuras da ficha.</div>
+                    </div>
+
+                    <div class="config-aba" id="aba-combate">
+                        <div class="config-aba-placeholder">Espaço reservado para opções de combate e rolagens.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="ficha">
 
         <!-- BOTÕES -->
         <div class="acoes">
             <button type="button" onclick="salvarFicha()">💾 Salvar</button>
-            <button type="button" onclick="importarFicha()">Importar</button>
+            <button type="button" onclick="importarFicha()">📤 Importar</button>
+            <button id="configBtn" type="button">⚙️</button>
             <input type="file" id="fileInput" hidden>
         </div>
 
@@ -4775,7 +5157,23 @@
             </div>
             <div class="campo">
                 <div class="campo-titulo">Raça</div>
-                <input id="racaID" placeholder="Raça">
+                <select id="racaID" aria-label="Raça">
+                    <option value="">Selecione uma raça</option>
+                    <option value="Humano">Humano</option>
+                    <option value="Elfo">Elfo</option>
+                    <option value="Anão">Anão</option>
+                    <option value="Halfling">Halfling</option>
+                    <option value="Tiefling">Tiefling</option>
+                    <option value="Draconato">Draconato</option>
+                    <option value="Gnomo">Gnomo</option>
+                    <option value="Meio-Orc">Meio-Orc</option>
+                    <option value="Meio-Elfo">Meio-Elfo</option>
+                </select>
+                <div id="containerSubraca" class="subraca-container hidden">
+                    <select id="subraca" aria-label="Sub-raça">
+                        <option value="">Sub-raça</option>
+                    </select>
+                </div>
             </div>
             <div class="campo">
                 <div class="campo-titulo">Antecedente</div><input id="antecedenteID"
@@ -5375,8 +5773,7 @@
 
                             <div class="talento-secao hidden" id="talentoSubclasseSecao"
                                 data-talento-categoria="arquetipo">
-                                <div class="talento-subtitulo">Subclasse: <input id="talentoArquetipoResumo"
-                                        placeholder="Subclasse"></div>
+                                <div class="talento-subtitulo">Subclasse: <span id="talentoArquetipoResumo"></span></div>
                                 <textarea id="talentoArquetipo" class="talento-texto talento-storage"
                                     aria-label="Características de arquétipo"></textarea>
                                 <div id="talentoArquetipoLista" class="talento-lista" aria-live="polite"></div>
@@ -5434,7 +5831,13 @@
                                                     class="equipados-grid-cabecalho-centro equipados-grid-cabecalho-vazio">
                                                 </div>
 
-                                                <select id="arma1Nome" aria-label="Arma principal equipada"></select>
+                                                <div class="equipados-slot-com-emoji">
+                                                    <button type="button" id="arma1Empunhadura"
+                                                        class="equipados-mao-emoji" aria-label="Estado da mão principal"
+                                                        title="Mão principal">🤚</button>
+                                                    <select id="arma1Nome"
+                                                        aria-label="Arma principal equipada"></select>
+                                                </div>
                                                 <select id="arma1Ataque"
                                                     aria-label="Atributo de ataque da arma principal">
                                                     <option value="for">FOR</option>
@@ -5457,7 +5860,14 @@
                                         </div>
                                         <div class="equipados-armas-item">
                                             <div class="equipados-grid armas">
-                                                <select id="arma2Nome" aria-label="Arma secundária equipada"></select>
+                                                <div class="equipados-slot-com-emoji">
+                                                    <button type="button" id="arma2Empunhadura"
+                                                        class="equipados-mao-emoji secundaria"
+                                                        aria-label="Estado da mão secundária"
+                                                        title="Mão secundária" tabindex="-1">🤚</button>
+                                                    <select id="arma2Nome"
+                                                        aria-label="Arma secundária equipada"></select>
+                                                </div>
                                                 <select id="arma2Ataque"
                                                     aria-label="Atributo de ataque da arma secundária">
 
@@ -6858,67 +7268,504 @@
         };
 
         const SUBCLASSES = {
-            "Arcanista": { nome: "Especialização de Artífice", nivel: 3 },
-            "Bárbaro": { nome: "Caminho Primitivo", nivel: 3 },
-            "Bardo": { nome: "Colégio de Bardo", nivel: 3 },
-            "Bruxo": { nome: "Patrono Transmundano", nivel: 1 },
-            "Clérigo": { nome: "Domínio Divino", nivel: 1 },
-            "Druida": { nome: "Círculo Druídico", nivel: 2 },
-            "Feiticeiro": { nome: "Origem Feiticeira", nivel: 1 },
-            "Guerreiro": { nome: "Arquétipo Marcial", nivel: 3 },
-            "Ladino": { nome: "Arquétipo Ladino", nivel: 3 },
-            "Mago": { nome: "Tradição Arcana", nivel: 2 },
-            "Monge": { nome: "Tradição Monástica", nivel: 3 },
-            "Paladino": { nome: "Juramento Sagrado", nivel: 3 },
-            "Patrulheiro": { nome: "Arquétipo de Patrulheiro", nivel: 3 }
+            barbaro: [
+                "Caminho do Berserker",
+                "Caminho do Totem Guerreiro",
+                "Caminho do Arauto da Tempestade",
+                "Caminho do Zelote",
+                "Caminho do Guardião Ancestral",
+                "Caminho da Besta",
+                "Caminho da Magia Selvagem"
+            ],
+            bardo: [
+                "Colégio do Conhecimento",
+                "Colégio da Bravura",
+                "Colégio do Glamour",
+                "Colégio das Espadas",
+                "Colégio dos Sussurros",
+                "Colégio da Eloquência",
+                "Colégio da Criação"
+            ],
+            clerigo: [
+                "Domínio da Vida",
+                "Domínio da Luz",
+                "Domínio da Natureza",
+                "Domínio da Tempestade",
+                "Domínio da Guerra",
+                "Domínio do Conhecimento",
+                "Domínio da Trapaça",
+                "Domínio da Forja",
+                "Domínio da Morte",
+                "Domínio da Ordem",
+                "Domínio da Paz",
+                "Domínio da Crepúsculo"
+            ],
+            druida: [
+                "Círculo da Terra",
+                "Círculo da Lua",
+                "Círculo dos Sonhos",
+                "Círculo do Pastor",
+                "Círculo dos Esporos",
+                "Círculo das Estrelas",
+                "Círculo do Fogo Selvagem"
+            ],
+            guerreiro: [
+                "Campeão",
+                "Mestre de Batalha",
+                "Cavaleiro Arcano",
+                "Cavaleiro",
+                "Samurai",
+                "Cavaleiro Rúnico",
+                "Psi Warrior"
+            ],
+            monge: [
+                "Caminho da Mão Aberta",
+                "Caminho das Sombras",
+                "Caminho dos Quatro Elementos",
+                "Caminho da Alma Solar",
+                "Caminho do Mestre Bêbado",
+                "Caminho do Kensei",
+                "Caminho da Misericórdia",
+                "Caminho do Eu Astral"
+            ],
+            paladino: [
+                "Juramento da Devoção",
+                "Juramento dos Antigos",
+                "Juramento da Vingança",
+                "Juramento da Conquista",
+                "Juramento da Redenção",
+                "Juramento da Glória",
+                "Juramento da Coroa",
+                "Juramento dos Vigias"
+            ],
+            patrulheiro: [
+                "Caçador",
+                "Mestre das Feras",
+                "Andarilho do Horizonte",
+                "Matador de Monstros",
+                "Caçador das Trevas",
+                "Guardião do Enxame",
+                "Andarilho Feérico"
+            ],
+            ladino: [
+                "Ladrão",
+                "Assassino",
+                "Trapaceiro Arcano",
+                "Inquisitivo",
+                "Mestre",
+                "Batedor",
+                "Fantasma",
+                "Espadachim",
+                "Soulknife"
+            ],
+            feiticeiro: [
+                "Linhagem Dracônica",
+                "Magia Selvagem",
+                "Alma Divina",
+                "Magia das Sombras",
+                "Mente Aberrante",
+                "Alma Mecânica",
+                "Tempestade"
+            ],
+            bruxo: [
+                "O Arquifada",
+                "O Demônio",
+                "O Grande Antigo",
+                "O Imortal",
+                "O Celestial",
+                "A Lâmina Maldita",
+                "O Gênio",
+                "O Morto-Vivo",
+                "O Indizível"
+            ],
+            mago: [
+                "Abjuração",
+                "Adivinhação",
+                "Encantamento",
+                "Evocação",
+                "Ilusão",
+                "Necromancia",
+                "Transmutação",
+                "Conjuração",
+                "Lâmina Cantante",
+                "Ordem dos Escribas",
+                "Magia de Guerra",
+                "Graviturgy",
+                "Chronurgy"
+            ]
         };
 
-        function obterRegraSubclasse() {
-            const campoClasse = document.getElementById('classeNomeID');
-            if (!campoClasse) return null;
+        const REGRAS_SUBCLASSE = {
+            barbaro: { nome: "Caminho Primitivo", nivel: 3 },
+            bardo: { nome: "Colégio de Bardo", nivel: 3 },
+            bruxo: { nome: "Patrono Transmundano", nivel: 1 },
+            clerigo: { nome: "Domínio Divino", nivel: 1 },
+            druida: { nome: "Círculo Druídico", nivel: 2 },
+            feiticeiro: { nome: "Origem Feiticeira", nivel: 1 },
+            guerreiro: { nome: "Arquétipo Marcial", nivel: 3 },
+            ladino: { nome: "Arquétipo Ladino", nivel: 3 },
+            mago: { nome: "Tradição Arcana", nivel: 2 },
+            monge: { nome: "Tradição Monástica", nivel: 3 },
+            paladino: { nome: "Juramento Sagrado", nivel: 3 },
+            patrulheiro: { nome: "Arquétipo de Patrulheiro", nivel: 3 }
+        };
 
-            const textoClasse = campoClasse.options?.[campoClasse.selectedIndex]?.text?.trim() || "";
-            const valorClasse = String(campoClasse.value || "").trim().toLowerCase();
-            const regrasPorValor = {
-                arcanista: SUBCLASSES["Arcanista"],
-                barbaro: SUBCLASSES["Bárbaro"],
-                bardo: SUBCLASSES["Bardo"],
-                bruxo: SUBCLASSES["Bruxo"],
-                clerigo: SUBCLASSES["Clérigo"],
-                druida: SUBCLASSES["Druida"],
-                feiticeiro: SUBCLASSES["Feiticeiro"],
-                guerreiro: SUBCLASSES["Guerreiro"],
-                ladino: SUBCLASSES["Ladino"],
-                mago: SUBCLASSES["Mago"],
-                monge: SUBCLASSES["Monge"],
-                paladino: SUBCLASSES["Paladino"],
-                patrulheiro: SUBCLASSES["Patrulheiro"]
-            };
+        const SUBRACAS = {
+            humano: null,
+            elfo: ["Alto Elfo", "Elfo da Floresta", "Drow"],
+            anao: ["Colina", "Montanha"],
+            halfling: ["Pés-Leves", "Robusto"],
+            tiefling: null,
+            draconato: [
+                "Negro (Ácido)",
+                "Azul (Elétrico)",
+                "Verde (Veneno)",
+                "Vermelho (Fogo)",
+                "Branco (Frio)"
+            ],
+            gnomo: ["Floresta", "Rochas"],
+            meio_orc: null,
+            meio_elfo: null
+        };
 
-            return SUBCLASSES[textoClasse] || regrasPorValor[valorClasse] || null;
+        function normalizarChaveSubclasseClasse(valor) {
+            return String(valor || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim();
         }
 
-        function atualizarSubclasse() {
+        function obterCampoSubclasse() {
+            return document.getElementById('subclasse');
+        }
+
+        function obterCampoRaca() {
+            return document.getElementById('racaID');
+        }
+
+        function normalizarConfigFicha(config) {
+            const custom = config && typeof config === "object" && config.custom && typeof config.custom === "object"
+                ? config.custom
+                : {};
+
+            return {
+                custom: {
+                    classe: String(custom.classe || "").trim(),
+                    subclasse: String(custom.subclasse || "").trim(),
+                    raca: String(custom.raca || "").trim(),
+                    subraca: String(custom.subraca || "").trim()
+                }
+            };
+        }
+
+        function obterCustomizacaoFicha(chave) {
+            return String(configFicha?.custom?.[chave] || "").trim();
+        }
+
+        function normalizarChaveSubraca(valor) {
+            const texto = String(valor || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .trim();
+
+            const aliases = {
+                "anao": "anao",
+                "anão": "anao",
+                "elfo": "elfo",
+                "draconato": "draconato",
+                "gnomo": "gnomo",
+                "halfling": "halfling",
+                "humano": "humano",
+                "meio elfo": "meio_elfo",
+                "meio-elfo": "meio_elfo",
+                "meio_elfo": "meio_elfo",
+                "meio orc": "meio_orc",
+                "meio-orc": "meio_orc",
+                "meio_orc": "meio_orc",
+                "tiefling": "tiefling"
+            };
+
+            return aliases[texto] || texto.replace(/[\s-]+/g, "_");
+        }
+
+        function garantirCampoSubclasseComoSelect() {
+            const campoAtual = obterCampoSubclasse();
+            if (!campoAtual || campoAtual.tagName === 'SELECT') return campoAtual;
+
+            const select = document.createElement('select');
+            select.id = campoAtual.id;
+            select.className = campoAtual.className;
+            select.setAttribute('aria-label', 'Subclasse');
+            select.setAttribute('placeholder', campoAtual.getAttribute('placeholder') || 'Selecione a subclasse');
+            select.value = campoAtual.value || "";
+
+            while (campoAtual.attributes.length > 0) {
+                const atributo = campoAtual.attributes[0];
+                if (!['type', 'value', 'placeholder'].includes(atributo.name)) {
+                    select.setAttribute(atributo.name, atributo.value);
+                }
+                campoAtual.removeAttribute(atributo.name);
+            }
+
+            campoAtual.replaceWith(select);
+            return select;
+        }
+
+        function obterRegraSubclasse(classeSelecionada) {
+            const campoClasse = document.getElementById('classeNomeID');
+            const valorDireto = normalizarChaveSubclasseClasse(classeSelecionada);
+            const valorSelect = normalizarChaveSubclasseClasse(campoClasse?.value);
+            const textoSelect = normalizarChaveSubclasseClasse(campoClasse?.options?.[campoClasse.selectedIndex]?.text);
+            return REGRAS_SUBCLASSE[valorDireto] || REGRAS_SUBCLASSE[valorSelect] || REGRAS_SUBCLASSE[textoSelect] || null;
+        }
+
+        function adicionarOpcaoSubclasse(select, valor, selecionada = false) {
+            if (!select || valor === undefined || valor === null) return;
+
+            const opcao = document.createElement('option');
+            opcao.value = valor;
+            opcao.textContent = valor;
+            if (selecionada) opcao.selected = true;
+            select.appendChild(opcao);
+        }
+
+        function obterCampoSubraca() {
+            return document.getElementById('subraca');
+        }
+
+        function garantirOpcaoSelect(select, valor, texto = valor) {
+            if (!select || !valor) return;
+
+            const jaExiste = Array.from(select.options).some((opcao) => opcao.value === valor);
+            if (jaExiste) return;
+
+            const opcao = document.createElement('option');
+            opcao.value = valor;
+            opcao.textContent = texto;
+            select.appendChild(opcao);
+        }
+
+        function removerOpcaoCustomizada(select, escopo) {
+            if (!select) return;
+            select.querySelectorAll(`option[data-config-custom="${escopo}"]`).forEach(opcao => opcao.remove());
+        }
+
+        function garantirOpcaoCustomizada(select, escopo, valor, rotulo) {
+            if (!select || !valor) return;
+
+            removerOpcaoCustomizada(select, escopo);
+            const opcao = document.createElement('option');
+            opcao.value = valor;
+            opcao.textContent = rotulo || valor;
+            opcao.dataset.configCustom = escopo;
+            select.appendChild(opcao);
+        }
+
+        function adicionarOpcaoSubraca(select, valor, selecionada = false) {
+            if (!select || valor === undefined || valor === null) return;
+
+            const opcao = document.createElement('option');
+            opcao.value = valor;
+            opcao.textContent = valor;
+            if (selecionada) opcao.selected = true;
+            select.appendChild(opcao);
+        }
+
+        function atualizarSubclasses(classeSelecionada) {
             const container = document.getElementById('containerSubclasse');
-            const input = document.getElementById('subclasse');
+            const select = garantirCampoSubclasseComoSelect();
             const nivelCampo = document.getElementById('classeNivelID') || document.getElementById('nivel');
 
-            if (!container || !input || !nivelCampo) return;
+            if (!container || !select || !nivelCampo) return;
 
+            const classeNormalizada = normalizarChaveSubclasseClasse(classeSelecionada || document.getElementById('classeNomeID')?.value);
+            const subclasses = Array.isArray(SUBCLASSES[classeNormalizada]) ? SUBCLASSES[classeNormalizada] : [];
+            const regra = obterRegraSubclasse(classeNormalizada);
             const nivel = parseInt(nivelCampo.value, 10) || 1;
-            const regra = obterRegraSubclasse();
+            const possuiValorPendente = Object.prototype.hasOwnProperty.call(select.dataset, 'pendingValue');
+            const valorAtual = String(select.dataset.pendingValue ?? select.value ?? "").trim();
+            const customSubclasse = obterCustomizacaoFicha('subclasse');
+            delete select.dataset.pendingValue;
 
-            if (regra && nivel >= regra.nivel) {
-                container.classList.remove('hidden');
-                input.placeholder = regra.nome;
+            select.innerHTML = "";
+            adicionarOpcaoSubclasse(select, "", true);
+            select.options[0].textContent = "Selecione a subclasse";
+
+            const deveExibir = (!!classeNormalizada && subclasses.length > 0 && (!regra || nivel >= regra.nivel)) || !!customSubclasse;
+            if (!deveExibir) {
+                container.classList.add('hidden');
+                if (possuiValorPendente && valorAtual) {
+                    adicionarOpcaoSubclasse(select, valorAtual, true);
+                } else {
+                    select.value = "";
+                }
                 sincronizarResumoCaracteristicas(true);
                 return;
             }
 
-            container.classList.add('hidden');
-            input.placeholder = "Subclasse";
-            input.value = "";
+            subclasses.forEach((subclasse) => adicionarOpcaoSubclasse(select, subclasse));
+
+            if (customSubclasse && !subclasses.includes(customSubclasse)) {
+                adicionarOpcaoSubclasse(select, customSubclasse);
+            }
+
+            // Compatibilidade com saves antigos/customizados: preserva o valor salvo se ele não estiver na lista.
+            if (possuiValorPendente && valorAtual && !subclasses.includes(valorAtual)) {
+                adicionarOpcaoSubclasse(select, valorAtual);
+            }
+
+            select.value = valorAtual && Array.from(select.options).some((opcao) => opcao.value === valorAtual)
+                ? valorAtual
+                : (customSubclasse && Array.from(select.options).some((opcao) => opcao.value === customSubclasse) ? customSubclasse : "");
+            container.classList.remove('hidden');
             sincronizarResumoCaracteristicas(true);
+        }
+
+        function atualizarSubclasse() {
+            atualizarSubclasses(document.getElementById('classeNomeID')?.value);
+        }
+
+        function atualizarSubracas(racaSelecionada) {
+            const container = document.getElementById('containerSubraca');
+            const select = obterCampoSubraca();
+
+            if (!container || !select) return;
+
+            const racaNormalizada = normalizarChaveSubraca(racaSelecionada || document.getElementById('racaID')?.value);
+            const subracas = Array.isArray(SUBRACAS[racaNormalizada]) ? SUBRACAS[racaNormalizada] : [];
+            const possuiValorPendente = Object.prototype.hasOwnProperty.call(select.dataset, 'pendingValue');
+            const valorAtual = String(select.dataset.pendingValue ?? select.value ?? "").trim();
+            const customSubraca = obterCustomizacaoFicha('subraca');
+            delete select.dataset.pendingValue;
+
+            select.innerHTML = "";
+            adicionarOpcaoSubraca(select, "", true);
+            select.options[0].textContent = "Sub-raça";
+
+            const deveExibir = (!!racaNormalizada && subracas.length > 0) || !!customSubraca;
+            if (!deveExibir) {
+                container.classList.add('hidden');
+                if (possuiValorPendente && valorAtual) {
+                    adicionarOpcaoSubraca(select, valorAtual, true);
+                } else {
+                    select.value = "";
+                }
+                sincronizarResumoCaracteristicas(true);
+                return;
+            }
+
+            subracas.forEach((subraca) => adicionarOpcaoSubraca(select, subraca));
+
+            if (customSubraca && !subracas.includes(customSubraca)) {
+                adicionarOpcaoSubraca(select, customSubraca);
+            }
+
+            // Compatibilidade com saves antigos/customizados: preserva o valor salvo ao recarregar.
+            if (possuiValorPendente && valorAtual && !subracas.includes(valorAtual)) {
+                adicionarOpcaoSubraca(select, valorAtual);
+            }
+
+            select.value = valorAtual && Array.from(select.options).some((opcao) => opcao.value === valorAtual)
+                ? valorAtual
+                : (customSubraca && Array.from(select.options).some((opcao) => opcao.value === customSubraca) ? customSubraca : "");
+            container.classList.remove('hidden');
+            sincronizarResumoCaracteristicas(true);
+        }
+
+        function obterResumoRacaCompleto() {
+            const raca = String(obterCampoRaca()?.value || "").trim();
+            const containerSubraca = document.getElementById('containerSubraca');
+            const subracaDisponivel = !!containerSubraca && !containerSubraca.classList.contains('hidden');
+            const subraca = String(document.getElementById('subraca')?.value || "").trim();
+
+            if (raca && subracaDisponivel && subraca) {
+                return `${raca} - ${subraca}`;
+            }
+
+            return raca;
+        }
+
+        function aplicarConfigCustomizacaoNaFicha(forcarSelecao = false) {
+            const campoClasse = document.getElementById('classeNomeID');
+            const campoRaca = obterCampoRaca();
+            const customClasse = obterCustomizacaoFicha('classe');
+            const customRaca = obterCustomizacaoFicha('raca');
+            const customSubclasse = obterCustomizacaoFicha('subclasse');
+            const customSubraca = obterCustomizacaoFicha('subraca');
+
+            if (campoClasse) {
+                removerOpcaoCustomizada(campoClasse, 'classe');
+                if (customClasse) {
+                    garantirOpcaoCustomizada(campoClasse, 'classe', customClasse, `${customClasse} (Custom)`);
+                    if (forcarSelecao || !campoClasse.value) campoClasse.value = customClasse;
+                }
+            }
+
+            if (campoRaca) {
+                removerOpcaoCustomizada(campoRaca, 'raca');
+                if (customRaca) {
+                    garantirOpcaoCustomizada(campoRaca, 'raca', customRaca, `${customRaca} (Custom)`);
+                    if (forcarSelecao || !campoRaca.value) campoRaca.value = customRaca;
+                }
+            }
+
+            atualizarSubclasses(campoClasse?.value);
+            if (customSubclasse && forcarSelecao) {
+                const campoSubclasse = garantirCampoSubclasseComoSelect();
+                if (campoSubclasse) campoSubclasse.value = customSubclasse;
+            }
+
+            atualizarSubracas(campoRaca?.value);
+            if (customSubraca && forcarSelecao) {
+                const campoSubraca = obterCampoSubraca();
+                if (campoSubraca) campoSubraca.value = customSubraca;
+            }
+
+            sincronizarClasseNivel();
+            sincronizarResumoCaracteristicas(true);
+        }
+
+        function preencherFormularioConfigFicha() {
+            document.getElementById('customClasse').value = obterCustomizacaoFicha('classe');
+            document.getElementById('customSubclasse').value = obterCustomizacaoFicha('subclasse');
+            document.getElementById('customRaca').value = obterCustomizacaoFicha('raca');
+            document.getElementById('customSubraca').value = obterCustomizacaoFicha('subraca');
+        }
+
+        function salvarCustomizacaoFicha() {
+            configFicha.custom.classe = String(document.getElementById('customClasse')?.value || "").trim();
+            configFicha.custom.subclasse = String(document.getElementById('customSubclasse')?.value || "").trim();
+            configFicha.custom.raca = String(document.getElementById('customRaca')?.value || "").trim();
+            configFicha.custom.subraca = String(document.getElementById('customSubraca')?.value || "").trim();
+
+            aplicarConfigCustomizacaoNaFicha(true);
+        }
+
+        function abrirConfigModal() {
+            preencherFormularioConfigFicha();
+            const overlay = document.getElementById('configModalOverlay');
+            if (!overlay) return;
+            overlay.classList.add('ativo');
+            overlay.setAttribute('aria-hidden', 'false');
+        }
+
+        function fecharConfigModal() {
+            const overlay = document.getElementById('configModalOverlay');
+            if (!overlay) return;
+            overlay.classList.remove('ativo');
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+
+        function ativarAbaConfig(tab) {
+            const chave = String(tab || 'customizacao').trim().toLowerCase();
+            document.querySelectorAll('.config-tab').forEach(botao => {
+                botao.classList.toggle('active', botao.dataset.tab === chave);
+            });
+            document.querySelectorAll('.config-aba').forEach(aba => {
+                aba.classList.toggle('ativa', aba.id === `aba-${chave}`);
+            });
         }
 
         function atualizarDadoVida() {
@@ -8319,6 +9166,237 @@ Bônus de Proficiência: +${bonusProf}
             });
         }
 
+        function atualizarBloqueioMaosEquipamento() {
+            const armas = coletarArmas();
+            const checkboxesArma = Array.from(document.querySelectorAll('#lista-armas-equipamento input'));
+            const checkboxesEscudo = Array.from(document.querySelectorAll('#lista-escudos-equipamento input'));
+            const principalValor = document.getElementById('arma1Nome')?.value || '';
+            const principalIndice = parseInt(principalValor, 10);
+            const itemPrincipal = estadoCombate.maoPrincipal.item;
+            const permitidosSecundaria = podeEquiparNaSecundaria(itemPrincipal, estadoCombate.maoPrincipal.modo);
+            const maosOcupadas = estadoCombate.maoPrincipal.modo === 'duas_maos'
+                ? 2
+                : (estadoCombate.maoPrincipal.item ? 1 : 0) + (estadoCombate.maoSecundaria.item ? 1 : 0);
+            const bloquearNovasSelecoes = maosOcupadas >= 2;
+
+            checkboxesArma.forEach(input => {
+                const indice = parseInt(input.dataset.index, 10);
+                const itemArma = Number.isInteger(indice) ? armas[indice] : null;
+                const tipoSecundario = obterTipoItemSecundarioArma(itemArma);
+                const ePrincipal = Number.isInteger(principalIndice) && indice === principalIndice;
+                const permitidoNaSecundaria = permitidosSecundaria.includes('qualquer') || permitidosSecundaria.includes(tipoSecundario);
+                const desabilitarPorRegra = !!itemPrincipal && !ePrincipal && !permitidoNaSecundaria;
+                input.disabled = desabilitarPorRegra || (bloquearNovasSelecoes && !input.checked);
+            });
+
+            checkboxesEscudo.forEach(input => {
+                const permitidoNaSecundaria = permitidosSecundaria.includes('qualquer') || permitidosSecundaria.includes('escudo');
+                const desabilitarPorRegra = !!itemPrincipal && !permitidoNaSecundaria;
+                input.disabled = desabilitarPorRegra || (bloquearNovasSelecoes && !input.checked);
+            });
+        }
+
+        function obterTipoItemSecundarioArma(arma) {
+            if (!arma) return null;
+
+            const propriedades = arma.propriedades || {};
+            if (propriedades.leve) return 'leve';
+            if (propriedades.duas_maos) return 'duas_maos';
+            if (propriedades.versatil) return 'versatil';
+            return 'uma_mao';
+        }
+
+        function podeEquiparNaSecundaria(itemPrincipal, modo) {
+            if (!itemPrincipal) return ['qualquer'];
+            if (modo === 'duas_maos') return [];
+            if (itemPrincipal.tipo === 'leve') return ['leve', 'escudo'];
+            if (itemPrincipal.tipo === 'uma_mao') return ['escudo'];
+            if (itemPrincipal.tipo === 'versatil') return ['escudo'];
+            return [];
+        }
+
+        function obterTipoItemSecundarioPorValor(valor, armas) {
+            if (!valor) return null;
+            const indiceEscudo = extrairIndiceSlotEscudo(valor);
+            if (indiceEscudo !== null) return 'escudo';
+
+            const indiceArma = parseInt(valor, 10);
+            const arma = Number.isInteger(indiceArma) ? armas[indiceArma] : null;
+            return obterTipoItemSecundarioArma(arma);
+        }
+
+        function valorSecundarioEhValido(valor, itemPrincipal, modo, armas) {
+            if (!valor) return true;
+            const permitidos = podeEquiparNaSecundaria(itemPrincipal, modo);
+            if (permitidos.includes('qualquer')) return true;
+            return permitidos.includes(obterTipoItemSecundarioPorValor(valor, armas));
+        }
+
+        function limparSelecaoSecundariaEquipamento(indicePrincipal = null) {
+            document.querySelectorAll('#lista-escudos-equipamento input').forEach(input => {
+                input.checked = false;
+            });
+
+            document.querySelectorAll('#lista-armas-equipamento input').forEach(input => {
+                const indice = parseInt(input.dataset.index, 10);
+                input.checked = Number.isInteger(indicePrincipal) && indice === indicePrincipal;
+            });
+
+            const selectSecundario = document.getElementById('arma2Nome');
+            if (selectSecundario) selectSecundario.value = '';
+        }
+
+        function criarItemCombatePrincipal(arma, chaveItem) {
+            if (!arma || !chaveItem) return null;
+
+            const propriedades = arma.propriedades || {};
+            let tipo = 'uma_mao';
+            if (propriedades.duas_maos) tipo = 'duas_maos';
+            else if (propriedades.versatil) tipo = 'versatil';
+            else if (propriedades.leve) tipo = 'leve';
+
+            let modo = 'uma_mao';
+            if (tipo === 'duas_maos') {
+                modo = 'duas_maos';
+            } else if (tipo === 'versatil') {
+                const manterModoAtual = estadoCombate.maoPrincipal?.item?.chaveItem === chaveItem;
+                modo = manterModoAtual && estadoCombate.maoPrincipal?.modo === 'duas_maos' ? 'duas_maos' : 'uma_mao';
+            }
+
+            return {
+                chaveItem,
+                nome: getNomeArmaSeguro(arma),
+                tipo,
+                versatil: tipo === 'versatil',
+                propriedades
+            };
+        }
+
+        function atualizarEstadoCombate(armas, escudos) {
+            const valorPrincipal = document.getElementById('arma1Nome')?.value || '';
+            const valorSecundario = document.getElementById('arma2Nome')?.value || '';
+            const indicePrincipal = parseInt(valorPrincipal, 10);
+            const indiceEscudoSecundario = extrairIndiceSlotEscudo(valorSecundario);
+            const indiceArmaSecundaria = parseInt(valorSecundario, 10);
+            const itemPrincipal = Number.isInteger(indicePrincipal)
+                ? criarItemCombatePrincipal(armas[indicePrincipal] || null, valorPrincipal)
+                : null;
+
+            let itemSecundario = null;
+            if (itemPrincipal && itemPrincipal.tipo !== 'duas_maos' && estadoCombate.maoPrincipal.modo !== 'duas_maos') {
+                if (indiceEscudoSecundario !== null) {
+                    itemSecundario = { tipo: 'escudo', item: escudos[indiceEscudoSecundario] || null };
+                } else if (Number.isInteger(indiceArmaSecundaria)) {
+                    itemSecundario = {
+                        tipo: obterTipoItemSecundarioArma(armas[indiceArmaSecundaria] || null),
+                        item: armas[indiceArmaSecundaria] || null
+                    };
+                }
+            }
+
+            estadoCombate = {
+                maoPrincipal: {
+                    item: itemPrincipal,
+                    modo: itemPrincipal ? (itemPrincipal.tipo === 'duas_maos' ? 'duas_maos' : (itemPrincipal.versatil ? (estadoCombate.maoPrincipal?.item?.chaveItem === valorPrincipal ? estadoCombate.maoPrincipal.modo : 'uma_mao') : 'uma_mao')) : 'vazio'
+                },
+                maoSecundaria: {
+                    item: itemSecundario,
+                    ativa: !!itemPrincipal && !(itemPrincipal.tipo === 'duas_maos' || (itemPrincipal.versatil && estadoCombate.maoPrincipal?.item?.chaveItem === valorPrincipal && estadoCombate.maoPrincipal.modo === 'duas_maos'))
+                }
+            };
+
+            if (itemPrincipal?.tipo === 'duas_maos') {
+                estadoCombate.maoPrincipal.modo = 'duas_maos';
+                estadoCombate.maoSecundaria.item = null;
+                estadoCombate.maoSecundaria.ativa = false;
+            }
+
+            if (itemPrincipal?.tipo === 'versatil' && estadoCombate.maoPrincipal.modo === 'duas_maos') {
+                estadoCombate.maoSecundaria.item = null;
+                estadoCombate.maoSecundaria.ativa = false;
+            }
+
+            if (!itemPrincipal) {
+                estadoCombate.maoSecundaria.ativa = true;
+            }
+        }
+
+        function atualizarUIEmpunhadura(armas) {
+            const botaoPrincipal = document.getElementById('arma1Empunhadura');
+            const botaoSecundario = document.getElementById('arma2Empunhadura');
+            const linhaSecundaria = document.getElementById('arma2Nome')?.closest('.equipados-armas-item');
+            const selectSecundario = document.getElementById('arma2Nome');
+            const ataqueSecundario = document.getElementById('arma2Ataque');
+            const botaoDesequiparSecundario = document.getElementById('arma2Desequipar');
+            const principal = estadoCombate.maoPrincipal.item;
+            const secundariaAtiva = estadoCombate.maoSecundaria.ativa;
+            const secundariaItem = estadoCombate.maoSecundaria.item;
+
+            if (botaoPrincipal) {
+                const emojiPrincipal = !principal
+                    ? '🤚'
+                    : estadoCombate.maoPrincipal.modo === 'duas_maos'
+                        ? '👏'
+                        : '✊';
+                botaoPrincipal.textContent = emojiPrincipal;
+                botaoPrincipal.classList.toggle('clicavel', !!principal?.versatil);
+                botaoPrincipal.disabled = !principal?.versatil;
+                botaoPrincipal.title = principal?.versatil
+                    ? 'Alternar entre 1 ou 2 mãos'
+                    : (!principal ? 'Mão principal livre' : 'Empunhadura atual da mão principal');
+            }
+
+            if (botaoSecundario) {
+                let emojiSecundario = '🤚';
+                if (!secundariaAtiva) emojiSecundario = '🚫';
+                else if (secundariaItem?.tipo === 'escudo') emojiSecundario = '🛡️';
+                else if (secundariaItem) emojiSecundario = '✊';
+                botaoSecundario.textContent = emojiSecundario;
+                botaoSecundario.title = !secundariaAtiva ? 'Mão secundária bloqueada' : 'Estado da mão secundária';
+            }
+
+            if (linhaSecundaria) {
+                linhaSecundaria.classList.toggle('secundaria-bloqueada', !secundariaAtiva);
+            }
+
+            if (selectSecundario) {
+                selectSecundario.disabled = !secundariaAtiva;
+                const permitidos = podeEquiparNaSecundaria(principal, estadoCombate.maoPrincipal.modo);
+                Array.from(selectSecundario.options).forEach(option => {
+                    if (!option.value) {
+                        option.disabled = false;
+                        return;
+                    }
+                    const permitido = secundariaAtiva && (permitidos.includes('qualquer') || permitidos.includes(obterTipoItemSecundarioPorValor(option.value, armas)));
+                    option.disabled = !permitido;
+                });
+            }
+
+            if (ataqueSecundario) {
+                ataqueSecundario.disabled = ataqueSecundario.disabled || !secundariaAtiva;
+            }
+
+            if (botaoDesequiparSecundario) {
+                botaoDesequiparSecundario.disabled = !secundariaAtiva;
+            }
+        }
+
+        function alternarEmpunhaduraPrincipal() {
+            const principal = estadoCombate.maoPrincipal.item;
+            if (!principal?.versatil) return;
+
+            estadoCombate.maoPrincipal.modo = estadoCombate.maoPrincipal.modo === 'duas_maos' ? 'uma_mao' : 'duas_maos';
+            if (estadoCombate.maoPrincipal.modo === 'duas_maos') {
+                limparSelecaoSecundariaEquipamento(parseInt(document.getElementById('arma1Nome')?.value || '', 10));
+            } else {
+                const selectSecundario = document.getElementById('arma2Nome');
+                if (selectSecundario) selectSecundario.value = '';
+            }
+
+            sincronizarMarcacaoArmasPorSlots();
+            sincronizarEquipamentosCombate();
+        }
+
         function lidarSelecaoArmaEquipada(indiceSlot) {
             const atual = document.getElementById(`arma${indiceSlot}Nome`);
             const outro = document.getElementById(`arma${indiceSlot === 1 ? 2 : 1}Nome`);
@@ -8550,14 +9628,40 @@ Bônus de Proficiência: +${bonusProf}
             });
             const faltantes = indicesMarcados.filter(indice => !slotsValidos.includes(indice));
             const indicesEquipados = slotsValidos.map(indice => indice ?? (faltantes.shift() ?? null));
-            const armasSelecionadas = indicesEquipados.map(indice => Number.isInteger(indice) ? armas[indice] : null);
+            const valorSlot1Selecionado = Number.isInteger(indicesEquipados[0]) ? String(indicesEquipados[0]) : '';
+            const indicePrincipal = Number.isInteger(indicesEquipados[0]) ? indicesEquipados[0] : null;
+            const itemPrincipal = Number.isInteger(indicePrincipal)
+                ? criarItemCombatePrincipal(armas[indicePrincipal] || null, valorSlot1Selecionado)
+                : null;
+            const modoPrincipal = itemPrincipal?.tipo === 'duas_maos'
+                ? 'duas_maos'
+                : (itemPrincipal?.versatil && estadoCombate.maoPrincipal?.item?.chaveItem === valorSlot1Selecionado
+                    ? estadoCombate.maoPrincipal.modo
+                    : (itemPrincipal ? 'uma_mao' : 'vazio'));
 
-            const valorSlot2Selecionado = Number.isInteger(indiceEscudoAtivo)
+            let valorSlot2Selecionado = Number.isInteger(indiceEscudoAtivo)
                 ? criarValorSlotEscudo(indiceEscudoAtivo)
-                : indicesEquipados[1];
+                : (Number.isInteger(indicesEquipados[1]) ? String(indicesEquipados[1]) : '');
 
-            atualizarSelectNomeArmaEquipada(1, armas, Number.isInteger(indicesEquipados[0]) ? indicesEquipados[0] : null, []);
+            if (!valorSecundarioEhValido(valorSlot2Selecionado, itemPrincipal, modoPrincipal, armas)) {
+                valorSlot2Selecionado = '';
+                limparSelecaoSecundariaEquipamento(indicePrincipal);
+            }
+
+            if (modoPrincipal === 'duas_maos') {
+                valorSlot2Selecionado = '';
+                limparSelecaoSecundariaEquipamento(indicePrincipal);
+            }
+
+            atualizarSelectNomeArmaEquipada(1, armas, indicePrincipal, []);
             atualizarSelectNomeArmaEquipada(2, armas, valorSlot2Selecionado, escudos);
+
+            const armasSelecionadas = [
+                Number.isInteger(indicePrincipal) ? armas[indicePrincipal] : null,
+                Number.isInteger(parseInt(valorSlot2Selecionado, 10)) && extrairIndiceSlotEscudo(valorSlot2Selecionado) === null
+                    ? armas[parseInt(valorSlot2Selecionado, 10)] || null
+                    : null
+            ];
 
             [1, 2].forEach(indice => {
                 const arma = armasSelecionadas[indice - 1];
@@ -8591,11 +9695,11 @@ Bônus de Proficiência: +${bonusProf}
                 ? parseInt(armaduraSelecionadaInput.dataset.index, 10)
                 : null;
 
-            if (indice !== null) {
-                equiparArmadura(indice);
-            }
+            equiparArmadura(indice);
 
-            const escudoPainel = Number.isInteger(indiceEscudoAtivo) ? escudos[indiceEscudoAtivo] : null;
+            const valorSlot2Atual = document.getElementById('arma2Nome')?.value || '';
+            const indiceEscudoPainel = extrairIndiceSlotEscudo(valorSlot2Atual);
+            const escudoPainel = Number.isInteger(indiceEscudoPainel) ? escudos[indiceEscudoPainel] : null;
             preencherCampo('escudoNome', escudoPainel?.escudo_nome?.trim() || "");
             preencherCampo('escudoCA', escudoPainel?.escudo_ca?.trim() || "");
             aplicarEstiloProficienciaCampos(
@@ -8621,6 +9725,9 @@ Bônus de Proficiência: +${bonusProf}
             ['armaduraCA', 'outroEquipadoCA', 'escudoCA'].forEach(aplicarFormatoCA);
             atualizarClasseArmaduraEquipada();
             atualizarSubAbaArmas();
+            atualizarEstadoCombate(armas, escudos);
+            atualizarUIEmpunhadura(armas);
+            atualizarBloqueioMaosEquipamento();
         }
 
 
@@ -9244,6 +10351,14 @@ Bônus de Proficiência: +${bonusProf}
         });
 
         let talentosEstruturados = { classe: [], arquetipo: [], raca: [], antecedente: [], outros: [] };
+        let configFicha = {
+            custom: {
+                classe: '',
+                subclasse: '',
+                raca: '',
+                subraca: ''
+            }
+        };
 
         // ===== Persistencia da ficha =====
         function normalizarDadosImportacao(dadosOriginais) {
@@ -9298,6 +10413,8 @@ Bônus de Proficiência: +${bonusProf}
             if (!dados.talentosEstruturados || typeof dados.talentosEstruturados !== "object") {
                 dados.talentosEstruturados = montarTalentosEstruturados(dados);
             }
+
+            dados.configFicha = normalizarConfigFicha(dados.configFicha);
 
             return dados
         }
@@ -9373,6 +10490,8 @@ Bônus de Proficiência: +${bonusProf}
 
             document.querySelectorAll("input, select, textarea").forEach(campo => {
                 if (!campo.id) return
+                if (campo.type === "file") return
+                if (campo.id === "importarFichaInput") return
                 dados[campo.id] = campo.type === "checkbox" ? campo.checked : campo.value
             })
 
@@ -9384,6 +10503,7 @@ Bônus de Proficiência: +${bonusProf}
             dados.arma2EquipadaIndice = arma2Equipada.indice
             dados.armaduraEquipadaIndice = armaduraEquipadaIndice
             dados.talentosEstruturados = JSON.parse(JSON.stringify(talentosEstruturados))
+            dados.configFicha = JSON.parse(JSON.stringify(configFicha))
 
             return adicionarAliasesLegacyAoSave(dados)
         }
@@ -9435,8 +10555,16 @@ Bônus de Proficiência: +${bonusProf}
 
 
 
+        function confirmarAlteracoesAntesDeImportar() {
+            if (!fichaFoiAlterada()) return true;
+
+            return confirm("Existem alterações não salva. As alterações atuais serão perdidas ao importar. Deseja continuar sem salvar? ");
+        }
+
         function importarFicha(json) {
             window.importarFicha = importarFicha;
+
+            if (!confirmarAlteracoesAntesDeImportar()) return;
 
             // Se recebeu JSON diretamente, aplica imediatamente
             if (json !== undefined && json !== null) {
@@ -9872,6 +11000,16 @@ Bônus de Proficiência: +${bonusProf}
         const estadoModalTalento = { categoria: null, indice: null, modo: "visualizar", itemOriginal: null, novoItem: false };
         let ultimoFocoModalMagia = null;
         let ultimoFocoModalTalento = null;
+        let estadoCombate = {
+            maoPrincipal: {
+                item: null,
+                modo: "vazio"
+            },
+            maoSecundaria: {
+                item: null,
+                ativa: true
+            }
+        };
 
         function obterTextoCampoTalento(id) {
             return String(document.getElementById(id)?.value || "").trim();
@@ -9986,23 +11124,23 @@ Bônus de Proficiência: +${bonusProf}
 
             const overlay = document.createElement("div");
             overlay.id = "talentoModalOverlay";
-            overlay.className = "talento-modal-overlay";
+            overlay.className = "talento-modal-overlay modal-overlay-base";
             overlay.setAttribute("aria-hidden", "true");
             overlay.innerHTML = `
-                <div class="talento-modal" role="dialog" aria-modal="true" aria-labelledby="talentoModalTitulo">
-                    <div class="talento-modal-header">
+                <div class="talento-modal modal-base" role="dialog" aria-modal="true" aria-labelledby="talentoModalTitulo">
+                    <div class="talento-modal-header modal-header-base">
                         <div>
                             <div id="talentoModalTitulo" class="talento-modal-titulo">Talento</div>
                             <div id="talentoModalSubtitulo" class="talento-modal-subtitulo"></div>
                         </div>
                         <div class="talento-modal-acoes">
-                            <button type="button" class="talento-modal-fechar talento-modal-acao-icone" id="talentoModalEditar" title="Editar">✏️</button>
-                            <button type="button" class="talento-modal-fechar talento-modal-acao-icone" id="talentoModalExcluir" title="Excluir">🗑️</button>
-                            <button type="button" class="talento-modal-fechar" id="talentoModalSalvar">💾 Salvar</button>
-                            <button type="button" class="talento-modal-fechar" id="talentoModalFechar">Fechar</button>
+                            <button type="button" class="talento-modal-fechar modal-close-base talento-modal-acao-icone" id="talentoModalEditar" title="Editar">✏️</button>
+                            <button type="button" class="talento-modal-fechar modal-close-base talento-modal-acao-icone" id="talentoModalExcluir" title="Excluir">🗑️</button>
+                            <button type="button" class="talento-modal-fechar modal-close-base" id="talentoModalSalvar">💾 Salvar</button>
+                            <button type="button" class="talento-modal-fechar modal-close-base" id="talentoModalFechar">Fechar</button>
                         </div>
                     </div>
-                    <div id="talentoModalCorpo" class="talento-modal-corpo"></div>
+                    <div id="talentoModalCorpo" class="talento-modal-corpo modal-body-base"></div>
                 </div>
             `;
 
@@ -10468,11 +11606,11 @@ Bônus de Proficiência: +${bonusProf}
 
             const overlay = document.createElement("div");
             overlay.id = "magiaModalOverlay";
-            overlay.className = "magia-modal-overlay oculto";
+            overlay.className = "magia-modal-overlay modal-overlay-base oculto";
             overlay.setAttribute("aria-hidden", "true");
             overlay.innerHTML = `
-                <div class="magia-modal" role="dialog" aria-modal="true" aria-labelledby="magiaModalTitulo">
-                    <div class="magia-modal-topo">
+                <div class="magia-modal modal-base" role="dialog" aria-modal="true" aria-labelledby="magiaModalTitulo">
+                    <div class="magia-modal-topo modal-header-base">
                         <div class="magia-modal-topo-info">
                             <div id="magiaModalTitulo" class="magia-modal-titulo">Magia</div>
                             <div class="magia-modal-meta">
@@ -10484,10 +11622,10 @@ Bônus de Proficiência: +${bonusProf}
                             </div>
                         </div>
                         <div class="magia-modal-acoes">
-                            <button type="button" class="magia-modal-botao" id="magiaModalEditar">Editar</button>
-                            <button type="button" class="magia-modal-botao perigo oculto" id="magiaModalExcluir">Excluir magia</button>
-                            <button type="button" class="magia-modal-botao primario oculto" id="magiaModalSalvar">💾 Salvar</button>
-                            <button type="button" class="magia-modal-botao" id="magiaModalFechar">Fechar</button>
+                            <button type="button" class="magia-modal-botao modal-close-base" id="magiaModalEditar">Editar</button>
+                            <button type="button" class="magia-modal-botao modal-close-base perigo oculto" id="magiaModalExcluir">Excluir magia</button>
+                            <button type="button" class="magia-modal-botao modal-close-base primario oculto" id="magiaModalSalvar">💾 Salvar</button>
+                            <button type="button" class="magia-modal-botao modal-close-base" id="magiaModalFechar">Fechar</button>
                         </div>
                     </div>
                     <div id="magiaModalVisualizacao" style="display: block;"></div>
@@ -11138,6 +12276,11 @@ Bônus de Proficiência: +${bonusProf}
                     return;
                 }
 
+                if (destino === "talentoRacaResumo") {
+                    campoDestino.textContent = obterResumoRacaCompleto();
+                    return;
+                }
+
                 campoDestino.textContent = valorBase;
             });
 
@@ -11151,11 +12294,18 @@ Bônus de Proficiência: +${bonusProf}
                 secaoSubclasse.classList.toggle('hidden', !subclasseDisponivel);
 
                 if (subclasseDisponivel) {
-                    campoSubclasseResumo.value = campoSubclasse.value.trim();
-                    campoSubclasseResumo.placeholder = campoSubclasse.placeholder || 'Subclasse';
+                    const valorResumo = campoSubclasse.value.trim();
+                    if ('value' in campoSubclasseResumo) {
+                        campoSubclasseResumo.value = valorResumo;
+                    } else {
+                        campoSubclasseResumo.textContent = valorResumo;
+                    }
                 } else {
-                    campoSubclasseResumo.value = '';
-                    campoSubclasseResumo.placeholder = 'Subclasse';
+                    if ('value' in campoSubclasseResumo) {
+                        campoSubclasseResumo.value = '';
+                    } else {
+                        campoSubclasseResumo.textContent = '';
+                    }
                 }
             }
         }
@@ -12006,6 +13156,10 @@ Bônus de Proficiência: +${bonusProf}
         });
 
 
+        garantirCampoSubclasseComoSelect();
+        preencherFormularioConfigFicha();
+        aplicarConfigCustomizacaoNaFicha(false);
+
         document.getElementById('classeNomeID').addEventListener('input', () => {
             sincronizarClasseNivel();
             sincronizarResumoCaracteristicas();
@@ -12021,12 +13175,25 @@ Bônus de Proficiência: +${bonusProf}
 
         document.getElementById('classeNivelID').addEventListener('input', () => sincronizarClasseNivel());
         document.getElementById('classeNivelID').addEventListener('change', () => sincronizarClasseNivel());
-        document.getElementById('racaID').addEventListener('input', () => sincronizarResumoCaracteristicas());
+        document.getElementById('racaID').addEventListener('input', () => {
+            atualizarSubracas();
+            sincronizarResumoCaracteristicas();
+        });
+        document.getElementById('racaID').addEventListener('change', () => {
+            atualizarSubracas();
+            sincronizarResumoCaracteristicas();
+        });
         document.getElementById('antecedenteID').addEventListener('input', () => sincronizarResumoCaracteristicas());
         document.getElementById('subclasse')?.addEventListener('input', () => sincronizarResumoCaracteristicas(true));
         document.getElementById('subclasse')?.addEventListener('change', () => sincronizarResumoCaracteristicas(true));
-        document.getElementById('talentoArquetipoResumo')?.addEventListener('input', renderTalentos);
-        document.getElementById('talentoArquetipoResumo')?.addEventListener('change', renderTalentos);
+        document.getElementById('subraca')?.addEventListener('input', () => sincronizarResumoCaracteristicas(true));
+        document.getElementById('subraca')?.addEventListener('change', () => sincronizarResumoCaracteristicas(true));
+        document.getElementById('configBtn')?.addEventListener('click', abrirConfigModal);
+        document.getElementById('configFecharBtn')?.addEventListener('click', fecharConfigModal);
+        document.getElementById('salvarCustomizacao')?.addEventListener('click', salvarCustomizacaoFicha);
+        document.querySelectorAll('.config-tab').forEach(botao => {
+            botao.addEventListener('click', () => ativarAbaConfig(botao.dataset.tab));
+        });
         const campoClasseConjuradora = document.getElementById('magiaClasseConjuradora');
         if (campoClasseConjuradora) {
             campoClasseConjuradora.addEventListener('input', () => {
@@ -12065,6 +13232,14 @@ Bônus de Proficiência: +${bonusProf}
             overlayTalento.addEventListener('click', evento => {
                 if (evento.target === overlayTalento) {
                     fecharModalTalento();
+                }
+            });
+        }
+        const overlayConfig = document.getElementById('configModalOverlay');
+        if (overlayConfig) {
+            overlayConfig.addEventListener('click', evento => {
+                if (evento.target === overlayConfig) {
+                    fecharConfigModal();
                 }
             });
         }
@@ -12126,6 +13301,7 @@ Bônus de Proficiência: +${bonusProf}
                 atualizarSubAbaArmas();
             });
         });
+        document.getElementById('arma1Empunhadura')?.addEventListener('click', alternarEmpunhaduraPrincipal);
         ['arma1MunicaoSelect', 'arma2MunicaoSelect'].forEach((id, indice) => {
             const campo = document.getElementById(id);
             if (!campo) return;
@@ -12297,12 +13473,16 @@ Bônus de Proficiência: +${bonusProf}
         }
         atualizarFicha();
         atualizarSubclasse();
+        garantirOpcaoSelect(obterCampoRaca(), obterCampoRaca()?.value);
+        atualizarSubracas();
+        marcarFichaComoSalva();
 
         function aplicarDadosFicha(dados) {
             bloqueandoLevelUp = true;
             if (!dados || typeof dados !== "object") return;
 
             dados = normalizarDadosImportacao(dados);
+            configFicha = normalizarConfigFicha(dados.configFicha);
             personagem = dados;
             console.log("OUTROS COM ID:", dados.outros);
             // 🔥 CAMPOS ESPECIAIS
@@ -12345,6 +13525,28 @@ Bônus de Proficiência: +${bonusProf}
 
                 preencherCampo(campo, dados[key]);
             }
+
+            const campoSubclasse = garantirCampoSubclasseComoSelect();
+            if (campoSubclasse) {
+                campoSubclasse.dataset.pendingValue = String(dados.subclasse ?? "");
+                atualizarSubclasses(dados.classeNomeID ?? dados.classeNome ?? "");
+            }
+
+            const campoRaca = obterCampoRaca();
+            const valorRacaSalvo = String(dados.racaID ?? dados.raca ?? "").trim();
+            if (campoRaca && valorRacaSalvo) {
+                garantirOpcaoSelect(campoRaca, valorRacaSalvo);
+                campoRaca.value = valorRacaSalvo;
+            }
+
+            const campoSubraca = obterCampoSubraca();
+            if (campoSubraca) {
+                campoSubraca.dataset.pendingValue = String(dados.subraca ?? "");
+                atualizarSubracas(dados.racaID ?? dados.raca ?? "");
+            }
+
+            preencherFormularioConfigFicha();
+            aplicarConfigCustomizacaoNaFicha(false);
 
             inicializarTalentos(dados);
 

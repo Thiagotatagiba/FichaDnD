@@ -2,15 +2,19 @@
   "modalAtaqueDado": "",
   "modalAtaqueDano": "",
   "inputVidaLevelUp": "",
-  "fileInput": "",
+  "customClasse": "",
+  "customSubclasse": "",
+  "customRaca": "",
+  "customSubraca": "",
   "nomePersonagem": "Waldo Malaphael",
   "jogador": "",
   "xp": "0",
   "classeID": "clerigo NV 1",
   "classeNomeID": "clerigo",
   "classeNivelID": "1",
-  "subclasse": "Domínio da Enganação",
+  "subclasse": "Domínio da Trapaça",
   "racaID": "Meio-Elfo",
+  "subraca": "",
   "antecedenteID": "Charlatão",
   "alinhamentoID": "Caótico e Neutro (CN)",
   "for": "10",
@@ -97,7 +101,6 @@
   "proficienciaArmaduras": "",
   "proficienciaFerramentas": "Kit de disfarce \nKit de falsificação\n",
   "talentoClasse": "Perícia de Classe, Conjuração, CONJURAÇÃO DE RITUAL, FOCO DE CONJURAÇÃO",
-  "talentoArquetipoResumo": "Domínio da Enganação",
   "talentoArquetipo": "Magias de Domínio, Bênção do Trapaceiro",
   "talentoRaca": "Aumento no Valor de Habilidade, Visão no Escuro, Ancestral Feérico, Versatilidade em Perícias",
   "talentoAntecedente": "Proficiência em Perícias, ESQUEMAS PREDILETOS, CARACTERÍSTICA: IDENTIDADE FALSA",
@@ -197,7 +200,6 @@
   "magiaModalCuraRegra": "",
   "magiaModalDescricao": "✨ Efeito\nVocê muda sua aparência (roupas, rosto, cabelo, altura, etc.).\nPode parecer: outra pessoa ou outra raça (dentro de limites)\nAlteração visual completa\n\n⚠️ Limitações\nNão muda sua forma física real\nNão altera sua voz automaticamente\nInteração física revela a ilusão\n\n🧠 Teste para descobrir\nCriaturas podem fazer teste de Investigação contra sua CD de magia\nSó acontece se suspeitarem",
   "magiaModalProximosNiveis": "",
-  "importarFichaInput": "",
   "arma1EquipadaIndice": "0",
   "arma2EquipadaIndice": "__escudo__0",
   "armaduraEquipadaIndice": 0,
@@ -289,6 +291,14 @@
       }
     ],
     "outros": []
+  },
+  "configFicha": {
+    "custom": {
+      "classe": "",
+      "subclasse": "",
+      "raca": "",
+      "subraca": ""
+    }
   },
   "nomePlayer": "",
   "classeNome": "clerigo",
