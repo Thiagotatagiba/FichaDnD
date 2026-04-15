@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Combate - Versão Escudo</title>
+
+<style>
+body {
+    background: #e7e1d5;
+    font-family: Arial;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* CONTAINER */
+.combate {
+    width: 360px;
+    background: #f6f2ea;
+    border: 3px solid #8b4513;
+    border-radius: 16px;
+    padding: 20px;
+}
+
+/* BLOCO DEFESA */
+.defesa-wrapper {
+    position: relative;
+}
+
+/* ESCUDO (CA) */
+.ca-escudo {
+    position: absolute;
+    left: -35px;
+    top: 10px;
+    width: 70px;
+    height: 90px;
+    background: white;
+    border: 3px solid #333;
+    border-radius: 35px 35px 50px 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 20px;
+    box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+    z-index: 2;
+}
+
+/* PV BLOCO */
+.pv-box {
+    display: grid;
+    grid-template-columns: 1fr 60px;
+    border: 3px solid #333;
+    border-radius: 12px;
+    background: white;
+    overflow: hidden;
+}
+
+/* PV ESQUERDA */
+.pv-main {
+    padding: 12px;
+    text-align: center;
+}
+
+.pv-atual {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.coracoes {
+    margin: 6px 0;
+}
+
+/* PV DIREITA */
+.pv-side {
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    border-left: 2px solid #333;
+}
+
+.pv-max, .pv-temp {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.pv-max {
+    border-bottom: 2px solid #333;
+    background: #f4efe6;
+}
+
+.pv-temp {
+    background: #e0f0ff;
+}
+
+/* BOTÕES */
+.pv-acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.botao {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #8b4513;
+    border-radius: 8px;
+    background: #d4c5ae;
+    cursor: pointer;
+    font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="combate">
+
+    <div class="defesa-wrapper">
+
+        <!-- CA -->
+        <div class="ca-escudo">12</div>
+
+        <!-- PV -->
+        <div class="pv-box">
+
+            <!-- ESQUERDA -->
+            <div class="pv-main">
+                <div class="pv-atual">10</div>
+                <div class="coracoes">❤️❤️❤️❤️❤️</div>
+            </div>
+
+            <!-- DIREITA -->
+            <div class="pv-side">
+                <div class="pv-max">18</div>
+                <div class="pv-temp">+3</div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BOTÕES -->
+    <div class="pv-acoes">
+        <button class="botao">- Dano</button>
+        <button class="botao">+ Curar</button>
+    </div>
+
+</div>
+
+</body>
+</html>
