@@ -1,0 +1,27 @@
+{
+  "classe": "Bárbaro",
+  "features": [
+    {
+      "name": "Fúria",
+      "desc": "Ao entrar em fúria, ganhe resistência a dano cortante, perfurante e contundente.",
+      "level": 1,
+      "categoria": "classe"
+    },
+    {
+      "name": "Sentido de Perigo",
+      "desc": "Vantagem em DEX e ataques à distância têm desvantagem contra você.",
+      "level": 3,
+      "categoria": "classe"
+    }
+  ],
+  "subclasses": {
+    "totem": [
+      {
+        "name": "Totem do Urso",
+        "desc": "Resistência a todo dano exceto psíquico enquanto em fúria.",
+        "level": 3,
+        "categoria": "arquetipo"
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "nome": "Paladino",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Proficiência com armadura leve, média, pesada, escudos; Armas simples, marciais; Sabedoria salvamentos, Carisma salvamentos; Detectar bem/mal (ação), Impor mãos, Juramento (Devoto/Vingança/Antigo)", "truques":"–", "magias":["1","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Magia de Paladino, Estilo de Luta, Impor Mãos (cura)", "truques":"–", "magias":["2","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"{Subclasse}, Canalizar Divindade", "truques":"–", "magias":["3","–","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo, Canalizar Divindade (2 usos)", "truques":"–", "magias":["3","–","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"Ataque Extra", "truques":"–", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Aura de Proteção", "truques":"–", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"Subclasse 7", "truques":"–", "magias":["4","3","–","–","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo, Aura de Conquista (10m)", "truques":"–", "magias":["4","3","2","–","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"–", "truques":"–", "magias":["5","3","2","–","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Aura Divina", "truques":"–", "magias":["5","3","2","–","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"Magia Melhorada", "truques":"–", "magias":["5","3","3","1","–","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["5","3","3","1","–","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"Subclasse 13", "truques":"–", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Limpeza", "truques":"–", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"Aura Melhorada (9m)", "truques":"–", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"Subclasse 17", "truques":"–", "magias":["5","3","3","2","2","–","–","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Aura Melhorada (9m)", "truques":"–", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Santo Guerreiro", "truques":"–", "magias":["5","3","3","2","2","1","1","–","–"]}
+  ],
+  "subclasses": {
+    "Juramento Devoto": {
+      "3": {"add": ["Santuário Sagrado, Embaraço"]},
+      "7": {"add": ["Aura Sagrada"]},
+      "15": {"add": ["Círculo Sagrado"]},
+      "20": {"add": ["Emanação Sagrada"]}
+    },
+    "Juramento de Vingança": {
+      "3": {"add": ["Juramento de Ódio", "Aceleramento Abençoado"]},
+      "7": {"add": ["Voto de Inimigo"]},
+      "15": {"add": ["Fúria Relentless"]}
+    }
+  },
+  "descricoes": {
+    "Detectar bem/mal": "Como ação, sinta criaturas celestiais, diabos, elementais, fadas dentro 18m (sem bloqueios). Não precisa concentração após 5º nível.",
+    "Impor mãos": "Toque aliado, cura PV = pool (metade nível). Gastar pool ou doença. Pool = 5x nível.",
+    "Magia de Paladino": "Prepare após descanso longo = Carisma mod + metade nível. Foco sagrado.",
+    "Estilo de Luta": "Escolha: Defesa (+1 CA), Destreza (+2 ataques des), Duelling (+2 dano 1 arma), Grande Arma (re-rolar 1-2), Proteção (reação +prof DES save aliado), Ataque Duas Armas (dano STR/DEX).",
+    "Canalizar Divindade": "1/resto curto (2 em 4º). Subclasse define efeitos.",
+    "Aura de Proteção": "Aliados 3m +prof saves. Conhecimento Charisma 10m.",
+    "Limpeza": "Toque acaba doença/maldição (CON save nível).",
+    "Santo Guerreiro": "Impor Mãos cura doença/veneno; destruir morto-vivo CR<seu nível/2>."
+  }
+}

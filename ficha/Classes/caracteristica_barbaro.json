@@ -1,0 +1,55 @@
+{
+  "nome": "Bárbaro",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Proficiência com armadura leve, média, escudos; Armas simples, marciais; Força salvamentos, Constituição salvamentos; fúria, cansaço; Caminho da Totem/Berserker/etc", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Sentido de perigo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"{Subclasse}", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"Ataque extra, Fúria aprimorada", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Melhoria de atributo de subclasse", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"Fúria instintiva", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"Brutal crítico (1dado)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Luta implacável", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"Fúria implacável", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"Brutal crítico (2dad)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Fúria implacável (ininterrupta)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"Fúria persistente", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"Brutal crítico (3dad)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Indomável", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Fúria primal", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]}
+  ],
+  "subclasses": {
+    "Guerreiro Totem": {
+      "3": {"add": ["Totem Espírito"]},
+      "6": {"add": ["Aspecto do Totem"]},
+      "10": {"add": ["Totem Espírito (2°)"]},
+      "14": {"add": ["Aspecto do Totem (2°)"]}
+    },
+    "Berserker": {
+      "3": {"add": ["Frenesi"]},
+      "10": {"add": ["Intimidação Intimidadora"]}
+    }
+  },
+  "descricoes": {
+    "Proficiência com armadura leve, média, escudos": "Você tem proficiência com armaduras leves, médias e escudos.",
+    "Armas simples, marciais": "Você tem proficiência com armas simples e marciais.",
+    "Força salvamentos, Constituição salvamentos": "Você tem proficiência nos testes de salvaguarda de Força e Constituição.",
+    "fúria, cansaço": "Em combate, você pode entrar em fúria bônus. +2 dano, vantagem em testes Força, resistências. 1/long rest. Após 3º nível, mais usos.",
+    "Sentido de perigo": "Reação para vantagem em DEX saves ou ataques. Inútil se cego/surdo.",
+    "Melhoria de atributo": "Aumente um ou dois atributos em +2/+1 ou +1/+1.",
+    "Ataque extra": "Ao atacar com ação, ataque extra.",
+    "Fúria aprimorada": "Sem limite de ataques corpo a corpo em fúria.",
+    "Fúria instintiva": "Em fúria, vantagem ou usar atributo proficiente em testes Força/DEX.",
+    "Brutal crítico": "Adicione 1 dado de arma em crítico.",
+    "Luta implacável": "Regenere PV se 1+ PV.",
+    "Fúria implacável": "Fúria só acaba se quiser ou incosciente.",
+    "Fúria persistente": "Fúria após descanso curto.",
+    "Indomável": "Re-rolar save falho 1/long rest.",
+    "Fúria primal": "Fúria ilimitada."
+  }
+}

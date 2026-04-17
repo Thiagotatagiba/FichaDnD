@@ -5043,6 +5043,7 @@
                     <button class="config-tab active" data-tab="customizacao" type="button">🧩 Customização</button>
                     <button class="config-tab" data-tab="automacao" type="button">⚙️ Automação</button>
                     <button class="config-tab" data-tab="combate" type="button">🎲 Combate</button>
+                    <button class="config-tab" data-tab="caracteristica-classe" type="button">📜 Característica de Classe</button>
                 </div>
 
                 <div class="config-conteudo">
@@ -5081,6 +5082,175 @@
                     <div class="config-aba" id="aba-combate">
                         <div class="config-aba-placeholder">Espaço reservado para opções de combate e rolagens.</div>
                     </div>
+                    
+                    <div class="config-aba" id="aba-caracteristica-classe">
+                        <div class="config-bloco">
+                            <h3 style="margin-bottom: 15px;">📜 Características da Classe</h3>
+                            <iframe id="iframeClasseFeatures" 
+src="./Classes/Card Classes Vazio.html" 
+
+                                    style="width: 100%; height: 600px; border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                            </iframe>
+                            <div style="margin-top: 15px; padding: 12px; background: rgba(139,69,19,0.08); border-radius: 8px; font-size: 14px; text-align: center;">
+                                💡 <strong>Dica:</strong> Importe o JSON da classe usando o botão "Importar JSON" na tabela!
+                            </div>
+
+                            <h3>📜 Características de Classe</h3>
+                            <div style="position: relative; height: 500px;">
+                                <iframe id="iframeClasseCard" 
+                                        src="Classes/Card Classes Vazio.html" 
+                                        style="width:100%; height:100%; border:none; border-radius:8px;">
+                                </iframe>
+                            </div>
+<div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                                Selecione sua classe na ficha principal para carregar automaticamente as características na aba Status.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const classeSelect = document.getElementById('classeNomeID');
+  const iframe = document.getElementById('iframeClasseCard');
+  
+  if (classeSelect && iframe) {
+    // Auto-load quando classe muda
+    classeSelect.addEventListener('change', function(e) {
+      const classe = e.target.value;
+      if (classe) {
+        iframe.src = `./Classes/Card Classes Vazio.html?classe=${classe}`;
+        // Scroll suave para iframe se necessário
+        iframe.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      } else {
+        iframe.src = 'Classes/Card Classes Vazio.html';
+      }
+    });
+    
+// Load inicial se já tem classe selecionada
+    if (classeSelect.value) {
+      classeSelect.dispatchEvent(new Event('change'));
+    }
+  }
+});
+
+// ===== ETAPA 3: AUTO-CARREGAMENTO CARACTERÍSTICAS CLASSE =====
+function mostrarCarregando(show = true) {
+  let spinner = document.getElementById('classeSpinner');
+  if (!spinner) {
+    spinner = document.createElement('div');
+    spinner.id = 'classeSpinner';
+    spinner.innerHTML = '⏳ Carregando...';
+    spinner.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);color:white;padding:20px;border-radius:10px;z-index:9999;font-family:MedievalSharp;font-size:18px;';
+    document.body.appendChild(spinner);
+  }
+  spinner.style.display = show ? 'block' : 'none';
+}
+
+function limparListasTalentos() {
+  Object.values(TALENTOS_CONFIG).forEach(config => {
+    const lista = document.getElementById(config.listaId);
+    if (lista) lista.innerHTML = '<div class="talento-lista-vazia">Nenhuma característica carregada</div>';
+    const resumo = document.getElementById(config.resumoId);
+    if (resumo) resumo.textContent = '';
+  });
+}
+
+async function carregarCaracteristicasClasse(classe = '', nivel = 1, subclasse = '') {
+  if (!classe) {
+    limparListasTalentos();
+    document.getElementById('classeData').value = '';
+    document.getElementById('subclasseData').value = '';
+    return;
+  }
+
+  mostrarCarregando(true);
+  try {
+    limparListasTalentos();
+
+    // Carrega classe principal
+    const classePath = `./Classes/caracteristica_${classe}.json`;
+    const classeResp = await fetch(classePath);
+    if (!classeResp.ok) throw new Error(`JSON classe não encontrado: ${classePath}`);
+    const classeData = await classeResp.json();
+    document.getElementById('classeData').value = JSON.stringify(classeData);
+
+    // Filtra features por nível
+    const featuresClasse = (classeData.features || []).filter(f => f.level <= nivel);
+
+    // Popula categoria 'classe'
+    popularTalentoLista('classe', featuresClasse);
+
+    // Subclasse/arquetipo
+    let featuresSub = [];
+    if (subclasse && classeData.subclasses && classeData.subclasses[subclasse]) {
+      featuresSub = classeData.subclasses[subclasse].filter(f => f.level <= nivel);
+      document.getElementById('subclasseData').value = JSON.stringify(featuresSub);
+      popularTalentoLista('arquetipo', featuresSub);
+      document.getElementById('talentoArquetipoResumo').textContent = subclasse;
+    }
+
+    // Atualiza resumos (ex: count)
+    document.getElementById('talentoClasseResumo').textContent = `${classe} (${featuresClasse.length})`;
+  } catch (error) {
+    console.error('Erro carregando características:', error);
+    alert(`Erro: ${error.message}. Verifique se o JSON existe em Classes/.`);
+    limparListasTalentos();
+  } finally {
+    mostrarCarregando(false);
+  }
+}
+
+function popularTalentoLista(categoria, features) {
+  const config = TALENTOS_CONFIG[categoria];
+  if (!config || !features?.length) return;
+
+  const lista = document.getElementById(config.listaId);
+  if (!lista) return;
+
+  lista.innerHTML = features.map(item => 
+    `<div class="talento-item" tabindex="0" title="${item.desc || ''}">${item.name}</div>`
+  ).join('');
+}
+
+function handleClasseChange() {
+  const classeNome = document.getElementById('classeNomeID').value;
+  const classeNivel = parseInt(document.getElementById('classeNivelID').value) || 1;
+  const sub = document.getElementById('subclasse').value;
+  carregarCaracteristicasClasse(classeNome, classeNivel, sub);
+}
+
+// Adiciona event listeners (Etapa 3)
+document.getElementById('classeNomeID').addEventListener('change', handleClasseChange);
+document.getElementById('classeNivelID').addEventListener('input', handleClasseChange);
+const subInput = document.getElementById('subclasse');
+if (subInput) subInput.addEventListener('input', handleClasseChange);
+
+// Integra com load (chama após carregarFicha)
+const originalCarregarFicha = window.carregarFicha;
+window.addEventListener('message', function(event) {
+  if (event.data.action === 'applyClassFeatures') {
+    const { classe, nivel, subclasse, jsonData } = event.data;
+    if (typeof window.carregarCaracteristicasClasse === 'function') {
+      window.carregarCaracteristicasClasse(classe, nivel, subclasse);
+    }
+    console.log('✅ Features aplicadas via iframe:', { classe, nivel, subclasse });
+  }
+});
+
+window.carregarFicha = function(personagem) {
+  if (originalCarregarFicha) originalCarregarFicha(personagem);
+  // Trigger reload após load
+  setTimeout(handleClasseChange, 100);
+};
+
+// Inicial load
+handleClasseChange();
+
+</script>
                 </div>
             </div>
         </div>
@@ -5128,7 +5298,9 @@
         <div class="linha-personagem">
             <div class="campo">
                 <div class="campo-titulo">Classe e Nível</div>
-                <input id="classeID" type="hidden">
+<input id="classeID" type="hidden">
+                <input id="classeData" type="hidden" value="">
+                <input id="subclasseData" type="hidden" value="">
                 <div class="campo-duplo" title="Selecione a classe e o nível do personagem">
                     <select id="classeNomeID" title="Selecione a classe" class="classe-nome">
                         <option value="">Selecione uma classe</option>
@@ -5768,7 +5940,7 @@
                                         data-talento-add="classe">+ Característica</button></div>
                             </div>
 
-                            <div class="talento-secao hidden" id="talentoSubclasseSecao"
+<div class="talento-secao" id="talentoSubclasseSecao"
                                 data-talento-categoria="arquetipo">
                                 <div class="talento-subtitulo">Subclasse: <span id="talentoArquetipoResumo"></span></div>
                                 <textarea id="talentoArquetipo" class="talento-texto talento-storage"
@@ -7290,7 +7462,7 @@
                 "Domínio da Tempestade",
                 "Domínio da Guerra",
                 "Domínio do Conhecimento",
-                "Domínio da Trapaça",
+                "Domínio da Enganação",
                 "Domínio da Forja",
                 "Domínio da Morte",
                 "Domínio da Ordem",
@@ -10516,7 +10688,12 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         /* SALVAR Ficha*/
-        function salvarFicha() {
+function salvarFicha() {
+  // Salvar class/subclass data
+  const classeData = document.getElementById('classeData').value;
+  const subData = document.getElementById('subclasseData').value;
+  dados.classeData = classeData;
+  dados.subclasseData = subData;
 
             const dados = coletarDadosFicha()
             dados.armas = coletarArmas();

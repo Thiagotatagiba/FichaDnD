@@ -1,0 +1,50 @@
+{
+  "nome": "Bardo",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Proficiência armadura leve; armas simples, besta leve, espada longa, rapieira, armas marciais (subclasse); Destreza saves, Carisma saves; Inspiração Bárdica, Perícias Especializadas (3)", "truques":"2", "magias":["2","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Magia Bárdica, Jack of All Trades, Canção de Repouso", "truques":"2", "magias":["3","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"{Subclasse}, Proficiência Expertise (2)", "truques":"2", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo, Inspiração Musical (d8)", "truques":"3", "magias":["4","3","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"Font of Inspiration, Corte Total", "truques":"3", "magias":["4","3","2","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Contramagia, Subclasse 6", "truques":"3", "magias":["4","3","3","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"Proficiência Expertise (2)", "truques":"3", "magias":["4","3","3","1","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo, Inspiração Musical (d10)", "truques":"3", "magias":["4","3","3","2","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"Canção de Repouso Melhorada", "truques":"3", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Proficiência Magia, Subclasse 10", "truques":"4", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"Font of Inspiration ilimitada", "truques":"4", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo, Inspiração Musical (d12)", "truques":"4", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"Subclasse 13", "truques":"4", "magias":["5","3","3","2","2","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Contramagia Melhorada, Proficiência Magia", "truques":"4", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"Proficiência Expertise (2)", "truques":"4", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo", "truques":"4", "magias":["5","3","3","2","2","1","1","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"Subclasse 17", "truques":"5", "magias":["5","3","3","2","2","1","1","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Inspiração Superior", "truques":"5", "magias":["5","3","3","2","2","1","1","1","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"5", "magias":["5","3","3","2","2","1","1","1","–"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Proficiência Superior", "truques":"5", "magias":["5","3","3","3","2","2","2","2","1"]}
+  ],
+  "subclasses": {
+    "Colégio do Conhecimento": {
+      "3": {"add": ["Palavras Cortantes"]},
+      "6": {"add": ["Dano Psíquico Adicional"]},
+      "14": {"add": ["Imunidade Psíquica"]}
+    },
+    "Colégio da Valor": {
+      "3": {"add": ["Inspiração de Combate"]},
+      "6": {"add": ["Inspiração Extra"]},
+      "14": {"add": ["Lutador de Batalha"]}
+    }
+  },
+  "descricoes": {
+    "Inspiração Bárdica": "D6 aliado usa rolagem. Recarga longo rest. Após 5º sempre disponível.",
+    "Jack of All Trades": "+metade prof não-proficientes.",
+    "Canção de Repouso": "Descanso curto recupera dados vida.",
+    "Magia Bárdica": "Prepare Carisma + nível/2. Instrumento musical foco.",
+    "Perícias Especializadas": "Escolha 3 perícias, +d6/d8 (inspir musical nível).",
+    "Font of Inspiration": "Inspiração após curto/longo rest.",
+    "Corte Total": "1/resto longo, 1d6/turno 1min se acertar. Magia nível.",
+    "Contramagia": "Normal.",
+    "Proficiência Magia": "Salve magia = prof.",
+    "Proficiência Superior": "Imune charmed/frightened."
+  }
+}

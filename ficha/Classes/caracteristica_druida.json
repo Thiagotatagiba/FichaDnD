@@ -1,0 +1,46 @@
+{
+  "nome": "Druida",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Proficiência armadura leve, média, escudos(não metal); armas de druida, mace, scimitar; Inteligência saves, Sabedoria saves; Forma Selvagem, Magia Druídica, Círculo da Terra/Lua", "truques":"2", "magias":["2","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Círculo da Terra/Lua, Forma Selvagem Melhorada", "truques":"2", "magias":["3","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"Subclasse Círculo", "truques":"2", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo, Forma Selvagem (dano)", "truques":"2", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"Subclasse 5", "truques":"2", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo de Círculo", "truques":"2", "magias":["4","3","2","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"–", "truques":"2", "magias":["4","3","2","–","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo, Forma Selvagem Elemental", "truques":"2", "magias":["4","3","2","1","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"Subclasse 9", "truques":"2", "magias":["5","3","2","1","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Forma Selvagem Melhorada (CR2)", "truques":"2", "magias":["5","3","2","1","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"–", "truques":"3", "magias":["5","3","2","2","–","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo", "truques":"3", "magias":["5","3","2","2","1","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"Subclasse 13", "truques":"3", "magias":["5","3","2","2","1","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Forma Selvagem Ilimitada", "truques":"3", "magias":["5","3","2","2","1","1","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"Subclasse 15", "truques":"3", "magias":["5","3","2","2","1","1","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo", "truques":"3", "magias":["5","3","2","2","1","1","1","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"–", "truques":"3", "magias":["5","3","2","2","1","1","1","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Forma Selvagem Bestial (CR4)", "truques":"3", "magias":["5","3","2","2","1","1","1","1","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"3", "magias":["5","3","2","2","1","1","1","1","1"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Archdruid", "truques":"4", "magias":["5","3","2","2","1","1","1","1","1"]}
+  ],
+  "subclasses": {
+    "Círculo da Terra": {
+      "2": {"add": ["Magia Natural", "Círculo Spells"]},
+      "6": {"add": ["Resistência Natural"]},
+      "10": {"add": ["Restauro Natural"]},
+      "14": {"add": ["Nexus Místico"]}
+    },
+    "Círculo da Lua": {
+      "2": {"add": ["Magia Combativa"]},
+      "6": {"add": ["Transformação Aprimorada"]},
+      "10": {"add": ["Formas de Combate"]},
+      "14": {"add": ["Metamorfose Elemental"]}
+    }
+  },
+  "descricoes": {
+    "Forma Selvagem": "Ação transformação besta CR1 (Wild Shape). Não magias. 2/curto rest.",
+    "Magia Druídica": "Prepare Sabedoria + nível. Foco druida (sprig, totem madeira). Não metal/armadura metal.",
+    "Armas de druida": "Maça, porrete, lança, javelin, cajado, dardo, funda, scimitar, blowgun, yklwa.",
+    "Archdruid": "Forma Selvagem ilimitada, não concentração em transformação."
+  }
+}

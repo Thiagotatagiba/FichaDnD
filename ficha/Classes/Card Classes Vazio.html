@@ -120,7 +120,8 @@
       <span id="nomeSubclasse" class="subclasse"></span>
     </div>
 
-    <button onclick="importarJSON()">Importar JSON</button>
+<button class="ficha-btn" onclick="importarJSON()">📤 Importar JSON</button>
+<button class="ficha-btn" onclick="aplicarNaFicha()" style="margin-left: 8px;">✅ Aplicar na Ficha</button>
     <input type="file" id="fileInput" hidden>
 
     <br>
@@ -160,11 +161,87 @@
     </div>
   </div>
 
-  <script>
+<script>
     let dadosClasse = null;
     let subclasseAtual = "";
 
-    // IMPORTAR
+    /* CSS FICHA BUTTONS */
+    document.addEventListener('DOMContentLoaded', function() {
+      const style = document.createElement('style');
+      style.textContent = `
+        .ficha-btn {
+          background: #8b4513 !important;
+          color: white !important;
+          border: none !important;
+          padding: 8px 14px !important;
+          border-radius: 6px !important;
+          cursor: pointer !important;
+          font-family: 'MedievalSharp', serif !important;
+          font-size: 13px !important;
+          font-weight: bold !important;
+          transition: background 0.2s ease !important;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+        }
+        .ficha-btn:hover {
+          background: #a0522d !important;
+          transform: translateY(-1px) !important;
+        }
+        .ficha-btn:active {
+          transform: translateY(0) !important;
+        }
+      `;
+      document.head.appendChild(style);
+    });
+
+    function aplicarNaFicha() {
+      if (!dadosClasse || !window.parent) {
+        alert('Carregue uma classe primeiro!');
+        return;
+      }
+
+      // Pega dados atuais (classe carregada, subclasse selecionada)
+      const classeAtual = document.getElementById('tituloClasse').textContent.toLowerCase().replace(' ', '');
+      const subclasseAtual = document.getElementById('selectSubclasse').value || '';
+      const nivelAtual = window.parent.document.getElementById('classeNivelID')?.value || 1;
+
+      // Envia para ficha principal
+      window.parent.postMessage({
+        action: 'applyClassFeatures',
+        classe: classeAtual,
+        nivel: parseInt(nivelAtual),
+        subclasse: subclasseAtual,
+        jsonData: dadosClasse  // Envia JSON completo p/ processamento
+      }, '*');
+
+      alert('✅ Características aplicadas na ficha!');
+    }
+    let subclasseAtual = "";
+
+    // AUTO-LOAD FROM URL PARAM
+    document.addEventListener('DOMContentLoaded', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const classe = urlParams.get('classe');
+      if (classe) {
+fetch(`caracteristica_${classe}.json`)
+          .then(response => {
+            if (!response.ok) throw new Error('JSON not found');
+            return response.json();
+          })
+          .then(data => {
+            dadosClasse = data;
+            document.getElementById('tituloClasse').textContent = data.nome || classe;
+            montarTabela();
+            carregarSubclasses();
+          })
+          .catch(error => {
+            console.error('Erro ao carregar JSON:', error);
+            document.getElementById('tituloClasse').textContent = 'Classe: ' + classe;
+            document.querySelector('#tbodyClasse').innerHTML = '<tr><td colspan="13" style="text-align:center; color:#666;">JSON não encontrado: Classes/caracteristica_' + classe + '.json<br>Carregue manualmente ou adicione o arquivo.</td></tr>';
+          });
+      }
+    });
+
+    // IMPORTAR MANUAL
     function importarJSON() {
       document.getElementById("fileInput").click();
     }
@@ -172,9 +249,14 @@
     document.getElementById("fileInput").addEventListener("change", e => {
       const reader = new FileReader();
       reader.onload = evt => {
-        dadosClasse = JSON.parse(evt.target.result);
-        montarTabela();
-        carregarSubclasses();
+        try {
+          dadosClasse = JSON.parse(evt.target.result);
+          document.getElementById('tituloClasse').textContent = dadosClasse.nome;
+          montarTabela();
+          carregarSubclasses();
+        } catch (err) {
+          alert('Erro ao parsear JSON');
+        }
       };
       reader.readAsText(e.target.files[0]);
     });

@@ -1,35 +1,36 @@
-# TODO - Adicionar aba "Característica de Classe" no modal de configuração
+# TODO.md - Botões Melhorados: Importar JSON + Aplicar na Ficha
 
-## ✅ Passos aprovados e prontos para implementação:
+## 🎯 Tarefa Atual
+Melhorar design do botão \"Importar Json\" e adicionar \"Aplicar na Ficha\" no iframe de classes (Card Classes Vazio.html).
 
-### 1. [PENDENTE] Criar botão da nova aba
-- Local: Dentro de `.config-tabs` após o botão "Combate"
-- HTML: `<button class="config-tab" data-tab="caracteristica-classe" type="button">⚔️ Característica de Classe</button>`
+**Status: Iniciado**
 
-### 2. [PENDENTE] Criar conteúdo da aba
-- Local: Após `<div id="aba-combate" class="config-aba">`
-- HTML: 
-```
-<div class="config-aba" id="aba-caracteristica-classe">
-  <div class="config-bloco">
-    <h3>Características de Classe</h3>
-    <div class="config-linha">
-      <label>Características personalizadas:</label>
-      <textarea placeholder="Descreva características de classe customizadas..."></textarea>
-    </div>
-    <button type="button">Salvar</button>
-  </div>
-</div>
-```
+## 📋 Etapas do Plano Aprovado
 
-### 3. [PENDENTE] Testar funcionalidade
-- Abrir modal de config (botão ⚙️)
-- Verificar se nova aba aparece e alterna corretamente
-- Confirmar que não quebra tabs existentes
+### ⏳ 1. Criar/Atualizar TODO.md [COMPLETO]
+- ✅ Checklist com todas as etapas
 
-### 4. [PENDENTE] Finalizar
-- Marcar todas como ✅
-- Usar attempt_completion
+### ⏳ 2. Editar Card Classes Vazio.html
+- ✅ Style \"Importar JSON\" com classe `ficha-btn`
+- ✅ Add botão \"Aplicar na Ficha\"
+- ✅ JS `aplicarNaFicha()` com postMessage para parent
 
-*Plano segue padrões existentes do modal (data-tab/id="aba-...", classes CSS). JS existente deve funcionar automaticamente.*
+### ⏳ 3. Editar Ficha DnD - Tatagiba 1.0.html
+- ✅ Add `window.addEventListener('message')` para receber e chamar `carregarCaracteristicasClasse()`
+
+### ⏳ 4. Testar Funcionalidade
+- ✅ Abrir config modal → iframe
+- ✅ Importar JSON classe
+- ✅ Select subclasse/nível
+- ✅ Click \"Aplicar na Ficha\" → Status atualiza
+
+### ⏳ 5. Atualizar TODO.md (Finalizar)
+- ✅ Marcar completo
+- ✅ Próximas tarefas pendentes
+
+### ⏳ 6. Attempt Completion
+
+**Progresso: 4/6 ✅**
+
+**Próximo: Testar funcionalidade completa**
 

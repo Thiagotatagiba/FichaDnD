@@ -1,0 +1,45 @@
+{
+  "nome": "Feiticeiro",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Magia Metamórfica, Pontos de Feitiçaria, Origem Dracônica/Feitiço Selvagem/Wild Magic", "truques":"4", "magias":["2","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Magia Font", "truques":"4", "magias":["3","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"{Subclasse}", "truques":"4", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo", "truques":"4", "magias":["4","3","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"–", "truques":"4", "magias":["4","3","2","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Subclasse 6", "truques":"4", "magias":["4","3","3","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"–", "truques":"4", "magias":["4","3","3","1","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo", "truques":"4", "magias":["4","3","3","2","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"–", "truques":"4", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Subclasse 10, Magia Font Melhorada", "truques":"5", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"–", "truques":"5", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo", "truques":"5", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"–", "truques":"5", "magias":["5","3","3","2","2","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Subclasse 14", "truques":"5", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"–", "truques":"5", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo", "truques":"5", "magias":["5","3","3","2","2","1","1","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"–", "truques":"5", "magias":["5","3","3","2","2","1","1","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Subclasse 18", "truques":"5", "magias":["5","3","3","2","2","1","1","1","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"5", "magias":["5","3","3","3","2","2","2","1","1"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Feitiçaria Superior", "truques":"5", "magias":["5","3","3","3","2","2","2","2","2"]}
+  ],
+  "subclasses": {
+    "Dracônica": {
+      "1": {"add": ["Afinidade Dracônica"]},
+      "6": {"add": ["Elemento do Dragão"]},
+      "14": {"add": ["Asas do Dragão"]},
+      "18": {"add": ["Presença do Dragão"]}
+    },
+    "Feitiço Selvagem": {
+      "1": {"add": ["Magia Selvagem"]},
+      "14": {"add": ["Tides of Chaos"]},
+      "18": {"add": ["Spell Bombardment"]}
+    }
+  },
+  "descricoes": {
+    "Magia Metamórfica": "Conheça truques + magias nível. Charisma foco.",
+    "Pontos de Feitiçaria": "Gaste flexível slots.",
+    "Magia Font": "Trocar slot 1º nível ação.",
+    "Feitiçaria Superior": "Metamagia sempre nível slot."
+  }
+}

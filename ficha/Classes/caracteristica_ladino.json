@@ -1,0 +1,50 @@
+{
+  "nome": "Ladino",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Perícias (4), Especialização Ladina, Ataque Furtivo, Furto com Finesse", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Trapaça Astuta", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"{Subclasse}", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo, Proficiência Expertise (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"Ataque Furtivo 3d6, Trapaça Astuta (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Proficiência Expertise (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"Ataque Furtivo 4d6, Evasão", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"Ataque Furtivo 5d6, Inabalável", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Proficiência Expertise (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"Ataque Furtivo 6d6, Confiável", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"Ataque Furtivo 7d6, Subclasse 13", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Inabalável Melhorado", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"Ataque Furtivo 8d6", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo, Proficiência Expertise (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"Ataque Furtivo 9d6, Subclasse 17", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Elusive", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Ataque Furtivo 10d6, Subclasse 20", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]}
+  ],
+  "subclasses": {
+    "Assassino": {
+      "3": {"add": ["Assassinar", "Infiltração Especialista"]},
+      "9": {"add": ["Impersonador"]},
+      "13": {"add": ["Golpe Mortal"]},
+      "17": {"add": ["Golpe Inevitável"]}
+    },
+    "Ladrão": {
+      "3": {"add": ["Mão Rápida", "Supremacia de Ladrão"]},
+      "9": {"add": ["Ferramentas de Ladrão"]},
+      "13": {"add": ["Useiro e Vejeiro"]},
+      "17": {"add": ["Golpe de Ladrão"]}
+    }
+  },
+  "descricoes": {
+    "Especialização Ladina": "Escolha Assassino, Ladrão, Trapaceiro Arcano.",
+    "Ataque Furtivo": "Dano extra se vantagem ou aliado adjacente. Aumenta níveis.",
+    "Furto com Finesse": "Usar DES para ataques finesse.",
+    "Trapaça Astuta": "Bônus ação Desengajar/Esconder. Mais níveis.",
+    "Evasão": "Metade dano DEX save sucesso, zero falha.",
+    "Inabalável": "Vantagem saves charmed.",
+    "Confiável": "Furtivo 1/turno mesmo sem vantagem.",
+    "Elusive": "Nenhuma vantagem contra você."
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "nome": "Mago",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Proficiência Destreza saves, Inteligência saves; Recuperação Arcana, Ritual Casting, Escolha de Escola (Evocação/Abjuração/etc)", "truques":"3", "magias":["2","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Escola de Magia", "truques":"3", "magias":["3","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"–", "truques":"3", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo", "truques":"4", "magias":["4","3","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"–", "truques":"4", "magias":["4","3","2","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Escola 6", "truques":"4", "magias":["4","3","3","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"–", "truques":"4", "magias":["4","3","3","1","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo", "truques":"4", "magias":["4","3","3","2","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"–", "truques":"4", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Escola 10", "truques":"5", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"–", "truques":"5", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo", "truques":"5", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"–", "truques":"5", "magias":["5","3","3","2","2","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Escola 14", "truques":"5", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"–", "truques":"5", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo", "truques":"5", "magias":["5","3","3","2","2","1","1","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"–", "truques":"5", "magias":["5","3","3","2","2","1","1","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Escola 18", "truques":"5", "magias":["5","3","3","2","2","1","1","1","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"5", "magias":["5","3","3","3","2","2","2","1","1"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Mestre Arcano", "truques":"5", "magias":["5","3","3","3","2","2","2","2","2"]}
+  ],
+  "subclasses": {
+    "Evocação": {
+      "2": {"add": ["Esculpir Feitiço", "Sculpt Spells"]},
+      "6": {"add": ["Potente Evocação"]},
+      "10": {"add": ["Feitiço de Impacto"]},
+      "14": {"add": ["Sobre-Evocação"]}
+    },
+    "Abjuração": {
+      "2": {"add": ["Escudo Arcano"]},
+      "6": {"add": ["Proteção Aprimorada"]},
+      "10": {"add": ["Proteção Aprimorada Melhorada"]},
+      "14": {"add": ["Feitiço de Defesa"]}
+    }
+  },
+  "descricoes": {
+    "Recuperação Arcana": "Descanso curto, recuperar slots = nível/2 (arredonda baixo). 1x/dia.",
+    "Ritual Casting": "Magias ritual sem preparar (livro).",
+    "Mestre Arcano": "Escolha 2 magias aprendidas, prepare sem contar no limite. Ignora requisitos componentes matériais <100gp.",
+    "Esculpir Feitiço": "Evocação, proteger 6+ aliados DEX save contra feitiço."
+  }
+}

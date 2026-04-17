@@ -1,0 +1,46 @@
+{
+  "nome": "Guerreiro",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Proficiência armadura leve,média,pesada,escudos; armas simples,marciais; Força saves, Constituição saves; Estilo de luta, Segundo fôlego", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Ação Impulsiva", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"{Subclasse}", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"Ataque Extra", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Subclasse 6", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"Sentido de Indomável", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"Ação Impulsiva (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Luta Sobrevivencial", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"Ataque Extra (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"Subclasse 13", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Sentido de Indomável (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"Indomável", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"Ação Impulsiva (3)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Subclasse 18", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Ação Impulsiva final", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]}
+  ],
+  "subclasses": {
+    "Mestre de Batalha": {
+      "3": {"add": ["Estilo de Luta Superior"]},
+      "7": {"add": ["Conhecedor de Batalha"]},
+      "10": {"add": ["Táticas"]}
+    },
+    "Cavaleiro Arcano": {
+      "3": {"add": ["Magia do Guerreiro"]},
+      "7": {"add": ["Táticas Arcanas"]},
+      "10": {"add": ["Magia Aprimorada"]}
+    }
+  },
+  "descricoes": {
+    "Estilo de luta": "Defesa, Destreza, Duelling, Grande Arma, Proteção, Ataque Duas Armas.",
+    "Segundo fôlego": "Bônus ação d10+ lvl PV 1/curto rest.",
+    "Ação Impulsiva": "1 bônus ação 1/turno. Mais em níveis.",
+    "Sentido de Indomável": "Vantagem em saves Morte.",
+    "Luta Sobrevivencial": "Vantagem ataques corpo a corpo quando 1+ inimigos.",
+    "Indomável": "Re-rolar save falho."
+  }
+}

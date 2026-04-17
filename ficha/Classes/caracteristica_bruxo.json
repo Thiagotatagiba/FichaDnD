@@ -1,0 +1,45 @@
+{
+  "nome": "Bruxo",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Patrono (Fiend/Celestial/Great Old One), Pacto Mágico, 1º pacto; Sabedoria saves, Carisma saves", "truques":"2", "magias":["1","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Invocações Eldritch (2), Pacto Mágico 2º", "truques":"2", "magias":["2","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"Pacto 3º, {Subclasse}", "truques":"2", "magias":["3","–","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo, Pacto Mágico 4º, Invocações (3)", "truques":"2", "magias":["4","–","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"Pacto 5º, Invocações (4)", "truques":"2", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Subclasse 6", "truques":"2", "magias":["4","2","–","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"Pacto 6º, Invocações (5)", "truques":"2", "magias":["4","3","–","–","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo, Pacto 7º", "truques":"2", "magias":["4","3","2","–","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"Pacto 8º", "truques":"2", "magias":["5","3","2","–","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Subclasse 10, Invocações (6)", "truques":"3", "magias":["5","3","2","–","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"Pacto 9º (Mystic Arcanum)", "truques":"3", "magias":["5","3","3","1","–","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo, Invocações (7)", "truques":"3", "magias":["5","3","3","1","–","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"Pacto 9º Mystic Arcanum", "truques":"3", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Subclasse 14, Invocações (8)", "truques":"3", "magias":["5","3","3","2","–","–","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"Pacto 9º Mystic Arcanum", "truques":"3", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo, Invocações (9)", "truques":"3", "magias":["5","3","3","2","1","–","–","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"Subclasse 17, Pacto 9º Mystic Arcanum", "truques":"4", "magias":["5","3","3","2","2","–","–","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Invocações (10)", "truques":"4", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"4", "magias":["5","3","3","2","2","1","–","–","–"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Pacto Eldritch Mestre, Pacto 9º Mystic Arcanum", "truques":"4", "magias":["5","3","3","2","2","1","1","–","–"]}
+  ],
+  "subclasses": {
+    "Fiend": {
+      "1": {"add": ["Expansão Sombria", "Fiend 1"]},
+      "6": {"add": ["Matança Sombria"]},
+      "10": {"add": ["Poder Infernal"]},
+      "14": {"add": ["Morada Infernal"]}
+    },
+    "Celestial": {
+      "1": {"add": ["Radiância Restauradora"]},
+      "6": {"add": ["Cura Radiantes"]},
+      "10": {"add": ["Luz do Sol"]},
+      "14": {"add": ["Asas Radiantes"]}
+    }
+  },
+  "descricoes": {
+    "Pacto Mágico": "Escolha magias. Recupera longo rest. Mystic Arcanum níveis altos não contam slots.",
+    "Invocações Eldritch": "Habilidades especiais sempre ativas.",
+    "Pacto Eldritch Mestre": "Recupera slots pacto após 1min ação (1/dia)."
+  }
+}

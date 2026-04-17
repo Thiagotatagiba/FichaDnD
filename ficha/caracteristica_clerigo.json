@@ -28,16 +28,6 @@
   ],
 
   "subclasses": {
-    "Domínio do Conhecimento": {
-      "1": {
-        "add": ["Bençãos do Conhecimento"]
-      },
-      "2": {
-        "replace": "Característica de Domínio",
-        "value": "Canalizar Divindade: Conhecimento das Eras"
-      }
-    },
-
     "Domínio da Vida": {
       "1": {
         "add": ["Discípulo da Vida"]

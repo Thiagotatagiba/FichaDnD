@@ -1,0 +1,49 @@
+{
+  "nome": "Patrulheiro",
+  "TP_Subclasse": "{Subclasse}",
+  "niveis": [
+    {"nivel":1, "proficiencia":"+2", "caracteristicas":"Proficiência armadura leve, média, escudos; armas simples, marciais; Destreza saves, Sabedoria saves; Inimigo Favorito, Explorador Natural", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":2, "proficiencia":"+2", "caracteristicas":"Lutador Natural, Estilo de Caçador", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":3, "proficiencia":"+2", "caracteristicas":"{Subclasse}, Land's Stride", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":4, "proficiencia":"+2", "caracteristicas":"Melhoria de Atributo, Caçador de Caçador", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":5, "proficiencia":"+3", "caracteristicas":"Ataque Extra", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":6, "proficiencia":"+3", "caracteristicas":"Explorador Natural Melhorado", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":7, "proficiencia":"+3", "caracteristicas":"Subclasse 7, Land's Stride Melhorado", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":8, "proficiencia":"+3", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":9, "proficiencia":"+4", "caracteristicas":"–", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":10, "proficiencia":"+4", "caracteristicas":"Inimigo Favorito (2), Natural Explorer (2)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":11, "proficiencia":"+4", "caracteristicas":"Volée de Flechas", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":12, "proficiencia":"+4", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":13, "proficiencia":"+5", "caracteristicas":"Subclasse 13", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":14, "proficiencia":"+5", "caracteristicas":"Vanishing Strike", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":15, "proficiencia":"+5", "caracteristicas":"Inimigo Favorito (3)", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":16, "proficiencia":"+5", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":17, "proficiencia":"+6", "caracteristicas":"Feral Senses", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":18, "proficiencia":"+6", "caracteristicas":"Subclasse 18, Feral Senses Melhorado", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":19, "proficiencia":"+6", "caracteristicas":"Melhoria de Atributo", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]},
+    {"nivel":20, "proficiencia":"+6", "caracteristicas":"Mestre da Besta", "truques":"–", "magias":["–","–","–","–","–","–","–","–","–"]}
+  ],
+  "subclasses": {
+    "Caçador": {
+      "3": {"add": ["Colossus Slayer/Horde Breaker/Giant Killer"]},
+      "7": {"add": ["Defensive Tactics"]},
+      "11": {"add": ["Multiattack"]},
+      "15": {"add": ["Superior"]}
+    },
+    "Mestre das Feras": {
+      "3": {"add": ["Companion Animal"]},
+      "7": {"add": ["Bestial Fury"]},
+      "11": {"add": ["Share Spells"]},
+      "15": {"add": ["Bestial Might")}
+    }
+  },
+  "descricoes": {
+    "Inimigo Favorito": "Vantagem rastrear/percepção, vantagens dano/save.",
+    "Explorador Natural": "Vantagens sobrevivência/natureza.",
+    "Lutador Natural": "Arqueiro, defesa.",
+    "Land's Stride": "Terreno difícil não reduz velocidade, vantagem saves plantas.",
+    "Caçador de Caçador": "Sem desvantagem ataques escondido.",
+    "Volée de Flechas": "2 bônus ação ataques.",
+    "Vanishing Strike": "Bonus ação esconder/se esconder."
+  }
+}
