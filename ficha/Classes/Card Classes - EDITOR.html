@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Editor de Característica de Classe</title>
+
+<style>
+body {
+  font-family: Arial;
+  background:#1e1e1e;
+  color:#eee;
+}
+
+.container {
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+
+/* HEADER */
+.header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+
+.titulo {
+  font-size:22px;
+  font-weight:bold;
+}
+
+/* BOTÕES */
+button {
+  padding:8px 12px;
+  border:none;
+  border-radius:6px;
+  background:#a05a2c;
+  color:#fff;
+  cursor:pointer;
+}
+
+button:hover {
+  background:#c0703c;
+}
+
+/* CAMPOS */
+.card {
+  background:#2a2a2a;
+  padding:15px;
+  border-radius:8px;
+  margin-bottom:15px;
+}
+
+.row {
+  display:flex;
+  gap:10px;
+}
+
+input {
+  width:100%;
+  padding:6px;
+  border:none;
+  border-radius:5px;
+  background:#444;
+  color:#fff;
+}
+
+/* TABS */
+.tabs {
+  display:flex;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+.tab {
+  padding:8px 12px;
+  background:#333;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.tab.active {
+  background:#a05a2c;
+}
+
+.content { display:none; }
+.content.active { display:block; }
+
+/* MAGIAS */
+.magias {
+  display:flex;
+  gap:5px;
+  margin-top:10px;
+}
+
+.magias input {
+  width:45px;
+  text-align:center;
+}
+
+/* CARACTERÍSTICAS */
+.car-box {
+  margin-top:10px;
+}
+
+.car-item {
+  margin-top:5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- HEADER -->
+<div class="header">
+  <div class="titulo">Editor de Característica de Classe</div>
+
+  <div>
+    <button onclick="importar()">Importar</button>
+    <button onclick="exportar()">Exportar</button>
+  </div>
+</div>
+
+<!-- CAMPOS -->
+<div class="card">
+  <div class="row">
+    <input id="nomeClasse" placeholder="Nome da Classe">
+    <input id="tipoSub" placeholder="Tipo de Subclasse">
+    <input id="carSub" placeholder="Característica da Subclasse">
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="trocar(0)">Características de Classe</div>
+  <div class="tab" onclick="trocar(1)">Subclasse</div>
+</div>
+
+<!-- CONTEÚDO 1 -->
+<div class="content active">
+
+  <div class="card">
+    <b>LV 1</b> | Bônus: +2
+
+    <div class="car-box" id="caracteristicasLv1"></div>
+    <button onclick="addCar()">+ Característica</button>
+
+    <div class="magias">
+      <input placeholder="T">
+      <input placeholder="1">
+      <input placeholder="2">
+      <input placeholder="3">
+      <input placeholder="4">
+      <input placeholder="5">
+      <input placeholder="6">
+      <input placeholder="7">
+      <input placeholder="8">
+      <input placeholder="9">
+    </div>
+  </div>
+
+</div>
+
+<!-- CONTEÚDO 2 -->
+<div class="content">
+  <div class="card">
+    (Subclasse será feita depois)
+  </div>
+</div>
+
+</div>
+
+<script>
+let caracteristicas = [];
+
+/* TABS */
+function trocar(i){
+  document.querySelectorAll(".tab").forEach((t,idx)=>{
+    t.classList.toggle("active", idx===i);
+  });
+  document.querySelectorAll(".content").forEach((c,idx)=>{
+    c.classList.toggle("active", idx===i);
+  });
+}
+
+/* ADD CARACTERÍSTICA */
+function addCar(){
+  const tipo = prompt(
+`Escolha o tipo:
+1 - Característica de Classe
+2 - Iniciar Subclasse
+3 - Característica de Subclasse`
+  );
+
+  if(tipo === "1"){
+    caracteristicas.push({
+      tipo:"classe",
+      nome:"",
+      descricao:""
+    });
+  }
+
+  if(tipo === "2"){
+    caracteristicas.push({
+      tipo:"subclasse_base",
+      nome: document.getElementById("tipoSub").value || "Subclasse",
+      descricao:""
+    });
+  }
+
+  if(tipo === "3"){
+    caracteristicas.push({
+      tipo:"subclasse",
+      nome: document.getElementById("carSub").value || "Característica de Subclasse",
+      descricao:""
+    });
+  }
+
+  renderCar();
+}
+
+function renderCar(){
+  const div = document.getElementById("caracteristicasLv1");
+  div.innerHTML="";
+
+  caracteristicas.forEach((c,i)=>{
+
+    let label = "";
+
+    if(c.tipo === "classe") label = "Classe";
+    if(c.tipo === "subclasse_base") label = "Subclasse";
+    if(c.tipo === "subclasse") label = "Subclasse (Replace)";
+
+    div.innerHTML += `
+      <div class="car-item">
+
+        <small>${label}</small>
+
+        <input
+          value="${c.nome}"
+          placeholder="Nome"
+          onchange="caracteristicas[${i}].nome = this.value">
+
+        <input
+          value="${c.descricao}"
+          placeholder="Descrição"
+          onchange="caracteristicas[${i}].descricao = this.value">
+
+      </div>
+    `;
+  });
+}
+
+/* IMPORTAR */
+function importar(){
+  alert("Importar será implementado depois");
+}
+
+/* EXPORTAR */
+function exportar(){
+  const nome = document.getElementById("nomeClasse").value;
+
+  const json = {
+    nome,
+    TP_Subclasse: document.getElementById("tipoSub").value,
+    Car_Subclasse: document.getElementById("carSub").value,
+    niveis:[
+      {
+        nivel:"1°",
+        proficiencia:"+2",
+        caracteristicas: caracteristicas.join(", ")
+      }
+    ]
+  };
+
+  const blob = new Blob([JSON.stringify(json,null,2)], {type:"application/json"});
+  const a = document.createElement("a");
+
+  a.href = URL.createObjectURL(blob);
+  a.download = "Características_" + (nome || "Classe") + ".json";
+  a.click();
+}
+</script>
+
+</body>
+</html>
