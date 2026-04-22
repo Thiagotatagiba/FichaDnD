@@ -15,7 +15,7 @@ git checkout -b blackboxai/fix-classe-null-v1.0
 ```
 *Status: Já em branch, arquivos modificados*
 
-### ✏️ **Passo 2: Corrigir handleClasseChange() erro null [PENDENTE]**
+### ✏️ **Passo 2: Corrigir handleClasseChange() erro null [✅ CONCLUÍDO]**
 - Adicionar MutationObserver para DOM ready
 - Guards null completos + fallback 2s
 - Remover spam console (debounce 250ms)
