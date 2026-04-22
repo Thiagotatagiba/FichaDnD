@@ -1,36 +1,52 @@
-# TODO.md - Botões Melhorados: Importar JSON + Aplicar na Ficha
+# TODO.md - BlackboxAI Progress Tracker (Fix Classe Null + Melhorias)
 
-## 🎯 Tarefa Atual
-Melhorar design do botão \"Importar Json\" e adicionar \"Aplicar na Ficha\" no iframe de classes (Card Classes Vazio.html).
+## ✅ PLANO APROVADO
+- Corrigir erros null em `handleClasseChange()` (crítico)
+- Carregamento robusto JSON + cache
+- Performance: debounce/iframes lazy  
+- UI: Modo escuro, drag-drop stub
+- Arquivos: `ficha/Ficha DnD - Tatagiba 1.0.html` (principal)
 
-**Status: Iniciado**
+## 📋 PASSOS DE IMPLEMENTAÇÃO
 
-## 📋 Etapas do Plano Aprovado
+### 🔄 **Passo 1: Criar Branch Git [✅ CONCLUÍDO]**
+```
+git checkout -b blackboxai/fix-classe-null-v1.0
+```
+*Status: Já em branch, arquivos modificados*
 
-### ⏳ 1. Criar/Atualizar TODO.md [COMPLETO]
-- ✅ Checklist com todas as etapas
+### ✏️ **Passo 2: Corrigir handleClasseChange() erro null [PENDENTE]**
+- Adicionar MutationObserver para DOM ready
+- Guards null completos + fallback 2s
+- Remover spam console (debounce 250ms)
+**Teste**: Trocar classe → sem erros console, features carregam
 
-### ⏳ 2. Editar Card Classes Vazio.html
-- ✅ Style \"Importar JSON\" com classe `ficha-btn`
-- ✅ Add botão \"Aplicar na Ficha\"
-- ✅ JS `aplicarNaFicha()` com postMessage para parent
+### ⚡ **Passo 3: Fetch JSON Robusto/Cache [PENDENTE]**  
+- Try/catch + cache localStorage (7 dias)
+- Fallback offline para JSONs ausentes
+**Teste**: Offline → features cache funcionam
 
-### ⏳ 3. Editar Ficha DnD - Tatagiba 1.0.html
-- ✅ Add `window.addEventListener('message')` para receber e chamar `carregarCaracteristicasClasse()`
+### 🚀 **Passo 4: Melhorias Performance [PENDENTE]**
+- Iframes lazy no switch de aba
+- Debounce inputs (PV, atributos 150ms)
+**Teste**: Fluido mobile/low-end
 
-### ⏳ 4. Testar Funcionalidade
-- ✅ Abrir config modal → iframe
-- ✅ Importar JSON classe
-- ✅ Select subclasse/nível
-- ✅ Click \"Aplicar na Ficha\" → Status atualiza
+### ✨ **Passo 5: Melhorias UI [PENDENTE]**
+- Toggle modo escuro (modal config)
+- Stub drag-drop inventário
+- Botão PDF export (stub)
 
-### ⏳ 5. Atualizar TODO.md (Finalizar)
-- ✅ Marcar completo
-- ✅ Próximas tarefas pendentes
+### 🧪 **Passo 6: Testes [PENDENTE]**
+- Mobile/desktop troca classe
+- Sync todas abas
+- Persistência localStorage
 
-### ⏳ 6. Attempt Completion
+### 📤 **Passo 7: Commit & PR [PENDENTE]**
+```
+git add . && git commit -m \"Fix classe null + melhorias v1.0\" && git push
+gh pr create --title \"Fix handleClasseChange null + perf/UI\" 
+```
 
-**Progresso: 4/6 ✅**
-
-**Próximo: Testar funcionalidade completa**
+## 📊 PROGRESSO: 1/7 PASSOS CONCLUÍDOS
+**Próximo: Passo 2 → Editar `ficha/Ficha DnD - Tatagiba 1.0.html`**
 

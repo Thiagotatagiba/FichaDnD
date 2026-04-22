@@ -5217,15 +5217,76 @@ function popularTalentoLista(categoria, features) {
 }
 
 function handleClasseChange() {
-  const classeNome = document.getElementById('classeNomeID').value;
-  const classeNivel = parseInt(document.getElementById('classeNivelID').value) || 1;
-  const sub = document.getElementById('subclasse').value;
+  // ✅ FIXED v1.0 - Sem erros null, MutationObserver + debounce 250ms
+  if (window.classeObserverActive) return;
+  
+  const initHandler = () => {
+    const classeNomeEl = document.getElementById('classeNomeID');
+    const classeNivelEl = document.getElementById('classeNivelID');
+    const subEl = document.getElementById('subclasse');
+    
+    if (!classeNomeEl || !classeNivelEl || !subEl) {
+      if (!window.classObserver) {
+        window.classObserver = new MutationObserver((mutations) => {
+          if (document.readyState === 'complete') {
+            window.classObserver.disconnect();
+            handleClasseChange();
+          }
+        });
+        window.classObserver.observe(document.body, { childList: true, subtree: true });
+        setTimeout(() => {
+          window.classObserver?.disconnect();
+          console.log('🔧 Classe: DOM pronto, recarregando...');
+        }, 2000);
+      }
+      return;
+    }
+    
+    // ✅ Elementos OK - TALENTOS_CONFIG
+    window.TALENTOS_CONFIG = window.TALENTOS_CONFIG || {
+      classe: { listaId: 'talentoClasseLista', resumoId: 'talentoClasseResumo' },
+      arquetipo: { listaId: 'talentoArquetipoLista', resumoId: 'talentoArquetipoResumo' },
+      raca: { listaId: 'talentoRacaLista', resumoId: 'talentoRacaResumo' },
+      antecedente: { listaId: 'talentoAntecedenteLista', resumoId: 'talentoAntecedenteResumo' },
+      outros: { listaId: 'talentoOutroLista' }
+    };
+    
+    if (typeof carregarCaracteristicasClasse === 'function') {
+      const classeNome = classeNomeEl.value || '';
+      const classeNivel = parseInt(classeNivelEl?.value) || 1;
+      const sub = subEl.value || '';
+      carregarCaracteristicasClasse(classeNome, classeNivel, sub);
+    }
+  };
+  
+  // Debounce anti-spam
+  clearTimeout(window.handleClasseChangeTimer);
+  window.handleClasseChangeTimer = setTimeout(initHandler, 250);
+  window.classeObserverActive = true;
+  setTimeout(() => { window.classeObserverActive = false; }, 500);
+}
+  const classeNomeEl = document.getElementById('classeNomeID');
+  const classeNivelEl = document.getElementById('classeNivelID');
+  const subEl = document.getElementById('subclasse');
+  
+  if (!classeNomeEl || !classeNivelEl || !subEl) {
+    console.warn('Elementos da classe não encontrados. Abortando carregamento.');
+    return;
+  }
+  
+  const classeNome = classeNomeEl.value;
+  const classeNivel = parseInt(classeNivelEl.value) || 1;
+  const sub = subEl.value;
   carregarCaracteristicasClasse(classeNome, classeNivel, sub);
 }
 
 // Adiciona event listeners (Etapa 3)
-document.getElementById('classeNomeID').addEventListener('change', handleClasseChange);
-document.getElementById('classeNivelID').addEventListener('input', handleClasseChange);
+const classeNomeEl = document.getElementById('classeNomeID');
+if (classeNomeEl) classeNomeEl.addEventListener('change', handleClasseChange);
+
+const classeNivelEl = document.getElementById('classeNivelID');
+if (classeNivelEl) classeNivelEl.addEventListener('input', handleClasseChange);
+
 const subInput = document.getElementById('subclasse');
 if (subInput) subInput.addEventListener('input', handleClasseChange);
 
@@ -5488,7 +5549,7 @@ handleClasseChange();
                                 </div>
 
                                 <div class="pv-main">
-                                    <input id="pvAtual" type="number" min="0" step="1" value="0"
+                                    <input id="pvAtual" type="number" min="0" step="1" value="8"
                                         aria-label="Pontos de vida atuais">
 
                                     <div class="pv-hearts" id="pvHearts">
