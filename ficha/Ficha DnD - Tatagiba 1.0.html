@@ -5217,16 +5217,25 @@ function popularTalentoLista(categoria, features) {
 }
 
 function handleClasseChange() {
-  const classeNome = document.getElementById('classeNomeID').value;
-  const classeNivel = parseInt(document.getElementById('classeNivelID').value) || 1;
-  const sub = document.getElementById('subclasse').value;
+  const classeNomeInput = document.getElementById('classeNomeID');
+  const classeNivelInput = document.getElementById('classeNivelID');
+  const subInput = document.getElementById('subclasse');
+
+  if (!classeNomeInput || !classeNivelInput) return;
+
+  const classeNome = classeNomeInput.value;
+  const classeNivel = parseInt(classeNivelInput.value) || 1;
+  const sub = subInput?.value || '';
   carregarCaracteristicasClasse(classeNome, classeNivel, sub);
 }
 
 // Adiciona event listeners (Etapa 3)
-document.getElementById('classeNomeID').addEventListener('change', handleClasseChange);
-document.getElementById('classeNivelID').addEventListener('input', handleClasseChange);
+const classeNomeInput = document.getElementById('classeNomeID');
+const classeNivelInput = document.getElementById('classeNivelID');
 const subInput = document.getElementById('subclasse');
+
+if (classeNomeInput) classeNomeInput.addEventListener('change', handleClasseChange);
+if (classeNivelInput) classeNivelInput.addEventListener('input', handleClasseChange);
 if (subInput) subInput.addEventListener('input', handleClasseChange);
 
 // Integra com load (chama após carregarFicha)

@@ -2,17 +2,35 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Edge Debug CLEAN",
-            "type": "msedge",
+            "name": "Electron: Main",
+            "type": "node",
+            "request": "launch",
+            "program": "${workspaceFolder}/main.js",
+            "restart": true,
+            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+            "runtimeArgs": [
+                "."
+            ],
+            "env": {
+                "NODE_ENV": "development"
+            }
+        },
+        {
+            "name": "Electron: Renderer",
+            "type": "chrome",
+            "request": "attach",
+            "port": 9223,
+            "webRoot": "${workspaceFolder}",
+            "sourceMapPathOverrides": {
+                "webpack:///./*": "${workspaceFolder}/*"
+            }
+        },
+        {
+            "name": "Chrome: HTML Local",
+            "type": "chrome",
             "request": "launch",
             "url": "file:///${workspaceFolder}/ficha/Ficha%20DnD%20-%20Tatagiba%201.0.html",
-            "webRoot": "${workspaceFolder}",
-            "userDataDir": "${env:TEMP}/vscode-edge-debug",
-            "runtimeArgs": [
-                "--disable-extensions",
-                "--disable-default-apps"
-            ]
+            "webRoot": "${workspaceFolder}"
         }
     ]
-}
-``
+} 
