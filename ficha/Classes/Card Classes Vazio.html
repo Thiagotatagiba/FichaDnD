@@ -126,6 +126,8 @@
 
     <br>
 
+    <div id="statusCargaClasse" style="margin: 10px 0; font-size: 12px; color: #5a3b1d;">Aguardando carregamento da classe...</div>
+
     <select id="selectSubclasse" onchange="aplicarSubclasse()"></select>
 
     <table>
@@ -161,6 +163,7 @@
     </div>
   </div>
 
+<script src="./classes-embutidas.js"></script>
 <script>
     let dadosClasse = null;
     let subclasseAtual = "";
@@ -215,27 +218,133 @@
 
       alert('✅ Características aplicadas na ficha!');
     }
+
+    function atualizarStatusCargaClasse(mensagem, tipo = 'info') {
+      const status = document.getElementById('statusCargaClasse');
+      if (!status) return;
+
+      const cores = {
+        info: '#5a3b1d',
+        sucesso: '#1f6f3e',
+        erro: '#a11d1d'
+      };
+
+      status.textContent = mensagem;
+      status.style.color = cores[tipo] || cores.info;
+      console.log('[CardClasse]', mensagem);
+    }
+
+    function nomeArquivoAtual() {
+      const caminho = window.location.pathname || '';
+      const partes = caminho.split('/');
+      return decodeURIComponent(partes[partes.length - 1] || 'arquivo-desconhecido');
+    }
+
+    function carregarJSONClasse(caminho, classe = '') {
+      const classeNormalizada = String(classe || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+
+      if (classeNormalizada && window.CLASSES_EMBUTIDAS?.[classeNormalizada]) {
+        return Promise.resolve(window.CLASSES_EMBUTIDAS[classeNormalizada]);
+      }
+
+      return fetch(caminho)
+        .then(response => {
+          if (!response.ok) throw new Error('JSON not found');
+          return response.json();
+        })
+        .catch(errorFetch => {
+          if (window.location.protocol !== 'file:') {
+            throw errorFetch;
+          }
+
+          return new Promise((resolve, reject) => {
+            const request = new XMLHttpRequest();
+            request.open('GET', caminho, true);
+
+            request.onload = function() {
+              const statusValido = request.status >= 200 && request.status < 300;
+              const arquivoLocalValido = request.status === 0 && request.responseText;
+
+              if (!statusValido && !arquivoLocalValido) {
+                reject(errorFetch);
+                return;
+              }
+
+              try {
+                resolve(JSON.parse(request.responseText));
+              } catch (errorParse) {
+                reject(errorParse);
+              }
+            };
+
+            request.onerror = function() {
+              reject(errorFetch);
+            };
+
+            request.send();
+          });
+        });
+    }
+
+    function importarJSONNoCard(conteudoJSON, origem = 'JSON', classe = '') {
+      const data = typeof conteudoJSON === 'string' ? JSON.parse(conteudoJSON) : conteudoJSON;
+      if (!data) throw new Error('JSON vazio');
+
+      dadosClasse = data;
+      document.getElementById('tituloClasse').textContent = data.nome || classe || 'Classe';
+      document.getElementById('nomeSubclasse').textContent = '';
+      const selectSubclasse = document.getElementById('selectSubclasse');
+      if (selectSubclasse) selectSubclasse.value = '';
+      montarTabela();
+      carregarSubclasses();
+
+      const totalNiveis = Array.isArray(data.niveis) ? data.niveis.length : 0;
+      atualizarStatusCargaClasse(
+        `Arquivo upado no card via ${origem}: ${data.nome || classe || 'Classe'} (${totalNiveis} níveis)`,
+        'sucesso'
+      );
+    }
+
+    function aplicarDadosClasseNoCard(data, classe = '') {
+      if (!data) return;
+      importarJSONNoCard(data, 'carregamento automatico', classe);
+    }
+
+    window.addEventListener('message', function(event) {
+      if (event.data?.action !== 'loadClassCardData' || !event.data?.jsonData) return;
+      atualizarStatusCargaClasse(`Dados recebidos via ficha principal para ${event.data.classe || event.data.jsonData?.nome || 'classe'}.`, 'info');
+      aplicarDadosClasseNoCard(event.data.jsonData, event.data.classe || '');
+    });
+
     // AUTO-LOAD FROM URL PARAM
     document.addEventListener('DOMContentLoaded', function() {
       const urlParams = new URLSearchParams(window.location.search);
       const classe = urlParams.get('classe');
       if (classe) {
-fetch(`caracteristica_${classe}.json`)
-          .then(response => {
-            if (!response.ok) throw new Error('JSON not found');
-            return response.json();
-          })
+        const caminhoJson = `caracteristica_${classe}.json`;
+        atualizarStatusCargaClasse(
+          `Arquivo HTML: ${nomeArquivoAtual()} | URL: ${window.location.href} | JSON: ${caminhoJson}`,
+          'info'
+        );
+carregarJSONClasse(caminhoJson, classe)
           .then(data => {
-            dadosClasse = data;
-            document.getElementById('tituloClasse').textContent = data.nome || classe;
-            montarTabela();
-            carregarSubclasses();
+            aplicarDadosClasseNoCard(data, classe);
           })
           .catch(error => {
             console.error('Erro ao carregar JSON:', error);
+            atualizarStatusCargaClasse(
+              `Falha no arquivo ${nomeArquivoAtual()} ao carregar JSON: ${caminhoJson} | URL: ${window.location.href}`,
+              'erro'
+            );
             document.getElementById('tituloClasse').textContent = 'Classe: ' + classe;
             document.querySelector('#tbodyClasse').innerHTML = '<tr><td colspan="13" style="text-align:center; color:#666;">JSON não encontrado: Classes/caracteristica_' + classe + '.json<br>Carregue manualmente ou adicione o arquivo.</td></tr>';
           });
+      } else {
+        atualizarStatusCargaClasse(`Arquivo HTML: ${nomeArquivoAtual()} | URL: ${window.location.href} | Nenhuma classe informada.`, 'info');
       }
     });
 
@@ -248,11 +357,9 @@ fetch(`caracteristica_${classe}.json`)
       const reader = new FileReader();
       reader.onload = evt => {
         try {
-          dadosClasse = JSON.parse(evt.target.result);
-          document.getElementById('tituloClasse').textContent = dadosClasse.nome;
-          montarTabela();
-          carregarSubclasses();
+          importarJSONNoCard(evt.target.result, e.target.files[0]?.name || 'importacao manual');
         } catch (err) {
+          atualizarStatusCargaClasse('Erro ao importar o JSON manualmente.', 'erro');
           alert('Erro ao parsear JSON');
         }
       };

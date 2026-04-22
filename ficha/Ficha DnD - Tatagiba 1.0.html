@@ -5118,11 +5118,35 @@ document.addEventListener('DOMContentLoaded', function() {
   const iframe = document.getElementById('iframeClasseCard');
   
   if (classeSelect && iframe) {
+    iframe.addEventListener('load', function() {
+      const classeAtual = classeSelect.value;
+      const dadosBrutosClasse = document.getElementById('classeData')?.value;
+
+      if (!classeAtual || !dadosBrutosClasse) return;
+
+      try {
+        console.log('[Ficha] Enviando dados da classe para o card após load do iframe:', classeAtual);
+        iframe.contentWindow?.postMessage({
+          action: 'loadClassCardData',
+          classe: classeAtual,
+          jsonData: JSON.parse(dadosBrutosClasse)
+        }, '*');
+      } catch (error) {
+        console.warn('Não foi possível sincronizar dados da classe com o card.', error);
+      }
+    });
+
     // Auto-load quando classe muda
     classeSelect.addEventListener('change', function(e) {
       const classe = e.target.value;
       if (classe) {
-        iframe.src = `./Classes/Card Classes Vazio.html?classe=${classe}`;
+        const urlCard = `./Classes/Card Classes Vazio.html?classe=${classe}`;
+        console.log('[Ficha] Abrindo card de classe:', {
+          classe,
+          iframeSrc: urlCard,
+          paginaAtual: window.location.href
+        });
+        iframe.src = urlCard;
         // Scroll suave para iframe se necessário
         iframe.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } else {
@@ -5159,6 +5183,18 @@ function limparListasTalentos() {
   });
 }
 
+function enviarClasseParaCard(classe, classeData) {
+  const iframe = document.getElementById('iframeClasseCard');
+  if (!iframe?.contentWindow || !classe || !classeData) return;
+
+  console.log('[Ficha] Enviando dados da classe para o card:', classe);
+  iframe.contentWindow.postMessage({
+    action: 'loadClassCardData',
+    classe,
+    jsonData: classeData
+  }, '*');
+}
+
 async function carregarCaracteristicasClasse(classe = '', nivel = 1, subclasse = '') {
   if (!classe) {
     limparListasTalentos();
@@ -5177,6 +5213,7 @@ async function carregarCaracteristicasClasse(classe = '', nivel = 1, subclasse =
     if (!classeResp.ok) throw new Error(`JSON classe não encontrado: ${classePath}`);
     const classeData = await classeResp.json();
     document.getElementById('classeData').value = JSON.stringify(classeData);
+    enviarClasseParaCard(classe, classeData);
 
     // Filtra features por nível
     const featuresClasse = (classeData.features || []).filter(f => f.level <= nivel);
@@ -5497,7 +5534,7 @@ handleClasseChange();
                                 </div>
 
                                 <div class="pv-main">
-                                    <input id="pvAtual" type="number" min="0" step="1" value="0"
+                                    <input id="pvAtual" type="number" min="0" step="1" value="8"
                                         aria-label="Pontos de vida atuais">
 
                                     <div class="pv-hearts" id="pvHearts">
@@ -7713,6 +7750,30 @@ handleClasseChange();
             return document.getElementById('subraca');
         }
 
+        function garantirPlaceholderSelect(select, textoPlaceholder) {
+            if (!select) return;
+
+            let primeiraOpcao = select.options[0];
+            if (!primeiraOpcao || primeiraOpcao.value !== "") {
+                primeiraOpcao = document.createElement('option');
+                primeiraOpcao.value = "";
+                select.insertBefore(primeiraOpcao, select.firstChild);
+            }
+
+            primeiraOpcao.textContent = textoPlaceholder;
+
+            const valorAtual = String(select.value ?? "").trim();
+            const valorExiste = valorAtual !== "" && Array.from(select.options).some(opcao => opcao.value === valorAtual);
+            if (!valorAtual || !valorExiste) {
+                select.value = "";
+            }
+        }
+
+        function normalizarPlaceholdersCamposBase() {
+            garantirPlaceholderSelect(document.getElementById('classeNomeID'), 'Selecione uma classe');
+            garantirPlaceholderSelect(obterCampoRaca(), 'Selecione uma raça');
+        }
+
         function garantirOpcaoSelect(select, valor, texto = valor) {
             if (!select || !valor) return;
 
@@ -8109,7 +8170,8 @@ Bônus de Proficiência: +${bonusProf}
         function atualizarVidaMaxNivelUm() {
             const campoNivel = document.getElementById('classeNivelID');
             const campoPvTotal = document.getElementById('pvTotal');
-            if (!campoNivel || !campoPvTotal) return;
+            const campoPvAtual = document.getElementById('pvAtual');
+            if (!campoNivel || !campoPvTotal || !campoPvAtual) return;
 
             const nivel = parseInt(campoNivel.value, 10) || 1;
             if (nivel !== 1) return;
@@ -8119,6 +8181,7 @@ Bônus de Proficiência: +${bonusProf}
             const novoPvMax = Math.max(1, dadoVida + modCon);
 
             campoPvTotal.value = novoPvMax;
+            campoPvAtual.value = novoPvMax;
         }
 
         function obterDadoDeVida() {
@@ -13348,12 +13411,18 @@ function salvarFicha() {
             sincronizarResumoCaracteristicas();
             sincronizarCamposMagia();
             atualizarMagias();
+            atualizarDadoVida();
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
         });
         document.getElementById('classeNomeID').addEventListener('change', () => {
             sincronizarClasseNivel();
             sincronizarResumoCaracteristicas();
             sincronizarCamposMagia();
             atualizarMagias();
+            atualizarDadoVida();
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
         });
 
         document.getElementById('classeNivelID').addEventListener('input', () => sincronizarClasseNivel());
@@ -13656,6 +13725,7 @@ function salvarFicha() {
         }
         atualizarFicha();
         atualizarSubclasse();
+        normalizarPlaceholdersCamposBase();
         garantirOpcaoSelect(obterCampoRaca(), obterCampoRaca()?.value);
         atualizarSubracas();
         marcarFichaComoSalva();
@@ -13728,6 +13798,7 @@ function salvarFicha() {
                 atualizarSubracas(dados.racaID ?? dados.raca ?? "");
             }
 
+            normalizarPlaceholdersCamposBase();
             preencherFormularioConfigFicha();
             aplicarConfigCustomizacaoNaFicha(false);
 
