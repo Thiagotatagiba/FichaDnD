@@ -3633,6 +3633,7 @@
             align-items: center;
             gap: 6px;
             min-width: 0;
+            position: relative;
         }
 
         .equipados-mao-emoji {
@@ -3650,6 +3651,25 @@
             line-height: 1;
             cursor: default;
             padding: 0;
+            position: relative;
+        }
+
+        .equipados-mao-emoji[data-indicador]:not([data-indicador=""])::before {
+            content: attr(data-indicador);
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: 14px;
+            height: 14px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            line-height: 1;
+            border-radius: 999px;
+            background: #fffaf2;
+            border: 1px solid #bda68c;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
         }
 
         .equipados-mao-emoji.clicavel {
@@ -3675,6 +3695,50 @@
 
         .equipados-armas-item.secundaria-bloqueada {
             opacity: 0.55;
+        }
+
+        .empunhadura-menu {
+            position: fixed;
+            z-index: 1200;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+            box-shadow: none;
+            pointer-events: none;
+        }
+
+        .empunhadura-menu-botao {
+            width: 34px;
+            height: 34px;
+            border: 1px solid #bda68c;
+            border-radius: 10px;
+            background: #f6ead4;
+            color: #6f3610;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            font-family: inherit;
+            pointer-events: auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.16);
+        }
+
+        .empunhadura-menu-botao:hover,
+        .empunhadura-menu-botao:focus-visible {
+            background: #ead3ad;
+            border-color: #8b4513;
+            outline: none;
+        }
+
+        .equipados-mao-emoji:focus,
+        .equipados-mao-emoji:focus-visible,
+        .empunhadura-menu-botao:focus,
+        .empunhadura-menu-botao:focus-visible {
+            outline: none;
         }
 
         .equipados-municao-linha {
@@ -6102,6 +6166,7 @@ handleClasseChange();
                                             <div id="arma2Propriedade" class="equipados-propriedade-linha"></div>
                                         </div>
                                     </div>
+                                    <div id="empunhaduraMenu" class="empunhadura-menu oculto" aria-hidden="true"></div>
                                 </div>
 
                                 <div class="equipados-secao">
@@ -9579,21 +9644,28 @@ Bônus de Proficiência: +${bonusProf}
                     : estadoCombate.maoPrincipal.modo === 'duas_maos'
                         ? '👏'
                         : '✊';
+                const indicadorVersatil = principal?.versatil
+                    ? (estadoCombate.maoPrincipal.modo === 'duas_maos' ? '✊' : '👏')
+                    : '';
                 botaoPrincipal.textContent = emojiPrincipal;
-                botaoPrincipal.classList.toggle('clicavel', !!principal?.versatil);
-                botaoPrincipal.disabled = !principal?.versatil;
-                botaoPrincipal.title = principal?.versatil
-                    ? 'Alternar entre 1 ou 2 mãos'
-                    : (!principal ? 'Mão principal livre' : 'Empunhadura atual da mão principal');
+                botaoPrincipal.dataset.indicador = indicadorVersatil;
+                botaoPrincipal.classList.toggle('clicavel', !!principal);
+                botaoPrincipal.disabled = false;
+                botaoPrincipal.title = !principal
+                    ? 'Mão principal livre'
+                    : (principal?.versatil ? 'Ações da empunhadura da arma versátil' : 'Ações da mão principal');
             }
 
             if (botaoSecundario) {
                 let emojiSecundario = '🤚';
-                if (!secundariaAtiva) emojiSecundario = '🚫';
-                else if (secundariaItem?.tipo === 'escudo') emojiSecundario = '🛡️';
+                if (secundariaItem?.tipo === 'escudo') emojiSecundario = '🛡️';
                 else if (secundariaItem) emojiSecundario = '✊';
                 botaoSecundario.textContent = emojiSecundario;
-                botaoSecundario.title = !secundariaAtiva ? 'Mão secundária bloqueada' : 'Estado da mão secundária';
+                botaoSecundario.classList.toggle('clicavel', !!secundariaItem);
+                botaoSecundario.disabled = false;
+                botaoSecundario.title = !secundariaItem
+                    ? (!secundariaAtiva ? 'Mão secundária livre por causa de empunhadura com duas mãos' : 'Mão secundária livre')
+                    : 'Ações da mão secundária';
             }
 
             if (linhaSecundaria) {
@@ -9620,20 +9692,148 @@ Bônus de Proficiência: +${bonusProf}
             if (botaoDesequiparSecundario) {
                 botaoDesequiparSecundario.disabled = !secundariaAtiva;
             }
+
+            reposicionarMenuEmpunhadura();
         }
 
-        function alternarEmpunhaduraPrincipal() {
+        function obterMenuEmpunhadura() {
+            return document.getElementById('empunhaduraMenu');
+        }
+
+        function fecharMenuEmpunhadura() {
+            const menu = obterMenuEmpunhadura();
+            if (!menu) return;
+
+            menu.classList.add('oculto');
+            menu.innerHTML = '';
+            menu.setAttribute('aria-hidden', 'true');
+            menu.style.top = '';
+            menu.style.left = '';
+            estadoMenuEmpunhadura.slot = null;
+            estadoMenuEmpunhadura.ancoraId = null;
+            if (document.activeElement instanceof HTMLElement) {
+                document.activeElement.blur();
+            }
+        }
+
+        function reposicionarMenuEmpunhadura() {
+            const menu = obterMenuEmpunhadura();
+            if (!menu || menu.classList.contains('oculto') || !estadoMenuEmpunhadura.ancoraId) return;
+
+            const ancora = document.getElementById(estadoMenuEmpunhadura.ancoraId);
+            if (!ancora) {
+                fecharMenuEmpunhadura();
+                return;
+            }
+
+            const rect = ancora.getBoundingClientRect();
+            menu.style.top = `${Math.max(8, rect.top - 38)}px`;
+            menu.style.left = `${rect.left - 2}px`;
+        }
+
+        function criarBotaoAcaoEmpunhadura(emoji, titulo, onClick) {
+            const botao = document.createElement('button');
+            botao.type = 'button';
+            botao.className = 'empunhadura-menu-botao';
+            botao.textContent = emoji;
+            botao.title = titulo;
+            botao.setAttribute('aria-label', titulo);
+            botao.addEventListener('click', evento => {
+                evento.preventDefault();
+                evento.stopPropagation();
+                botao.blur();
+                onClick();
+                fecharMenuEmpunhadura();
+            });
+            return botao;
+        }
+
+        function obterConfiguracaoEmpunhaduraSlot(indiceSlot, armas) {
+            const valorSelecionado = document.getElementById(`arma${indiceSlot}Nome`)?.value || '';
+            if (!valorSelecionado) return null;
+
+            if (indiceSlot === 1) {
+                const principal = estadoCombate.maoPrincipal.item;
+                if (!principal) return null;
+
+                return {
+                    indiceSlot,
+                    ocupado: true,
+                    versatil: !!principal.versatil,
+                    emDuasMaos: estadoCombate.maoPrincipal.modo === 'duas_maos'
+                };
+            }
+
+            if (!estadoCombate.maoSecundaria.item) return null;
+
+            const indiceEscudo = extrairIndiceSlotEscudo(valorSelecionado);
+            if (indiceEscudo !== null) {
+                return {
+                    indiceSlot,
+                    ocupado: true,
+                    versatil: false,
+                    emDuasMaos: false
+                };
+            }
+
+            const indiceArma = parseInt(valorSelecionado, 10);
+            const arma = Number.isInteger(indiceArma) ? armas[indiceArma] : null;
+            return {
+                indiceSlot,
+                ocupado: !!arma,
+                versatil: !!arma?.propriedades?.versatil,
+                emDuasMaos: false
+            };
+        }
+
+        function abrirMenuEmpunhadura(indiceSlot) {
+            const armas = coletarArmas();
+            const configuracao = obterConfiguracaoEmpunhaduraSlot(indiceSlot, armas);
+            if (!configuracao?.ocupado) {
+                fecharMenuEmpunhadura();
+                return;
+            }
+
+            const menu = obterMenuEmpunhadura();
+            const ancora = document.getElementById(`arma${indiceSlot}Empunhadura`);
+            if (!menu || !ancora) return;
+
+            if (!menu.classList.contains('oculto') && estadoMenuEmpunhadura.slot === indiceSlot) {
+                fecharMenuEmpunhadura();
+                return;
+            }
+
+            menu.innerHTML = '';
+            menu.appendChild(criarBotaoAcaoEmpunhadura('🚫', `Desequipar item da mão ${indiceSlot === 1 ? 'principal' : 'secundária'}`, () => {
+                desequiparArmaSlot(indiceSlot);
+                atualizarSubAbaArmas();
+            }));
+
+            if (configuracao.versatil && indiceSlot === 1) {
+                menu.appendChild(criarBotaoAcaoEmpunhadura(
+                    configuracao.emDuasMaos ? '✊' : '👏',
+                    configuracao.emDuasMaos ? 'Voltar a empunhar a arma com uma mão' : 'Empunhar arma versátil com duas mãos',
+                    () => {
+                    alternarModoEmpunhaduraVersatil(configuracao.emDuasMaos ? 'uma_mao' : 'duas_maos');
+                    atualizarSubAbaArmas();
+                }));
+            }
+
+            menu.classList.remove('oculto');
+            menu.setAttribute('aria-hidden', 'false');
+            estadoMenuEmpunhadura.slot = indiceSlot;
+            estadoMenuEmpunhadura.ancoraId = ancora.id;
+            reposicionarMenuEmpunhadura();
+        }
+
+        function alternarModoEmpunhaduraVersatil(modo) {
             const principal = estadoCombate.maoPrincipal.item;
             if (!principal?.versatil) return;
 
-            estadoCombate.maoPrincipal.modo = estadoCombate.maoPrincipal.modo === 'duas_maos' ? 'uma_mao' : 'duas_maos';
+            estadoCombate.maoPrincipal.modo = modo === 'duas_maos' ? 'duas_maos' : 'uma_mao';
             if (estadoCombate.maoPrincipal.modo === 'duas_maos') {
                 limparSelecaoSecundariaEquipamento(parseInt(document.getElementById('arma1Nome')?.value || '', 10));
-            } else {
-                const selectSecundario = document.getElementById('arma2Nome');
-                if (selectSecundario) selectSecundario.value = '';
             }
-
             sincronizarMarcacaoArmasPorSlots();
             sincronizarEquipamentosCombate();
         }
@@ -11255,6 +11455,10 @@ function salvarFicha() {
                 item: null,
                 ativa: true
             }
+        };
+        let estadoMenuEmpunhadura = {
+            slot: null,
+            ancoraId: null
         };
 
         function obterTextoCampoTalento(id) {
@@ -13549,11 +13753,21 @@ function salvarFicha() {
             const campo = document.getElementById(id);
             if (!campo) return;
             campo.addEventListener('change', () => {
+                fecharMenuEmpunhadura();
                 lidarSelecaoArmaEquipada(indice + 1);
                 atualizarSubAbaArmas();
             });
         });
-        document.getElementById('arma1Empunhadura')?.addEventListener('click', alternarEmpunhaduraPrincipal);
+        ['arma1Empunhadura', 'arma2Empunhadura'].forEach((id, indice) => {
+            const botao = document.getElementById(id);
+            if (!botao) return;
+            botao.addEventListener('click', evento => {
+                evento.preventDefault();
+                evento.stopPropagation();
+                botao.blur();
+                abrirMenuEmpunhadura(indice + 1);
+            });
+        });
         ['arma1MunicaoSelect', 'arma2MunicaoSelect'].forEach((id, indice) => {
             const campo = document.getElementById(id);
             if (!campo) return;
@@ -13579,10 +13793,27 @@ function salvarFicha() {
             const botao = document.getElementById(id);
             if (!botao) return;
             botao.addEventListener('click', () => {
+                fecharMenuEmpunhadura();
                 desequiparArmaSlot(indice + 1);
                 atualizarSubAbaArmas();
             });
         });
+        document.addEventListener('click', evento => {
+            const menu = obterMenuEmpunhadura();
+            if (!menu || menu.classList.contains('oculto')) return;
+
+            if (menu.contains(evento.target)) return;
+            if (evento.target.closest('#arma1Empunhadura, #arma2Empunhadura')) return;
+
+            fecharMenuEmpunhadura();
+        });
+        document.addEventListener('keydown', evento => {
+            if (evento.key === 'Escape') {
+                fecharMenuEmpunhadura();
+            }
+        });
+        window.addEventListener('resize', reposicionarMenuEmpunhadura);
+        window.addEventListener('scroll', fecharMenuEmpunhadura, true);
         const overlayAtaque = document.getElementById('modalAtaqueOverlay');
         if (overlayAtaque) {
             overlayAtaque.addEventListener('click', evento => {
