@@ -6199,9 +6199,6 @@ handleClasseChange();
                                                 <span class="equipados-municao-icone">➹</span>
                                                 <select id="arma1MunicaoSelect" class="equipados-municao-select"
                                                     aria-label="Munição da arma principal"></select>
-                                                <div id="arma1Propriedade" class="equipados-propriedade-linha">
-                                                    Propriedade:
-                                                </div>
                                             </div>
 
                                         </div>
@@ -6228,7 +6225,6 @@ handleClasseChange();
                                                 <select id="arma2MunicaoSelect" class="equipados-municao-select"
                                                     aria-label="Munição da arma secundária"></select>
                                             </div>
-                                            <div id="arma2Propriedade" class="equipados-propriedade-linha"></div>
                                         </div>
                                     </div>
                                     <div id="empunhaduraMenu" class="empunhadura-menu oculto" aria-hidden="true"></div>
@@ -7758,7 +7754,7 @@ handleClasseChange();
         const SUBRACAS = {
             humano: null,
             elfo: ["Alto Elfo", "Elfo da Floresta", "Drow"],
-            anao: ["Colina", "Montanha"],
+            anao: ["Anão da Colina", "Anão da Montanha"],
             halfling: ["Pés-Leves", "Robusto"],
             tiefling: null,
             draconato: [
@@ -8822,12 +8818,17 @@ Bônus de Proficiência: +${bonusProf}
             const nome = arma.nome?.trim() || "Arma sem nome";
             const tipo = arma.arma_tipo_dano?.trim() || "-";
             const tipoArma = arma.arma_tipo?.trim() || "";
+            const danoUmaMao = arma.dano_1?.trim() || "";
+            const danoDuasMaos = arma.dano_2?.trim() || "";
+            const propriedades = arma.propriedades || {};
 
             const proficiente = typeof arma.proficiente === "boolean"
                 ? arma.proficiente
                 : getTemProficienciaArma(tipoArma);
 
-            const dano = obterTextoDanoArma(arma) || "-";
+            const dano = propriedades.versatil
+                ? [danoUmaMao, danoDuasMaos].filter(Boolean).join("/") || obterTextoDanoArma(arma) || "-"
+                : obterTextoDanoArma(arma) || "-";
 
             const emojiProf = proficiente
                 ? `<span title="Proficiente">🅿️<br>💥</span>`
@@ -8980,7 +8981,7 @@ Bônus de Proficiência: +${bonusProf}
 
             return {
                 nome,
-                linha1: `${nome} ${emojiProf} 🛡️ ${caTotal} (${caBaseValida} + ${bonusAplicado})`,
+                linha1: `${nome} ${emojiProf} 👕 ${caTotal} (${caBaseValida} + ${bonusAplicado})`,
                 linha2: `Tipo: ${tipo} | CA base: ${caBaseValida} | Bônus: ${bonusRaw} | Furtividade: ${furtividade}`,
                 proficiente,
                 caBase: caBaseValida,
@@ -10192,11 +10193,8 @@ Bônus de Proficiência: +${bonusProf}
                 const textoPropriedade = arma ? montarTextoPropriedadeArma(arma, resumirMunicaoNoTexto(obterResumoPropriedadesArma(arma, false))) : "";
                 preencherCampo(`arma${indice}Dano`, usandoEscudo ? "" : [obterTextoDanoArma(arma), arma?.arma_tipo_dano?.trim() || ""].filter(Boolean).join(" "));
                 preencherMunicaoEquipada(indice, usandoEscudo ? null : arma);
-                preencherPropriedadeEquipada(`arma${indice}Propriedade`, usandoEscudo
-                    ? `Escudo empunhado${escudoSelecionado?.escudo_ca ? ` (${escudoSelecionado.escudo_ca})` : ""}`
-                    : textoPropriedade);
                 aplicarEstiloProficienciaCampos(
-                    [`arma${indice}Nome`, `arma${indice}Ataque`, `arma${indice}Dano`, `arma${indice}Propriedade`],
+                    [`arma${indice}Nome`, `arma${indice}Ataque`, `arma${indice}Dano`],
                     usandoEscudo ? formatarEscudoEquipamento(escudoSelecionado).proficiente : (arma ? formatarArma(arma).proficiente : null)
                 );
                 const selectAtaque = document.getElementById(`arma${indice}Ataque`);
@@ -12954,6 +12952,8 @@ function salvarFicha() {
             arma: null,
             dado: null,
             totalAtaque: 0,
+            modBase: 0,
+            bonusProf: 0,
             rotuloAtributo: "",
             textoResumo: ""
         };
@@ -13066,6 +13066,12 @@ function salvarFicha() {
             return limparPrefixoPropriedade(arma?.propriedade || "") || "Sem propriedades";
         }
 
+        function obterIconeAtributoAtaque(rotuloAtributo) {
+            if (rotuloAtributo === 'FOR') return '💪';
+            if (rotuloAtributo === 'DES') return '🎯';
+            return '✨';
+        }
+
         function atualizarEstadoCriticoModalAtaque() {
             const campoDado = document.getElementById('modalAtaqueDado');
             const botaoSucesso = document.getElementById('modalAtaqueSucesso');
@@ -13096,6 +13102,8 @@ function salvarFicha() {
             estadoAtaqueArma.arma = null;
             estadoAtaqueArma.dado = null;
             estadoAtaqueArma.totalAtaque = 0;
+            estadoAtaqueArma.modBase = 0;
+            estadoAtaqueArma.bonusProf = 0;
             estadoAtaqueArma.rotuloAtributo = "";
             estadoAtaqueArma.textoResumo = "";
 
@@ -13123,11 +13131,13 @@ function salvarFicha() {
 
             if (!overlay || !titulo || !subtitulo || !bonus || !resumo || !campoDado || !campoDano) return;
 
-            const { rotuloAtributo, totalAtaque, textoResumo } = obterResumoBonusAtaqueArma(arma);
+            const { rotuloAtributo, totalAtaque, textoResumo, modBase, bonusProf } = obterResumoBonusAtaqueArma(arma);
 
             estadoAtaqueArma.arma = arma;
             estadoAtaqueArma.dado = null;
             estadoAtaqueArma.totalAtaque = totalAtaque;
+            estadoAtaqueArma.modBase = modBase || 0;
+            estadoAtaqueArma.bonusProf = bonusProf || 0;
             estadoAtaqueArma.rotuloAtributo = rotuloAtributo;
             estadoAtaqueArma.textoResumo = textoResumo;
 
@@ -13169,10 +13179,9 @@ function salvarFicha() {
 
             estadoAtaqueArma.dado = dado;
             subtitulo.textContent = obterSubtituloModalAtaque(estadoAtaqueArma.arma);
-            resumo.innerHTML = [
-                `Dado: <span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">${dado}</span>`,
-                `Bônus: <span class="ataque-modal-resumo-destaque">${estadoAtaqueArma.textoResumoDano || estadoAtaqueArma.rotuloAtributo}</span>`
-            ].join(' | ');
+            const totalAtaque = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
+            const iconeAtributo = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
+            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)`;
             alternarEtapaModalAtaque(true);
             setTimeout(() => campoDano.focus(), 0);
         }
