@@ -3613,7 +3613,7 @@
         }
 
         .equipados-grid.armas {
-            grid-template-columns: minmax(214px, 2.9fr) 100px minmax(145px, 1.15fr) 16px;
+            grid-template-columns: minmax(214px, 2.9fr) 100px minmax(145px, 1.15fr);
         }
 
         .equipados-armas-bloco {
@@ -6106,9 +6106,6 @@ handleClasseChange();
                                                 <div class="equipados-subtitulo">Armas</div>
                                                 <div class="equipados-grid-cabecalho-centro">Ataque</div>
                                                 <div class="equipados-grid-cabecalho-centro">Dano</div>
-                                                <div
-                                                    class="equipados-grid-cabecalho-centro equipados-grid-cabecalho-vazio">
-                                                </div>
 
                                                 <div class="equipados-slot-com-emoji">
                                                     <button type="button" id="arma1Empunhadura"
@@ -6123,9 +6120,6 @@ handleClasseChange();
                                                     <option value="des">DES</option>
                                                 </select>
                                                 <input id="arma1Dano" placeholder="ex: 1d8 cortante" readonly>
-                                                <button type="button" id="arma1Desequipar" class="equipados-acao-botao"
-                                                    aria-label="Desequipar arma principal"
-                                                    title="Desequipar arma principal">🚫</button>
                                             </div>
                                             <div id="arma1MunicaoLinha" class="equipados-municao-linha oculto">
                                                 <span class="equipados-municao-icone">➹</span>
@@ -6154,9 +6148,6 @@ handleClasseChange();
                                                     <option value="des">DES</option>
                                                 </select>
                                                 <input id="arma2Dano" aria-label="Dano da arma secundária" readonly>
-                                                <button type="button" id="arma2Desequipar" class="equipados-acao-botao"
-                                                    aria-label="Desequipar arma secundária"
-                                                    title="Desequipar arma secundária">🚫</button>
                                             </div>
                                             <div id="arma2MunicaoLinha" class="equipados-municao-linha oculto">
                                                 <span class="equipados-municao-icone">➹</span>
@@ -7295,7 +7286,7 @@ handleClasseChange();
 
                 // 🔥 DANO
                 const dano = [
-                    arma.arma_dano,
+                    obterTextoDanoArmaPorEmpunhadura(arma, slot),
                     arma.arma_tipo_dano
                 ].filter(Boolean).join(" ") || "-";
 
@@ -8683,6 +8674,25 @@ Bônus de Proficiência: +${bonusProf}
             return arma.arma_dano?.trim() || [arma.dano_1, arma.dano_2].filter(Boolean).join("/");
         }
 
+        function obterTextoDanoArmaPorEmpunhadura(arma, slot = 1) {
+            if (!arma) return "";
+
+            const danoUmaMao = arma.dano_1?.trim() || "";
+            const danoDuasMaos = arma.dano_2?.trim() || "";
+            const propriedades = arma.propriedades || {};
+
+            if (!propriedades.versatil) {
+                return obterTextoDanoArma(arma);
+            }
+
+            const usandoDuasMaos = slot === 1 && estadoCombate?.maoPrincipal?.modo === 'duas_maos';
+            if (usandoDuasMaos) {
+                return danoDuasMaos || danoUmaMao || obterTextoDanoArma(arma);
+            }
+
+            return danoUmaMao || danoDuasMaos || obterTextoDanoArma(arma);
+        }
+
         function obterResumoPropriedadesArma(arma, incluirDescricao = false) {
             const propriedades = arma.propriedades || {};
             const listaPropriedades = [];
@@ -9633,7 +9643,6 @@ Bônus de Proficiência: +${bonusProf}
             const linhaSecundaria = document.getElementById('arma2Nome')?.closest('.equipados-armas-item');
             const selectSecundario = document.getElementById('arma2Nome');
             const ataqueSecundario = document.getElementById('arma2Ataque');
-            const botaoDesequiparSecundario = document.getElementById('arma2Desequipar');
             const principal = estadoCombate.maoPrincipal.item;
             const secundariaAtiva = estadoCombate.maoSecundaria.ativa;
             const secundariaItem = estadoCombate.maoSecundaria.item;
@@ -9687,10 +9696,6 @@ Bônus de Proficiência: +${bonusProf}
 
             if (ataqueSecundario) {
                 ataqueSecundario.disabled = ataqueSecundario.disabled || !secundariaAtiva;
-            }
-
-            if (botaoDesequiparSecundario) {
-                botaoDesequiparSecundario.disabled = !secundariaAtiva;
             }
 
             reposicionarMenuEmpunhadura();
@@ -10964,10 +10969,10 @@ function salvarFicha() {
   // Salvar class/subclass data
   const classeData = document.getElementById('classeData').value;
   const subData = document.getElementById('subclasseData').value;
-  dados.classeData = classeData;
-  dados.subclasseData = subData;
 
             const dados = coletarDadosFicha()
+            dados.classeData = classeData;
+            dados.subclasseData = subData;
             dados.armas = coletarArmas();
             dados.armaduras = coletarArmaduras();
             dados.escudos = coletarEscudos();
@@ -13786,15 +13791,6 @@ function salvarFicha() {
                 selectOriginal.value = campo.value || '';
                 selectOriginal.dispatchEvent(new Event('change'));
                 sincronizarEquipamentosCombate();
-                atualizarSubAbaArmas();
-            });
-        });
-        ['arma1Desequipar', 'arma2Desequipar'].forEach((id, indice) => {
-            const botao = document.getElementById(id);
-            if (!botao) return;
-            botao.addEventListener('click', () => {
-                fecharMenuEmpunhadura();
-                desequiparArmaSlot(indice + 1);
                 atualizarSubAbaArmas();
             });
         });
