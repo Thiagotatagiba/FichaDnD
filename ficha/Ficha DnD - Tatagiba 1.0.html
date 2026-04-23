@@ -5021,6 +5021,80 @@
         .dv-tipo-principal.bloqueado {
             pointer-events: none;
         }
+
+        /* ===== Sistema de Expiração ===== */
+        .expiracao-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            padding: 24px;
+        }
+
+        .expiracao-modal {
+            max-width: 460px;
+            width: 100%;
+            background: linear-gradient(180deg, #f6f2ea 0%, #efe6d6 100%);
+            border: 3px solid #8b4513;
+            border-radius: 16px;
+            padding: 32px 28px;
+            text-align: center;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+            font-family: 'MedievalSharp', cursive;
+            color: #3f2712;
+        }
+
+        .expiracao-modal h2 {
+            font-family: 'Metamorphous', serif;
+            color: #6f3610;
+            font-size: 26px;
+            margin: 0 0 8px;
+            line-height: 1.2;
+        }
+
+        .expiracao-modal h3 {
+            color: #8b4513;
+            font-size: 18px;
+            margin: 0 0 20px;
+            font-weight: bold;
+        }
+
+        .expiracao-modal p {
+            font-size: 15px;
+            line-height: 1.5;
+            margin: 0 0 24px;
+            color: #5c4832;
+        }
+
+        .expiracao-modal a {
+            color: #8b4513;
+            font-weight: bold;
+            text-decoration: underline;
+        }
+
+        .expiracao-modal button {
+            background: #8b4513;
+            color: #fff;
+            border: none;
+            padding: 12px 32px;
+            border-radius: 10px;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.15s ease;
+        }
+
+        .expiracao-modal button:hover {
+            background: #6f3610;
+            transform: translateY(-1px);
+        }
+
+        .expiracao-modal button:active {
+            transform: translateY(0);
+        }
     </style>
 
 </head>
@@ -14239,13 +14313,56 @@ function salvarFicha() {
 
         }
 
+        // ===== SISTEMA DE EXPIRAÇÃO =====
+        const DATA_EXPIRACAO = new Date("2026-05-03T12:00:00");
+        console.log('[Debug] Data de expiração:', DATA_EXPIRACAO.toLocaleString('pt-BR'));
+
+        function bloquearFicha() {
+            const overlay = document.getElementById('expiracaoOverlay');
+            if (overlay) overlay.classList.remove('hidden');
+
+            document.querySelectorAll('input, textarea, select, button').forEach(el => {
+                if (el.id !== 'expiracaoOkBtn') {
+                    el.disabled = true;
+                }
+            });
+        }
+
+        function resetarFicha() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const agora = new Date();
+            if (agora >= DATA_EXPIRACAO) {
+                bloquearFicha();
+            }
+
+            const btnOk = document.getElementById('expiracaoOkBtn');
+            if (btnOk) {
+                btnOk.addEventListener('click', function() {
+                    resetarFicha();
+                });
+            }
+        });
+
     </script>
+
+    <div id="expiracaoOverlay" class="expiracao-overlay hidden">
+        <div class="expiracao-modal">
+            <h2>Sua aventura espera aqui!</h2>
+            <h3>Período de Teste expirado!</h3>
+            <p>Procure o desenvolvedor: <a href="mailto:thiagoctatagiba@gmail.com">thiagoctatagiba@gmail.com</a></p>
+            <button type="button" id="expiracaoOkBtn">OK</button>
+        </div>
+    </div>
 
     <footer class="meu-rodape">
         <div class="footer-content">
             <p>Criado por: <strong>Thiago Tatagiba</strong></p>
             <p>&copy; 2026 Todos os direitos reservados</p>
-            <p class="aviso">Proibida cópia</p>
+            <p class="aviso">VERSÃO DE TESTE! Proibida cópia</p>
         </div>
     </footer>
 </body>

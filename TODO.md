@@ -1,36 +1,36 @@
-# TODO.md - Botões Melhorados: Importar JSON + Aplicar na Ficha
+# TODO - Ficha D&D Tatagiba
 
-## 🎯 Tarefa Atual
-Melhorar design do botão \"Importar Json\" e adicionar \"Aplicar na Ficha\" no iframe de classes (Card Classes Vazio.html).
+## ✅ Sistema de Expiração por Data
 
-**Status: Iniciado**
+- [x] **1. Definir constante `DATA_EXPIRACAO`** no JavaScript
+  - `const DATA_EXPIRACAO = new Date("2026-05-03T12:00:00");`
 
-## 📋 Etapas do Plano Aprovado
+- [x] **2. Verificar data no `DOMContentLoaded`**
+  - Se data atual >= `DATA_EXPIRACAO`, executar `bloquearFicha()`
 
-### ⏳ 1. Criar/Atualizar TODO.md [COMPLETO]
-- ✅ Checklist com todas as etapas
+- [x] **3. Implementar `bloquearFicha()`**
+  - Criar overlay escuro cobrindo toda a tela (`rgba(0,0,0,0.75)`)
+  - Exibir modal central com:
+    - Título: "Sua aventura espera aqui!"
+    - Subtítulo: "Período de Teste expirado!"
+    - Texto: "Procure o desenvolvedor: thiagoctatagiba@gmail.com"
+    - Botão "OK"
+  - Desabilitar TODOS os elementos interativos (`input`, `textarea`, `select`, `button`)
+  - Garantir `z-index` alto (10000) para ficar acima de tudo
 
-### ⏳ 2. Editar Card Classes Vazio.html
-- ✅ Style \"Importar JSON\" com classe `ficha-btn`
-- ✅ Add botão \"Aplicar na Ficha\"
-- ✅ JS `aplicarNaFicha()` com postMessage para parent
+- [x] **4. Implementar ação do botão "OK"**
+  - Executar `resetarFicha()`
+  - Depois chamar `bloquearFicha()` novamente (loop infinito)
 
-### ⏳ 3. Editar Ficha DnD - Tatagiba 1.0.html
-- ✅ Add `window.addEventListener('message')` para receber e chamar `carregarCaracteristicasClasse()`
+- [x] **5. Implementar `resetarFicha()`**
+  - Limpar `localStorage`
+  - Recarregar página (`location.reload()`)
 
-### ⏳ 4. Testar Funcionalidade
-- ✅ Abrir config modal → iframe
-- ✅ Importar JSON classe
-- ✅ Select subclasse/nível
-- ✅ Click \"Aplicar na Ficha\" → Status atualiza
+- [x] **6. Estilização medieval**
+  - Overlay com fundo escuro
+  - Modal com estilo consistente ao restante da ficha (cores marrons, borda `#8b4513`, fonte `MedievalSharp`)
 
-### ⏳ 5. Atualizar TODO.md (Finalizar)
-- ✅ Marcar completo
-- ✅ Próximas tarefas pendentes
+---
 
-### ⏳ 6. Attempt Completion
-
-**Progresso: 4/6 ✅**
-
-**Próximo: Testar funcionalidade completa**
+**Status:** ✅ Implementado na ficha HTML. Aguardando testes de validação.
 
