@@ -2297,6 +2297,17 @@
             display: flex;
             align-items: center;
             text-align: center;
+            justify-content: center;
+        }
+
+        .historico-col-rodada {
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .historico-col-rodada-acao {
+            font-size: 11px;
+            text-transform: lowercase;
         }
 
         .magia-combate-lista {
@@ -3393,8 +3404,36 @@
             border-radius: var(--modal-radius);
             background: var(--modal-bg);
             box-shadow: var(--modal-shadow);
-            padding: 18px;
+            padding: 0;
+            overflow: hidden;
             box-sizing: border-box;
+        }
+
+        .ataque-modal-topo {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 40px;
+            padding: 10px 16px;
+            background: linear-gradient(180deg, #e7d7bf, #dcc5a0);
+            border-bottom: 1px solid #bda68c;
+        }
+
+        .ataque-modal-rodada {
+            font-size: 12px;
+            color: #6f3610;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .ataque-modal-rodada strong {
+            font-family: 'Metamorphous', serif;
+            font-size: 15px;
+            margin-left: 4px;
+        }
+
+        .ataque-modal-corpo {
+            padding: 18px;
         }
 
         .ataque-modal-titulo {
@@ -3458,16 +3497,21 @@
             justify-content: center;
         }
 
+        .ataque-modal-campo-com-dado {
+            gap: 8px;
+        }
+
         .ataque-modal-campo-rotulo {
             position: absolute;
             top: 5px;
-            left: 8px;
+            left: 48px;
             font-size: 9px;
             line-height: 1;
             color: #8b5a2b;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             pointer-events: none;
+            z-index: 1;
         }
 
         .ataque-modal input {
@@ -3504,6 +3548,20 @@
             white-space: nowrap;
         }
 
+        .ataque-modal-total {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #5c4832;
+            text-align: center;
+            min-height: 16px;
+        }
+
+        .ataque-modal-total strong {
+            font-family: 'Metamorphous', serif;
+            color: #6f3610;
+            margin-left: 4px;
+        }
+
         .ataque-modal-resumo {
             margin-bottom: 14px;
             font-size: 13px;
@@ -3518,6 +3576,51 @@
         .ataque-modal-resumo-dado-critico {
             color: #b8860b;
             text-shadow: 0 0 8px rgba(255, 215, 0, 0.65);
+        }
+
+        .ataque-modal-checklist {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin: 12px 0 14px;
+            flex-wrap: wrap;
+        }
+
+        .ataque-modal-historico {
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(139, 69, 19, 0.22);
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #6b5a46;
+            line-height: 1.4;
+        }
+
+        .ataque-modal-historico-rotulo {
+            color: #6f3610;
+            margin-right: 6px;
+        }
+
+        .ataque-modal-historico-lista {
+            word-break: break-word;
+        }
+
+        .ataque-modal-checkitem {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #5c4832;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .ataque-modal-checkitem input {
+            width: 16px;
+            min-height: 16px;
+            height: 16px;
+            margin: 0;
+            accent-color: #8b4513;
         }
 
         .ataque-modal-acoes {
@@ -4972,26 +5075,44 @@
 
         }
 
-        #btnRolarDado {
-            font-size: 22px;
+        .botao-dado {
+            width: 32px;
+            height: 32px;
+            flex: 0 0 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #8b4513;
+            border-radius: 10px;
+            background: #fffaf2;
+            color: #6f3610;
+            font-size: 18px;
+            line-height: 1;
             cursor: pointer;
-
-            border: none;
-            outline: none;
-            background: transparent;
-
-            padding: 4px;
+            padding: 0;
+            position: relative;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.08);
+            transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
         }
 
-        #btnRolarDado:focus {
+        .botao-dado-icone {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .botao-dado:hover,
+        .botao-dado:focus-visible {
+            background: #f3e3c5;
+            border-color: #6f3610;
             outline: none;
         }
 
-        #btnRolarDado:active {
+        .botao-dado:active {
             transform: scale(0.9);
         }
 
-        #btnRolarDado.rolando {
+        .botao-dado.rolando .botao-dado-icone {
             animation: girar 0.5s linear infinite;
         }
 
@@ -5102,42 +5223,70 @@
 <body>
     <div id="modalAtaqueOverlay" class="ataque-modal-overlay modal-overlay-base oculto" aria-hidden="true">
         <div class="ataque-modal modal-base" role="dialog" aria-modal="true" aria-labelledby="modalAtaqueTitulo">
-            <div id="modalAtaqueTitulo" class="ataque-modal-titulo">Ataque com arma</div>
-            <div id="modalAtaqueSubtitulo" class="ataque-modal-subtitulo">Digite o dado tirado.
+            <div class="ataque-modal-topo">
+                <div id="modalAtaqueRodada" class="ataque-modal-rodada">Rodada <strong>1</strong></div>
             </div>
+            <div class="ataque-modal-corpo">
+                <div id="modalAtaqueTitulo" class="ataque-modal-titulo">Ataque com arma</div>
+                <div id="modalAtaqueSubtitulo" class="ataque-modal-subtitulo">Digite o dado tirado.
+                </div>
 
-            <div id="modalAtaqueEtapaDado">
-                <div class="ataque-modal-linha">
-                    <label for="modalAtaqueDado" class="oculto-acessivel">Dado</label>
-                    <div class="ataque-modal-rolagem">
-                        <div class="ataque-modal-campo">
-                            <span class="ataque-modal-campo-rotulo">Dado</span>
-                            <input id="modalAtaqueDado" type="number" min="1" max="20" step="1" inputmode="numeric"
-                                aria-label="Dado tirado no ataque">
+                <div id="modalAtaqueEtapaDado">
+                    <div class="ataque-modal-linha">
+                        <label for="modalAtaqueDado" class="oculto-acessivel">Dado</label>
+                        <div class="ataque-modal-rolagem">
+                            <div class="ataque-modal-campo ataque-modal-campo-com-dado">
+                                <span class="ataque-modal-campo-rotulo">Dado</span>
+                                <button type="button" id="modalAtaqueRolarDado" class="botao-dado"
+                                    aria-label="Rolar 1d20" title="Rolar 1d20"><span class="botao-dado-icone">🎲</span></button>
+                                <input id="modalAtaqueDado" type="number" min="1" max="20" step="1" inputmode="numeric"
+                                    aria-label="Dado tirado no ataque">
+                            </div>
+                            <div id="modalAtaqueBonus" class="ataque-modal-bonus">+ 0 (FOR)</div>
                         </div>
-                        <div id="modalAtaqueBonus" class="ataque-modal-bonus">+ 0 (FOR)</div>
+                        <div id="modalAtaqueTotal" class="ataque-modal-total">Total <strong>-</strong></div>
+                    </div>
+
+                    <div class="ataque-modal-checklist" role="group" aria-label="Tipo de ação do turno">
+                        <label class="ataque-modal-checkitem" for="modalAtaqueAcao">
+                            <input id="modalAtaqueAcao" type="checkbox" data-tipo-acao="Ação" checked>
+                            <span>AÇÃO</span>
+                        </label>
+                        <label class="ataque-modal-checkitem" for="modalAtaqueAcaoBonus">
+                            <input id="modalAtaqueAcaoBonus" type="checkbox" data-tipo-acao="Ação bônus">
+                            <span>AÇÃO BONUS</span>
+                        </label>
+                        <label class="ataque-modal-checkitem" for="modalAtaqueReacao">
+                            <input id="modalAtaqueReacao" type="checkbox" data-tipo-acao="Reação">
+                            <span>REAÇÃO</span>
+                        </label>
+                    </div>
+
+                    <div class="ataque-modal-acoes">
+                        <button type="button" class="ataque-botao" id="modalAtaqueSucesso">Sucesso</button>
+                        <button type="button" class="ataque-botao" id="modalAtaqueFracasso">Fracasso</button>
+                        <button type="button" class="ataque-botao" id="modalAtaqueCancelar">Cancelar
+                            ataque</button>
+                    </div>
+
+                    <div class="ataque-modal-historico">
+                        <span class="ataque-modal-historico-rotulo">Historico:</span>
+                        <span id="modalAtaqueHistoricoLista" class="ataque-modal-historico-lista">-</span>
                     </div>
                 </div>
 
-                <div class="ataque-modal-acoes">
-                    <button type="button" class="ataque-botao" id="modalAtaqueSucesso">Sucesso</button>
-                    <button type="button" class="ataque-botao" id="modalAtaqueFracasso">Fracasso</button>
-                    <button type="button" class="ataque-botao" id="modalAtaqueCancelar">Cancelar
-                        ataque</button>
-                </div>
-            </div>
+                <div id="modalAtaqueEtapaDano" class="oculto">
+                    <div id="modalAtaqueResumo" class="ataque-modal-resumo"></div>
+                    <div class="ataque-modal-linha">
+                        <label for="modalAtaqueDano">Dano Total</label>
+                        <input id="modalAtaqueDano" type="number" min="0" step="1" inputmode="numeric"
+                            aria-label="Dano causado no ataque">
+                    </div>
 
-            <div id="modalAtaqueEtapaDano" class="oculto">
-                <div id="modalAtaqueResumo" class="ataque-modal-resumo"></div>
-                <div class="ataque-modal-linha">
-                    <label for="modalAtaqueDano">Dano Total</label>
-                    <input id="modalAtaqueDano" type="number" min="0" step="1" inputmode="numeric"
-                        aria-label="Dano causado no ataque">
-                </div>
-
-                <div class="ataque-modal-acoes">
-                    <button type="button" class="ataque-botao" id="modalAtaqueRegistrarDano">Registrar dano</button>
-                    <button type="button" class="ataque-botao" id="modalAtaqueCancelarDano">Cancelar ataque</button>
+                    <div class="ataque-modal-acoes">
+                        <button type="button" class="ataque-botao" id="modalAtaqueRegistrarDano">Registrar dano</button>
+                        <button type="button" class="ataque-botao" id="modalAtaqueCancelarDano">Cancelar ataque</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -5155,7 +5304,8 @@
                 <label>Valor do dado</label>
                 <div class="vida-input-linha">
                     <div class="vida-input-linha">
-                        <button id="btnRolarDado">🎲</button>
+                        <button id="btnRolarDado" type="button" class="botao-dado" aria-label="Rolar dado de vida"
+                            title="Rolar dado de vida"><span class="botao-dado-icone">🎲</span></button>
                         <input type="text" id="inputVidaLevelUp">
                         <span id="modConTexto"></span>
                     </div> <span id="modConTexto"></span>
@@ -8212,7 +8362,8 @@ handleClasseChange();
                     btnDado.classList.add('rolando');
 
                     setTimeout(() => {
-                        const resultado = Math.floor(Math.random() * max) + 1;
+                        const rolagem = rolarDado(1, max);
+                        const resultado = rolagem.resultados[0] ?? '';
 
                         btnDado.classList.remove('rolando');
                         input.value = resultado;
@@ -12955,7 +13106,9 @@ function salvarFicha() {
             modBase: 0,
             bonusProf: 0,
             rotuloAtributo: "",
-            textoResumo: ""
+            textoResumo: "",
+            tipoAcao: "Ação",
+            historicoRolagens: []
         };
 
         function abrirItemCard(card) {
@@ -13072,6 +13225,111 @@ function salvarFicha() {
             return '✨';
         }
 
+        function rolarDado(quantidade, faces) {
+            const qtd = parseInt(quantidade, 10);
+            const lados = parseInt(faces, 10);
+
+            if (!Number.isInteger(qtd) || !Number.isInteger(lados) || qtd < 1 || lados < 2) {
+                return {
+                    quantidade: 0,
+                    faces: 0,
+                    resultados: [],
+                    soma: 0
+                };
+            }
+
+            const resultados = Array.from({ length: qtd }, () => Math.floor(Math.random() * lados) + 1);
+
+            return {
+                quantidade: qtd,
+                faces: lados,
+                resultados,
+                soma: resultados.reduce((total, valor) => total + valor, 0)
+            };
+        }
+
+        function preencherCampoComRolagem(campo, quantidade, faces) {
+            if (!campo) return null;
+            const rolagem = rolarDado(quantidade, faces);
+            if (!rolagem.resultados.length) return null;
+
+            campo.value = rolagem.resultados[0] ?? '';
+            campo.dispatchEvent(new Event('input'));
+            campo.dispatchEvent(new Event('change'));
+            return rolagem;
+        }
+
+        function animarRolagemNoCampo(campo, quantidade, faces, duracaoMs = 1000, intervaloMs = 60) {
+            if (!campo) return Promise.resolve(null);
+
+            return new Promise(resolve => {
+                const inicio = Date.now();
+                const timer = setInterval(() => {
+                    const parcial = rolarDado(quantidade, faces);
+                    campo.value = parcial?.resultados?.[0] ?? '';
+                    campo.dispatchEvent(new Event('input'));
+                    if (Date.now() - inicio >= duracaoMs) {
+                        clearInterval(timer);
+                        const final = rolarDado(quantidade, faces);
+                        campo.value = final?.resultados?.[0] ?? '';
+                        campo.dispatchEvent(new Event('input'));
+                        campo.dispatchEvent(new Event('change'));
+                        resolve(final);
+                    }
+                }, intervaloMs);
+            });
+        }
+
+        function atualizarTotalModalAtaque() {
+            const campoTotal = document.getElementById('modalAtaqueTotal');
+            const campoDado = document.getElementById('modalAtaqueDado');
+            if (!campoTotal || !campoDado) return;
+
+            const dado = parseInt(campoDado.value, 10);
+            if (!Number.isInteger(dado) || dado < 1 || dado > 20) {
+                campoTotal.innerHTML = 'Total <strong>-</strong>';
+                return;
+            }
+
+            const total = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
+            campoTotal.innerHTML = `Total <strong>${total}</strong>`;
+        }
+
+        function atualizarHistoricoRolagensModalAtaque() {
+            const campoHistorico = document.getElementById('modalAtaqueHistoricoLista');
+            if (!campoHistorico) return;
+
+            const historicoOriginal = Array.isArray(estadoAtaqueArma.historicoRolagens)
+                ? estadoAtaqueArma.historicoRolagens
+                : [];
+
+            const historico = [...historicoOriginal].reverse();
+            if (!historico.length) {
+                campoHistorico.textContent = '-';
+                return;
+            }
+
+            const maior = Math.max(...historicoOriginal);
+            const menor = Math.min(...historicoOriginal);
+
+            campoHistorico.innerHTML = historico.map(valor => {
+                const ehMaior = valor === maior;
+                const ehMenor = valor === menor;
+                const sufixo = ehMaior ? '⇧' : ehMenor ? '⇩' : '';
+                const texto = `${valor}${sufixo}`;
+                return (ehMaior || ehMenor) ? `<strong>${texto}</strong>` : texto;
+            }).join(', ');
+        }
+
+        function registrarRolagemModalAtaque(rolagem) {
+            if (!rolagem?.resultados?.length) return;
+            const valor = rolagem.resultados[0];
+            estadoAtaqueArma.historicoRolagens = Array.isArray(estadoAtaqueArma.historicoRolagens)
+                ? [...estadoAtaqueArma.historicoRolagens, valor]
+                : [valor];
+            atualizarHistoricoRolagensModalAtaque();
+        }
+
         function atualizarEstadoCriticoModalAtaque() {
             const campoDado = document.getElementById('modalAtaqueDado');
             const botaoSucesso = document.getElementById('modalAtaqueSucesso');
@@ -13081,6 +13339,37 @@ function salvarFicha() {
             const dado = parseInt(campoDado.value, 10);
             botaoSucesso.classList.toggle('ataque-botao-critico', dado === 20);
             botaoFracasso.classList.toggle('ataque-botao-fracasso-critico', dado === 1);
+            atualizarTotalModalAtaque();
+        }
+
+        function obterRodadaCombateAtual() {
+            const campoRodada = document.getElementById('combateRodada');
+            return parseInt(campoRodada?.value, 10) || 1;
+        }
+
+        function atualizarRodadaModalAtaque() {
+            const campo = document.getElementById('modalAtaqueRodada');
+            if (!campo) return;
+            campo.innerHTML = `Rodada <strong>${obterRodadaCombateAtual()}</strong>`;
+        }
+
+        function marcarTipoAcaoModalAtaque(tipoSelecionado = 'Ação') {
+            const checkboxes = document.querySelectorAll('#modalAtaqueEtapaDado input[data-tipo-acao]');
+            let encontrou = false;
+
+            checkboxes.forEach(checkbox => {
+                const ativo = checkbox.dataset.tipoAcao === tipoSelecionado;
+                checkbox.checked = ativo;
+                if (ativo) encontrou = true;
+            });
+
+            if (!encontrou && checkboxes[0]) checkboxes[0].checked = true;
+            estadoAtaqueArma.tipoAcao = obterTipoAcaoSelecionadoModalAtaque();
+        }
+
+        function obterTipoAcaoSelecionadoModalAtaque() {
+            const selecionado = document.querySelector('#modalAtaqueEtapaDado input[data-tipo-acao]:checked');
+            return selecionado?.dataset.tipoAcao || 'Ação';
         }
 
         function alternarEtapaModalAtaque(exibirDano) {
@@ -13106,12 +13395,17 @@ function salvarFicha() {
             estadoAtaqueArma.bonusProf = 0;
             estadoAtaqueArma.rotuloAtributo = "";
             estadoAtaqueArma.textoResumo = "";
+            estadoAtaqueArma.tipoAcao = "Ação";
+            estadoAtaqueArma.historicoRolagens = [];
 
             if (campoDado) campoDado.value = '';
             if (campoDano) campoDano.value = '';
             if (botaoSucesso) botaoSucesso.classList.remove('ataque-botao-critico');
             if (botaoFracasso) botaoFracasso.classList.remove('ataque-botao-fracasso-critico');
             alternarEtapaModalAtaque(false);
+            marcarTipoAcaoModalAtaque('Ação');
+            atualizarTotalModalAtaque();
+            atualizarHistoricoRolagensModalAtaque();
 
             if (overlay) {
                 overlay.classList.remove('ativo');
@@ -13140,6 +13434,8 @@ function salvarFicha() {
             estadoAtaqueArma.bonusProf = bonusProf || 0;
             estadoAtaqueArma.rotuloAtributo = rotuloAtributo;
             estadoAtaqueArma.textoResumo = textoResumo;
+            estadoAtaqueArma.tipoAcao = 'Ação';
+            estadoAtaqueArma.historicoRolagens = [];
 
             titulo.innerHTML = `Ataque com <span class="ataque-modal-titulo-arma">${arma?.nome || 'arma'}</span>`;
             subtitulo.textContent = obterSubtituloModalAtaque(arma);
@@ -13148,8 +13444,11 @@ function salvarFicha() {
             campoDado.value = '';
             campoDano.value = '';
 
+            atualizarRodadaModalAtaque();
+            marcarTipoAcaoModalAtaque('Ação');
             alternarEtapaModalAtaque(false);
             atualizarEstadoCriticoModalAtaque();
+            atualizarHistoricoRolagensModalAtaque();
             overlay.classList.add('ativo');
             overlay.classList.remove('oculto');
             overlay.setAttribute('aria-hidden', 'false');
@@ -13306,9 +13605,8 @@ function salvarFicha() {
             normalizarPontosDeVida();
         }
 
-        function adicionarRegistroHistoricoCombate(tipo, valor, iconePersonalizado = '') {
-            const campoRodada = document.getElementById('combateRodada');
-            const rodada = parseInt(campoRodada?.value) || 1;
+        function adicionarRegistroHistoricoCombate(tipo, valor, iconePersonalizado = '', detalheRodada = '') {
+            const rodada = obterRodadaCombateAtual();
             const registrosContainer = document.getElementById('historicoRegistros');
             if (!registrosContainer) return;
 
@@ -13328,7 +13626,10 @@ function salvarFicha() {
             const registro = document.createElement('div');
             registro.className = 'historico-registro';
             registro.innerHTML = `
-        <div class="historico-col-rodada">${rodada}</div>
+        <div class="historico-col-rodada">
+            <div>${rodada}</div>
+            ${detalheRodada ? `<div class="historico-col-rodada-acao">(${detalheRodada})</div>` : ''}
+        </div>
         <div class="historico-col-tipo">${icone} ${tipo}</div>
         <div class="historico-col-valor">
             ${tipo === 'Dano' ? `-${valor}` :
@@ -13355,7 +13656,12 @@ function salvarFicha() {
                 `Dano: ${dano}`
             ].join(' | ');
 
-            adicionarRegistroHistoricoCombate('Ataque', valor, arma.usaMunicao ? '🏹' : '⚔️');
+            adicionarRegistroHistoricoCombate(
+                'Ataque',
+                valor,
+                arma.usaMunicao ? '🏹' : '⚔️',
+                obterTipoAcaoSelecionadoModalAtaque().toLowerCase()
+            );
         }
 
         function confirmarFracassoAtaque() {
@@ -13919,9 +14225,41 @@ function salvarFicha() {
             atualizarEstadoCriticoModalAtaque();
         });
 
+        document.getElementById('modalAtaqueRolarDado')?.addEventListener('click', () => {
+            const campoDado = document.getElementById('modalAtaqueDado');
+            const botao = document.getElementById('modalAtaqueRolarDado');
+            if (!campoDado || !botao) return;
+
+            botao.classList.add('rolando');
+            const rolagem = preencherCampoComRolagem(campoDado, 1, 20);
+            registrarRolagemModalAtaque(rolagem);
+
+            setTimeout(() => {
+                botao.classList.remove('rolando');
+                if (rolagem?.resultados?.length) {
+                    botao.title = `1d20: ${rolagem.resultados.join(', ')}`;
+                    botao.setAttribute('aria-label', `Rolar 1d20. Último resultado ${rolagem.resultados.join(', ')}`);
+                }
+            }, 250);
+        });
+
         document.getElementById('modalAtaqueDano')?.addEventListener('keydown', evento => {
             if (evento.key === 'Enter') confirmarDanoAtaque();
         });
+
+        document.querySelectorAll('#modalAtaqueEtapaDado input[data-tipo-acao]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if (!checkbox.checked) {
+                    checkbox.checked = true;
+                    return;
+                }
+
+                marcarTipoAcaoModalAtaque(checkbox.dataset.tipoAcao || 'Ação');
+            });
+        });
+
+        document.getElementById('combateRodada')?.addEventListener('input', atualizarRodadaModalAtaque);
+        document.getElementById('combateRodada')?.addEventListener('change', atualizarRodadaModalAtaque);
 
         document.addEventListener('keydown', evento => {
             if (evento.key === 'Escape') {
