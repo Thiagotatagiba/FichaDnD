@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -5300,14 +5300,16 @@
                         <div class="ataque-modal-rolagem">
                             <div class="ataque-modal-campo ataque-modal-campo-com-dado">
                                 <span class="ataque-modal-campo-rotulo">Dado</span>
-                                <button type="button" id="modalAtaqueRolarDano" class="botao-dado"
-                                    aria-label="Rolar dano" title="Rolar dano"><span class="botao-dado-icone">🎲</span></button>
+                                <div style="display: flex; flex-direction: column; align-items: center;">
+                                    <button type="button" id="modalAtaqueRolarDano" class="botao-dado"
+                                        aria-label="Rolar dano" title="Rolar dano"><span class="botao-dado-icone">🎲</span></button>
+                                    <div id="modalAtaqueResultadosDano" class="ataque-modal-resultados-dano"></div>
+                                </div>
                                 <input id="modalAtaqueDano" type="number" min="1" step="1" inputmode="numeric"
                                     aria-label="Dado tirado no dano">
                             </div>
                             <div id="modalAtaqueBonusDano" class="ataque-modal-bonus">+ 0 (FOR)</div>
                         </div>
-                        <div id="modalAtaqueResultadosDano" class="ataque-modal-resultados-dano"></div>
                         <div id="modalAtaqueTotalDano" class="ataque-modal-total">Total <strong>-</strong></div>
                     </div>
 
@@ -13261,6 +13263,10 @@ function salvarFicha() {
         function obterIconeAtributoAtaque(rotuloAtributo) {
             if (rotuloAtributo === 'FOR') return '💪';
             if (rotuloAtributo === 'DES') return '🎯';
+            if (rotuloAtributo === 'CON') return '❤️';
+            if (rotuloAtributo === 'INT') return '🧠';
+            if (rotuloAtributo === 'SAB') return '👁️';
+            if (rotuloAtributo === 'CAR') return '🗣️';
             return '✨';
         }
 
@@ -13618,7 +13624,18 @@ function salvarFicha() {
             const iconeDano = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
             const formulaDanoTexto = estadoAtaqueArma.danoFormula || "?";
             resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)<br>Dano da arma: <span class="ataque-modal-resumo-destaque">${formulaDanoTexto} + ${iconeDano} ${estadoAtaqueArma.danoModBase || 0}</span>`;
+            const bonusDanoElement = document.getElementById('modalAtaqueBonusDano');
+            if (bonusDanoElement) {
+                bonusDanoElement.textContent = `+ ${estadoAtaqueArma.danoModBase || 0} (${iconeDano})`;
+            }
+            const botaoRolarDano = document.getElementById('modalAtaqueRolarDano');
+            if (botaoRolarDano) {
+                const textoRolar = `Rolar ${estadoAtaqueArma.danoFormula || 'dano'}`;
+                botaoRolarDano.setAttribute('aria-label', textoRolar);
+                botaoRolarDano.setAttribute('title', textoRolar);
+            }
             atualizarTotalModalDano();
+
             atualizarHistoricoRolagensModalDano();
             alternarEtapaModalAtaque(true);
             setTimeout(() => campoDano.focus(), 0);
