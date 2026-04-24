@@ -13319,12 +13319,12 @@ function salvarFicha() {
                 const inicio = Date.now();
                 const timer = setInterval(() => {
                     const parcial = rolarDado(quantidade, faces);
-                    campo.value = parcial?.resultados?.[0] ?? '';
+                    campo.value = parcial?.soma ?? '';
                     campo.dispatchEvent(new Event('input'));
                     if (Date.now() - inicio >= duracaoMs) {
                         clearInterval(timer);
                         const final = rolarDado(quantidade, faces);
-                        campo.value = final?.resultados?.[0] ?? '';
+                        campo.value = final?.soma ?? '';
                         campo.dispatchEvent(new Event('input'));
                         campo.dispatchEvent(new Event('change'));
                         resolve(final);
@@ -13417,11 +13417,26 @@ function salvarFicha() {
 
         function registrarRolagemModalDano(rolagem) {
             if (!rolagem?.resultados?.length) return;
-            const valor = rolagem.resultados[0];
+            const valor = rolagem.soma;
             estadoAtaqueArma.historicoRolagensDano = Array.isArray(estadoAtaqueArma.historicoRolagensDano)
                 ? [...estadoAtaqueArma.historicoRolagensDano, valor]
                 : [valor];
+            estadoAtaqueArma.ultimaRolagemDano = rolagem.resultados;
+            atualizarResultadosDano();
             atualizarHistoricoRolagensModalDano();
+        }
+
+        function atualizarResultadosDano() {
+            const campoResultados = document.getElementById('modalAtaqueResultadosDano');
+            if (!campoResultados) return;
+
+            const resultados = estadoAtaqueArma.ultimaRolagemDano;
+            if (!Array.isArray(resultados) || !resultados.length) {
+                campoResultados.textContent = '';
+                return;
+            }
+
+            campoResultados.textContent = '[' + resultados.join(', ') + ']';
         }
 
         function registrarRolagemModalAtaque(rolagem) {
@@ -13490,6 +13505,7 @@ function salvarFicha() {
             const campoDano = document.getElementById('modalAtaqueDano');
             const botaoSucesso = document.getElementById('modalAtaqueSucesso');
             const botaoFracasso = document.getElementById('modalAtaqueFracasso');
+            const modalAtaqueResultadosDano = document.getElementById('modalAtaqueResultadosDano');
 
             estadoAtaqueArma.arma = null;
             estadoAtaqueArma.dado = null;
@@ -13500,15 +13516,24 @@ function salvarFicha() {
             estadoAtaqueArma.textoResumo = "";
             estadoAtaqueArma.tipoAcao = "Ação";
             estadoAtaqueArma.historicoRolagens = [];
+            estadoAtaqueArma.historicoRolagensDano = [];
+            estadoAtaqueArma.danoQtd = 1;
+            estadoAtaqueArma.danoFaces = 0;
+            estadoAtaqueArma.danoFormula = "";
+            estadoAtaqueArma.danoModBase = 0;
+            estadoAtaqueArma.ultimaRolagemDano = null;
 
             if (campoDado) campoDado.value = '';
             if (campoDano) campoDano.value = '';
+            if (modalAtaqueResultadosDano) modalAtaqueResultadosDano.innerHTML = '';
             if (botaoSucesso) botaoSucesso.classList.remove('ataque-botao-critico');
             if (botaoFracasso) botaoFracasso.classList.remove('ataque-botao-fracasso-critico');
             alternarEtapaModalAtaque(false);
             marcarTipoAcaoModalAtaque('Ação');
             atualizarTotalModalAtaque();
             atualizarHistoricoRolagensModalAtaque();
+            atualizarTotalModalDano();
+            atualizarHistoricoRolagensModalDano();
 
             if (overlay) {
                 overlay.classList.remove('ativo');
