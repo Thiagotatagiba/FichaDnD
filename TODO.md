@@ -1,86 +1,90 @@
-# TODO - Modal de Dano (modalAtaqueEtapaDano) - Estado Atual
+# TODO - Ficha D&D Tatagiba 1.0 - Plano Atual
 
 ## Contexto
-Verificação completa da ficha `Ficha DnD - Tatagiba 1.0.html` (14.887 linhas) para validar o progresso das melhorias no modal de dano.
+Ficha `Ficha DnD - Tatagiba 1.0.html` (14.911 linhas). Verificação e manutenção contínua do modal de ataque/dano e demais funcionalidades.
 
 ---
 
-## Status de Implementação
+## 🎯 Refatoração Visual — Resumo de Ataque
 
-### ✅ ITENS IMPLEMENTADOS (7/8)
-
-| # | Item | Status | Local |
-|---|------|--------|-------|
-| 1 | CSS `.ataque-modal-resultados-dano` | ✅ **OK** | `<style>` (linha ~1920) |
-| 2 | `estadoAtaqueArma.ultimaRolagemDano` | ✅ **OK** | Objeto inicializado |
-| 3 | `fecharModalAtaqueArma()` limpa estados | ✅ **OK** | Linha ~13530 |
-| 5 | `animarRolagemNoCampo()` usa `.soma` | ✅ **OK** | Linha ~13315 |
-| 6 | `registrarRolagemModalDano()` usa `.soma` | ✅ **OK** | Linha ~13570 |
-| 7 | `atualizarResultadosDano()` exibe vetor | ✅ **OK** | Linha ~13585 |
-| — | `atualizarTotalModalDano()` | ✅ **OK** | Linha ~13370 |
-| — | `atualizarHistoricoRolagensModalDano()` | ✅ **OK** | Linha ~13390 |
-
-### ✅ Item 4 - Concluído
-
-| # | Item | Status | Detalhe |
-|---|------|--------|---------|
-| 4 | Atualizar `modalAtaqueBonusDano` em `abrirEtapaDanoAtaque()` | ✅ **OK** | Texto atualizado com `danoModBase` e `rotuloAtributo` |
-
-
+### Objetivo
+Melhorar a apresentação visual do resumo de ataque sem alterar a lógica existente, tornando a interface mais legível e com melhor feedback ao usuário.
 
 ---
 
-## ✅ Item 4 - IMPLEMENTADO
+## 🔧 Tarefas
 
-### Correção aplicada
-Adicionado dentro de `abrirEtapaDanoAtaque()` (após atualizar `resumo.innerHTML`):
+### 1. Inverter hierarquia visual (Número > Emoji)
+- Tornar o número o elemento principal (maior e em destaque)
+- Transformar o emoji em um indicador visual secundário
+- Posicionar o emoji no canto do número (overlay com `position: absolute`)
 
-```javascript
-const bonusDanoElement = document.getElementById('modalAtaqueBonusDano');
-if (bonusDanoElement) {
-    bonusDanoElement.textContent = `+ ${estadoAtaqueArma.danoModBase || 0} (${iconeDano})`;
+#### Estrutura esperada:
+```html
+<span class="calc-item" title="Valor do dado">
+  <span class="numero">6</span>
+  <span class="emoji">🎲</span>
+</span>
+2. Adicionar Tooltip (Legenda ao passar o mouse)
+
+Usar atributo title para explicação de cada elemento:
+
+🎲 → "Valor do dado"
+💪 → "Modificador de atributo"
+(ideal: adaptar dinamicamente para Força, Destreza, etc)
+🅿️ → "Bônus de Proficiência"
+3. Refatorar HTML gerado no innerHTML
+
+Atual:
+
+resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)`;
+
+➡️ Refatorar apenas a estrutura HTML, mantendo:
+
+totalAtaque
+dado
+estadoAtaqueArma.modBase
+estadoAtaqueArma.bonusProf
+iconeAtributo
+lógica de crítico (dado === 20)
+4. Criar/Atualizar CSS
+
+Adicionar estilos:
+
+.calc-item {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
 }
-```
 
-O elemento agora exibe o modificador real da arma (ex: `+ 4 (FOR)`, `+ 2 (DES)`).
+.numero {
+  font-size: 22px;
+}
 
+.emoji {
+  position: absolute;
+  bottom: -6px;
+  right: -8px;
+  font-size: 12px;
+  opacity: 0.8;
+}
+5. Manter compatibilidade visual existente
+Preservar .ataque-modal-resumo-destaque
+Preservar .ataque-modal-resumo-dado-critico
+Garantir que o layout não quebre dentro do modal atual
+⚠️ Restrições
+❌ NÃO alterar lógica JavaScript
+❌ NÃO remover classes existentes
+❌ NÃO alterar fluxo de cálculo
+✅ Apenas refatoração visual + UX
+✅ Resultado Esperado
 
----
+Visual mais limpo e profissional:
 
-## 🧪 Testes Manuais Pós-Correção
+Ataque: 13 ( 6🎲 + 4💪 + 3🅿️ )
 
-| # | Teste | Resultado Esperado |
-|---|-------|-------------------|
-| 1 | Arma com `2d6` | Soma correta + vetor `[X, Y]` exibido |
-| 2 | Arma com `1d8` | Funciona normalmente (soma = único dado) |
-| 3 | Bônus de dano | Texto ao lado do input mostra `+ N (FOR/DES/etc)` |
-| 4 | Fechar modal | Histórico de dano limpo ao reabrir |
-| 5 | Cancelar ataque | Modal fecha e estado fica limpo |
+Com:
 
----
-
-## ✅ Requisitos Atendidos (pós-correção)
-
-| Requisito | Descrição | Status |
-|-----------|-----------|--------|
-| 1 | Suportar armas com múltiplos dados (ex: 2d6) | ✅ |
-| 2 | Exibir vetor dos últimos resultados rolados | ✅ |
-| 3 | Apagar histórico de rolagens ao concluir/cancelar | ✅ |
-| 4 | Mostrar modificador real da arma ao lado do input | ✅ |
-
-
----
-
-## Próximos Passos
-
-1. [x] **Implementar Item 4** em `ficha/Ficha DnD - Tatagiba 1.0.html`
-2. [x] **Executar testes manuais** (5 cenários acima)
-3. [x] **Marcar como 100% completo**
-4. [x] **Fazer backup/commit** das alterações
-
-
----
-
-**Progresso:** 100% completo ✅  
-**Data de verificação:** 2025-01-XX  
-**Implementado por:** BLACKBOXAI
+números maiores e mais legíveis
+emojis discretos como indicadores
+tooltips explicando cada valor

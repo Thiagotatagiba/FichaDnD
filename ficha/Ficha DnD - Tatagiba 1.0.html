@@ -13630,9 +13630,16 @@ function salvarFicha() {
             }
             const botaoRolarDano = document.getElementById('modalAtaqueRolarDano');
             if (botaoRolarDano) {
-                const textoRolar = `Rolar ${estadoAtaqueArma.danoFormula || 'dano'}`;
+                const formulaBtn = estadoAtaqueArma.danoFaces > 0
+                    ? estadoAtaqueArma.danoQtd + 'd' + estadoAtaqueArma.danoFaces
+                    : 'dano';
+                const textoRolar = 'Rolar ' + formulaBtn;
                 botaoRolarDano.setAttribute('aria-label', textoRolar);
                 botaoRolarDano.setAttribute('title', textoRolar);
+            }
+            const campoResultadosDano = document.getElementById('modalAtaqueResultadosDano');
+            if (campoResultadosDano && estadoAtaqueArma.danoFaces > 0) {
+                campoResultadosDano.textContent = estadoAtaqueArma.danoQtd + 'd' + estadoAtaqueArma.danoFaces;
             }
             atualizarTotalModalDano();
 
