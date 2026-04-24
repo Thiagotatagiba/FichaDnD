@@ -3596,6 +3596,34 @@
             text-shadow: 0 0 8px rgba(255, 215, 0, 0.65);
         }
 
+        .calc-item {
+            position: relative;
+            display: inline-block;
+            font-weight: bold;
+            line-height: 1;
+            vertical-align: middle;
+        }
+
+        .calc-item .numero {
+            font-size: 22px;
+            display: inline-block;
+        }
+
+        .calc-item .emoji {
+            position: absolute;
+            bottom: -6px;
+            right: -8px;
+            font-size: 12px;
+            line-height: 1;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .ataque-modal-resumo-dado-critico .calc-item .numero {
+            color: #b8860b;
+            text-shadow: 0 0 8px rgba(255, 215, 0, 0.65);
+        }
+
         .ataque-modal-checklist {
             display: flex;
             justify-content: center;
@@ -5256,7 +5284,8 @@
                             <div class="ataque-modal-campo ataque-modal-campo-com-dado">
                                 <span class="ataque-modal-campo-rotulo">Dado</span>
                                 <button type="button" id="modalAtaqueRolarDado" class="botao-dado"
-                                    aria-label="Rolar 1d20" title="Rolar 1d20"><span class="botao-dado-icone">🎲</span></button>
+                                    aria-label="Rolar 1d20" title="Rolar 1d20"><span
+                                        class="botao-dado-icone">🎲</span></button>
                                 <input id="modalAtaqueDado" type="number" min="1" max="20" step="1" inputmode="numeric"
                                     aria-label="Dado tirado no ataque">
                             </div>
@@ -5302,7 +5331,8 @@
                                 <span class="ataque-modal-campo-rotulo">Dado</span>
                                 <div style="display: flex; flex-direction: column; align-items: center;">
                                     <button type="button" id="modalAtaqueRolarDano" class="botao-dado"
-                                        aria-label="Rolar dano" title="Rolar dano"><span class="botao-dado-icone">🎲</span></button>
+                                        aria-label="Rolar dano" title="Rolar dano"><span
+                                            class="botao-dado-icone">🎲</span></button>
                                     <div id="modalAtaqueResultadosDano" class="ataque-modal-resultados-dano"></div>
                                 </div>
                                 <input id="modalAtaqueDano" type="number" min="1" step="1" inputmode="numeric"
@@ -5366,7 +5396,8 @@
                     <button class="config-tab active" data-tab="customizacao" type="button">🧩 Customização</button>
                     <button class="config-tab" data-tab="automacao" type="button">⚙️ Automação</button>
                     <button class="config-tab" data-tab="combate" type="button">🎲 Combate</button>
-                    <button class="config-tab" data-tab="caracteristica-classe" type="button">📜 Característica de Classe</button>
+                    <button class="config-tab" data-tab="caracteristica-classe" type="button">📜 Característica de
+                        Classe</button>
                 </div>
 
                 <div class="config-conteudo">
@@ -5405,28 +5436,28 @@
                     <div class="config-aba" id="aba-combate">
                         <div class="config-aba-placeholder">Espaço reservado para opções de combate e rolagens.</div>
                     </div>
-                    
+
                     <div class="config-aba" id="aba-caracteristica-classe">
                         <div class="config-bloco">
                             <h3 style="margin-bottom: 15px;">📜 Características da Classe</h3>
-                            <iframe id="iframeClasseFeatures" 
-src="./Classes/Card Classes Vazio.html" 
-
-                                    style="width: 100%; height: 600px; border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+                            <iframe id="iframeClasseFeatures" src="./Classes/Card Classes Vazio.html"
+                                style="width: 100%; height: 600px; border: none; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
                             </iframe>
-                            <div style="margin-top: 15px; padding: 12px; background: rgba(139,69,19,0.08); border-radius: 8px; font-size: 14px; text-align: center;">
-                                💡 <strong>Dica:</strong> Importe o JSON da classe usando o botão "Importar JSON" na tabela!
+                            <div
+                                style="margin-top: 15px; padding: 12px; background: rgba(139,69,19,0.08); border-radius: 8px; font-size: 14px; text-align: center;">
+                                💡 <strong>Dica:</strong> Importe o JSON da classe usando o botão "Importar JSON" na
+                                tabela!
                             </div>
 
                             <h3>📜 Características de Classe</h3>
                             <div style="position: relative; height: 500px;">
-                                <iframe id="iframeClasseCard" 
-                                        src="Classes/Card Classes Vazio.html" 
-                                        style="width:100%; height:100%; border:none; border-radius:8px;">
+                                <iframe id="iframeClasseCard" src="Classes/Card Classes Vazio.html"
+                                    style="width:100%; height:100%; border:none; border-radius:8px;">
                                 </iframe>
                             </div>
-<div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
-                                Selecione sua classe na ficha principal para carregar automaticamente as características na aba Status.
+                            <div style="text-align: center; margin-top: 10px; font-size: 12px; color: #666;">
+                                Selecione sua classe na ficha principal para carregar automaticamente as características
+                                na aba Status.
                             </div>
                         </div>
                     </div>
@@ -5435,194 +5466,194 @@ src="./Classes/Card Classes Vazio.html"
         </div>
     </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const classeSelect = document.getElementById('classeNomeID');
-  const iframe = document.getElementById('iframeClasseCard');
-  
-  if (classeSelect && iframe) {
-    iframe.addEventListener('load', function() {
-      const classeAtual = classeSelect.value;
-      const dadosBrutosClasse = document.getElementById('classeData')?.value;
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const classeSelect = document.getElementById('classeNomeID');
+            const iframe = document.getElementById('iframeClasseCard');
 
-      if (!classeAtual || !dadosBrutosClasse) return;
+            if (classeSelect && iframe) {
+                iframe.addEventListener('load', function () {
+                    const classeAtual = classeSelect.value;
+                    const dadosBrutosClasse = document.getElementById('classeData')?.value;
 
-      try {
-        console.log('[Ficha] Enviando dados da classe para o card após load do iframe:', classeAtual);
-        iframe.contentWindow?.postMessage({
-          action: 'loadClassCardData',
-          classe: classeAtual,
-          jsonData: JSON.parse(dadosBrutosClasse)
-        }, '*');
-      } catch (error) {
-        console.warn('Não foi possível sincronizar dados da classe com o card.', error);
-      }
-    });
+                    if (!classeAtual || !dadosBrutosClasse) return;
 
-    // Auto-load quando classe muda
-    classeSelect.addEventListener('change', function(e) {
-      const classe = e.target.value;
-      if (classe) {
-        const urlCard = `./Classes/Card Classes Vazio.html?classe=${classe}`;
-        console.log('[Ficha] Abrindo card de classe:', {
-          classe,
-          iframeSrc: urlCard,
-          paginaAtual: window.location.href
+                    try {
+                        console.log('[Ficha] Enviando dados da classe para o card após load do iframe:', classeAtual);
+                        iframe.contentWindow?.postMessage({
+                            action: 'loadClassCardData',
+                            classe: classeAtual,
+                            jsonData: JSON.parse(dadosBrutosClasse)
+                        }, '*');
+                    } catch (error) {
+                        console.warn('Não foi possível sincronizar dados da classe com o card.', error);
+                    }
+                });
+
+                // Auto-load quando classe muda
+                classeSelect.addEventListener('change', function (e) {
+                    const classe = e.target.value;
+                    if (classe) {
+                        const urlCard = `./Classes/Card Classes Vazio.html?classe=${classe}`;
+                        console.log('[Ficha] Abrindo card de classe:', {
+                            classe,
+                            iframeSrc: urlCard,
+                            paginaAtual: window.location.href
+                        });
+                        iframe.src = urlCard;
+                        // Scroll suave para iframe se necessário
+                        iframe.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else {
+                        iframe.src = 'Classes/Card Classes Vazio.html';
+                    }
+                });
+
+                // Load inicial se já tem classe selecionada
+                if (classeSelect.value) {
+                    classeSelect.dispatchEvent(new Event('change'));
+                }
+            }
         });
-        iframe.src = urlCard;
-        // Scroll suave para iframe se necessário
-        iframe.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      } else {
-        iframe.src = 'Classes/Card Classes Vazio.html';
-      }
-    });
-    
-// Load inicial se já tem classe selecionada
-    if (classeSelect.value) {
-      classeSelect.dispatchEvent(new Event('change'));
-    }
-  }
-});
 
-// ===== ETAPA 3: AUTO-CARREGAMENTO CARACTERÍSTICAS CLASSE =====
-function mostrarCarregando(show = true) {
-  let spinner = document.getElementById('classeSpinner');
-  if (!spinner) {
-    spinner = document.createElement('div');
-    spinner.id = 'classeSpinner';
-    spinner.innerHTML = '⏳ Carregando...';
-    spinner.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);color:white;padding:20px;border-radius:10px;z-index:9999;font-family:MedievalSharp;font-size:18px;';
-    document.body.appendChild(spinner);
-  }
-  spinner.style.display = show ? 'block' : 'none';
-}
+        // ===== ETAPA 3: AUTO-CARREGAMENTO CARACTERÍSTICAS CLASSE =====
+        function mostrarCarregando(show = true) {
+            let spinner = document.getElementById('classeSpinner');
+            if (!spinner) {
+                spinner = document.createElement('div');
+                spinner.id = 'classeSpinner';
+                spinner.innerHTML = '⏳ Carregando...';
+                spinner.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.8);color:white;padding:20px;border-radius:10px;z-index:9999;font-family:MedievalSharp;font-size:18px;';
+                document.body.appendChild(spinner);
+            }
+            spinner.style.display = show ? 'block' : 'none';
+        }
 
-function limparListasTalentos() {
-  Object.values(TALENTOS_CONFIG).forEach(config => {
-    const lista = document.getElementById(config.listaId);
-    if (lista) lista.innerHTML = '<div class="talento-lista-vazia">Nenhuma característica carregada</div>';
-    const resumo = document.getElementById(config.resumoId);
-    if (resumo) resumo.textContent = '';
-  });
-}
+        function limparListasTalentos() {
+            Object.values(TALENTOS_CONFIG).forEach(config => {
+                const lista = document.getElementById(config.listaId);
+                if (lista) lista.innerHTML = '<div class="talento-lista-vazia">Nenhuma característica carregada</div>';
+                const resumo = document.getElementById(config.resumoId);
+                if (resumo) resumo.textContent = '';
+            });
+        }
 
-function enviarClasseParaCard(classe, classeData) {
-  const iframe = document.getElementById('iframeClasseCard');
-  if (!iframe?.contentWindow || !classe || !classeData) return;
+        function enviarClasseParaCard(classe, classeData) {
+            const iframe = document.getElementById('iframeClasseCard');
+            if (!iframe?.contentWindow || !classe || !classeData) return;
 
-  console.log('[Ficha] Enviando dados da classe para o card:', classe);
-  iframe.contentWindow.postMessage({
-    action: 'loadClassCardData',
-    classe,
-    jsonData: classeData
-  }, '*');
-}
+            console.log('[Ficha] Enviando dados da classe para o card:', classe);
+            iframe.contentWindow.postMessage({
+                action: 'loadClassCardData',
+                classe,
+                jsonData: classeData
+            }, '*');
+        }
 
-async function carregarCaracteristicasClasse(classe = '', nivel = 1, subclasse = '') {
-  if (!classe) {
-    limparListasTalentos();
-    document.getElementById('classeData').value = '';
-    document.getElementById('subclasseData').value = '';
-    return;
-  }
+        async function carregarCaracteristicasClasse(classe = '', nivel = 1, subclasse = '') {
+            if (!classe) {
+                limparListasTalentos();
+                document.getElementById('classeData').value = '';
+                document.getElementById('subclasseData').value = '';
+                return;
+            }
 
-  mostrarCarregando(true);
-  try {
-    limparListasTalentos();
+            mostrarCarregando(true);
+            try {
+                limparListasTalentos();
 
-    // Carrega classe principal
-    const classePath = `./Classes/caracteristica_${classe}.json`;
-    const classeResp = await fetch(classePath);
-    if (!classeResp.ok) throw new Error(`JSON classe não encontrado: ${classePath}`);
-    const classeData = await classeResp.json();
-    document.getElementById('classeData').value = JSON.stringify(classeData);
-    enviarClasseParaCard(classe, classeData);
+                // Carrega classe principal
+                const classePath = `./Classes/caracteristica_${classe}.json`;
+                const classeResp = await fetch(classePath);
+                if (!classeResp.ok) throw new Error(`JSON classe não encontrado: ${classePath}`);
+                const classeData = await classeResp.json();
+                document.getElementById('classeData').value = JSON.stringify(classeData);
+                enviarClasseParaCard(classe, classeData);
 
-    // Filtra features por nível
-    const featuresClasse = (classeData.features || []).filter(f => f.level <= nivel);
+                // Filtra features por nível
+                const featuresClasse = (classeData.features || []).filter(f => f.level <= nivel);
 
-    // Popula categoria 'classe'
-    popularTalentoLista('classe', featuresClasse);
+                // Popula categoria 'classe'
+                popularTalentoLista('classe', featuresClasse);
 
-    // Subclasse/arquetipo
-    let featuresSub = [];
-    if (subclasse && classeData.subclasses && classeData.subclasses[subclasse]) {
-      featuresSub = classeData.subclasses[subclasse].filter(f => f.level <= nivel);
-      document.getElementById('subclasseData').value = JSON.stringify(featuresSub);
-      popularTalentoLista('arquetipo', featuresSub);
-      document.getElementById('talentoArquetipoResumo').textContent = subclasse;
-    }
+                // Subclasse/arquetipo
+                let featuresSub = [];
+                if (subclasse && classeData.subclasses && classeData.subclasses[subclasse]) {
+                    featuresSub = classeData.subclasses[subclasse].filter(f => f.level <= nivel);
+                    document.getElementById('subclasseData').value = JSON.stringify(featuresSub);
+                    popularTalentoLista('arquetipo', featuresSub);
+                    document.getElementById('talentoArquetipoResumo').textContent = subclasse;
+                }
 
-    // Atualiza resumos (ex: count)
-    document.getElementById('talentoClasseResumo').textContent = `${classe} (${featuresClasse.length})`;
-  } catch (error) {
-    console.error('Erro carregando características:', error);
-    alert(`Erro: ${error.message}. Verifique se o JSON existe em Classes/.`);
-    limparListasTalentos();
-  } finally {
-    mostrarCarregando(false);
-  }
-}
+                // Atualiza resumos (ex: count)
+                document.getElementById('talentoClasseResumo').textContent = `${classe} (${featuresClasse.length})`;
+            } catch (error) {
+                console.error('Erro carregando características:', error);
+                alert(`Erro: ${error.message}. Verifique se o JSON existe em Classes/.`);
+                limparListasTalentos();
+            } finally {
+                mostrarCarregando(false);
+            }
+        }
 
-function popularTalentoLista(categoria, features) {
-  const config = TALENTOS_CONFIG[categoria];
-  if (!config || !features?.length) return;
+        function popularTalentoLista(categoria, features) {
+            const config = TALENTOS_CONFIG[categoria];
+            if (!config || !features?.length) return;
 
-  const lista = document.getElementById(config.listaId);
-  if (!lista) return;
+            const lista = document.getElementById(config.listaId);
+            if (!lista) return;
 
-  lista.innerHTML = features.map(item => 
-    `<div class="talento-item" tabindex="0" title="${item.desc || ''}">${item.name}</div>`
-  ).join('');
-}
+            lista.innerHTML = features.map(item =>
+                `<div class="talento-item" tabindex="0" title="${item.desc || ''}">${item.name}</div>`
+            ).join('');
+        }
 
-function handleClasseChange() {
-  const classeNomeInput = document.getElementById('classeNomeID');
-  const classeNivelInput = document.getElementById('classeNivelID');
-  const subInput = document.getElementById('subclasse');
+        function handleClasseChange() {
+            const classeNomeInput = document.getElementById('classeNomeID');
+            const classeNivelInput = document.getElementById('classeNivelID');
+            const subInput = document.getElementById('subclasse');
 
-  if (!classeNomeInput || !classeNivelInput) return;
+            if (!classeNomeInput || !classeNivelInput) return;
 
-  const classeNome = classeNomeInput.value;
-  const classeNivel = parseInt(classeNivelInput.value) || 1;
-  const sub = subInput?.value || '';
-  carregarCaracteristicasClasse(classeNome, classeNivel, sub);
-}
+            const classeNome = classeNomeInput.value;
+            const classeNivel = parseInt(classeNivelInput.value) || 1;
+            const sub = subInput?.value || '';
+            carregarCaracteristicasClasse(classeNome, classeNivel, sub);
+        }
 
-// Adiciona event listeners (Etapa 3)
-const classeNomeInput = document.getElementById('classeNomeID');
-const classeNivelInput = document.getElementById('classeNivelID');
-const subInput = document.getElementById('subclasse');
+        // Adiciona event listeners (Etapa 3)
+        const classeNomeInput = document.getElementById('classeNomeID');
+        const classeNivelInput = document.getElementById('classeNivelID');
+        const subInput = document.getElementById('subclasse');
 
-if (classeNomeInput) classeNomeInput.addEventListener('change', handleClasseChange);
-if (classeNivelInput) classeNivelInput.addEventListener('input', handleClasseChange);
-if (subInput) subInput.addEventListener('input', handleClasseChange);
+        if (classeNomeInput) classeNomeInput.addEventListener('change', handleClasseChange);
+        if (classeNivelInput) classeNivelInput.addEventListener('input', handleClasseChange);
+        if (subInput) subInput.addEventListener('input', handleClasseChange);
 
-// Integra com load (chama após carregarFicha)
-const originalCarregarFicha = window.carregarFicha;
-window.addEventListener('message', function(event) {
-  if (event.data.action === 'applyClassFeatures') {
-    const { classe, nivel, subclasse, jsonData } = event.data;
-    if (typeof window.carregarCaracteristicasClasse === 'function') {
-      window.carregarCaracteristicasClasse(classe, nivel, subclasse);
-    }
-    console.log('✅ Features aplicadas via iframe:', { classe, nivel, subclasse });
-  }
-});
+        // Integra com load (chama após carregarFicha)
+        const originalCarregarFicha = window.carregarFicha;
+        window.addEventListener('message', function (event) {
+            if (event.data.action === 'applyClassFeatures') {
+                const { classe, nivel, subclasse, jsonData } = event.data;
+                if (typeof window.carregarCaracteristicasClasse === 'function') {
+                    window.carregarCaracteristicasClasse(classe, nivel, subclasse);
+                }
+                console.log('✅ Features aplicadas via iframe:', { classe, nivel, subclasse });
+            }
+        });
 
-window.carregarFicha = function(personagem) {
-  if (originalCarregarFicha) originalCarregarFicha(personagem);
-  // Trigger reload após load
-  setTimeout(handleClasseChange, 100);
-};
+        window.carregarFicha = function (personagem) {
+            if (originalCarregarFicha) originalCarregarFicha(personagem);
+            // Trigger reload após load
+            setTimeout(handleClasseChange, 100);
+        };
 
-// Inicial load
-handleClasseChange();
+        // Inicial load
+        handleClasseChange();
 
-</script>
-                </div>
-            </div>
-        </div>
+    </script>
+    </div>
+    </div>
+    </div>
     </div>
 
     <div class="ficha">
@@ -5667,7 +5698,7 @@ handleClasseChange();
         <div class="linha-personagem">
             <div class="campo">
                 <div class="campo-titulo">Classe e Nível</div>
-<input id="classeID" type="hidden">
+                <input id="classeID" type="hidden">
                 <input id="classeData" type="hidden" value="">
                 <input id="subclasseData" type="hidden" value="">
                 <div class="campo-duplo" title="Selecione a classe e o nível do personagem">
@@ -6309,9 +6340,9 @@ handleClasseChange();
                                         data-talento-add="classe">+ Característica</button></div>
                             </div>
 
-<div class="talento-secao" id="talentoSubclasseSecao"
-                                data-talento-categoria="arquetipo">
-                                <div class="talento-subtitulo">Subclasse: <span id="talentoArquetipoResumo"></span></div>
+                            <div class="talento-secao" id="talentoSubclasseSecao" data-talento-categoria="arquetipo">
+                                <div class="talento-subtitulo">Subclasse: <span id="talentoArquetipoResumo"></span>
+                                </div>
                                 <textarea id="talentoArquetipo" class="talento-texto talento-storage"
                                     aria-label="Características de arquétipo"></textarea>
                                 <div id="talentoArquetipoLista" class="talento-lista" aria-live="polite"></div>
@@ -6392,8 +6423,8 @@ handleClasseChange();
                                                 <div class="equipados-slot-com-emoji">
                                                     <button type="button" id="arma2Empunhadura"
                                                         class="equipados-mao-emoji secundaria"
-                                                        aria-label="Estado da mão secundária"
-                                                        title="Mão secundária" tabindex="-1">🤚</button>
+                                                        aria-label="Estado da mão secundária" title="Mão secundária"
+                                                        tabindex="-1">🤚</button>
                                                     <select id="arma2Nome"
                                                         aria-label="Arma secundária equipada"></select>
                                                 </div>
@@ -10080,9 +10111,9 @@ Bônus de Proficiência: +${bonusProf}
                     configuracao.emDuasMaos ? '✊' : '👏',
                     configuracao.emDuasMaos ? 'Voltar a empunhar a arma com uma mão' : 'Empunhar arma versátil com duas mãos',
                     () => {
-                    alternarModoEmpunhaduraVersatil(configuracao.emDuasMaos ? 'uma_mao' : 'duas_maos');
-                    atualizarSubAbaArmas();
-                }));
+                        alternarModoEmpunhaduraVersatil(configuracao.emDuasMaos ? 'uma_mao' : 'duas_maos');
+                        atualizarSubAbaArmas();
+                    }));
             }
 
             menu.classList.remove('oculto');
@@ -11223,10 +11254,10 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         /* SALVAR Ficha*/
-function salvarFicha() {
-  // Salvar class/subclass data
-  const classeData = document.getElementById('classeData').value;
-  const subData = document.getElementById('subclasseData').value;
+        function salvarFicha() {
+            // Salvar class/subclass data
+            const classeData = document.getElementById('classeData').value;
+            const subData = document.getElementById('subclasseData').value;
 
             const dados = coletarDadosFicha()
             dados.classeData = classeData;
@@ -13134,7 +13165,7 @@ function salvarFicha() {
             if (campoAtaquePV) campoAtaquePV.textContent = "PV " + pvAtual;
         }
 
-                const estadoAtaqueArma = {
+        const estadoAtaqueArma = {
             arma: null,
             dado: null,
             totalAtaque: 0,
@@ -13268,6 +13299,18 @@ function salvarFicha() {
             if (rotuloAtributo === 'SAB') return '👁️';
             if (rotuloAtributo === 'CAR') return '🗣️';
             return '✨';
+        }
+
+        function obterTooltipAtributoAtaque(rotuloAtributo) {
+            const mapa = {
+                'FOR': 'Modificador de Força',
+                'DES': 'Modificador de Destreza',
+                'CON': 'Modificador de Constituição',
+                'INT': 'Modificador de Inteligência',
+                'SAB': 'Modificador de Sabedoria',
+                'CAR': 'Modificador de Carisma'
+            };
+            return mapa[rotuloAtributo] || 'Modificador de atributo';
         }
 
         function parsearFormulaDano(formula) {
@@ -13620,8 +13663,10 @@ function salvarFicha() {
             subtitulo.textContent = obterSubtituloModalAtaque(estadoAtaqueArma.arma);
             const totalAtaque = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
             const iconeAtributo = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
-            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)`;
+            const tooltipAtributo = obterTooltipAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
+            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}"><span class="calc-item" title="Valor do dado"><span class="numero">${dado}</span><span class="emoji">🎲</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="${tooltipAtributo}"><span class="numero">${estadoAtaqueArma.modBase || 0}</span><span class="emoji">${iconeAtributo}</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="Bônus de Proficiência"><span class="numero">${estadoAtaqueArma.bonusProf || 0}</span><span class="emoji">🅿️</span></span></span>)`;
             const iconeDano = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
+            const tooltipDano = obterTooltipAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
             const formulaDanoTexto = estadoAtaqueArma.danoFormula || "?";
             resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)<br>Dano da arma: <span class="ataque-modal-resumo-destaque">${formulaDanoTexto} + ${iconeDano} ${estadoAtaqueArma.danoModBase || 0}</span>`;
             const bonusDanoElement = document.getElementById('modalAtaqueBonusDano');
@@ -14873,7 +14918,7 @@ function salvarFicha() {
             location.reload();
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const agora = new Date();
             if (agora >= DATA_EXPIRACAO) {
                 bloquearFicha();
@@ -14881,7 +14926,7 @@ function salvarFicha() {
 
             const btnOk = document.getElementById('expiracaoOkBtn');
             if (btnOk) {
-                btnOk.addEventListener('click', function() {
+                btnOk.addEventListener('click', function () {
                     resetarFicha();
                 });
             }

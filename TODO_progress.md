@@ -1,13 +1,12 @@
-# TODO Progress - Melhorias no modal de Dano
+# TODO Progress — Refatoração Visual do Resumo de Ataque
 
-## Checklist de Implementação
+## Checklist
 
-- [x] 1. CSS `.ataque-modal-resultados-dano` — já existe no HTML (verificar se precisa ajuste)
-- [x] 2. `estadoAtaqueArma.ultimaRolagemDano` — já existe no objeto
-- [x] 3. Atualizar `fecharModalAtaqueArma()` — limpar estado de dano + DOM
-- [x] 4. Atualizar `abrirEtapaDanoAtaque()` — mostrar modificador real da arma
-- [x] 5. Corrigir `animarRolagemNoCampo()` — usar `soma` para múltiplos dados
-- [x] 6. Atualizar `registrarRolagemModalDano()` — usar `soma`, guardar resultados
-- [x] 7. Adicionar `atualizarResultadosDano()` — nova função
-- [x] 8. Testes manuais
+- [x] 1. Analisar estrutura atual do HTML/CSS/JS
+- [x] 2. CSS `.calc-item`, `.numero`, `.emoji` e regra de crítico já existem no arquivo
+- [ ] 3. Adicionar função `obterTooltipAtributoAtaque`
+- [ ] 4. Refatorar primeiro `resumo.innerHTML` (sem dano)
+- [ ] 5. Refatorar segundo `resumo.innerHTML` (com dano)
+- [ ] 6. Verificar compatibilidade e validar resultado
+- [ ] 7. Atualizar TODO.md principal
 
