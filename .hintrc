@@ -15,7 +15,8 @@
       "default",
       {
         "ignore": [
-          "-moz-appearance"
+          "-moz-appearance",
+          "user-select"
         ]
       }
     ],
