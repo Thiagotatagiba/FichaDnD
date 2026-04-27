@@ -1406,7 +1406,7 @@
 
         .proficiencia-texto {
             width: 100%;
-            min-height: 76px;
+            height: 100%;
             resize: vertical;
             border: 1px solid #bda68c;
             border-radius: 8px;
@@ -3616,12 +3616,15 @@
             font-size: 12px;
             line-height: 1;
             opacity: 0.8;
-            pointer-events: none;
         }
 
         .ataque-modal-resumo-dado-critico .calc-item .numero {
             color: #b8860b;
             text-shadow: 0 0 8px rgba(255, 215, 0, 0.65);
+        }
+
+        .ataque-modal-resumo-total {
+            font-size: 22px;
         }
 
         .ataque-modal-checklist {
@@ -5101,8 +5104,7 @@
             text-align: center;
             border-radius: 6px;
             border: 2px solid #c8a95e;
-            background: #2a2a2a;
-            color: #fff;
+
         }
 
         #inputVidaLevelUp.invalido {
@@ -5689,7 +5691,7 @@
                 <!-- linha com texto + botão -->
                 <div class="xp-info">
                     <span id="xpTexto">0/300 XP</span>
-                    <button id="btnAddXP" type="button" aria-label="Adicionar experiência">⬆️</button>
+                    <button id="btnAddXP" title="Adicionar XP" type="button" aria-label="Adicionar experiência">⬆️</button>
                 </div>
             </div>
 
@@ -5990,7 +5992,8 @@
                     </div>
 
                     <div class="caixa-salvaguarda">
-                        <!-- Espaço reservado para implementações futuras -->
+                        <div class="campo-titulo">Anotações</div>
+                        <textarea id="anotacoes" class="proficiencia-texto" aria-label="Anotações"></textarea>
                     </div>
 
                 </div>
@@ -13288,7 +13291,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function obterIconeAtributoAtaque(rotuloAtributo) {
             if (rotuloAtributo === 'FOR') return '💪';
-            if (rotuloAtributo === 'DES') return '🎯';
+            if (rotuloAtributo === 'DES') return '🏹';
             if (rotuloAtributo === 'CON') return '❤️';
             if (rotuloAtributo === 'INT') return '🧠';
             if (rotuloAtributo === 'SAB') return '👁️';
@@ -13659,11 +13662,10 @@ Bônus de Proficiência: +${bonusProf}
             const totalAtaque = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
             const iconeAtributo = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
             const tooltipAtributo = obterTooltipAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
-            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}"><span class="calc-item" title="Valor do dado"><span class="numero">${dado}</span><span class="emoji">🎲</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="${tooltipAtributo}"><span class="numero">${estadoAtaqueArma.modBase || 0}</span><span class="emoji">${iconeAtributo}</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="Bônus de Proficiência"><span class="numero">${estadoAtaqueArma.bonusProf || 0}</span><span class="emoji">🅿️</span></span></span>)`;
             const iconeDano = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
             const tooltipDano = obterTooltipAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
             const formulaDanoTexto = estadoAtaqueArma.danoFormula || "?";
-            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)<br>Dano da arma: <span class="ataque-modal-resumo-destaque">${formulaDanoTexto} + ${iconeDano} ${estadoAtaqueArma.danoModBase || 0}</span>`;
+            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}"><span class="calc-item" title="Valor do dado"><span class="numero">${dado}</span><span class="emoji">🎲</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="${tooltipAtributo}"><span class="numero">${estadoAtaqueArma.modBase || 0}</span><span class="emoji">${iconeAtributo}</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="Bônus de Proficiência"><span class="numero">${estadoAtaqueArma.bonusProf || 0}</span><span class="emoji">🅿️</span></span></span>)<br>Dano da arma: <span class="ataque-modal-resumo-destaque">${formulaDanoTexto} + <span class="calc-item" title="${tooltipDano}"><span class="numero">${estadoAtaqueArma.danoModBase || 0}</span><span class="emoji">${iconeDano}</span></span></span>`;
             const bonusDanoElement = document.getElementById('modalAtaqueBonusDano');
             if (bonusDanoElement) {
                 bonusDanoElement.textContent = `+ ${estadoAtaqueArma.danoModBase || 0} (${iconeDano})`;

@@ -25,32 +25,32 @@ Melhorar a apresentação visual do resumo de ataque sem alterar a lógica exist
   <span class="numero">6</span>
   <span class="emoji">🎲</span>
 </span>
-2. Adicionar Tooltip (Legenda ao passar o mouse)
+```
 
-Usar atributo title para explicação de cada elemento:
+### 2. Adicionar Tooltip (Legenda ao passar o mouse)
+Usar atributo `title` para explicação de cada elemento:
+- 🎲 → "Valor do dado"
+- 💪 → "Modificador de atributo" (ideal: adaptar dinamicamente para Força, Destreza, etc)
+- 🅿️ → "Bônus de Proficiência"
 
-🎲 → "Valor do dado"
-💪 → "Modificador de atributo"
-(ideal: adaptar dinamicamente para Força, Destreza, etc)
-🅿️ → "Bônus de Proficiência"
-3. Refatorar HTML gerado no innerHTML
+### 3. Refatorar HTML gerado no innerHTML
 
-Atual:
-
+**Atual:**
+```javascript
 resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)`;
+```
 
 ➡️ Refatorar apenas a estrutura HTML, mantendo:
+- `totalAtaque`
+- `dado`
+- `estadoAtaqueArma.modBase`
+- `estadoAtaqueArma.bonusProf`
+- `iconeAtributo`
+- lógica de crítico (`dado === 20`)
 
-totalAtaque
-dado
-estadoAtaqueArma.modBase
-estadoAtaqueArma.bonusProf
-iconeAtributo
-lógica de crítico (dado === 20)
-4. Criar/Atualizar CSS
-
+### 4. Criar/Atualizar CSS
 Adicionar estilos:
-
+```css
 .calc-item {
   position: relative;
   display: inline-block;
@@ -68,23 +68,69 @@ Adicionar estilos:
   font-size: 12px;
   opacity: 0.8;
 }
-5. Manter compatibilidade visual existente
-Preservar .ataque-modal-resumo-destaque
-Preservar .ataque-modal-resumo-dado-critico
-Garantir que o layout não quebre dentro do modal atual
-⚠️ Restrições
-❌ NÃO alterar lógica JavaScript
-❌ NÃO remover classes existentes
-❌ NÃO alterar fluxo de cálculo
-✅ Apenas refatoração visual + UX
-✅ Resultado Esperado
+```
+
+### 5. Manter compatibilidade visual existente
+- Preservar `.ataque-modal-resumo-destaque`
+- Preservar `.ataque-modal-resumo-dado-critico`
+- Garantir que o layout não quebre dentro do modal atual
+
+---
+
+## ⚠️ Restrições
+- ❌ NÃO alterar lógica JavaScript
+- ❌ NÃO remover classes existentes
+- ❌ NÃO alterar fluxo de cálculo
+- ✅ Apenas refatoração visual + UX
+
+---
+
+## ✅ Resultado Esperado
 
 Visual mais limpo e profissional:
 
+```
 Ataque: 13 ( 6🎲 + 4💪 + 3🅿️ )
+```
 
 Com:
+- números maiores e mais legíveis
+- emojis discretos como indicadores
+- tooltips explicando cada valor
 
-números maiores e mais legíveis
-emojis discretos como indicadores
-tooltips explicando cada valor
+Se quiser testar direto sem esperar o modelo, aqui vai o comportamento esperado em CSS:
+
+.calc {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.calc-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: bold;
+}
+
+.numero {
+  font-size: 18px;
+}
+
+.emoji {
+  font-size: 12px;
+  opacity: 0.8;
+}
+
+.total {
+  font-size: 24px;
+  font-weight: bold;
+}
+🎯 Resultado final esperado
+
+Ataque: 21 ( 🎲14 + 💪4 + 🅿️3 )
+
+“Ataque: 21” dominante
+números claros
+emoji discreto
+leitura rápida (isso aqui é o ganho real)
