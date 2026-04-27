@@ -1,0 +1,1616 @@
+        const estadoAtaqueArma = {
+            arma: null,
+            dado: null,
+            totalAtaque: 0,
+            modBase: 0,
+            bonusProf: 0,
+            rotuloAtributo: "",
+            textoResumo: "",
+            tipoAcao: "Ação",
+            historicoRolagens: []
+        };
+
+        function abrirItemCard(card) {
+            if (!card) return;
+            card.classList.remove('fechado', 'oculto');
+            const icon = card.querySelector('.item-toggle');
+            if (icon) icon.textContent = '??';
+        }
+
+        function fecharItemCard(card) {
+            if (!card || card.id === 'armaModelo' || card.id === 'armaduraModelo' || card.id === 'escudoModelo' || card.id === 'outroModelo') return;
+            card.classList.add('fechado');
+            const icon = card.querySelector('.item-toggle');
+            if (icon) icon.textContent = '??';
+        }
+
+        function atualizarTitulosInventario() {
+            const contarItensPreenchidos = (seletor, campoNome) => Array.from(document.querySelectorAll(seletor))
+                .filter(card => card.querySelector(campoNome)?.value?.trim())
+                .length;
+
+            const contagens = {
+                inventarioTituloArmas: {
+                    emoji: '??',
+                    nome: 'Armas',
+                    total: contarItensPreenchidos('#listaArmas .item-card[data-tipo="arma"]', '[data-campo="nome"]')
+                },
+                inventarioTituloArmaduras: {
+                    emoji: '??',
+                    nome: 'Armaduras',
+                    total: contarItensPreenchidos('#listaArmaduras .item-card[data-tipo="armadura"]', '[data-campo="armadura_nome"]')
+                },
+                inventarioTituloEscudos: {
+                    emoji: '???',
+                    nome: 'Escudos e Vestimentos',
+                    total: contarItensPreenchidos('#listaEscudos .item-card[data-tipo="escudo"]', '[data-campo="escudo_nome"]')
+                },
+                inventarioTituloOutros: {
+                    emoji: '??',
+                    nome: 'Outros',
+                    total: contarItensPreenchidos('#listaOutros .item-card[data-tipo="outro"]', '[data-campo="outro_nome"]')
+                }
+            };
+
+            Object.entries(contagens).forEach(([id, info]) => {
+                const titulo = document.getElementById(id);
+                if (titulo) titulo.textContent = `${info.emoji} ${info.nome} ${info.total}`;
+            });
+        }
+
+        function atualizarCamposMagicosItem(card) {
+            if (!card) return;
+
+            const checkboxMagico = card.querySelector('.item-flag-magico');
+            const containerSintonizado = card.querySelector('.item-sintonizado-container');
+            const checkboxSintonizado = card.querySelector('.item-flag-sintonizado');
+
+            if (!checkboxMagico || !containerSintonizado || !checkboxSintonizado) return;
+
+            const exibirSintonizado = checkboxMagico.checked;
+            card.classList.toggle('item-magico-ativo', exibirSintonizado);
+            containerSintonizado.classList.toggle('oculto', !exibirSintonizado);
+            if (!exibirSintonizado) checkboxSintonizado.checked = false;
+        }
+
+        function inicializarCamposCompartilhadosItem(card, prefixo) {
+            if (!card) return;
+
+            const checkboxMagico = card.querySelector('.item-flag-magico');
+            const checkboxSintonizado = card.querySelector('.item-flag-sintonizado');
+
+            if (checkboxMagico && checkboxMagico.dataset.listenerItemMagico !== 'true') {
+                checkboxMagico.addEventListener('change', () => {
+                    atualizarCamposMagicosItem(card);
+                    atualizarListaArmasEquipamento();
+                });
+                checkboxMagico.dataset.listenerItemMagico = 'true';
+            }
+
+            if (checkboxSintonizado && checkboxSintonizado.dataset.listenerItemSintonizado !== 'true') {
+                checkboxSintonizado.addEventListener('change', atualizarListaArmasEquipamento);
+                checkboxSintonizado.dataset.listenerItemSintonizado = 'true';
+            }
+
+            atualizarCamposMagicosItem(card);
+        }
+
+        function coletarFlagsCompartilhadasItem(card, destino, prefixo) {
+            destino[`${prefixo}_item_magico`] = !!card.querySelector('.item-flag-magico')?.checked;
+            destino[`${prefixo}_sintonizado`] = !!card.querySelector('.item-flag-sintonizado')?.checked;
+        }
+
+        function aplicarFlagsCompartilhadasItem(card, dadosItem, prefixo) {
+            if (!card || !dadosItem) return;
+            const checkboxMagico = card.querySelector('.item-flag-magico');
+            const checkboxSintonizado = card.querySelector('.item-flag-sintonizado');
+
+            if (checkboxMagico) checkboxMagico.checked = !!dadosItem[`${prefixo}_item_magico`];
+            if (checkboxSintonizado) checkboxSintonizado.checked = !!dadosItem[`${prefixo}_sintonizado`];
+            atualizarCamposMagicosItem(card);
+        }
+
+        function obterResumoBonusAtaqueArma(arma) {
+            return getResumoCalculoAtaque(arma, arma?.ataque);
+        }
+
+        function obterSubtituloModalAtaque(arma) {
+            return limparPrefixoPropriedade(arma?.propriedade || "") || "Sem propriedades";
+        }
+
+        function obterIconeAtributoAtaque(rotuloAtributo) {
+            if (rotuloAtributo === 'FOR') return '??';
+            if (rotuloAtributo === 'DES') return '??';
+            return '?';
+        }
+
+        function rolarDado(quantidade, faces) {
+            const qtd = parseInt(quantidade, 10);
+            const lados = parseInt(faces, 10);
+
+            if (!Number.isInteger(qtd) || !Number.isInteger(lados) || qtd < 1 || lados < 2) {
+                return {
+                    quantidade: 0,
+                    faces: 0,
+                    resultados: [],
+                    soma: 0
+                };
+            }
+
+            const resultados = Array.from({ length: qtd }, () => Math.floor(Math.random() * lados) + 1);
+
+            return {
+                quantidade: qtd,
+                faces: lados,
+                resultados,
+                soma: resultados.reduce((total, valor) => total + valor, 0)
+            };
+        }
+
+        function preencherCampoComRolagem(campo, quantidade, faces) {
+            if (!campo) return null;
+            const rolagem = rolarDado(quantidade, faces);
+            if (!rolagem.resultados.length) return null;
+
+            campo.value = rolagem.resultados[0] ?? '';
+            campo.dispatchEvent(new Event('input'));
+            campo.dispatchEvent(new Event('change'));
+            return rolagem;
+        }
+
+        function animarRolagemNoCampo(campo, quantidade, faces, duracaoMs = 1000, intervaloMs = 60) {
+            if (!campo) return Promise.resolve(null);
+
+            return new Promise(resolve => {
+                const inicio = Date.now();
+                const timer = setInterval(() => {
+                    const parcial = rolarDado(quantidade, faces);
+                    campo.value = parcial?.resultados?.[0] ?? '';
+                    campo.dispatchEvent(new Event('input'));
+                    if (Date.now() - inicio >= duracaoMs) {
+                        clearInterval(timer);
+                        const final = rolarDado(quantidade, faces);
+                        campo.value = final?.resultados?.[0] ?? '';
+                        campo.dispatchEvent(new Event('input'));
+                        campo.dispatchEvent(new Event('change'));
+                        resolve(final);
+                    }
+                }, intervaloMs);
+            });
+        }
+
+        function atualizarTotalModalAtaque() {
+            const campoTotal = document.getElementById('modalAtaqueTotal');
+            const campoDado = document.getElementById('modalAtaqueDado');
+            if (!campoTotal || !campoDado) return;
+
+            const dado = parseInt(campoDado.value, 10);
+            if (!Number.isInteger(dado) || dado < 1 || dado > 20) {
+                campoTotal.innerHTML = 'Total <strong>-</strong>';
+                return;
+            }
+
+            const total = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
+            campoTotal.innerHTML = `Total <strong>${total}</strong>`;
+        }
+
+        function atualizarHistoricoRolagensModalAtaque() {
+            const campoHistorico = document.getElementById('modalAtaqueHistoricoLista');
+            if (!campoHistorico) return;
+
+            const historicoOriginal = Array.isArray(estadoAtaqueArma.historicoRolagens)
+                ? estadoAtaqueArma.historicoRolagens
+                : [];
+
+            const historico = [...historicoOriginal].reverse();
+            if (!historico.length) {
+                campoHistorico.textContent = '-';
+                return;
+            }
+
+            const maior = Math.max(...historicoOriginal);
+            const menor = Math.min(...historicoOriginal);
+
+            campoHistorico.innerHTML = historico.map(valor => {
+                const ehMaior = valor === maior;
+                const ehMenor = valor === menor;
+                const sufixo = ehMaior ? '?' : ehMenor ? '?' : '';
+                const texto = `${valor}${sufixo}`;
+                return (ehMaior || ehMenor) ? `<strong>${texto}</strong>` : texto;
+            }).join(', ');
+        }
+
+        function registrarRolagemModalAtaque(rolagem) {
+            if (!rolagem?.resultados?.length) return;
+            const valor = rolagem.resultados[0];
+            estadoAtaqueArma.historicoRolagens = Array.isArray(estadoAtaqueArma.historicoRolagens)
+                ? [...estadoAtaqueArma.historicoRolagens, valor]
+                : [valor];
+            atualizarHistoricoRolagensModalAtaque();
+        }
+
+        function atualizarEstadoCriticoModalAtaque() {
+            const campoDado = document.getElementById('modalAtaqueDado');
+            const botaoSucesso = document.getElementById('modalAtaqueSucesso');
+            const botaoFracasso = document.getElementById('modalAtaqueFracasso');
+            if (!campoDado || !botaoSucesso || !botaoFracasso) return;
+
+            const dado = parseInt(campoDado.value, 10);
+            botaoSucesso.classList.toggle('ataque-botao-critico', dado === 20);
+            botaoFracasso.classList.toggle('ataque-botao-fracasso-critico', dado === 1);
+            atualizarTotalModalAtaque();
+        }
+
+        function obterRodadaCombateAtual() {
+            const campoRodada = document.getElementById('combateRodada');
+            return parseInt(campoRodada?.value, 10) || 1;
+        }
+
+        function atualizarRodadaModalAtaque() {
+            const campo = document.getElementById('modalAtaqueRodada');
+            if (!campo) return;
+            campo.innerHTML = `Rodada <strong>${obterRodadaCombateAtual()}</strong>`;
+        }
+
+        function marcarTipoAcaoModalAtaque(tipoSelecionado = 'Ação') {
+            const checkboxes = document.querySelectorAll('#modalAtaqueEtapaDado input[data-tipo-acao]');
+            let encontrou = false;
+
+            checkboxes.forEach(checkbox => {
+                const ativo = checkbox.dataset.tipoAcao === tipoSelecionado;
+                checkbox.checked = ativo;
+                if (ativo) encontrou = true;
+            });
+
+            if (!encontrou && checkboxes[0]) checkboxes[0].checked = true;
+            estadoAtaqueArma.tipoAcao = obterTipoAcaoSelecionadoModalAtaque();
+        }
+
+        function obterTipoAcaoSelecionadoModalAtaque() {
+            const selecionado = document.querySelector('#modalAtaqueEtapaDado input[data-tipo-acao]:checked');
+            return selecionado?.dataset.tipoAcao || 'Ação';
+        }
+
+        function alternarEtapaModalAtaque(exibirDano) {
+            const etapaDado = document.getElementById('modalAtaqueEtapaDado');
+            const etapaDano = document.getElementById('modalAtaqueEtapaDano');
+            if (!etapaDado || !etapaDano) return;
+
+            etapaDado.classList.toggle('oculto', exibirDano);
+            etapaDano.classList.toggle('oculto', !exibirDano);
+        }
+
+        function fecharModalAtaqueArma() {
+            const overlay = document.getElementById('modalAtaqueOverlay');
+            const campoDado = document.getElementById('modalAtaqueDado');
+            const campoDano = document.getElementById('modalAtaqueDano');
+            const botaoSucesso = document.getElementById('modalAtaqueSucesso');
+            const botaoFracasso = document.getElementById('modalAtaqueFracasso');
+
+            estadoAtaqueArma.arma = null;
+            estadoAtaqueArma.dado = null;
+            estadoAtaqueArma.totalAtaque = 0;
+            estadoAtaqueArma.modBase = 0;
+            estadoAtaqueArma.bonusProf = 0;
+            estadoAtaqueArma.rotuloAtributo = "";
+            estadoAtaqueArma.textoResumo = "";
+            estadoAtaqueArma.tipoAcao = "Ação";
+            estadoAtaqueArma.historicoRolagens = [];
+
+            if (campoDado) campoDado.value = '';
+            if (campoDano) campoDano.value = '';
+            if (botaoSucesso) botaoSucesso.classList.remove('ataque-botao-critico');
+            if (botaoFracasso) botaoFracasso.classList.remove('ataque-botao-fracasso-critico');
+            alternarEtapaModalAtaque(false);
+            marcarTipoAcaoModalAtaque('Ação');
+            atualizarTotalModalAtaque();
+            atualizarHistoricoRolagensModalAtaque();
+
+            if (overlay) {
+                overlay.classList.remove('ativo');
+                overlay.classList.add('oculto');
+                overlay.setAttribute('aria-hidden', 'true');
+            }
+        }
+
+        function abrirModalAtaqueArma(arma) {
+            const overlay = document.getElementById('modalAtaqueOverlay');
+            const titulo = document.getElementById('modalAtaqueTitulo');
+            const subtitulo = document.getElementById('modalAtaqueSubtitulo');
+            const bonus = document.getElementById('modalAtaqueBonus');
+            const resumo = document.getElementById('modalAtaqueResumo');
+            const campoDado = document.getElementById('modalAtaqueDado');
+            const campoDano = document.getElementById('modalAtaqueDano');
+
+            if (!overlay || !titulo || !subtitulo || !bonus || !resumo || !campoDado || !campoDano) return;
+
+            const { rotuloAtributo, totalAtaque, textoResumo, modBase, bonusProf } = obterResumoBonusAtaqueArma(arma);
+
+            estadoAtaqueArma.arma = arma;
+            estadoAtaqueArma.dado = null;
+            estadoAtaqueArma.totalAtaque = totalAtaque;
+            estadoAtaqueArma.modBase = modBase || 0;
+            estadoAtaqueArma.bonusProf = bonusProf || 0;
+            estadoAtaqueArma.rotuloAtributo = rotuloAtributo;
+            estadoAtaqueArma.textoResumo = textoResumo;
+            estadoAtaqueArma.tipoAcao = 'Ação';
+            estadoAtaqueArma.historicoRolagens = [];
+
+            titulo.innerHTML = `Ataque com <span class="ataque-modal-titulo-arma">${arma?.nome || 'arma'}</span>`;
+            subtitulo.textContent = obterSubtituloModalAtaque(arma);
+            bonus.textContent = textoResumo;
+            resumo.textContent = '';
+            campoDado.value = '';
+            campoDano.value = '';
+
+            atualizarRodadaModalAtaque();
+            marcarTipoAcaoModalAtaque('Ação');
+            alternarEtapaModalAtaque(false);
+            atualizarEstadoCriticoModalAtaque();
+            atualizarHistoricoRolagensModalAtaque();
+            overlay.classList.add('ativo');
+            overlay.classList.remove('oculto');
+            overlay.setAttribute('aria-hidden', 'false');
+
+            setTimeout(() => campoDado.focus(), 0);
+        }
+
+        function obterDadoModalAtaque() {
+            const campoDado = document.getElementById('modalAtaqueDado');
+            if (!campoDado) return null;
+
+            const dado = parseInt(campoDado.value, 10);
+            if (!Number.isInteger(dado) || dado < 1 || dado > 20) {
+                campoDado.focus();
+                return null;
+            }
+
+            return dado;
+        }
+
+        function abrirEtapaDanoAtaque() {
+            const dado = obterDadoModalAtaque();
+            const resumo = document.getElementById('modalAtaqueResumo');
+            const subtitulo = document.getElementById('modalAtaqueSubtitulo');
+            const campoDano = document.getElementById('modalAtaqueDano');
+            if (dado === null || !resumo || !subtitulo || !campoDano) return;
+
+            estadoAtaqueArma.dado = dado;
+            subtitulo.textContent = obterSubtituloModalAtaque(estadoAtaqueArma.arma);
+            const totalAtaque = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
+            const iconeAtributo = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
+            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">?? ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">??? ${estadoAtaqueArma.bonusProf || 0}</span>)`;
+            alternarEtapaModalAtaque(true);
+            setTimeout(() => campoDano.focus(), 0);
+        }
+
+        function atualizarSubAbaArmas() {
+            const container = document.getElementById('subabaCombateArma');
+            if (!container) return;
+
+            const armas = obterArmasEquipadasAtivas();
+
+            if (!armas.length) {
+                container.innerHTML = '<div class="subaba-vazia">Nenhuma arma equipada no momento.</div>';
+                return;
+            }
+
+            container.replaceChildren();
+
+            const lista = document.createElement('div');
+            lista.className = 'arma-resumo-lista';
+
+            armas.forEach(arma => {
+                if (!arma?.nome) return;
+
+                const item = document.createElement('div');
+                item.className = 'arma-resumo-item';
+
+                if (!arma.proficiente) {
+                    item.classList.add('nao-proficiente');
+                }
+
+                item.tabIndex = 0;
+                item.setAttribute('role', 'button');
+                item.setAttribute('aria-label', `Atacar com ${arma.nome}`);
+
+                const topo = document.createElement('div');
+                topo.className = 'arma-resumo-topo';
+
+                const nome = (arma.nome || "").trim();
+
+                const icone = arma.propriedade?.toLowerCase().includes("munição")
+                    ? '??'
+                    : '??';
+
+                let municaoTitulo = '';
+
+                if (icone === '??') {
+                    const idMunicao = arma.arma_municao_id;
+
+                    if (idMunicao) {
+                        const itemMunicao = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')]
+                            .find(el => el.dataset.id === idMunicao);
+
+                        const nomeMunicao = itemMunicao
+                            ?.querySelector('[data-campo="outro_nome"]')?.value;
+
+                        const qtdAtual = itemMunicao
+                            ?.querySelector('[data-campo="outro_quantidade"]')?.value;
+
+                        if (nomeMunicao) {
+                            municaoTitulo = `${qtdAtual || '-'} ${nomeMunicao}`;
+                        }
+                    }
+                }
+
+                topo.textContent = [nome, icone, municaoTitulo]
+                    .filter(Boolean)
+                    .join('  ');
+
+                const detalhes = document.createElement('div');
+                detalhes.className = 'arma-resumo-detalhes';
+
+                // ?? CORREÇÃO PRINCIPAL
+                const resumo = getResumoCalculoAtaque(arma);
+                const textoAtaque = resumo?.textoResumo || "-";
+
+                detalhes.innerHTML =
+                    `<strong>Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}</strong>` +
+                    `<br>Propriedade: ${arma.propriedade || "-"}`;;
+
+                item.addEventListener('click', () => abrirModalAtaqueArma(arma));
+                item.addEventListener('keydown', evento => {
+                    if (evento.key === 'Enter' || evento.key === ' ') {
+                        evento.preventDefault();
+                        abrirModalAtaqueArma(arma);
+                    }
+                });
+
+                item.appendChild(topo);
+                item.appendChild(detalhes);
+                lista.appendChild(item);
+            });
+
+            container.appendChild(lista);
+        }
+
+        // ===== Combate, historico e contra a morte =====
+        function aplicarDanoNoPV() {
+            const entrada = prompt('Quanto de dano o personagem tomou?');
+            if (entrada === null) return;
+
+            const dano = parseInt(entrada);
+            if (isNaN(dano) || dano < 0) return;
+
+            const campoPV = document.getElementById('pvAtual');
+            const atual = parseInt(campoPV?.value) || 0;
+            campoPV.value = Math.max(0, atual - dano);
+            registrarHistoricoComandoCombate('Dano', dano);
+            normalizarPontosDeVida();
+        }
+
+        function curarPV() {
+            const entrada = prompt('Quanto o personagem recuperou?');
+            if (entrada === null) return;
+
+            const cura = parseInt(entrada);
+            if (isNaN(cura) || cura < 0) return;
+
+            const campoPV = document.getElementById('pvAtual');
+            const atual = parseInt(campoPV?.value) || 0;
+            campoPV.value = atual + cura;
+            registrarHistoricoComandoCombate('Cura', cura);
+            normalizarPontosDeVida();
+        }
+
+        function adicionarRegistroHistoricoCombate(tipo, valor, iconePersonalizado = '', detalheRodada = '') {
+            const rodada = obterRodadaCombateAtual();
+            const registrosContainer = document.getElementById('historicoRegistros');
+            if (!registrosContainer) return;
+
+            // ?? Mapa de emojis
+            const icones = {
+                'Cura': '??',
+                'Fracasso': '??',
+                'Dano': '??',
+                'Sucesso': '??',
+                'Ataque falhou!': '?',
+                'Ataque!': '??'
+            };
+            icones['Ataque'] = '??';
+
+            const icone = iconePersonalizado || icones[tipo] || '';
+
+            const registro = document.createElement('div');
+            registro.className = 'historico-registro';
+            registro.innerHTML = `
+        <div class="historico-col-rodada">
+            <div>${rodada}</div>
+            ${detalheRodada ? `<div class="historico-col-rodada-acao">(${detalheRodada})</div>` : ''}
+        </div>
+        <div class="historico-col-tipo">${icone} ${tipo}</div>
+        <div class="historico-col-valor">
+            ${tipo === 'Dano' ? `-${valor}` :
+                    tipo === 'Cura' ? `+${valor}` :
+                        `${valor}`
+                }
+        </div>
+            `;
+
+            registrosContainer.prepend(registro);
+        }
+
+        function registrarHistoricoAtaqueArma(sucesso, dano) {
+            const arma = estadoAtaqueArma.arma;
+            const dado = estadoAtaqueArma.dado;
+            if (!arma || dado === null) return;
+
+            consumirMunicao(1, arma);
+
+            const valor = [
+                arma.nome || 'Arma',
+                `Dado: ${dado}`,
+                sucesso ? 'Sucesso' : 'Fracasso',
+                `Dano: ${dano}`
+            ].join(' | ');
+
+            adicionarRegistroHistoricoCombate(
+                'Ataque',
+                valor,
+                arma.usaMunicao ? '??' : '??',
+                obterTipoAcaoSelecionadoModalAtaque().toLowerCase()
+            );
+        }
+
+        function confirmarFracassoAtaque() {
+            const dado = obterDadoModalAtaque();
+            if (dado === null) return;
+
+            estadoAtaqueArma.dado = dado;
+            registrarHistoricoAtaqueArma(false, 0);
+            fecharModalAtaqueArma();
+        }
+
+        function confirmarDanoAtaque() {
+            const campoDano = document.getElementById('modalAtaqueDano');
+            if (!campoDano) return;
+
+            const dano = parseInt(campoDano.value, 10);
+            if (!Number.isInteger(dano) || dano < 0) {
+                campoDano.focus();
+                return;
+            }
+
+            registrarHistoricoAtaqueArma(true, dano);
+            fecharModalAtaqueArma();
+        }
+
+        function registrarHistoricoComandoCombate(tipo, valor) {
+            adicionarRegistroHistoricoCombate(tipo, valor);
+        }
+
+        function limparHistorico() {
+            const registrosContainer = document.getElementById('historicoRegistros');
+            registrosContainer.innerHTML = '';
+        }
+
+        function descansoLongo() {
+            if (!confirm('Deseja realmente fazer um descanso longo?')) {
+                return;
+            }
+
+            const campoTotal = document.getElementById('dadosVidaTotal');
+            const campoRestantes = document.getElementById('dadosVidaRestantes');
+            const campoPV = document.getElementById('pvAtual');
+            const campoPVTotal = document.getElementById('pvTotal');
+
+            if (campoTotal && campoRestantes) {
+                campoRestantes.value = campoTotal.value;
+                normalizarDadosVida();
+            }
+
+            if (campoPV && campoPVTotal) {
+                campoPV.value = campoPVTotal.value;
+                normalizarPontosDeVida();
+            }
+        }
+
+        function verificarStatusMorte() {
+            const campoPV = document.getElementById('pvAtual');
+            const campoPVTotal = document.getElementById('pvTotal');
+            const campoContraMorte = document.getElementById('ataqueContraMorte');
+            const campoPVDisplay = document.getElementById('ataquePvAtual');
+
+            if (!campoPV || !campoContraMorte || !campoPVDisplay || !campoPVTotal) return;
+
+            const pvAtual = parseInt(campoPV.value) || 0;
+            const pvTotal = parseInt(campoPVTotal.value) || 0;
+
+            // Se PV total é zero, a ficha não foi montada, então não abre contra morte
+            if (pvTotal === 0) {
+                campoPVDisplay.style.display = 'flex';
+                campoContraMorte.style.display = 'none';
+                limparContraMorte();
+                return;
+            }
+
+            if (pvAtual <= 0) {
+                campoPVDisplay.style.display = 'none';
+                campoContraMorte.style.display = 'flex';
+            } else {
+                campoPVDisplay.style.display = 'flex';
+                campoContraMorte.style.display = 'none';
+                limparContraMorte();
+            }
+        }
+
+        function adicionarSucesso() {
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById('sucesso' + i);
+
+                if (dot && !dot.classList.contains('ativo')) {
+                    dot.classList.add('ativo');
+                    registrarHistoricoComandoCombate('Sucesso', `${i}º`);
+
+                    verificarVitoriaDeathSave();
+                    return;
+                }
+            }
+        }
+
+        function adicionarFracasso() {
+            for (let i = 1; i <= 3; i++) {
+                const dot = document.getElementById('fracasso' + i);
+
+                if (dot && !dot.classList.contains('ativo')) {
+                    dot.classList.add('ativo');
+
+                    // ?? Registrar só aqui (depois de confirmar)
+                    registrarHistoricoComandoCombate('Fracasso', `${i}º`);
+
+                    verificarDerrotaDeathSave();
+                    return;
+                }
+            }
+        }
+
+        function verificarVitoriaDeathSave() {
+            let sucessos = 0;
+
+            for (let i = 1; i <= 3; i++) {
+                if (document.getElementById('sucesso' + i)?.classList.contains('ativo')) {
+                    sucessos++;
+                }
+            }
+
+            if (sucessos >= 3) {
+
+                const frases = [
+                    "Contra todas as probabilidades, você se agarra à vida.",
+                    "Seu peito volta a respirar. A morte terá que esperar.",
+                    "A chama da sua alma se recusa a se apagar.",
+                    "Você resiste. Ainda não é o seu fim.",
+                    "O destino te dá mais uma chance.",
+                    "Seu corpo responde — você está de volta.",
+                    "A vida pulsa novamente em suas veias.",
+                    "Nem hoje a morte te leva.",
+                    "Você abre os olhos mais uma vez.",
+                    "Os deuses ainda não terminaram com você.",
+                    "A morte tentou te abraçar, mas seu espírito se provou mais forte.",
+                    "O fio da sua vida se tencionou, mas não rompeu. Você está de volta.",
+                    "A luz retorna aos seus olhos. O mundo ainda precisa de você.",
+                    "Você respira fundo enquanto o abismo recua. A luta continua!",
+                    "A balança se inclinou a seu favor. Você estabilizou.",
+                    "O Ceifador terá que esperar. Hoje não é o seu dia.",
+                    "Sua determinação forçou o destino a te conceder uma segunda chance.",
+                    "Três batidas firmes no coração. O perigo imediato passou."
+                ];
+
+                const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
+
+                alert(fraseAleatoria + "\n\nVocê recupera 1 PV e está estável!");
+
+                const campoPV = document.getElementById('pvAtual');
+                if (campoPV) {
+                    registrarHistoricoComandoCombate('Cura', 1);
+                    campoPV.value = 1;
+                    normalizarPontosDeVida();
+                }
+            }
+        }
+
+        function verificarDerrotaDeathSave() {
+            let fracassos = 0;
+
+            for (let i = 1; i <= 3; i++) {
+                if (document.getElementById('fracasso' + i)?.classList.contains('ativo')) {
+                    fracassos++;
+                }
+            }
+
+            if (fracassos >= 3) {
+
+                const frases = [
+                    "Sua canção termina aqui, mas o eco de suas façanhas perdurará pelas eras.",
+                    "A luz em seus olhos se apaga, cedendo lugar ao descanso eterno dos heróis.",
+                    "As estrelas brilham um pouco menos hoje. Sua alma agora pertence ao cosmos.",
+                    "O frio do abismo finalmente te alcançou.",
+                    "Seu sangue mancha a terra; o silêncio é sua única companhia agora.",
+                    "O destino foi cruel. Seu corpo tomba, desprovido de vida.",
+                    "A escuridão te envolveu. Não há mais volta.",
+                    "O último capítulo da sua história foi escrito.",
+                    "Os dados pararam de rolar para você. Que sua próxima encarnação seja mais afortunada.",
+                    "Sua ficha repousa agora no panteão das lendas esquecidas.",
+                    "O mestre das almas recolheu sua ficha. Fim de jogo."
+                ];
+
+                const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
+                document.getElementById('nomePersonagem').value = "?? " + document.getElementById('nomePersonagem').value;
+
+                alert(fraseAleatoria + "\n\nGAME OVER!\n" + document.getElementById('nomePersonagem').value);
+            }
+        }
+
+        function limparContraMorte() {
+            for (let i = 1; i <= 3; i++) {
+                document.getElementById('sucesso' + i)?.classList.remove('ativo');
+                document.getElementById('fracasso' + i)?.classList.remove('ativo');
+            }
+        }
+
+        function normalizarPosicaoAtaque() {
+            const campo = document.getElementById('ataquePosicao');
+            if (!campo) return;
+
+            const numero = parseInt(campo.value) || 0;
+            campo.value = numero;
+        }
+
+        function trocarSubAbaCombate(tipo, botao) {
+            document.querySelectorAll('.subaba-botao').forEach(el => el.classList.remove('ativa'));
+            document.querySelectorAll('.subaba-combate').forEach(el => el.classList.remove('ativa'));
+
+            botao.classList.add('ativa');
+
+            let alvo;
+            if (tipo === 'magia') {
+                alvo = document.getElementById('subabaCombateMagia');
+            } else if (tipo === 'historico') {
+                alvo = document.getElementById('subabaCombateHistorico');
+            } else {
+                alvo = document.getElementById('subabaCombateArma');
+            }
+
+            if (alvo) alvo.classList.add('ativa');
+        }
+
+        function atualizarModificadoresSalvaguarda() {
+            const bonusProf = getBonusProf();
+
+            document.querySelectorAll('.salvaguarda-caixa').forEach(caixa => {
+                const atributo = caixa.querySelector('.prof-checkbox').dataset.atributo;
+                const valor = parseInt(document.getElementById('atrib_' + atributo)?.value) || 0;
+                const prof = caixa.querySelector('.prof-checkbox').checked ? bonusProf : 0;
+                const mod = Math.floor((valor - 10) / 2);
+                const salvMod = mod + prof;
+
+                caixa.querySelector('.modificador-orbe').innerText = (mod >= 0 ? "+" : "") + mod;
+
+                const campoSalv = document.getElementById('salv_' + atributo);
+                if (campoSalv) campoSalv.value = formatarBonusCalculado(salvMod);
+
+                if (caixa.querySelector('.prof-checkbox').checked) {
+                    caixa.classList.add('proficiente');
+                } else {
+                    caixa.classList.remove('proficiente');
+                }
+            });
+
+            atualizarProficienciaNoRadar();
+        }
+
+        // Atualiza quando checkbox muda
+        document.querySelectorAll('.prof-checkbox').forEach(el => {
+            el.addEventListener('input', () => {
+                atualizarModificadoresSalvaguarda();
+                atualizarPassivas();
+            });
+            el.addEventListener('change', () => {
+                atualizarModificadoresSalvaguarda();
+                atualizarPassivas();
+            });
+        });
+
+        document.querySelectorAll('.pericia-prof input').forEach(el => {
+            el.addEventListener('input', () => {
+                atualizarPericias();
+                atualizarPassivas();
+            });
+            el.addEventListener('change', () => {
+                atualizarPericias();
+                atualizarPassivas();
+            });
+        });
+
+        // Espelha as salvaguardas no radar
+        document.querySelectorAll('.valor-atributo-input').forEach(input => {
+            input.addEventListener('input', () => {
+                sincronizarAtributosComSalvaguardas();
+                atualizarAtributos();
+                atualizarVidaMaxNivelUm();
+                normalizarPontosDeVida();
+                desenharRadar();
+                atualizarModificadoresSalvaguarda();
+                atualizarPericias();
+                atualizarPassivas();
+                atualizarMagias();
+            });
+            input.addEventListener('change', () => {
+                sincronizarAtributosComSalvaguardas();
+                atualizarAtributos();
+                atualizarVidaMaxNivelUm();
+                normalizarPontosDeVida();
+                desenharRadar();
+                atualizarModificadoresSalvaguarda();
+                atualizarPericias();
+                atualizarPassivas();
+                atualizarMagias();
+            });
+        });
+
+
+
+        // Atualiza automaticamente quando o Orbe do bônus de proficiência muda
+        const bonusOrbeInput = document.getElementById("bonusProf");
+        function atualizarTudoDerivado() {
+            atualizarBonusProficiencia();
+            atualizarModificadoresSalvaguarda();
+            atualizarPericias();
+            atualizarPassivas();
+            atualizarMagias();
+            atualizarSeletoresAtaqueEquipados();
+            atualizarSubAbaArmas();
+        }
+
+        document
+            .getElementById("classeNivelID")
+            .addEventListener("input", atualizarTudoDerivado);
+        document
+            .getElementById("classeNivelID")
+            .addEventListener("input", () => {
+                atualizarVidaMaxNivelUm();
+                normalizarPontosDeVida();
+            });
+        document
+            .getElementById("classeNivelID")
+            .addEventListener("change", () => {
+                atualizarVidaMaxNivelUm();
+                normalizarPontosDeVida();
+            });
+
+        document.getElementById('dadosVidaTipo')?.addEventListener('input', () => {
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
+        });
+        document.getElementById('dadosVidaTipo')?.addEventListener('change', () => {
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
+        });
+
+
+        garantirCampoSubclasseComoSelect();
+        preencherFormularioConfigFicha();
+        aplicarConfigCustomizacaoNaFicha(false);
+
+        document.getElementById('classeNomeID').addEventListener('input', () => {
+            sincronizarClasseNivel();
+            sincronizarResumoCaracteristicas();
+            sincronizarCamposMagia();
+            atualizarMagias();
+            atualizarDadoVida();
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
+        });
+        document.getElementById('classeNomeID').addEventListener('change', () => {
+            sincronizarClasseNivel();
+            sincronizarResumoCaracteristicas();
+            sincronizarCamposMagia();
+            atualizarMagias();
+            atualizarDadoVida();
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
+        });
+
+        document.getElementById('classeNivelID').addEventListener('input', () => sincronizarClasseNivel());
+        document.getElementById('classeNivelID').addEventListener('change', () => sincronizarClasseNivel());
+        document.getElementById('racaID').addEventListener('input', () => {
+            atualizarSubracas();
+            sincronizarResumoCaracteristicas();
+        });
+        document.getElementById('racaID').addEventListener('change', () => {
+            atualizarSubracas();
+            sincronizarResumoCaracteristicas();
+        });
+        document.getElementById('antecedenteID').addEventListener('input', () => sincronizarResumoCaracteristicas());
+        document.getElementById('subclasse')?.addEventListener('input', () => sincronizarResumoCaracteristicas(true));
+        document.getElementById('subclasse')?.addEventListener('change', () => sincronizarResumoCaracteristicas(true));
+        document.getElementById('subraca')?.addEventListener('input', () => sincronizarResumoCaracteristicas(true));
+        document.getElementById('subraca')?.addEventListener('change', () => sincronizarResumoCaracteristicas(true));
+        document.getElementById('configBtn')?.addEventListener('click', abrirConfigModal);
+        document.getElementById('configFecharBtn')?.addEventListener('click', fecharConfigModal);
+        document.getElementById('salvarCustomizacao')?.addEventListener('click', salvarCustomizacaoFicha);
+        document.querySelectorAll('.config-tab').forEach(botao => {
+            botao.addEventListener('click', () => ativarAbaConfig(botao.dataset.tab));
+        });
+        const campoClasseConjuradora = document.getElementById('magiaClasseConjuradora');
+        if (campoClasseConjuradora) {
+            campoClasseConjuradora.addEventListener('input', () => {
+                const campoAtributo = document.getElementById('magiaAtributoConjuracao');
+                sincronizarCamposMagia(false, !campoAtributo?.value);
+                atualizarMagias();
+            });
+            campoClasseConjuradora.addEventListener('change', () => {
+                const campoAtributo = document.getElementById('magiaAtributoConjuracao');
+                sincronizarCamposMagia(false, !campoAtributo?.value);
+                atualizarMagias();
+            });
+        }
+        const campoAtributoConjuracao = document.getElementById('magiaAtributoConjuracao');
+        if (campoAtributoConjuracao) {
+            campoAtributoConjuracao.addEventListener('input', atualizarMagias);
+            campoAtributoConjuracao.addEventListener('change', atualizarMagias);
+        }
+        inicializarGerenciadorMagias();
+        try {
+            montarModalTalento();
+            inicializarTalentos();
+        } catch (erro) {
+            console.error("Falha ao preparar interface de talentos:", erro);
+        }
+        const overlayMagia = document.getElementById('magiaModalOverlay');
+        if (overlayMagia) {
+            overlayMagia.addEventListener('click', evento => {
+                if (evento.target === overlayMagia) {
+                    fecharModalMagia();
+                }
+            });
+        }
+        const overlayTalento = document.getElementById('talentoModalOverlay');
+        if (overlayTalento) {
+            overlayTalento.addEventListener('click', evento => {
+                if (evento.target === overlayTalento) {
+                    fecharModalTalento();
+                }
+            });
+        }
+        const overlayConfig = document.getElementById('configModalOverlay');
+        if (overlayConfig) {
+            overlayConfig.addEventListener('click', evento => {
+                if (evento.target === overlayConfig) {
+                    fecharConfigModal();
+                }
+            });
+        }
+        document.getElementById('magiaModalEditar')?.addEventListener('click', () => {
+            preencherFormularioMagia(obterMagiaDoEstadoModal());
+            alternarModoModalMagia('editar');
+        });
+        document.getElementById('magiaModalExcluir')?.addEventListener('click', excluirMagiaAtual);
+        document.getElementById('magiaModalSalvar')?.addEventListener('click', salvarModalMagia);
+        document.getElementById('magiaModalFechar')?.addEventListener('click', fecharModalMagia);
+        document.getElementById('talentoModalEditar')?.addEventListener('click', editarTalentoAtual);
+        document.getElementById('talentoModalExcluir')?.addEventListener('click', excluirTalentoAtual);
+        document.getElementById('talentoModalSalvar')?.addEventListener('click', salvarModalTalento);
+        document.getElementById('talentoModalFechar')?.addEventListener('click', fecharModalTalento);
+        ['magiaModalPropDano', 'magiaModalPropCura', 'magiaModalPropConcentracao', 'magiaModalResolucao'].forEach(id => {
+            document.getElementById(id)?.addEventListener('change', atualizarVisibilidadeFormularioMagia);
+        });
+        ['armaduraCA', 'outroEquipadoCA', 'escudoCA'].forEach(id => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('input', () => {
+                aplicarFormatoCA(id);
+                atualizarClasseArmaduraEquipada();
+            });
+            campo.addEventListener('change', () => {
+                aplicarFormatoCA(id);
+                atualizarClasseArmaduraEquipada();
+            });
+        });
+        ['ca_valor'].forEach(id => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('input', atualizarResumoAtaquesConjuracao);
+            campo.addEventListener('change', atualizarResumoAtaquesConjuracao);
+        });
+        ['pvAtual', 'pvTotal', 'pvTemporario'].forEach(id => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('input', normalizarPontosDeVida);
+            campo.addEventListener('change', normalizarPontosDeVida);
+        });
+        ['dadosVidaRestantes', 'dadosVidaTotal'].forEach(id => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('input', normalizarDadosVida);
+            campo.addEventListener('change', normalizarDadosVida);
+        });
+        ['arma1Ataque', 'arma1Dano', 'arma2Ataque', 'arma2Dano'].forEach(id => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('input', atualizarSubAbaArmas);
+            campo.addEventListener('change', atualizarSubAbaArmas);
+        });
+        ['arma1Nome', 'arma2Nome'].forEach((id, indice) => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('change', () => {
+                fecharMenuEmpunhadura();
+                lidarSelecaoArmaEquipada(indice + 1);
+                atualizarSubAbaArmas();
+            });
+        });
+        ['arma1Empunhadura', 'arma2Empunhadura'].forEach((id, indice) => {
+            const botao = document.getElementById(id);
+            if (!botao) return;
+            botao.addEventListener('click', evento => {
+                evento.preventDefault();
+                evento.stopPropagation();
+                botao.blur();
+                abrirMenuEmpunhadura(indice + 1);
+            });
+        });
+        ['arma1MunicaoSelect', 'arma2MunicaoSelect'].forEach((id, indice) => {
+            const campo = document.getElementById(id);
+            if (!campo) return;
+            campo.addEventListener('change', () => {
+                const slot = indice + 1;
+                const valorSlot = document.getElementById(`arma${slot}Nome`)?.value || '';
+                if (!valorSlot || extrairIndiceSlotEscudo(valorSlot) !== null) return;
+
+                const indiceArma = parseInt(valorSlot, 10);
+                if (!Number.isInteger(indiceArma)) return;
+
+                const cardArma = document.querySelectorAll('#listaArmas .item-card[data-tipo="arma"]:not(#armaModelo)')[indiceArma];
+                const selectOriginal = cardArma?.querySelector('[data-campo="arma_municao_id"]');
+                if (!selectOriginal) return;
+
+                selectOriginal.value = campo.value || '';
+                selectOriginal.dispatchEvent(new Event('change'));
+                sincronizarEquipamentosCombate();
+                atualizarSubAbaArmas();
+            });
+        });
+        document.addEventListener('click', evento => {
+            const menu = obterMenuEmpunhadura();
+            if (!menu || menu.classList.contains('oculto')) return;
+
+            if (menu.contains(evento.target)) return;
+            if (evento.target.closest('#arma1Empunhadura, #arma2Empunhadura')) return;
+
+            fecharMenuEmpunhadura();
+        });
+        document.addEventListener('keydown', evento => {
+            if (evento.key === 'Escape') {
+                fecharMenuEmpunhadura();
+            }
+        });
+        window.addEventListener('resize', reposicionarMenuEmpunhadura);
+        window.addEventListener('scroll', fecharMenuEmpunhadura, true);
+        const overlayAtaque = document.getElementById('modalAtaqueOverlay');
+        if (overlayAtaque) {
+            overlayAtaque.addEventListener('click', evento => {
+                if (evento.target === overlayAtaque) {
+                    fecharModalAtaqueArma();
+                }
+            });
+        }
+
+        document.getElementById('modalAtaqueSucesso')?.addEventListener('click', abrirEtapaDanoAtaque);
+        document.getElementById('modalAtaqueFracasso')?.addEventListener('click', confirmarFracassoAtaque);
+        document.getElementById('modalAtaqueCancelar')?.addEventListener('click', fecharModalAtaqueArma);
+        document.getElementById('modalAtaqueRegistrarDano')?.addEventListener('click', confirmarDanoAtaque);
+        document.getElementById('modalAtaqueCancelarDano')?.addEventListener('click', fecharModalAtaqueArma);
+        document.getElementById('modalAtaqueDado')?.addEventListener('keydown', evento => {
+            if (evento.key === 'Enter') abrirEtapaDanoAtaque();
+        });
+
+        document.getElementById('modalAtaqueDado')?.addEventListener('input', () => {
+            atualizarEstadoCriticoModalAtaque();
+        });
+
+        document.getElementById('modalAtaqueDado')?.addEventListener('change', () => {
+            atualizarEstadoCriticoModalAtaque();
+        });
+
+        document.getElementById('modalAtaqueRolarDado')?.addEventListener('click', () => {
+            const campoDado = document.getElementById('modalAtaqueDado');
+            const botao = document.getElementById('modalAtaqueRolarDado');
+            if (!campoDado || !botao) return;
+
+            botao.classList.add('rolando');
+            const rolagem = preencherCampoComRolagem(campoDado, 1, 20);
+            registrarRolagemModalAtaque(rolagem);
+
+            setTimeout(() => {
+                botao.classList.remove('rolando');
+                if (rolagem?.resultados?.length) {
+                    botao.title = `1d20: ${rolagem.resultados.join(', ')}`;
+                    botao.setAttribute('aria-label', `Rolar 1d20. Último resultado ${rolagem.resultados.join(', ')}`);
+                }
+            }, 250);
+        });
+
+        document.getElementById('modalAtaqueDano')?.addEventListener('keydown', evento => {
+            if (evento.key === 'Enter') confirmarDanoAtaque();
+        });
+
+        document.querySelectorAll('#modalAtaqueEtapaDado input[data-tipo-acao]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                if (!checkbox.checked) {
+                    checkbox.checked = true;
+                    return;
+                }
+
+                marcarTipoAcaoModalAtaque(checkbox.dataset.tipoAcao || 'Ação');
+            });
+        });
+
+        document.getElementById('combateRodada')?.addEventListener('input', atualizarRodadaModalAtaque);
+        document.getElementById('combateRodada')?.addEventListener('change', atualizarRodadaModalAtaque);
+
+        document.addEventListener('keydown', evento => {
+            if (evento.key === 'Escape') {
+                const overlay = document.getElementById('modalAtaqueOverlay');
+                if (overlay && !overlay.classList.contains('oculto')) {
+                    fecharModalAtaqueArma();
+                    return;
+                }
+
+                const overlayMagiaAtivo = document.getElementById('magiaModalOverlay');
+                if (overlayMagiaAtivo && !overlayMagiaAtivo.classList.contains('oculto')) {
+                    fecharModalMagia();
+                    return;
+                }
+
+                const overlayTalentoAtivo = document.getElementById('talentoModalOverlay');
+                if (overlayTalentoAtivo && overlayTalentoAtivo.classList.contains('ativo')) {
+                    fecharModalTalento();
+                }
+            }
+        });
+
+        const campoPosicaoAtaque = document.getElementById('ataquePosicao');
+        if (campoPosicaoAtaque) {
+            campoPosicaoAtaque.addEventListener('input', normalizarPosicaoAtaque);
+            campoPosicaoAtaque.addEventListener('change', normalizarPosicaoAtaque);
+        }
+
+
+
+        function atualizarFicha() {
+
+            // ===== 1. BASE (fonte de verdade) =====
+            sincronizarClasseNivel(true); // define nível corretamente
+
+            // ===== 2. DERIVADOS DIRETOS =====
+            formatarBonusProf(); // depende do nível
+
+            sincronizarResumoCaracteristicas(true);
+
+            // ===== 3. ATRIBUTOS =====
+            atualizarAtributos();
+            sincronizarAtributosComSalvaguardas();
+
+            // ===== 4. SALVAGUARDAS E PERÍCIAS =====
+            atualizarModificadoresSalvaguarda();
+            atualizarPericias();
+            atualizarPassivas();
+
+            // ===== 5. COMBATE =====
+            atualizarListaArmasEquipamento();
+            sincronizarEquipamentosCombate();
+            atualizarClasseArmaduraEquipada();
+            atualizarResumoAtaquesConjuracao();
+            atualizarSubAbaArmas();
+
+            // ===== 6. MAGIA =====
+            sincronizarCamposMagia(true, true);
+            atualizarMagias();
+
+            // ===== 7. VIDA E DADOS =====
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
+            normalizarDadosVida();
+
+            // ===== 8. UI / VISUAL =====
+            aplicarFormatoCA('armaduraCA');
+            aplicarFormatoCA('outroEquipadoCA');
+            aplicarFormatoCA('escudoCA');
+            atualizarTodosEmojis()
+            normalizarPosicaoAtaque();
+            desenharRadar();
+            try {
+                renderTalentos();
+            } catch (erro) {
+                console.error("Falha ao renderizar talentos durante atualizarFicha:", erro);
+            }
+        }
+
+        // limpeza
+        function normalizarTodasArmas() {
+            const armas = coletarArmas?.() || [];
+
+            armas.forEach((arma, index) => {
+                if (!arma) return;
+
+                // nome seguro
+                let nome = (
+                    arma.nome ||
+                    arma.arma_nome ||
+                    arma.arma ||
+                    ""
+                );
+
+                arma.nome = String(nome).trim() || `Arma ${index + 1}`;
+
+                // limpa legado
+                delete arma.arma_nome;
+                delete arma.arma;
+
+                const usaMunicao = !!(arma.usaMunicao || arma.propriedades?.municao);
+                if (usaMunicao) {
+                    arma.atributo = "des";
+                } else if (!["for", "des"].includes(arma.atributo)) {
+                    arma.atributo = "for";
+                }
+
+                arma.proficiente = !!arma.proficiente;
+            });
+
+        }
+        atualizarFicha();
+        atualizarSubclasse();
+        normalizarPlaceholdersCamposBase();
+        garantirOpcaoSelect(obterCampoRaca(), obterCampoRaca()?.value);
+        atualizarSubracas();
+        marcarFichaComoSalva();
+
+        function aplicarDadosFicha(dados) {
+            bloqueandoLevelUp = true;
+            if (!dados || typeof dados !== "object") return;
+
+            dados = normalizarDadosImportacao(dados);
+            configFicha = normalizarConfigFicha(dados.configFicha);
+            personagem = dados;
+            console.log("OUTROS COM ID:", dados.outros);
+            // ?? CAMPOS ESPECIAIS
+            const camposEspeciais = {
+                xp: (valor) => setXP(valor ?? 0),
+                magiaAtributoConjuracao: (valor, campo) => campo.value = normalizarChaveAtributo(valor),
+                alinhamentoID: (valor, campo) => campo.value = normalizarValorAlinhamento(valor),
+                dadosVidaTipo: (valor, campo) => campo.value = normalizarTipoDadoVida(valor)
+            };
+
+            // ?? FUNÇÃO AUXILIAR
+            function preencherCampo(campo, valor) {
+                if (campo.type === "checkbox") {
+                    campo.checked = valor;
+                } else if (campo.type === "number") {
+                    const num = parseInt(String(valor ?? "").replace(/[^\d-]/g, ""), 10);
+                    campo.value = Number.isNaN(num) ? "" : Math.abs(num);
+                } else {
+                    campo.value = valor;
+                }
+            }
+
+            // =========================
+            // ?? 1. CAMPOS SIMPLES + ESPECIAIS
+            // =========================
+            for (let key in dados) {
+                const campo = document.getElementById(key);
+                if (!campo) continue;
+
+                // ?? CAMPOS ESPECIAIS
+                if (camposEspeciais[key]) {
+                    camposEspeciais[key](dados[key], campo);
+                    continue;
+                }
+
+                // ?? IGNORAR CAMPOS ESPECÍFICOS
+                if (['arma1Nome', 'arma2Nome', 'arma1Dano', 'arma2Dano', 'armaduraNome'].includes(key)) {
+                    continue;
+                }
+
+                preencherCampo(campo, dados[key]);
+            }
+
+            const campoSubclasse = garantirCampoSubclasseComoSelect();
+            if (campoSubclasse) {
+                campoSubclasse.dataset.pendingValue = String(dados.subclasse ?? "");
+                atualizarSubclasses(dados.classeNomeID ?? dados.classeNome ?? "");
+            }
+
+            const campoRaca = obterCampoRaca();
+            const valorRacaSalvo = String(dados.racaID ?? dados.raca ?? "").trim();
+            if (campoRaca && valorRacaSalvo) {
+                garantirOpcaoSelect(campoRaca, valorRacaSalvo);
+                campoRaca.value = valorRacaSalvo;
+            }
+
+            const campoSubraca = obterCampoSubraca();
+            if (campoSubraca) {
+                campoSubraca.dataset.pendingValue = String(dados.subraca ?? "");
+                atualizarSubracas(dados.racaID ?? dados.raca ?? "");
+            }
+
+            normalizarPlaceholdersCamposBase();
+            preencherFormularioConfigFicha();
+            aplicarConfigCustomizacaoNaFicha(false);
+
+            inicializarTalentos(dados);
+
+            // =========================
+            // ?? 2. CARREGAR MUNIÇÕES (OUTROS)
+            // =========================
+            if (dados.outros && Array.isArray(dados.outros)) {
+                const containerOutros = document.getElementById('listaOutros');
+
+                if (containerOutros) {
+                    const outrosAtuais = containerOutros.querySelectorAll('.item-card[data-tipo="outro"]');
+                    outrosAtuais.forEach(o => o.remove());
+
+                    dados.outros.forEach(dadosOutro => {
+                        const novoCard = adicionarNovoOutro();
+
+                        // ?? GARANTIR ID ANTES DE QUALQUER COISA
+                        const id = dadosOutro.id || gerarId();
+                        novoCard.dataset.id = id;
+                        dadosOutro.id = id; // ?? MUITO IMPORTANTE
+                        if (!novoCard) return;
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosOutro[campo.dataset.campo];
+                            if (valor !== undefined) campo.value = valor;
+                        });
+                        aplicarFlagsCompartilhadasItem(novoCard, dadosOutro, 'outro');
+
+                        if (dadosOutro.id) {
+                            novoCard.dataset.id = dadosOutro.id;
+                        }
+
+                        atualizarOpcoesMunicao(novoCard);
+                    });
+                }
+            }
+
+            // =========================
+            // ?? 3. ARMAS
+            // =========================
+            if (dados.armas && Array.isArray(dados.armas)) {
+                const containerArmas = document.getElementById('listaArmas');
+
+                if (containerArmas) {
+                    const armasAtuais = containerArmas.querySelectorAll('.item-card[data-tipo="arma"]:not(#armaModelo)');
+                    armasAtuais.forEach(a => a.remove());
+
+                    dados.armas.forEach(dadosArma => {
+                        const novoCard = adicionarNovaArma();
+                        if (!novoCard) return;
+
+                        if (dadosArma.propriedades) {
+                            novoCard.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                                const prop = checkbox.dataset.propriedade;
+                                if (prop && dadosArma.propriedades[prop] !== undefined) {
+                                    checkbox.checked = dadosArma.propriedades[prop];
+                                    checkbox.dispatchEvent(new Event('change'));
+                                }
+                            });
+                        }
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosArma[campo.dataset.campo];
+                            if (valor !== undefined) campo.value = valor;
+                        });
+                        aplicarFlagsCompartilhadasItem(novoCard, dadosArma, 'arma');
+                        atualizarOpcoesMunicao(novoCard);
+
+                        setTimeout(() => {
+                            const selectMunicao = novoCard.querySelector('[data-campo="arma_municao_id"]');
+
+                            if (selectMunicao && dadosArma.arma_municao_id) {
+                                selectMunicao.value = String(dadosArma.arma_municao_id);
+                                selectMunicao.dispatchEvent(new Event('change'));
+                            }
+                        }, 0);
+
+                        if (typeof dadosArma.proficiente === "boolean") {
+                            const indicador = novoCard.querySelector('.item-proficiencia');
+                            if (indicador) {
+                                indicador.classList.toggle('nao', !dadosArma.proficiente);
+                                indicador.classList.toggle('ativo', dadosArma.proficiente);
+                            }
+                        }
+                    });
+                }
+            }
+
+            // =========================
+            // ?? 4. ARMADURAS
+            // =========================
+            if (dados.armaduras && Array.isArray(dados.armaduras)) {
+                const containerArmaduras = document.getElementById('listaArmaduras');
+
+                if (containerArmaduras) {
+                    const atuais = containerArmaduras.querySelectorAll('.item-card[data-tipo="armadura"]:not(#armaduraModelo)');
+                    atuais.forEach(a => a.remove());
+
+                    dados.armaduras.forEach(dadosArmadura => {
+                        const novoCard = adicionarNovaArmadura();
+                        if (!novoCard) return;
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosArmadura[campo.dataset.campo];
+
+                            if (valor !== undefined) {
+                                campo.value = valor;
+                                campo.dispatchEvent(new Event('change'));
+                            }
+                        });
+                        aplicarFlagsCompartilhadasItem(novoCard, dadosArmadura, 'armadura');
+
+                        if (typeof dadosArmadura.proficiente === "boolean") {
+                            const indicador = novoCard.querySelector('.item-proficiencia');
+                            if (indicador) {
+                                indicador.classList.toggle('nao', !dadosArmadura.proficiente);
+                                indicador.classList.toggle('ativo', dadosArmadura.proficiente);
+                            }
+                        }
+                    });
+                }
+            }
+
+            // =========================
+            // ??? 4.1 ESCUDOS
+            // =========================
+            if (dados.escudos && Array.isArray(dados.escudos)) {
+                const containerEscudos = document.getElementById('listaEscudos');
+
+                if (containerEscudos) {
+                    const atuais = containerEscudos.querySelectorAll('.item-card[data-tipo="escudo"]:not(#escudoModelo)');
+                    atuais.forEach(e => e.remove());
+
+                    dados.escudos.forEach(dadosEscudo => {
+                        const novoCard = adicionarNovoEscudo();
+                        if (!novoCard) return;
+
+                        novoCard.querySelectorAll('[data-campo]').forEach(campo => {
+                            const valor = dadosEscudo[campo.dataset.campo];
+
+                            if (valor !== undefined) {
+                                campo.value = valor;
+                                campo.dispatchEvent(new Event('change'));
+                            }
+                        });
+                        aplicarFlagsCompartilhadasItem(novoCard, dadosEscudo, 'escudo');
+
+                        if (typeof dadosEscudo.proficiente === "boolean") {
+                            const indicador = novoCard.querySelector('.item-proficiencia');
+                            if (indicador) {
+                                indicador.classList.toggle('nao', !dadosEscudo.proficiente);
+                                indicador.classList.toggle('ativo', dadosEscudo.proficiente);
+                            }
+                        }
+                    });
+                }
+            }
+
+            // =========================
+            // ?? 5. PÓS-PROCESSAMENTO
+            // =========================
+            document.querySelectorAll('#listaArmas .item-card[data-tipo="arma"], #listaArmaduras .item-card[data-tipo="armadura"], #listaEscudos .item-card[data-tipo="escudo"], #listaOutros .item-card[data-tipo="outro"]').forEach(fecharItemCard);
+            atualizarListaArmasEquipamento();
+
+            const armasImportadas = coletarArmas();
+            const escudosImportados = coletarEscudos();
+            const indiceArma1 = resolverIndiceArmaSalva(dados, 1, armasImportadas, escudosImportados);
+            const indiceArma2Base = resolverIndiceArmaSalva(dados, 2, armasImportadas, escudosImportados);
+            const indiceArma2 = indiceArma2Base === indiceArma1 ? null : indiceArma2Base;
+
+            atualizarSelectNomeArmaEquipada(1, armasImportadas, indiceArma1, escudosImportados);
+            atualizarSelectNomeArmaEquipada(2, armasImportadas, indiceArma2, escudosImportados);
+
+            sincronizarMarcacaoArmasPorSlots();
+            sincronizarEquipamentosCombate();
+
+            sincronizarSalvaguardasComAtributosBase();
+            atualizarAtributos();
+            desenharRadar();
+            atualizarModificadoresSalvaguarda();
+            atualizarPericias();
+            atualizarPassivas();
+            atualizarClasseArmaduraEquipada();
+            atualizarSubAbaArmas();
+            sincronizarClasseNivel(true);
+            sincronizarResumoCaracteristicas(true);
+            sincronizarCamposMagia();
+            atualizarMagias();
+            atualizarVidaMaxNivelUm();
+            normalizarPontosDeVida();
+            normalizarDadosVida();
+            atualizarPesoAtualInventario();
+            marcarFichaComoSalva();
+            atualizarDadosVidaTotal();
+            atualizarDadoVida();
+
+            bloqueandoLevelUp = false;
+            window.personagem = dados;
+
+            armaduraEquipadaIndice = dados.armaduraEquipadaIndice ?? null;
+            atualizarSelectNomeArmaduraEquipada(dados.armaduras, armaduraEquipadaIndice);
+
+            const indiceArmadura = armaduraEquipadaIndice !== null ? armaduraEquipadaIndice : null;
+            armaduraSelecionadaAtual = (indiceArmadura !== null && dados.armaduras?.[indiceArmadura]) ? dados.armaduras[indiceArmadura] : null;
+            atualizarCamposArmaduraSelecionada(armaduraSelecionadaAtual);
+
+            atualizarFicha();
+
+
+        }
+
+        // ===== SISTEMA DE EXPIRAÇÃO =====
+        const DATA_EXPIRACAO = new Date("2026-05-03T12:00:00");
+        console.log('[Debug] Data de expiração:', DATA_EXPIRACAO.toLocaleString('pt-BR'));
+
+        function bloquearFicha() {
+            const overlay = document.getElementById('expiracaoOverlay');
+            if (overlay) overlay.classList.remove('hidden');
+
+            document.querySelectorAll('input, textarea, select, button').forEach(el => {
+                if (el.id !== 'expiracaoOkBtn') {
+                    el.disabled = true;
+                }
+            });
+        }
+
+        function resetarFicha() {
+            localStorage.clear();
+            location.reload();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const agora = new Date();
+            if (agora >= DATA_EXPIRACAO) {
+                bloquearFicha();
+            }
+
+            const btnOk = document.getElementById('expiracaoOkBtn');
+            if (btnOk) {
+                btnOk.addEventListener('click', function() {
+                    resetarFicha();
+                });
+            }
+        });
+
+    </script>
+
+    <div id="expiracaoOverlay" class="expiracao-overlay hidden">
+        <div class="expiracao-modal">
+            <h2>Sua aventura espera aqui!</h2>
+            <h3>Período de Teste expirado!</h3>
+            <p>Procure o desenvolvedor: <a href="mailto:thiagoctatagiba@gmail.com">thiagoctatagiba@gmail.com</a></p>
+            <button type="button" id="expiracaoOkBtn">OK</button>
+        </div>
+    </div>
+
+    <footer class="meu-rodape">
+        <div class="footer-content">
+            <p>Criado por: <strong>Thiago Tatagiba</strong></p>
+            <p>&copy; 2026 Todos os direitos reservados</p>
+            <p class="aviso">VERSÃO DE TESTE! Proibida cópia</p>
+        </div>
+    </footer>
+</body>
+
+</html>
