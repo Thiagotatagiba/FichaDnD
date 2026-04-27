@@ -5262,6 +5262,22 @@
         .expiracao-modal button:active {
             transform: translateY(0);
         }
+
+        /* ===== Caixa de Anotações ===== */
+        .anotacoes-texto {
+            width: 100%;
+            min-height: 140px;
+            resize: vertical;
+            border: 1px solid #bda68c;
+            border-radius: 8px;
+            padding: 12px;
+            background: #fffaf2;
+            box-sizing: border-box;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            line-height: 1.45;
+            outline: none;
+        }
     </style>
 
 </head>
@@ -5990,7 +6006,8 @@
                     </div>
 
                     <div class="caixa-salvaguarda">
-                        <!-- Espaço reservado para implementações futuras -->
+                        <div class="campo-titulo">Anotações</div>
+                        <textarea id="anotacoes" class="anotacoes-texto" placeholder="Escreva suas anotações aqui..."></textarea>
                     </div>
 
                 </div>
