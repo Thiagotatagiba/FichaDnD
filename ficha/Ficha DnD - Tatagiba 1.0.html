@@ -3602,9 +3602,10 @@
             text-shadow: 0 0 8px rgba(255, 215, 0, 0.65);
         }
 
-        .calc-item {
-            position: relative;
-            display: inline-block;
+.calc-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 1px;
             font-weight: bold;
             line-height: 1;
             vertical-align: middle;
@@ -3615,11 +3616,9 @@
             display: inline-block;
         }
 
-
-            right: -8px;
-            font-size: 12px;
+        .calc-item .emoji {
+            font-size: 14px;
             line-height: 1;
-            opacity: 0.8;
         }
 
         .ataque-modal-resumo-dado-critico .calc-item .numero {
