@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Thiago Tatagiba">
+    <meta name="versao" content="1.0">
     <title>Ficha D&D</title>
+
 
     <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=MedievalSharp&display=swap"
         rel="stylesheet">
@@ -3503,7 +3505,7 @@
 
         .ataque-modal-campo-rotulo {
             position: absolute;
-            top: 5px;
+            top: 6px;
             left: 48px;
             font-size: 9px;
             line-height: 1;
@@ -3581,8 +3583,12 @@
         }
 
         .ataque-modal-resumo {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 4px 8px;
             margin-bottom: 14px;
-            font-size: 13px;
+            font-size: 14px;
             color: #5c4832;
         }
 
@@ -3609,9 +3615,7 @@
             display: inline-block;
         }
 
-        .calc-item .emoji {
-            position: absolute;
-            bottom: -6px;
+
             right: -8px;
             font-size: 12px;
             line-height: 1;

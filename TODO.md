@@ -1,136 +1,50 @@
 # TODO - Ficha D&D Tatagiba 1.0 - Plano Atual
 
 ## Contexto
+
 Ficha `Ficha DnD - Tatagiba 1.0.html` (14.911 linhas). Verificação e manutenção contínua do modal de ataque/dano e demais funcionalidades.
 
 ---
 
-## 🎯 Refatoração Visual — Resumo de Ataque
+## 🎯 Refatoração Visual — Resumo de Ataque (Número + Emoji inline)
 
 ### Objetivo
-Melhorar a apresentação visual do resumo de ataque sem alterar a lógica existente, tornando a interface mais legível e com melhor feedback ao usuário.
 
+Padronizar a exibição do cálculo de ataque com foco em legibilidade, mantendo lógica intacta.
+
+Formato final esperado:
+Ataque: 21 ( 14🎲 + 4💪 + 3🅿️ )
+Dano da arma: 1d8 + 4💪 Cortante
 ---
 
-## 🔧 Tarefas
+## 🔧 Etapas
 
-### 1. Inverter hierarquia visual (Número > Emoji)
-- Tornar o número o elemento principal (maior e em destaque)
-- Transformar o emoji em um indicador visual secundário
-- Posicionar o emoji no canto do número (overlay com `position: absolute`)
+### 🧩 Estrutura HTML
 
-#### Estrutura esperada:
+- [ ] Localizar trecho atual do `innerHTML` do resumo de ataque
+- [ ] Substituir estrutura antiga (emoji antes do número)
+- [ ] Implementar nova estrutura:
+
 ```html
-<span class="calc-item" title="Valor do dado">
-  <span class="numero">6</span>
-  <span class="emoji">🎲</span>
+<span class="calc-item" title="...">
+  <span class="numero">VALOR</span>
+  <span class="emoji">EMOJI</span>
 </span>
+
+Aplicar para: - [ ] Dado (🎲) - [ ] Modificador de atributo (💪 ou equivalente)
+- [ ] Bônus de proficiência (🅿️) 🎨 Estilização CSS - [ ] Criar classe .calc com
+display: flex - [ ] Criar .calc-item com alinhamento horizontal - [ ] Definir
+.numero maior que .emoji - [ ] Ajustar .emoji com tamanho reduzido e leve
+opacidade - [ ] Criar destaque .total maior que o restante - [ ] Ajustar
+espaçamento entre itens (gap) 🧠 Tooltips - [ ] Adicionar atributo title em cada
+item - [ ] Mapear corretamente: - [ ] 🎲 → Valor do dado - [ ] 💪 → Modificador
+de atributo - [ ] 🅿️ → Bônus de Proficiência ⚙️ Regras de Segurança - [ ]
+Garantir que nenhuma variável foi alterada - [ ] Garantir que lógica de cálculo
+permanece intacta - [ ] Validar condição de crítico (dado === 20) - [ ]
+Confirmar que classes antigas continuam funcionando 🧪 Testes - [ ] Testar com
+valores baixos (ex: 1 + 1 + 1) - [ ] Testar com crítico (dado = 20) - [ ] Testar
+com valores altos - [ ] Verificar alinhamento em diferentes resoluções - [ ]
+Validar leitura rápida do usuário ✅ Critérios de Sucesso - [ ] Layout limpo e
+legível - [ ] Hierarquia visual clara - [ ] Emojis discretos e alinhados - [ ]
+Nenhuma quebra de funcionalidade
 ```
-
-### 2. Adicionar Tooltip (Legenda ao passar o mouse)
-Usar atributo `title` para explicação de cada elemento:
-- 🎲 → "Valor do dado"
-- 💪 → "Modificador de atributo" (ideal: adaptar dinamicamente para Força, Destreza, etc)
-- 🅿️ → "Bônus de Proficiência"
-
-### 3. Refatorar HTML gerado no innerHTML
-
-**Atual:**
-```javascript
-resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)`;
-```
-
-➡️ Refatorar apenas a estrutura HTML, mantendo:
-- `totalAtaque`
-- `dado`
-- `estadoAtaqueArma.modBase`
-- `estadoAtaqueArma.bonusProf`
-- `iconeAtributo`
-- lógica de crítico (`dado === 20`)
-
-### 4. Criar/Atualizar CSS
-Adicionar estilos:
-```css
-.calc-item {
-  position: relative;
-  display: inline-block;
-  font-weight: bold;
-}
-
-.numero {
-  font-size: 22px;
-}
-
-.emoji {
-  position: absolute;
-  bottom: -6px;
-  right: -8px;
-  font-size: 12px;
-  opacity: 0.8;
-}
-```
-
-### 5. Manter compatibilidade visual existente
-- Preservar `.ataque-modal-resumo-destaque`
-- Preservar `.ataque-modal-resumo-dado-critico`
-- Garantir que o layout não quebre dentro do modal atual
-
----
-
-## ⚠️ Restrições
-- ❌ NÃO alterar lógica JavaScript
-- ❌ NÃO remover classes existentes
-- ❌ NÃO alterar fluxo de cálculo
-- ✅ Apenas refatoração visual + UX
-
----
-
-## ✅ Resultado Esperado
-
-Visual mais limpo e profissional:
-
-```
-Ataque: 13 ( 6🎲 + 4💪 + 3🅿️ )
-```
-
-Com:
-- números maiores e mais legíveis
-- emojis discretos como indicadores
-- tooltips explicando cada valor
-
-Se quiser testar direto sem esperar o modelo, aqui vai o comportamento esperado em CSS:
-
-.calc {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.calc-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  font-weight: bold;
-}
-
-.numero {
-  font-size: 18px;
-}
-
-.emoji {
-  font-size: 12px;
-  opacity: 0.8;
-}
-
-.total {
-  font-size: 24px;
-  font-weight: bold;
-}
-🎯 Resultado final esperado
-
-Ataque: 21 ( 🎲14 + 💪4 + 🅿️3 )
-
-“Ataque: 21” dominante
-números claros
-emoji discreto
-leitura rápida (isso aqui é o ganho real)
