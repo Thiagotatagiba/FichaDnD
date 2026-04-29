@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Modal de Rolagem</title>
+    <style>
+        body {
+            min-height: 100vh;
+            margin: 0;
+            display: grid;
+            place-items: center;
+            background: #efe4d2;
+            font-family: Georgia, serif;
+            color: #3b2f1b;
+        }
+
+        .modal-exemplo {
+            width: min(420px, calc(100% - 32px));
+            border: 2px solid #8b4513;
+            border-radius: 10px;
+            background: #f8eedc;
+            box-shadow: 0 16px 40px rgba(59, 47, 27, 0.28);
+            padding: 18px;
+            box-sizing: border-box;
+        }
+
+        .modal-exemplo h1 {
+            margin: 0 0 14px;
+            font-size: 18px;
+            text-align: center;
+            color: #6f3610;
+        }
+
+        .oculto-acessivel {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .botao-dado {
+            width: 32px;
+            height: 32px;
+            flex: 0 0 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #8b4513;
+            border-radius: 10px;
+            background: #fffaf2;
+            color: #6f3610;
+            font-size: 18px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0;
+            position: relative;
+            box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.08);
+            transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+        }
+
+        .botao-dado:hover,
+        .botao-dado:focus-visible {
+            background: #f3e3c5;
+            border-color: #6f3610;
+            outline: none;
+        }
+
+        .botao-dado:active {
+            transform: scale(0.9);
+        }
+
+        .botao-dado.rolando .botao-dado-icone {
+            animation: girar 0.5s linear infinite;
+        }
+
+        @keyframes girar {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .dado-modal {
+            display: grid;
+            gap: 10px;
+            margin: 0 auto 14px;
+            padding: 12px;
+            border: 1px solid rgba(139, 69, 19, 0.22);
+            border-radius: 8px;
+            background: rgba(255, 250, 242, 0.62);
+            box-sizing: border-box;
+        }
+
+        .dado-modal-cabecalho {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 18px;
+            text-align: center;
+        }
+
+        .dado-modal-titulo {
+            font-size: 11px;
+            font-weight: bold;
+            color: #6f3610;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .dado-modal-nota {
+            font-family: "Courier New", monospace;
+            font-size: 12px;
+            color: #6f3610;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .dado-modal-calculo {
+            display: grid;
+            grid-template-columns: minmax(112px, auto) minmax(120px, auto);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dado-modal-grupo-dado {
+            display: grid;
+            grid-template-columns: 32px minmax(70px, 1fr);
+            gap: 8px;
+            align-items: start;
+            min-width: 0;
+        }
+
+        .dado-modal-botao-coluna {
+            display: grid;
+            gap: 4px;
+            justify-items: center;
+        }
+
+        .dado-modal-coluna {
+            display: grid;
+            gap: 4px;
+            justify-items: center;
+            min-width: 0;
+        }
+
+        .dado-modal-bonus-bloco {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 6px;
+            min-height: 38px;
+            align-self: start;
+            padding-top: 7px;
+        }
+
+        .dado-modal-bonus {
+            font-size: 18px;
+            color: #3b2f1b;
+            text-align: center;
+            white-space: normal;
+        }
+
+        .dado-modal-bonus-detalhe {
+            font-size: 11px;
+            color: #6b5a46;
+            line-height: 1.2;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .dado-modal-campo {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dado-modal-campo-rotulo {
+            position: absolute;
+            top: 6px;
+            left: 48px;
+            font-size: 9px;
+            line-height: 1;
+            color: #8b5a2b;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .dado-modal input {
+            width: 84px;
+            min-width: 84px;
+            min-height: 38px;
+            border: 2px solid #bda68c;
+            border-radius: 10px;
+            background: #fffaf2;
+            padding: 16px 8px 8px;
+            box-sizing: border-box;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .dado-modal input:focus {
+            outline: none;
+            border-color: #8b5a2b;
+            box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.12);
+        }
+
+        .dado-modal-total {
+            grid-column: 1 / -1;
+            justify-self: center;
+            font-size: 12px;
+            color: #5c4832;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .dado-modal-total strong {
+            color: #6f3610;
+            margin-left: 4px;
+            font-size: 16px;
+        }
+
+        .dado-modal-historico {
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(139, 69, 19, 0.22);
+            font-family: "Courier New", monospace;
+            font-size: 11px;
+            color: #6b5a46;
+            line-height: 1.4;
+        }
+
+        .dado-modal-historico-rotulo {
+            color: #6f3610;
+            margin-right: 6px;
+        }
+
+        .dado-modal-historico-lista {
+            word-break: break-word;
+        }
+
+        .dado-modal-historico-rolagem {
+            border: 0;
+            background: transparent;
+            padding: 0 2px;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-color: rgba(111, 54, 16, 0.35);
+            text-underline-offset: 2px;
+        }
+
+        .dado-modal-historico-rolagem:hover,
+        .dado-modal-historico-rolagem:focus-visible {
+            color: #6f3610;
+            outline: none;
+            text-decoration-color: currentColor;
+        }
+
+        .dado-modal-historico-rolagem.destaque {
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .dado-modal-calculo {
+                grid-template-columns: 1fr;
+            }
+
+            .dado-modal-nota {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="modal-exemplo">
+        <h1>Modal de Rolagem</h1>
+
+        <section class="dado-modal" aria-labelledby="rolagemTitulo">
+            <div class="dado-modal-cabecalho">
+                <span id="rolagemTitulo" class="dado-modal-titulo">Rolagem de dado</span>
+            </div>
+
+            <label for="dadoValor" class="oculto-acessivel">Dado</label>
+            <div class="dado-modal-calculo">
+                <div class="dado-modal-coluna">
+                    <div class="dado-modal-campo dado-modal-grupo-dado">
+                        <span class="dado-modal-campo-rotulo">Dado</span>
+                        <div class="dado-modal-botao-coluna">
+                            <button type="button" id="dadoRolar" class="botao-dado" aria-label="Rolar 1d20"
+                                title="Rolar 1d20">
+                                <span class="botao-dado-icone">🎲</span>
+                            </button>
+                            <div id="dadoDetalhe" class="dado-modal-nota">1d20</div>
+                        </div>
+                        <input id="dadoValor" type="number" min="1" max="20" step="1" inputmode="numeric">
+                    </div>
+                </div>
+
+                <div class="dado-modal-bonus-bloco">
+                    <div id="dadoBonus" class="dado-modal-bonus">+7</div>
+                    <div id="dadoBonusDetalhe" class="dado-modal-bonus-detalhe">(4💪 + 3🅿️)</div>
+                </div>
+
+                <div id="dadoTotal" class="dado-modal-total">Total: <strong>-</strong></div>
+            </div>
+        </section>
+
+        <div class="dado-modal-historico">
+            <span class="dado-modal-historico-rotulo">Historico:</span>
+            <span id="dadoHistorico" class="dado-modal-historico-lista">-</span>
+        </div>
+    </main>
+
+    <script>
+        const estadoDado = {
+            historico: [],
+            bonus: 7,
+            formula: "1d20"
+        };
+
+        function rolarDado(quantidade, faces) {
+            const resultados = Array.from({ length: quantidade }, () => Math.floor(Math.random() * faces) + 1);
+            return {
+                resultados,
+                soma: resultados.reduce((total, valor) => total + valor, 0)
+            };
+        }
+
+        function animarRolagemNoCampo(campo, quantidade, faces, duracaoMs = 1000, intervaloMs = 60) {
+            if (!campo) return Promise.resolve(null);
+
+            return new Promise(resolve => {
+                const inicio = Date.now();
+                const timer = setInterval(() => {
+                    const parcial = rolarDado(quantidade, faces);
+                    campo.value = parcial?.soma ?? "";
+                    campo.dispatchEvent(new Event("input"));
+
+                    if (Date.now() - inicio >= duracaoMs) {
+                        clearInterval(timer);
+                        const final = rolarDado(quantidade, faces);
+                        campo.value = final?.soma ?? "";
+                        campo.dispatchEvent(new Event("input"));
+                        campo.dispatchEvent(new Event("change"));
+                        resolve(final);
+                    }
+                }, intervaloMs);
+            });
+        }
+
+        function criarBotaoHistoricoDado(valor, sufixo = "", destaque = false) {
+            const numero = parseInt(valor, 10);
+            if (!Number.isInteger(numero)) return "";
+
+            const classeDestaque = destaque ? " destaque" : "";
+            return `<button type="button" class="dado-modal-historico-rolagem${classeDestaque}" data-valor-rolagem="${numero}" title="Usar ${numero} no dado">${numero}${sufixo}</button>`;
+        }
+
+        function atualizarTotalDado() {
+            const campoDado = document.getElementById("dadoValor");
+            const campoTotal = document.getElementById("dadoTotal");
+            const valor = parseInt(campoDado.value, 10);
+
+            if (!Number.isInteger(valor)) {
+                campoTotal.innerHTML = "Total: <strong>-</strong>";
+                return;
+            }
+
+            campoTotal.innerHTML = `Total: <strong>${valor + estadoDado.bonus}</strong>`;
+        }
+
+        function atualizarDetalheDado() {
+            const campoDetalhe = document.getElementById("dadoDetalhe");
+            const ultimo = estadoDado.historico[estadoDado.historico.length - 1];
+            campoDetalhe.textContent = Number.isInteger(ultimo) ? `[${ultimo}]` : estadoDado.formula;
+        }
+
+        function atualizarHistoricoDado() {
+            const campoHistorico = document.getElementById("dadoHistorico");
+            const historico = [...estadoDado.historico].reverse();
+
+            if (!historico.length) {
+                campoHistorico.textContent = "-";
+                return;
+            }
+
+            const maior = Math.max(...estadoDado.historico);
+            const menor = Math.min(...estadoDado.historico);
+
+            campoHistorico.innerHTML = historico.map(valor => {
+                const ehMaior = valor === maior;
+                const ehMenor = valor === menor;
+                const sufixo = ehMaior ? "⇧" : ehMenor ? "⇩" : "";
+                return criarBotaoHistoricoDado(valor, sufixo, ehMaior || ehMenor);
+            }).join(", ");
+        }
+
+        function aplicarHistoricoDadoNoInput(inputId, valor) {
+            const campo = document.getElementById(inputId);
+            const numero = parseInt(valor, 10);
+            if (!campo || !Number.isInteger(numero)) return;
+
+            campo.value = numero;
+            campo.dispatchEvent(new Event("input"));
+            campo.dispatchEvent(new Event("change"));
+            campo.focus();
+            campo.select?.();
+        }
+
+        document.getElementById("dadoRolar").addEventListener("click", () => {
+            const campoDado = document.getElementById("dadoValor");
+            const botao = document.getElementById("dadoRolar");
+
+            botao.classList.add("rolando");
+
+            animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then(rolagem => {
+                botao.classList.remove("rolando");
+                if (!rolagem?.resultados?.length) return;
+
+                estadoDado.historico.push(rolagem.soma);
+                atualizarTotalDado();
+                atualizarDetalheDado();
+                atualizarHistoricoDado();
+            });
+        });
+
+        document.getElementById("dadoValor").addEventListener("input", atualizarTotalDado);
+        document.getElementById("dadoValor").addEventListener("change", atualizarTotalDado);
+
+        document.getElementById("dadoHistorico").addEventListener("click", evento => {
+            const botaoHistorico = evento.target.closest("[data-valor-rolagem]");
+            if (!botaoHistorico) return;
+
+            aplicarHistoricoDadoNoInput("dadoValor", botaoHistorico.dataset.valorRolagem);
+        });
+    </script>
+</body>
+
+</html>
