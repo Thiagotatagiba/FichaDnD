@@ -6,7 +6,7 @@
             bonusProf: 0,
             rotuloAtributo: "",
             textoResumo: "",
-            tipoAcao: "AÁ„o",
+            tipoAcao: "AÔøΩÔøΩo",
             historicoRolagens: []
         };
 
@@ -119,9 +119,25 @@
         }
 
         function obterIconeAtributoAtaque(rotuloAtributo) {
-            if (rotuloAtributo === 'FOR') return '??';
-            if (rotuloAtributo === 'DES') return '??';
-            return '?';
+            if (rotuloAtributo === 'FOR') return 'üí™';
+            if (rotuloAtributo === 'DES') return 'üèπ';
+            if (rotuloAtributo === 'CON') return '‚ù§Ô∏è';
+            if (rotuloAtributo === 'INT') return 'üß†';
+            if (rotuloAtributo === 'SAB') return 'üëÅÔ∏è';
+            if (rotuloAtributo === 'CAR') return 'üó£Ô∏è';
+            return '‚ú®';
+        }
+
+        function obterTooltipAtributoAtaque(rotuloAtributo) {
+            const mapa = {
+                'FOR': 'Modificador de For√ßa',
+                'DES': 'Modificador de Destreza',
+                'CON': 'Modificador de Constitui√ß√£o',
+                'INT': 'Modificador de Intelig√™ncia',
+                'SAB': 'Modificador de Sabedoria',
+                'CAR': 'Modificador de Carisma'
+            };
+            return mapa[rotuloAtributo] || 'Modificador de atributo';
         }
 
         function rolarDado(quantidade, faces) {
@@ -252,7 +268,7 @@
             campo.innerHTML = `Rodada <strong>${obterRodadaCombateAtual()}</strong>`;
         }
 
-        function marcarTipoAcaoModalAtaque(tipoSelecionado = 'AÁ„o') {
+        function marcarTipoAcaoModalAtaque(tipoSelecionado = 'AÔøΩÔøΩo') {
             const checkboxes = document.querySelectorAll('#modalAtaqueEtapaDado input[data-tipo-acao]');
             let encontrou = false;
 
@@ -268,7 +284,7 @@
 
         function obterTipoAcaoSelecionadoModalAtaque() {
             const selecionado = document.querySelector('#modalAtaqueEtapaDado input[data-tipo-acao]:checked');
-            return selecionado?.dataset.tipoAcao || 'AÁ„o';
+            return selecionado?.dataset.tipoAcao || 'AÔøΩÔøΩo';
         }
 
         function alternarEtapaModalAtaque(exibirDano) {
@@ -294,7 +310,7 @@
             estadoAtaqueArma.bonusProf = 0;
             estadoAtaqueArma.rotuloAtributo = "";
             estadoAtaqueArma.textoResumo = "";
-            estadoAtaqueArma.tipoAcao = "AÁ„o";
+            estadoAtaqueArma.tipoAcao = "AÔøΩÔøΩo";
             estadoAtaqueArma.historicoRolagens = [];
 
             if (campoDado) campoDado.value = '';
@@ -302,7 +318,7 @@
             if (botaoSucesso) botaoSucesso.classList.remove('ataque-botao-critico');
             if (botaoFracasso) botaoFracasso.classList.remove('ataque-botao-fracasso-critico');
             alternarEtapaModalAtaque(false);
-            marcarTipoAcaoModalAtaque('AÁ„o');
+            marcarTipoAcaoModalAtaque('AÔøΩÔøΩo');
             atualizarTotalModalAtaque();
             atualizarHistoricoRolagensModalAtaque();
 
@@ -333,7 +349,7 @@
             estadoAtaqueArma.bonusProf = bonusProf || 0;
             estadoAtaqueArma.rotuloAtributo = rotuloAtributo;
             estadoAtaqueArma.textoResumo = textoResumo;
-            estadoAtaqueArma.tipoAcao = 'AÁ„o';
+            estadoAtaqueArma.tipoAcao = 'AÔøΩÔøΩo';
             estadoAtaqueArma.historicoRolagens = [];
 
             titulo.innerHTML = `Ataque com <span class="ataque-modal-titulo-arma">${arma?.nome || 'arma'}</span>`;
@@ -344,7 +360,7 @@
             campoDano.value = '';
 
             atualizarRodadaModalAtaque();
-            marcarTipoAcaoModalAtaque('AÁ„o');
+            marcarTipoAcaoModalAtaque('AÔøΩÔøΩo');
             alternarEtapaModalAtaque(false);
             atualizarEstadoCriticoModalAtaque();
             atualizarHistoricoRolagensModalAtaque();
@@ -379,7 +395,8 @@
             subtitulo.textContent = obterSubtituloModalAtaque(estadoAtaqueArma.arma);
             const totalAtaque = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
             const iconeAtributo = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
-            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">?? ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">??? ${estadoAtaqueArma.bonusProf || 0}</span>)`;
+            const tooltipAtributo = obterTooltipAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
+            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}"><span class="calc-item" title="Valor do dado"><span class="numero">${dado}</span><span class="emoji">üé≤</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="${tooltipAtributo}"><span class="numero">${estadoAtaqueArma.modBase || 0}</span><span class="emoji">${iconeAtributo}</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="B√¥nus de Profici√™ncia"><span class="numero">${estadoAtaqueArma.bonusProf || 0}</span><span class="emoji">üÖøÔ∏è</span></span></span>)`;
             alternarEtapaModalAtaque(true);
             setTimeout(() => campoDano.focus(), 0);
         }
@@ -419,7 +436,7 @@
 
                 const nome = (arma.nome || "").trim();
 
-                const icone = arma.propriedade?.toLowerCase().includes("muniÁ„o")
+                const icone = arma.propriedade?.toLowerCase().includes("muniÔøΩÔøΩo")
                     ? '??'
                     : '??';
 
@@ -451,7 +468,7 @@
                 const detalhes = document.createElement('div');
                 detalhes.className = 'arma-resumo-detalhes';
 
-                // ?? CORRE«√O PRINCIPAL
+                // ?? CORREÔøΩÔøΩO PRINCIPAL
                 const resumo = getResumoCalculoAtaque(arma);
                 const textoAtaque = resumo?.textoResumo || "-";
 
@@ -627,7 +644,7 @@
             const pvAtual = parseInt(campoPV.value) || 0;
             const pvTotal = parseInt(campoPVTotal.value) || 0;
 
-            // Se PV total È zero, a ficha n„o foi montada, ent„o n„o abre contra morte
+            // Se PV total ÔøΩ zero, a ficha nÔøΩo foi montada, entÔøΩo nÔøΩo abre contra morte
             if (pvTotal === 0) {
                 campoPVDisplay.style.display = 'flex';
                 campoContraMorte.style.display = 'none';
@@ -651,7 +668,7 @@
 
                 if (dot && !dot.classList.contains('ativo')) {
                     dot.classList.add('ativo');
-                    registrarHistoricoComandoCombate('Sucesso', `${i}∫`);
+                    registrarHistoricoComandoCombate('Sucesso', `${i}ÔøΩ`);
 
                     verificarVitoriaDeathSave();
                     return;
@@ -666,8 +683,8 @@
                 if (dot && !dot.classList.contains('ativo')) {
                     dot.classList.add('ativo');
 
-                    // ?? Registrar sÛ aqui (depois de confirmar)
-                    registrarHistoricoComandoCombate('Fracasso', `${i}∫`);
+                    // ?? Registrar sÔøΩ aqui (depois de confirmar)
+                    registrarHistoricoComandoCombate('Fracasso', `${i}ÔøΩ`);
 
                     verificarDerrotaDeathSave();
                     return;
@@ -687,29 +704,29 @@
             if (sucessos >= 3) {
 
                 const frases = [
-                    "Contra todas as probabilidades, vocÍ se agarra ‡ vida.",
-                    "Seu peito volta a respirar. A morte ter· que esperar.",
+                    "Contra todas as probabilidades, vocÔøΩ se agarra ÔøΩ vida.",
+                    "Seu peito volta a respirar. A morte terÔøΩ que esperar.",
                     "A chama da sua alma se recusa a se apagar.",
-                    "VocÍ resiste. Ainda n„o È o seu fim.",
-                    "O destino te d· mais uma chance.",
-                    "Seu corpo responde ó vocÍ est· de volta.",
+                    "VocÔøΩ resiste. Ainda nÔøΩo ÔøΩ o seu fim.",
+                    "O destino te dÔøΩ mais uma chance.",
+                    "Seu corpo responde ÔøΩ vocÔøΩ estÔøΩ de volta.",
                     "A vida pulsa novamente em suas veias.",
                     "Nem hoje a morte te leva.",
-                    "VocÍ abre os olhos mais uma vez.",
-                    "Os deuses ainda n„o terminaram com vocÍ.",
-                    "A morte tentou te abraÁar, mas seu espÌrito se provou mais forte.",
-                    "O fio da sua vida se tencionou, mas n„o rompeu. VocÍ est· de volta.",
-                    "A luz retorna aos seus olhos. O mundo ainda precisa de vocÍ.",
-                    "VocÍ respira fundo enquanto o abismo recua. A luta continua!",
-                    "A balanÁa se inclinou a seu favor. VocÍ estabilizou.",
-                    "O Ceifador ter· que esperar. Hoje n„o È o seu dia.",
-                    "Sua determinaÁ„o forÁou o destino a te conceder uma segunda chance.",
-                    "TrÍs batidas firmes no coraÁ„o. O perigo imediato passou."
+                    "VocÔøΩ abre os olhos mais uma vez.",
+                    "Os deuses ainda nÔøΩo terminaram com vocÔøΩ.",
+                    "A morte tentou te abraÔøΩar, mas seu espÔøΩrito se provou mais forte.",
+                    "O fio da sua vida se tencionou, mas nÔøΩo rompeu. VocÔøΩ estÔøΩ de volta.",
+                    "A luz retorna aos seus olhos. O mundo ainda precisa de vocÔøΩ.",
+                    "VocÔøΩ respira fundo enquanto o abismo recua. A luta continua!",
+                    "A balanÔøΩa se inclinou a seu favor. VocÔøΩ estabilizou.",
+                    "O Ceifador terÔøΩ que esperar. Hoje nÔøΩo ÔøΩ o seu dia.",
+                    "Sua determinaÔøΩÔøΩo forÔøΩou o destino a te conceder uma segunda chance.",
+                    "TrÔøΩs batidas firmes no coraÔøΩÔøΩo. O perigo imediato passou."
                 ];
 
                 const fraseAleatoria = frases[Math.floor(Math.random() * frases.length)];
 
-                alert(fraseAleatoria + "\n\nVocÍ recupera 1 PV e est· est·vel!");
+                alert(fraseAleatoria + "\n\nVocÔøΩ recupera 1 PV e estÔøΩ estÔøΩvel!");
 
                 const campoPV = document.getElementById('pvAtual');
                 if (campoPV) {
@@ -732,16 +749,16 @@
             if (fracassos >= 3) {
 
                 const frases = [
-                    "Sua canÁ„o termina aqui, mas o eco de suas faÁanhas perdurar· pelas eras.",
-                    "A luz em seus olhos se apaga, cedendo lugar ao descanso eterno dos herÛis.",
+                    "Sua canÔøΩÔøΩo termina aqui, mas o eco de suas faÔøΩanhas perdurarÔøΩ pelas eras.",
+                    "A luz em seus olhos se apaga, cedendo lugar ao descanso eterno dos herÔøΩis.",
                     "As estrelas brilham um pouco menos hoje. Sua alma agora pertence ao cosmos.",
-                    "O frio do abismo finalmente te alcanÁou.",
-                    "Seu sangue mancha a terra; o silÍncio È sua ˙nica companhia agora.",
+                    "O frio do abismo finalmente te alcanÔøΩou.",
+                    "Seu sangue mancha a terra; o silÔøΩncio ÔøΩ sua ÔøΩnica companhia agora.",
                     "O destino foi cruel. Seu corpo tomba, desprovido de vida.",
-                    "A escurid„o te envolveu. N„o h· mais volta.",
-                    "O ˙ltimo capÌtulo da sua histÛria foi escrito.",
-                    "Os dados pararam de rolar para vocÍ. Que sua prÛxima encarnaÁ„o seja mais afortunada.",
-                    "Sua ficha repousa agora no pante„o das lendas esquecidas.",
+                    "A escuridÔøΩo te envolveu. NÔøΩo hÔøΩ mais volta.",
+                    "O ÔøΩltimo capÔøΩtulo da sua histÔøΩria foi escrito.",
+                    "Os dados pararam de rolar para vocÔøΩ. Que sua prÔøΩxima encarnaÔøΩÔøΩo seja mais afortunada.",
+                    "Sua ficha repousa agora no panteÔøΩo das lendas esquecidas.",
                     "O mestre das almas recolheu sua ficha. Fim de jogo."
                 ];
 
@@ -861,7 +878,7 @@
 
 
 
-        // Atualiza automaticamente quando o Orbe do bÙnus de proficiÍncia muda
+        // Atualiza automaticamente quando o Orbe do bÔøΩnus de proficiÔøΩncia muda
         const bonusOrbeInput = document.getElementById("bonusProf");
         function atualizarTudoDerivado() {
             atualizarBonusProficiencia();
@@ -1137,7 +1154,7 @@
                 botao.classList.remove('rolando');
                 if (rolagem?.resultados?.length) {
                     botao.title = `1d20: ${rolagem.resultados.join(', ')}`;
-                    botao.setAttribute('aria-label', `Rolar 1d20. ⁄ltimo resultado ${rolagem.resultados.join(', ')}`);
+                    botao.setAttribute('aria-label', `Rolar 1d20. ÔøΩltimo resultado ${rolagem.resultados.join(', ')}`);
                 }
             }, 250);
         });
@@ -1153,7 +1170,7 @@
                     return;
                 }
 
-                marcarTipoAcaoModalAtaque(checkbox.dataset.tipoAcao || 'AÁ„o');
+                marcarTipoAcaoModalAtaque(checkbox.dataset.tipoAcao || 'AÔøΩÔøΩo');
             });
         });
 
@@ -1192,10 +1209,10 @@
         function atualizarFicha() {
 
             // ===== 1. BASE (fonte de verdade) =====
-            sincronizarClasseNivel(true); // define nÌvel corretamente
+            sincronizarClasseNivel(true); // define nÔøΩvel corretamente
 
             // ===== 2. DERIVADOS DIRETOS =====
-            formatarBonusProf(); // depende do nÌvel
+            formatarBonusProf(); // depende do nÔøΩvel
 
             sincronizarResumoCaracteristicas(true);
 
@@ -1203,7 +1220,7 @@
             atualizarAtributos();
             sincronizarAtributosComSalvaguardas();
 
-            // ===== 4. SALVAGUARDAS E PERÕCIAS =====
+            // ===== 4. SALVAGUARDAS E PERÔøΩCIAS =====
             atualizarModificadoresSalvaguarda();
             atualizarPericias();
             atualizarPassivas();
@@ -1293,7 +1310,7 @@
                 dadosVidaTipo: (valor, campo) => campo.value = normalizarTipoDadoVida(valor)
             };
 
-            // ?? FUN«√O AUXILIAR
+            // ?? FUNÔøΩÔøΩO AUXILIAR
             function preencherCampo(campo, valor) {
                 if (campo.type === "checkbox") {
                     campo.checked = valor;
@@ -1318,7 +1335,7 @@
                     continue;
                 }
 
-                // ?? IGNORAR CAMPOS ESPECÕFICOS
+                // ?? IGNORAR CAMPOS ESPECÔøΩFICOS
                 if (['arma1Nome', 'arma2Nome', 'arma1Dano', 'arma2Dano', 'armaduraNome'].includes(key)) {
                     continue;
                 }
@@ -1352,7 +1369,7 @@
             inicializarTalentos(dados);
 
             // =========================
-            // ?? 2. CARREGAR MUNI«’ES (OUTROS)
+            // ?? 2. CARREGAR MUNIÔøΩÔøΩES (OUTROS)
             // =========================
             if (dados.outros && Array.isArray(dados.outros)) {
                 const containerOutros = document.getElementById('listaOutros');
@@ -1507,7 +1524,7 @@
             }
 
             // =========================
-            // ?? 5. P”S-PROCESSAMENTO
+            // ?? 5. PÔøΩS-PROCESSAMENTO
             // =========================
             document.querySelectorAll('#listaArmas .item-card[data-tipo="arma"], #listaArmaduras .item-card[data-tipo="armadura"], #listaEscudos .item-card[data-tipo="escudo"], #listaOutros .item-card[data-tipo="outro"]').forEach(fecharItemCard);
             atualizarListaArmasEquipamento();
@@ -1559,9 +1576,9 @@
 
         }
 
-        // ===== SISTEMA DE EXPIRA«√O =====
+        // ===== SISTEMA DE EXPIRAÔøΩÔøΩO =====
         const DATA_EXPIRACAO = new Date("2026-05-03T12:00:00");
-        console.log('[Debug] Data de expiraÁ„o:', DATA_EXPIRACAO.toLocaleString('pt-BR'));
+        console.log('[Debug] Data de expiraÔøΩÔøΩo:', DATA_EXPIRACAO.toLocaleString('pt-BR'));
 
         function bloquearFicha() {
             const overlay = document.getElementById('expiracaoOverlay');
@@ -1598,7 +1615,7 @@
     <div id="expiracaoOverlay" class="expiracao-overlay hidden">
         <div class="expiracao-modal">
             <h2>Sua aventura espera aqui!</h2>
-            <h3>PerÌodo de Teste expirado!</h3>
+            <h3>PerÔøΩodo de Teste expirado!</h3>
             <p>Procure o desenvolvedor: <a href="mailto:thiagoctatagiba@gmail.com">thiagoctatagiba@gmail.com</a></p>
             <button type="button" id="expiracaoOkBtn">OK</button>
         </div>
@@ -1608,7 +1625,7 @@
         <div class="footer-content">
             <p>Criado por: <strong>Thiago Tatagiba</strong></p>
             <p>&copy; 2026 Todos os direitos reservados</p>
-            <p class="aviso">VERS√O DE TESTE! Proibida cÛpia</p>
+            <p class="aviso">VERSÔøΩO DE TESTE! Proibida cÔøΩpia</p>
         </div>
     </footer>
 </body>

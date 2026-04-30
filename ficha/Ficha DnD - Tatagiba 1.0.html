@@ -5,7 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Thiago Tatagiba">
+    <meta name="versao" content="1.0">
     <title>Ficha D&D</title>
+
 
     <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=MedievalSharp&display=swap"
         rel="stylesheet">
@@ -1406,7 +1408,7 @@
 
         .proficiencia-texto {
             width: 100%;
-            min-height: 76px;
+            height: 100%;
             resize: vertical;
             border: 1px solid #bda68c;
             border-radius: 8px;
@@ -3456,21 +3458,98 @@
             line-height: 1.45;
         }
 
-        .ataque-modal-linha {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-bottom: 14px;
+        .dado-modal {
+            display: grid;
+            gap: 10px;
+            margin: 0 auto 14px;
+            padding: 12px;
+            border: 1px solid rgba(139, 69, 19, 0.22);
+            border-radius: 8px;
+            background: rgba(255, 250, 242, 0.62);
+            box-sizing: border-box;
         }
 
-        .ataque-modal-linha label {
+        .dado-modal-cabecalho {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            min-height: 18px;
+            text-align: center;
+        }
+
+        .dado-modal-titulo {
+            font-size: 11px;
+            font-weight: bold;
+            color: #6f3610;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .dado-modal-nota {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #6f3610;
+            text-align: center;
+            word-break: break-word;
+        }
+
+        .dado-modal-calculo {
+            display: grid;
+            grid-template-columns: minmax(112px, auto) minmax(120px, auto);
+            column-gap: 0;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dado-modal-grupo-dado {
+            display: grid;
+            grid-template-columns: 32px minmax(70px, 1fr);
+            gap: 8px;
+            align-items: start;
+            min-width: 0;
+        }
+
+        .dado-modal-botao-coluna {
+            display: grid;
+            gap: 4px;
+            justify-items: center;
+        }
+
+        .dado-modal-coluna {
+            display: grid;
+            gap: 4px;
+            justify-items: center;
+            min-width: 0;
+        }
+
+        .dado-modal-bonus-bloco {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 6px;
+            min-height: 38px;
+            align-self: start;
+            padding-top: 7px;
+        }
+
+        .dado-modal-bonus-detalhe {
+            font-family: 'Metamorphous', serif;
+            font-size: 11px;
+            color: #6b5a46;
+            line-height: 1.2;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .dado-modal label {
             font-size: 11px;
             color: #6f3610;
             text-transform: uppercase;
             letter-spacing: 0.04em;
         }
 
-        .ataque-modal-linha label.oculto-acessivel {
+        .dado-modal label.oculto-acessivel {
             position: absolute;
             width: 1px;
             height: 1px;
@@ -3482,28 +3561,28 @@
             border: 0;
         }
 
-        .ataque-modal-rolagem {
-            display: grid;
-            grid-template-columns: minmax(0, auto) auto;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
+        .dado-modal-rolagem {
+            display: contents;
         }
 
-        .ataque-modal-campo {
+        .dado-modal-rolagem.dado-modal-calculo {
+            display: grid;
+        }
+
+        .dado-modal-campo {
             position: relative;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
 
-        .ataque-modal-campo-com-dado {
+        .dado-modal-campo-com-dado {
             gap: 8px;
         }
 
-        .ataque-modal-campo-rotulo {
+        .dado-modal-campo-rotulo {
             position: absolute;
-            top: 5px;
+            top: 6px;
             left: 48px;
             font-size: 9px;
             line-height: 1;
@@ -3514,7 +3593,7 @@
             z-index: 1;
         }
 
-        .ataque-modal input {
+        .dado-modal input {
             width: 100%;
             min-height: 38px;
             border: 2px solid #bda68c;
@@ -3523,7 +3602,7 @@
             padding: 8px 10px;
             box-sizing: border-box;
             font-family: 'Metamorphous', serif;
-            font-size: 16px;
+            font-size: 18px;
         }
 
         #modalAtaqueDado {
@@ -3544,45 +3623,49 @@
             padding-right: 8px;
         }
 
-        .ataque-modal input:focus {
+        .dado-modal input:focus {
             outline: none;
             border-color: #8b5a2b;
             box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.12);
         }
 
-        .ataque-modal-bonus {
+        .dado-modal-bonus {
             font-family: 'Metamorphous', serif;
-            font-size: 15px;
+            font-size: 18px;
             color: #3b2f1b;
-            white-space: nowrap;
+            text-align: center;
+            white-space: normal;
         }
 
-        .ataque-modal-total {
-            margin-top: 6px;
+        .dado-modal-total {
+            grid-column: 1 / -1;
+            justify-self: center;
             font-size: 12px;
             color: #5c4832;
             text-align: center;
-            min-height: 16px;
+            white-space: nowrap;
         }
 
-        .ataque-modal-total strong {
+        .dado-modal-total strong {
             font-family: 'Metamorphous', serif;
             color: #6f3610;
             margin-left: 4px;
+            font-size: 16px;
         }
 
-        .ataque-modal-resultados-dano {
-            margin-top: 4px;
+        .dado-modal-resultados {
             font-family: 'Courier New', monospace;
             font-size: 12px;
             color: #6f3610;
-            text-align: center;
             min-height: 16px;
         }
 
         .ataque-modal-resumo {
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 4px 8px;
             margin-bottom: 14px;
-            font-size: 13px;
+            font-size: 14px;
             color: #5c4832;
         }
 
@@ -3597,31 +3680,31 @@
         }
 
         .calc-item {
-            position: relative;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 1px;
             font-weight: bold;
             line-height: 1;
             vertical-align: middle;
         }
 
         .calc-item .numero {
-            font-size: 22px;
+            font-size: 14px;
             display: inline-block;
         }
 
         .calc-item .emoji {
-            position: absolute;
-            bottom: -6px;
-            right: -8px;
             font-size: 12px;
             line-height: 1;
-            opacity: 0.8;
-            pointer-events: none;
         }
 
         .ataque-modal-resumo-dado-critico .calc-item .numero {
             color: #b8860b;
             text-shadow: 0 0 8px rgba(255, 215, 0, 0.65);
+        }
+
+        .ataque-modal-resumo-total {
+            font-size: 22px;
         }
 
         .ataque-modal-checklist {
@@ -3649,6 +3732,29 @@
 
         .ataque-modal-historico-lista {
             word-break: break-word;
+        }
+
+        .dado-modal-historico-rolagem {
+            border: 0;
+            background: transparent;
+            padding: 0 2px;
+            color: inherit;
+            font: inherit;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-color: rgba(111, 54, 16, 0.35);
+            text-underline-offset: 2px;
+        }
+
+        .dado-modal-historico-rolagem:hover,
+        .dado-modal-historico-rolagem:focus-visible {
+            color: #6f3610;
+            outline: none;
+            text-decoration-color: currentColor;
+        }
+
+        .dado-modal-historico-rolagem.destaque {
+            font-weight: bold;
         }
 
         .ataque-modal-checkitem {
@@ -3693,6 +3799,20 @@
             color: #fff7f2;
             box-shadow: 0 0 12px rgba(196, 59, 47, 0.7);
             animation: ataqueFracassoBrilho 1.1s ease-in-out infinite;
+        }
+
+        @media (max-width: 480px) {
+            .dado-modal-calculo {
+                grid-template-columns: 1fr;
+            }
+
+            .dado-modal-cabecalho {
+                align-items: center;
+            }
+
+            .dado-modal-nota {
+                text-align: center;
+            }
         }
 
         @keyframes ataqueCriticoBrilho {
@@ -5094,17 +5214,6 @@
             gap: 6px;
         }
 
-        #inputVidaLevelUp {
-            width: 100px;
-            height: 40px;
-            font-size: 18px;
-            text-align: center;
-            border-radius: 6px;
-            border: 2px solid #c8a95e;
-            background: #2a2a2a;
-            color: #fff;
-        }
-
         #inputVidaLevelUp.invalido {
             border-color: red;
             box-shadow: 0 0 5px red;
@@ -5170,13 +5279,6 @@
             to {
                 transform: rotate(360deg);
             }
-        }
-
-        #inputVidaLevelUp {
-            width: 80px;
-            height: 40px;
-            font-size: 18px;
-            text-align: center;
         }
 
         .levelup-info {
@@ -5278,20 +5380,33 @@
                 </div>
 
                 <div id="modalAtaqueEtapaDado">
-                    <div class="ataque-modal-linha">
-                        <label for="modalAtaqueDado" class="oculto-acessivel">Dado</label>
-                        <div class="ataque-modal-rolagem">
-                            <div class="ataque-modal-campo ataque-modal-campo-com-dado">
-                                <span class="ataque-modal-campo-rotulo">Dado</span>
-                                <button type="button" id="modalAtaqueRolarDado" class="botao-dado"
-                                    aria-label="Rolar 1d20" title="Rolar 1d20"><span
-                                        class="botao-dado-icone">🎲</span></button>
-                                <input id="modalAtaqueDado" type="number" min="1" max="20" step="1" inputmode="numeric"
-                                    aria-label="Dado tirado no ataque">
-                            </div>
-                            <div id="modalAtaqueBonus" class="ataque-modal-bonus">+ 0 (FOR)</div>
+                    <div class="dado-modal">
+                        <div class="dado-modal-cabecalho">
+                            <span class="dado-modal-titulo">Rolagem de ataque</span>
                         </div>
-                        <div id="modalAtaqueTotal" class="ataque-modal-total">Total <strong>-</strong></div>
+                        <label for="modalAtaqueDado" class="oculto-acessivel">Dado</label>
+                        <div class="dado-modal-rolagem dado-modal-calculo">
+                            <div class="dado-modal-coluna">
+                                <div class="dado-modal-campo dado-modal-campo-com-dado dado-modal-grupo-dado">
+                                    <span class="dado-modal-campo-rotulo">Dado</span>
+                                    <div class="dado-modal-botao-coluna">
+                                        <button type="button" id="modalAtaqueRolarDado" class="botao-dado"
+                                            aria-label="Rolar 1d20" title="Rolar 1d20"><span
+                                                class="botao-dado-icone">🎲</span></button>
+                                        <div id="modalAtaqueDadoDetalhe" class="dado-modal-nota">1d20</div>
+                                    </div>
+                                    <input id="modalAtaqueDado" type="number" min="1" max="20" step="1" inputmode="numeric"
+                                        aria-label="Dado tirado no ataque">
+                                </div>
+                            </div>
+                            <div class="dado-modal-bonus-bloco">
+                                <div id="modalAtaqueBonus" class="dado-modal-bonus">+0</div>
+                                <div id="modalAtaqueBonusDetalhe" class="dado-modal-bonus-detalhe">(0✨ + 0🅿️)</div>
+                            </div>
+                            <div id="modalAtaqueTotal" class="dado-modal-total">Total:
+                                <strong>-</strong>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="ataque-modal-checklist" role="group" aria-label="Tipo de ação do turno">
@@ -5324,23 +5439,33 @@
 
                 <div id="modalAtaqueEtapaDano" class="oculto">
                     <div id="modalAtaqueResumo" class="ataque-modal-resumo"></div>
-                    <div class="ataque-modal-linha">
-                        <label for="modalAtaqueDano" class="oculto-acessivel">Dado de Dano</label>
-                        <div class="ataque-modal-rolagem">
-                            <div class="ataque-modal-campo ataque-modal-campo-com-dado">
-                                <span class="ataque-modal-campo-rotulo">Dado</span>
-                                <div style="display: flex; flex-direction: column; align-items: center;">
-                                    <button type="button" id="modalAtaqueRolarDano" class="botao-dado"
-                                        aria-label="Rolar dano" title="Rolar dano"><span
-                                            class="botao-dado-icone">🎲</span></button>
-                                    <div id="modalAtaqueResultadosDano" class="ataque-modal-resultados-dano"></div>
-                                </div>
-                                <input id="modalAtaqueDano" type="number" min="1" step="1" inputmode="numeric"
-                                    aria-label="Dado tirado no dano">
-                            </div>
-                            <div id="modalAtaqueBonusDano" class="ataque-modal-bonus">+ 0 (FOR)</div>
+                    <div class="dado-modal">
+                        <div class="dado-modal-cabecalho">
+                            <span class="dado-modal-titulo">Rolagem de dano</span>
                         </div>
-                        <div id="modalAtaqueTotalDano" class="ataque-modal-total">Total <strong>-</strong></div>
+                        <label for="modalAtaqueDano" class="oculto-acessivel">Dado de Dano</label>
+                        <div class="dado-modal-rolagem dado-modal-calculo">
+                            <div class="dado-modal-coluna">
+                                <div class="dado-modal-campo dado-modal-campo-com-dado dado-modal-grupo-dado">
+                                    <span class="dado-modal-campo-rotulo">Dado</span>
+                                    <div class="dado-modal-botao-coluna">
+                                        <button type="button" id="modalAtaqueRolarDano" class="botao-dado"
+                                            aria-label="Rolar dano" title="Rolar dano"><span
+                                                class="botao-dado-icone">🎲</span></button>
+                                        <div id="modalAtaqueResultadosDano" class="dado-modal-resultados dado-modal-nota">dano</div>
+                                    </div>
+                                    <input id="modalAtaqueDano" type="number" min="1" step="1" inputmode="numeric"
+                                        aria-label="Dado tirado no dano">
+                                </div>
+                            </div>
+                            <div class="dado-modal-bonus-bloco">
+                                <div id="modalAtaqueBonusDano" class="dado-modal-bonus">+0</div>
+                                <div id="modalAtaqueBonusDanoDetalhe" class="dado-modal-bonus-detalhe">(0✨)</div>
+                            </div>
+                            <div id="modalAtaqueTotalDano" class="dado-modal-total">Total:
+                                <strong>-</strong>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="ataque-modal-acoes">
@@ -5365,16 +5490,35 @@
 
             <div id="levelUpInfo" class="levelup-info"></div>
 
-            <div class="vida-input-area">
-                <label>Valor do dado</label>
-                <div class="vida-input-linha">
-                    <div class="vida-input-linha">
-                        <button id="btnRolarDado" type="button" class="botao-dado" aria-label="Rolar dado de vida"
-                            title="Rolar dado de vida"><span class="botao-dado-icone">🎲</span></button>
-                        <input type="text" id="inputVidaLevelUp">
-                        <span id="modConTexto"></span>
-                    </div> <span id="modConTexto"></span>
+            <div class="dado-modal">
+                <div class="dado-modal-cabecalho">
+                    <span class="dado-modal-titulo">Rolagem de Vida</span>
                 </div>
+                <label for="inputVidaLevelUp" class="oculto-acessivel">Valor do dado de vida</label>
+                <div class="dado-modal-rolagem dado-modal-calculo">
+                    <div class="dado-modal-coluna">
+                        <div class="dado-modal-campo dado-modal-campo-com-dado dado-modal-grupo-dado">
+                            <span class="dado-modal-campo-rotulo">Dado</span>
+                            <div class="dado-modal-botao-coluna">
+                                <button id="btnRolarDado" type="button" class="botao-dado"
+                                    aria-label="Rolar dado de vida" title="Rolar dado de vida"><span
+                                        class="botao-dado-icone">🎲</span></button>
+                                <div id="levelUpDadoDetalhe" class="dado-modal-nota">dado</div>
+                            </div>
+                            <input type="text" id="inputVidaLevelUp" inputmode="numeric">
+                        </div>
+                    </div>
+                    <div class="dado-modal-bonus-bloco">
+                        <div id="modConTexto" class="dado-modal-bonus">+0</div>
+                        <div id="levelUpBonusDetalhe" class="dado-modal-bonus-detalhe">(CON)</div>
+                    </div>
+                    <div id="levelUpTotalVida" class="dado-modal-total">Total: <strong>-</strong></div>
+                </div>
+            </div>
+
+            <div class="dado-modal-historico">
+                <span class="dado-modal-historico-rotulo">Historico:</span>
+                <span id="levelUpHistoricoVida" class="dado-modal-historico-lista">-</span>
             </div>
 
             <button id="btnConfirmarLevelUp">Confirmar</button>
@@ -5689,7 +5833,7 @@
                 <!-- linha com texto + botão -->
                 <div class="xp-info">
                     <span id="xpTexto">0/300 XP</span>
-                    <button id="btnAddXP" type="button" aria-label="Adicionar experiência">⬆️</button>
+                    <button id="btnAddXP" title="Adicionar XP" type="button" aria-label="Adicionar experiência">⬆️</button>
                 </div>
             </div>
 
@@ -5990,7 +6134,8 @@
                     </div>
 
                     <div class="caixa-salvaguarda">
-                        <!-- Espaço reservado para implementações futuras -->
+                        <div class="campo-titulo">Anotações</div>
+                        <textarea id="anotacoes" class="proficiencia-texto" aria-label="Anotações"></textarea>
                     </div>
 
                 </div>
@@ -8415,28 +8560,17 @@
                 const info = document.getElementById('levelUpInfo');
                 const input = document.getElementById('inputVidaLevelUp');
                 const btnDado = document.getElementById('btnRolarDado');
-
-                btnDado.onclick = () => {
-                    const max = obterMaxDadoVida(dadoVida);
-
-                    input.value = "🎲";
-                    btnDado.classList.add('rolando');
-
-                    setTimeout(() => {
-                        const rolagem = rolarDado(1, max);
-                        const resultado = rolagem.resultados[0] ?? '';
-
-                        btnDado.classList.remove('rolando');
-                        input.value = resultado;
-
-                        input.dispatchEvent(new Event('input')); // 🔥 revalida
-                    }, 3000);
-                };
                 const modTexto = document.getElementById('modConTexto');
+                const bonusDetalhe = document.getElementById('levelUpBonusDetalhe');
+                const dadoDetalhe = document.getElementById('levelUpDadoDetalhe');
+                const totalVida = document.getElementById('levelUpTotalVida');
+                const historicoVida = document.getElementById('levelUpHistoricoVida');
 
                 const modCon = calcularModCon();
                 const dadoBase = dadoVida; // ex: d10
                 const dadoQuantidade = `${nivelAtual}${dadoBase}`;
+                const max = obterMaxDadoVidaFromString(dadoVida);
+                const historicoRolagensVida = [];
 
 
                 frase.textContent = pegarFraseLevelUP();
@@ -8449,14 +8583,21 @@ Bônus de Proficiência: +${bonusProf}
 `;
 
                 modTexto.textContent = modCon >= 0 ? `+${modCon}` : modCon;
+                if (bonusDetalhe) bonusDetalhe.textContent = `(${modCon}❤️)`;
+                if (dadoDetalhe) dadoDetalhe.textContent = dadoVida || `d${max}`;
+                if (totalVida) totalVida.innerHTML = 'Total: <strong>-</strong>';
+                if (historicoVida) historicoVida.textContent = '-';
 
                 input.value = "";
+                if (input) {
+                    input.setAttribute('min', '1');
+                    input.setAttribute('max', String(max));
+                    input.setAttribute('step', '1');
+                }
 
                 modal.style.display = "flex";
 
                 const botao = document.getElementById('btnConfirmarLevelUp');
-
-                const max = obterMaxDadoVidaFromString(dadoVida);
 
 
                 function validarInput() {
@@ -8473,11 +8614,69 @@ Bônus de Proficiência: +${bonusProf}
                         input.classList.add('invalido');
                     }
 
+                    if (totalVida) {
+                        totalVida.innerHTML = valido
+                            ? `Total: <strong>${valor + modCon}</strong>`
+                            : 'Total: <strong>-</strong>';
+                    }
+
                     return valido;
                 }
 
+                function atualizarHistoricoVidaLevelUp() {
+                    if (!historicoVida) return;
+
+                    const historico = [...historicoRolagensVida].reverse();
+                    if (!historico.length) {
+                        historicoVida.textContent = '-';
+                        return;
+                    }
+
+                    const maior = Math.max(...historicoRolagensVida);
+                    const menor = Math.min(...historicoRolagensVida);
+
+                    historicoVida.innerHTML = historico.map(valor => {
+                        const ehMaior = valor === maior;
+                        const ehMenor = valor === menor;
+                        const sufixo = ehMaior ? '⇧' : ehMenor ? '⇩' : '';
+                        return criarBotaoHistoricoDado(valor, sufixo, ehMaior || ehMenor);
+                    }).join(', ');
+                }
+
+                btnDado.onclick = () => {
+                    if (!input || !btnDado) return;
+
+                    btnDado.classList.add('rolando');
+
+                    animarRolagemNoCampo(input, 1, max, 1000, 60).then(rolagem => {
+                        btnDado.classList.remove('rolando');
+                        const resultado = rolagem?.resultados?.[0];
+
+                        if (dadoDetalhe) {
+                            dadoDetalhe.textContent = Number.isInteger(resultado) ? `[${resultado}]` : (dadoVida || `d${max}`);
+                        }
+
+                        if (rolagem?.resultados?.length) {
+                            historicoRolagensVida.push(resultado);
+                            atualizarHistoricoVidaLevelUp();
+                            btnDado.title = `${dadoVida}: ${rolagem.resultados.join(', ')}`;
+                            btnDado.setAttribute('aria-label', `Rolar ${dadoVida}. Último resultado ${rolagem.resultados.join(', ')}`);
+                        }
+
+                        validarInput();
+                    });
+                };
+
                 // valida enquanto digita
-                input.addEventListener('input', validarInput);
+                input.oninput = validarInput;
+                if (historicoVida) {
+                    historicoVida.onclick = evento => {
+                        const botaoHistorico = evento.target.closest('[data-valor-rolagem]');
+                        if (!botaoHistorico) return;
+
+                        aplicarHistoricoDadoNoInput('inputVidaLevelUp', botaoHistorico.dataset.valorRolagem);
+                    };
+                }
 
                 // inicia bloqueado
                 botao.disabled = true;
@@ -13288,7 +13487,7 @@ Bônus de Proficiência: +${bonusProf}
 
         function obterIconeAtributoAtaque(rotuloAtributo) {
             if (rotuloAtributo === 'FOR') return '💪';
-            if (rotuloAtributo === 'DES') return '🎯';
+            if (rotuloAtributo === 'DES') return '🏹';
             if (rotuloAtributo === 'CON') return '❤️';
             if (rotuloAtributo === 'INT') return '🧠';
             if (rotuloAtributo === 'SAB') return '👁️';
@@ -13308,6 +13507,68 @@ Bônus de Proficiência: +${bonusProf}
             return mapa[rotuloAtributo] || 'Modificador de atributo';
         }
 
+        function formatarBonusAtaqueModal(valor) {
+            const numero = parseInt(valor, 10) || 0;
+            return (numero >= 0 ? '+' : '') + numero;
+        }
+
+        function atualizarDetalheDadoAtaqueModal() {
+            const campoDetalhe = document.getElementById('modalAtaqueDadoDetalhe');
+            if (!campoDetalhe) return;
+
+            const historico = Array.isArray(estadoAtaqueArma.historicoRolagens)
+                ? estadoAtaqueArma.historicoRolagens
+                : [];
+            const ultimo = historico[historico.length - 1];
+            campoDetalhe.textContent = Number.isInteger(ultimo) ? `[${ultimo}]` : '1d20';
+        }
+
+        function atualizarDetalheBonusAtaqueModal() {
+            const campoBonus = document.getElementById('modalAtaqueBonus');
+            const campoDetalhe = document.getElementById('modalAtaqueBonusDetalhe');
+            if (!campoBonus || !campoDetalhe) return;
+
+            const modBase = estadoAtaqueArma.modBase || 0;
+            const bonusProf = estadoAtaqueArma.bonusProf || 0;
+            const iconeAtributo = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
+
+            campoBonus.textContent = formatarBonusAtaqueModal(modBase + bonusProf);
+            campoDetalhe.textContent = `(${modBase}${iconeAtributo} + ${bonusProf}🅿️)`;
+        }
+
+        function atualizarDetalheDadoDanoModal() {
+            const campoDetalhe = document.getElementById('modalAtaqueResultadosDano');
+            if (!campoDetalhe) return;
+
+            const resultados = estadoAtaqueArma.ultimaRolagemDano;
+            if (Array.isArray(resultados) && resultados.length) {
+                campoDetalhe.textContent = '[' + resultados.join(', ') + ']';
+                return;
+            }
+
+            campoDetalhe.textContent = estadoAtaqueArma.danoFormula || 'dano';
+        }
+
+        function obterBonusDanoEfetivoModalAtaque() {
+            return estadoAtaqueArma.tipoAcao === 'Ação bônus'
+                ? 0
+                : (estadoAtaqueArma.danoModBase || 0);
+        }
+
+        function atualizarDetalheBonusDanoModal() {
+            const campoBonus = document.getElementById('modalAtaqueBonusDano');
+            const campoDetalhe = document.getElementById('modalAtaqueBonusDanoDetalhe');
+            if (!campoBonus || !campoDetalhe) return;
+
+            const modBase = obterBonusDanoEfetivoModalAtaque();
+            const iconeAtributo = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
+
+            campoBonus.textContent = formatarBonusAtaqueModal(modBase);
+            campoDetalhe.textContent = estadoAtaqueArma.tipoAcao === 'Ação bônus'
+                ? '(sem MOD)'
+                : `(${modBase}${iconeAtributo})`;
+        }
+
         function parsearFormulaDano(formula) {
             if (!formula || typeof formula !== 'string') return { qtd: 1, faces: 0 };
             const match = formula.trim().match(/(\d+)d(\d+)/i);
@@ -13315,10 +13576,16 @@ Bônus de Proficiência: +${bonusProf}
             return { qtd: parseInt(match[1], 10), faces: parseInt(match[2], 10) };
         }
 
+        function extrairFormulaDadoDano(formula) {
+            if (!formula || typeof formula !== 'string') return "";
+            const match = formula.trim().match(/\d+d\d+/i);
+            return match ? match[0] : formula.trim();
+        }
+
         function obterFormulaDanoAtual(arma) {
             if (!arma) return "";
             const formula = arma.danoFormula || arma.dano || arma.arma_dano || "";
-            if (typeof formula === 'string') return formula.trim();
+            if (typeof formula === 'string') return extrairFormulaDadoDano(formula);
             return "";
         }
 
@@ -13384,12 +13651,21 @@ Bônus de Proficiência: +${bonusProf}
 
             const dado = parseInt(campoDado.value, 10);
             if (!Number.isInteger(dado) || dado < 1 || dado > 20) {
-                campoTotal.innerHTML = 'Total <strong>-</strong>';
+                campoTotal.innerHTML = 'Total: <strong>-</strong>';
                 return;
             }
 
             const total = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
-            campoTotal.innerHTML = `Total <strong>${total}</strong>`;
+            campoTotal.innerHTML = `Total: <strong>${total}</strong>`;
+        }
+
+        function criarBotaoHistoricoDado(valor, sufixo = '', destaque = false) {
+            const numero = parseInt(valor, 10);
+            if (!Number.isInteger(numero)) return '';
+
+            const texto = `${numero}${sufixo}`;
+            const classeDestaque = destaque ? ' destaque' : '';
+            return `<button type="button" class="dado-modal-historico-rolagem${classeDestaque}" data-valor-rolagem="${numero}" title="Usar ${numero} no dado">${texto}</button>`;
         }
 
         function atualizarHistoricoRolagensModalAtaque() {
@@ -13413,8 +13689,7 @@ Bônus de Proficiência: +${bonusProf}
                 const ehMaior = valor === maior;
                 const ehMenor = valor === menor;
                 const sufixo = ehMaior ? '⇧' : ehMenor ? '⇩' : '';
-                const texto = `${valor}${sufixo}`;
-                return (ehMaior || ehMenor) ? `<strong>${texto}</strong>` : texto;
+                return criarBotaoHistoricoDado(valor, sufixo, ehMaior || ehMenor);
             }).join(', ');
         }
 
@@ -13425,12 +13700,12 @@ Bônus de Proficiência: +${bonusProf}
 
             const danoRolado = parseInt(campoDano.value, 10);
             if (!Number.isInteger(danoRolado) || danoRolado < 0) {
-                campoTotal.innerHTML = 'Total <strong>-</strong>';
+                campoTotal.innerHTML = 'Total: <strong>-</strong>';
                 return;
             }
 
-            const total = danoRolado + (estadoAtaqueArma.danoModBase || 0);
-            campoTotal.innerHTML = 'Total <strong>' + total + '</strong>';
+            const total = danoRolado + obterBonusDanoEfetivoModalAtaque();
+            campoTotal.innerHTML = 'Total: <strong>' + total + '</strong>';
         }
 
         function atualizarHistoricoRolagensModalDano() {
@@ -13454,8 +13729,7 @@ Bônus de Proficiência: +${bonusProf}
                 const ehMaior = valor === maior;
                 const ehMenor = valor === menor;
                 const sufixo = ehMaior ? '⇧' : ehMenor ? '⇩' : '';
-                const texto = valor + sufixo;
-                return (ehMaior || ehMenor) ? '<strong>' + texto + '</strong>' : texto;
+                return criarBotaoHistoricoDado(valor, sufixo, ehMaior || ehMenor);
             }).join(', ');
         }
 
@@ -13477,6 +13751,7 @@ Bônus de Proficiência: +${bonusProf}
             const resultados = estadoAtaqueArma.ultimaRolagemDano;
             if (!Array.isArray(resultados) || !resultados.length) {
                 campoResultados.textContent = '';
+                atualizarDetalheDadoDanoModal();
                 return;
             }
 
@@ -13489,6 +13764,7 @@ Bônus de Proficiência: +${bonusProf}
             estadoAtaqueArma.historicoRolagens = Array.isArray(estadoAtaqueArma.historicoRolagens)
                 ? [...estadoAtaqueArma.historicoRolagens, valor]
                 : [valor];
+            atualizarDetalheDadoAtaqueModal();
             atualizarHistoricoRolagensModalAtaque();
         }
 
@@ -13527,11 +13803,25 @@ Bônus de Proficiência: +${bonusProf}
 
             if (!encontrou && checkboxes[0]) checkboxes[0].checked = true;
             estadoAtaqueArma.tipoAcao = obterTipoAcaoSelecionadoModalAtaque();
+            atualizarDetalheBonusDanoModal();
+            atualizarTotalModalDano();
         }
 
         function obterTipoAcaoSelecionadoModalAtaque() {
             const selecionado = document.querySelector('#modalAtaqueEtapaDado input[data-tipo-acao]:checked');
             return selecionado?.dataset.tipoAcao || 'Ação';
+        }
+
+        function aplicarHistoricoDadoNoInput(inputId, valor) {
+            const campo = document.getElementById(inputId);
+            const numero = parseInt(valor, 10);
+            if (!campo || !Number.isInteger(numero)) return;
+
+            campo.value = numero;
+            campo.dispatchEvent(new Event('input'));
+            campo.dispatchEvent(new Event('change'));
+            campo.focus();
+            campo.select?.();
         }
 
         function alternarEtapaModalAtaque(exibirDano) {
@@ -13575,8 +13865,12 @@ Bônus de Proficiência: +${bonusProf}
             alternarEtapaModalAtaque(false);
             marcarTipoAcaoModalAtaque('Ação');
             atualizarTotalModalAtaque();
+            atualizarDetalheDadoAtaqueModal();
+            atualizarDetalheBonusAtaqueModal();
             atualizarHistoricoRolagensModalAtaque();
             atualizarTotalModalDano();
+            atualizarDetalheDadoDanoModal();
+            atualizarDetalheBonusDanoModal();
             atualizarHistoricoRolagensModalDano();
 
             if (overlay) {
@@ -13614,10 +13908,11 @@ Bônus de Proficiência: +${bonusProf}
             estadoAtaqueArma.danoModBase = modBase || 0;
             estadoAtaqueArma.tipoAcao = 'Ação';
             estadoAtaqueArma.historicoRolagens = [];
+            estadoAtaqueArma.historicoRolagensDano = [];
+            estadoAtaqueArma.ultimaRolagemDano = null;
 
             titulo.innerHTML = `Ataque com <span class="ataque-modal-titulo-arma">${arma?.nome || 'arma'}</span>`;
             subtitulo.textContent = obterSubtituloModalAtaque(arma);
-            bonus.textContent = textoResumo;
             resumo.textContent = '';
             campoDado.value = '';
             campoDano.value = '';
@@ -13625,8 +13920,14 @@ Bônus de Proficiência: +${bonusProf}
             atualizarRodadaModalAtaque();
             marcarTipoAcaoModalAtaque('Ação');
             alternarEtapaModalAtaque(false);
+            atualizarDetalheBonusAtaqueModal();
+            atualizarDetalheDadoAtaqueModal();
+            atualizarDetalheBonusDanoModal();
+            atualizarDetalheDadoDanoModal();
             atualizarEstadoCriticoModalAtaque();
+            atualizarTotalModalDano();
             atualizarHistoricoRolagensModalAtaque();
+            atualizarHistoricoRolagensModalDano();
             overlay.classList.add('ativo');
             overlay.classList.remove('oculto');
             overlay.setAttribute('aria-hidden', 'false');
@@ -13659,15 +13960,14 @@ Bônus de Proficiência: +${bonusProf}
             const totalAtaque = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
             const iconeAtributo = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
             const tooltipAtributo = obterTooltipAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
-            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}"><span class="calc-item" title="Valor do dado"><span class="numero">${dado}</span><span class="emoji">🎲</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="${tooltipAtributo}"><span class="numero">${estadoAtaqueArma.modBase || 0}</span><span class="emoji">${iconeAtributo}</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="Bônus de Proficiência"><span class="numero">${estadoAtaqueArma.bonusProf || 0}</span><span class="emoji">🅿️</span></span></span>)`;
             const iconeDano = obterIconeAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
             const tooltipDano = obterTooltipAtributoAtaque(estadoAtaqueArma.rotuloAtributo);
             const formulaDanoTexto = estadoAtaqueArma.danoFormula || "?";
-            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}">🎲 ${dado}</span> + <span class="ataque-modal-resumo-destaque">${iconeAtributo} ${estadoAtaqueArma.modBase || 0}</span> + <span class="ataque-modal-resumo-destaque">🅿️ ${estadoAtaqueArma.bonusProf || 0}</span>)<br>Dano da arma: <span class="ataque-modal-resumo-destaque">${formulaDanoTexto} + ${iconeDano} ${estadoAtaqueArma.danoModBase || 0}</span>`;
-            const bonusDanoElement = document.getElementById('modalAtaqueBonusDano');
-            if (bonusDanoElement) {
-                bonusDanoElement.textContent = `+ ${estadoAtaqueArma.danoModBase || 0} (${iconeDano})`;
-            }
+            const bonusDanoEfetivo = obterBonusDanoEfetivoModalAtaque();
+            const detalheDano = estadoAtaqueArma.tipoAcao === 'Ação bônus'
+                ? 'sem modificador em ação bônus'
+                : tooltipDano;
+            resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? ' ataque-modal-resumo-dado-critico' : ''}"><span class="calc-item" title="Valor do dado"><span class="numero">${dado}</span><span class="emoji">🎲</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="${tooltipAtributo}"><span class="numero">${estadoAtaqueArma.modBase || 0}</span><span class="emoji">${iconeAtributo}</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="Bônus de Proficiência"><span class="numero">${estadoAtaqueArma.bonusProf || 0}</span><span class="emoji">🅿️</span></span></span>)<br>Dano da arma: <span class="ataque-modal-resumo-destaque">${formulaDanoTexto} + <span class="calc-item" title="${detalheDano}"><span class="numero">${bonusDanoEfetivo}</span><span class="emoji">${bonusDanoEfetivo === 0 && estadoAtaqueArma.tipoAcao === 'Ação bônus' ? '' : iconeDano}</span></span></span>`;
             const botaoRolarDano = document.getElementById('modalAtaqueRolarDano');
             if (botaoRolarDano) {
                 const formulaBtn = estadoAtaqueArma.danoFaces > 0
@@ -13681,6 +13981,8 @@ Bônus de Proficiência: +${bonusProf}
             if (campoResultadosDano && estadoAtaqueArma.danoFaces > 0) {
                 campoResultadosDano.textContent = estadoAtaqueArma.danoQtd + 'd' + estadoAtaqueArma.danoFaces;
             }
+            atualizarDetalheBonusDanoModal();
+            atualizarDetalheDadoDanoModal();
             atualizarTotalModalDano();
 
             atualizarHistoricoRolagensModalDano();
@@ -13886,7 +14188,7 @@ Bônus de Proficiência: +${bonusProf}
                 return;
             }
 
-            const danoTotal = danoRolado + (estadoAtaqueArma.danoModBase || 0);
+            const danoTotal = danoRolado + obterBonusDanoEfetivoModalAtaque();
             registrarHistoricoAtaqueArma(true, danoTotal);
             fecharModalAtaqueArma();
         }
@@ -14429,22 +14731,29 @@ Bônus de Proficiência: +${bonusProf}
             atualizarEstadoCriticoModalAtaque();
         });
 
+        document.getElementById('modalAtaqueHistoricoLista')?.addEventListener('click', evento => {
+            const botaoHistorico = evento.target.closest('[data-valor-rolagem]');
+            if (!botaoHistorico) return;
+
+            aplicarHistoricoDadoNoInput('modalAtaqueDado', botaoHistorico.dataset.valorRolagem);
+        });
+
         document.getElementById('modalAtaqueRolarDado')?.addEventListener('click', () => {
             const campoDado = document.getElementById('modalAtaqueDado');
             const botao = document.getElementById('modalAtaqueRolarDado');
             if (!campoDado || !botao) return;
 
             botao.classList.add('rolando');
-            const rolagem = preencherCampoComRolagem(campoDado, 1, 20);
-            registrarRolagemModalAtaque(rolagem);
 
-            setTimeout(() => {
+            animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then(rolagem => {
                 botao.classList.remove('rolando');
+                registrarRolagemModalAtaque(rolagem);
+                atualizarEstadoCriticoModalAtaque();
                 if (rolagem?.resultados?.length) {
                     botao.title = `1d20: ${rolagem.resultados.join(', ')}`;
                     botao.setAttribute('aria-label', `Rolar 1d20. Último resultado ${rolagem.resultados.join(', ')}`);
                 }
-            }, 250);
+            });
         });
 
         document.getElementById('modalAtaqueDano')?.addEventListener('keydown', evento => {
@@ -14478,6 +14787,13 @@ Bônus de Proficiência: +${bonusProf}
 
         document.getElementById('modalAtaqueDano')?.addEventListener('change', () => {
             atualizarTotalModalDano();
+        });
+
+        document.getElementById('modalAtaqueHistoricoDano')?.addEventListener('click', evento => {
+            const botaoHistorico = evento.target.closest('[data-valor-rolagem]');
+            if (!botaoHistorico) return;
+
+            aplicarHistoricoDadoNoInput('modalAtaqueDano', botaoHistorico.dataset.valorRolagem);
         });
 
         document.querySelectorAll('#modalAtaqueEtapaDado input[data-tipo-acao]').forEach(checkbox => {
