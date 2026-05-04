@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
@@ -1994,13 +1994,30 @@
             grid-column: 1 / -1;
         }
 
-        .ataque-topo {
-            display: grid;
-            grid-template-columns: 90px 1fr;
-            gap: 16px;
-            align-items: center;
-            margin-top: 12px;
-        }
+.ataque-topo {
+    display: grid;
+    grid-template-rows: auto auto auto;
+    gap: 12px;
+}
+
+.linha-status {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 8px;
+}
+
+.linha-pv-alinhada {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 12px;
+    align-items: center;
+}
+
+.linha-acoes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
 
         .ataque-mini-escudo {
             position: relative;
@@ -6632,75 +6649,91 @@
                         <div class="combate-card">
                             <div class="status-titulo">Ataques e Conjuração</div>
                             <div class="ataque-topo">
-                                <div class="ataque-mini-escudo">
-                                    <div class="shield">
-                                        <input id="ataqueCaTotal" value="0" readonly
-                                            aria-label="Classe de armadura no painel de ataque">
-                                    </div>
-                                    <div class="bonus-escudo" aria-hidden="true">
-                                        <span id="ataqueCaEscudoEmoji" class="bonus-escudo-emoji"
-                                            title="Escudo equipado no painel de ataque">🛡️</span>
-                                        <input id="ataqueCaEscudo" type="hidden" aria-hidden="true">
-                                    </div>
-                                </div>
 
-                                <div class="ataque-pv-bloco">
-                                    <div class="ataque-status-linha">
-                                        <div class="ataque-status-caixa posicao">
-                                            <label for="ataquePosicao">Pos.:</label>
-                                            <div class="ataque-status-input-group">
-                                                <input id="ataquePosicao" type="number" min="0" step="1" value="0"
-                                                    aria-label="Posição na iniciativa">
-                                                <span class="ataque-status-sufixo">º</span>
-                                            </div>
-                                        </div>
-                                        <div class="ataque-status-caixa">
-                                            <label for="ataqueCondicao">Condição:</label>
-                                            <input id="ataqueCondicao" value="Normal" aria-label="Condição de combate">
-                                        </div>
-                                        <div class="ataque-status-caixa">
-                                            <label for="combateRodada">Rodada:</label>
-                                            <input id="combateRodada" type="number" min="1" step="1" value="1"
-                                                aria-label="Rodada do combate">
-                                        </div>
-                                    </div>
+    <!-- LINHA 1 -->
+    <div class="linha-status ataque-status-linha">
 
-                                    <div class="ataque-pv-valor" id="ataquePvAtual">PV 0</div>
-                                    <div class="ataque-contra-morte oculto" id="ataqueContraMorte">
-                                        <div class="contra-morte-titulo">Salvaguarda Contra Morte</div>
-                                        <div class="contra-morte-row">
-                                            <div class="contra-morte-group">
-                                                <div class="contra-morte-label">Sucessos</div>
-                                                <div class="contra-morte-dots">
-                                                    <span class="contra-morte-dot" id="sucesso1"></span>
-                                                    <span class="contra-morte-dot" id="sucesso2"></span>
-                                                    <span class="contra-morte-dot" id="sucesso3"></span>
-                                                </div>
-                                            </div>
-                                            <div class="contra-morte-caveira">☠️</div>
-                                            <div class="contra-morte-group">
-                                                <div class="contra-morte-label">Fracassos</div>
-                                                <div class="contra-morte-dots">
-                                                    <span class="contra-morte-dot" id="fracasso1"></span>
-                                                    <span class="contra-morte-dot" id="fracasso2"></span>
-                                                    <span class="contra-morte-dot" id="fracasso3"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="contra-morte-botoes">
-                                            <button type="button" class="ataque-botao" onclick="adicionarSucesso()">+
-                                                Sucesso</button>
-                                            <button type="button" class="ataque-botao" onclick="adicionarFracasso()">+
-                                                Fracasso</button>
-                                        </div>
-                                    </div>
-                                    <div class="ataque-acoes">
-                                        <button type="button" class="ataque-botao" onclick="aplicarDanoNoPV()">Tomar
-                                            Dano</button>
-                                        <button type="button" class="ataque-botao" onclick="curarPV()">Curar</button>
-                                    </div>
-                                </div>
-                            </div>
+    <!-- POSIÇÃO -->
+    <div class="ataque-status-caixa posicao">
+        <label for="ataquePosicao">Pos.:</label>
+        <div class="ataque-status-input-group">
+            <input id="ataquePosicao" type="number" min="0" step="1" value="0"
+                aria-label="Posição na iniciativa">
+            <span class="ataque-status-sufixo">º</span>
+        </div>
+    </div>
+
+    <!-- RODADA -->
+    <div class="ataque-status-caixa">
+        <label for="combateRodada">Rodada:</label>
+        <input id="combateRodada" type="number" min="1" step="1" value="1"
+            aria-label="Rodada do combate">
+    </div>
+
+    <!-- CONDIÇÃO -->
+    <div class="ataque-status-caixa">
+        <label for="ataqueCondicao">Condição:</label>
+        <input id="ataqueCondicao" value="Normal"
+            aria-label="Condição de combate">
+    </div>
+
+</div>
+
+    <!-- LINHA 2 -->
+    <div class="linha-pv-alinhada">
+
+        <div class="ataque-mini-escudo">
+            <div class="shield">
+                <input id="ataqueCaTotal" value="0" readonly
+                    aria-label="Classe de armadura no painel de ataque">
+            </div>
+            <div class="bonus-escudo" aria-hidden="true">
+                <span id="ataqueCaEscudoEmoji" class="bonus-escudo-emoji"
+                    title="Escudo equipado no painel de ataque">🛡️</span>
+                <input id="ataqueCaEscudo" type="hidden" aria-hidden="true">
+            </div>
+        </div>
+
+        <div class="ataque-pv-bloco">
+            <div class="ataque-pv-valor" id="ataquePvAtual">PV 0</div>
+
+            <div class="ataque-contra-morte oculto" id="ataqueContraMorte">
+                <div class="contra-morte-titulo">Salvaguarda Contra Morte</div>
+                <div class="contra-morte-row">
+                    <div class="contra-morte-group">
+                        <div class="contra-morte-label">Sucessos</div>
+                        <div class="contra-morte-dots">
+                            <span class="contra-morte-dot" id="sucesso1"></span>
+                            <span class="contra-morte-dot" id="sucesso2"></span>
+                            <span class="contra-morte-dot" id="sucesso3"></span>
+                        </div>
+                    </div>
+                    <div class="contra-morte-caveira">☠️</div>
+                    <div class="contra-morte-group">
+                        <div class="contra-morte-label">Fracassos</div>
+                        <div class="contra-morte-dots">
+                            <span class="contra-morte-dot" id="fracasso1"></span>
+                            <span class="contra-morte-dot" id="fracasso2"></span>
+                            <span class="contra-morte-dot" id="fracasso3"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="contra-morte-botoes">
+                    <button type="button" class="ataque-botao" onclick="adicionarSucesso()">+ Sucesso</button>
+                    <button type="button" class="ataque-botao" onclick="adicionarFracasso()">+ Fracasso</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LINHA 3 -->
+    <div class="linha-acoes ataque-acoes">
+        <button type="button" class="ataque-botao" onclick="aplicarDanoNoPV()">Tomar Dano</button>
+        <button type="button" class="ataque-botao" onclick="curarPV()">Curar</button>
+    </div>
+
+</div>
 
                             <div class="subabas-combate">
                                 <div class="subabas-botoes">
