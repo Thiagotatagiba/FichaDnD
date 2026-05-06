@@ -2203,9 +2203,21 @@
         }
 
         .ataque-acoes {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            display: flex;
+            align-items: stretch;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .ataque-acoes .ataque-botao {
+            min-width: 104px;
+            line-height: 1.15;
+            white-space: normal;
+        }
+
+        .ataque-botao-resistencia {
+            margin-right: 12px;
         }
 
         .ataque-botao {
@@ -3789,6 +3801,76 @@
             accent-color: #8b4513;
         }
 
+        .teste-resistencia-atributos {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(48px, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .teste-resistencia-atributo {
+            display: grid;
+            gap: 4px;
+            justify-items: center;
+            border: 2px solid #bda68c;
+            border-radius: 8px;
+            background: #fffaf2;
+            color: #5f2d0c;
+            font-family: 'MedievalSharp';
+            font-weight: bold;
+            padding: 8px 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .teste-resistencia-atributo:hover,
+        .teste-resistencia-atributo:focus-visible {
+            border-color: #8b4513;
+            background: #f3e3c5;
+            outline: none;
+        }
+
+        .teste-resistencia-atributo.ativo {
+            border-color: #5f2d0c;
+            background: #d8f0d8;
+            box-shadow: 0 0 0 3px rgba(74, 122, 74, 0.18);
+        }
+
+        .teste-resistencia-rotulo {
+            font-size: 13px;
+        }
+
+        .teste-resistencia-modificador {
+            font-family: 'Metamorphous', serif;
+            font-size: 12px;
+            color: #6f3610;
+        }
+
+        #modalTesteResistenciaDadoContainer [data-dice-roll] {
+            font-size: 0;
+        }
+
+        #modalTesteResistenciaDadoContainer [data-dice-roll]::before {
+            content: "🎲";
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        #modalTesteResistenciaDadoContainer [data-dice-value] {
+            width: 84px;
+            min-width: 84px;
+            text-align: center;
+            padding-top: 16px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+
+        .teste-resistencia-acoes {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
         .ataque-modal-acoes {
             display: flex;
             flex-wrap: wrap;
@@ -3826,6 +3908,10 @@
 
             .dado-modal-nota {
                 text-align: center;
+            }
+
+            .teste-resistencia-atributos {
+                grid-template-columns: repeat(3, minmax(56px, 1fr));
             }
         }
 
@@ -5496,6 +5582,50 @@
         </div>
     </div>
 
+    <div id="modalTesteResistenciaOverlay" class="ataque-modal-overlay modal-overlay-base oculto" aria-hidden="true">
+        <div class="ataque-modal modal-base" role="dialog" aria-modal="true" aria-labelledby="modalTesteResistenciaTitulo">
+            <div class="ataque-modal-topo">
+                <div class="ataque-modal-rodada">Teste</div>
+            </div>
+            <div class="ataque-modal-corpo">
+                <div id="modalTesteResistenciaTitulo" class="ataque-modal-titulo">Teste de Resistência</div>
+                <div class="teste-resistencia-atributos" role="group" aria-label="Atributo do teste de resistência">
+                    <button type="button" class="teste-resistencia-atributo" data-atributo-teste="for">
+                        <span class="teste-resistencia-rotulo">FOR</span>
+                        <span class="teste-resistencia-modificador" data-modificador-teste="for">(+0)</span>
+                    </button>
+                    <button type="button" class="teste-resistencia-atributo" data-atributo-teste="des">
+                        <span class="teste-resistencia-rotulo">DES</span>
+                        <span class="teste-resistencia-modificador" data-modificador-teste="des">(+0)</span>
+                    </button>
+                    <button type="button" class="teste-resistencia-atributo" data-atributo-teste="con">
+                        <span class="teste-resistencia-rotulo">CON</span>
+                        <span class="teste-resistencia-modificador" data-modificador-teste="con">(+0)</span>
+                    </button>
+                    <button type="button" class="teste-resistencia-atributo" data-atributo-teste="int">
+                        <span class="teste-resistencia-rotulo">INT</span>
+                        <span class="teste-resistencia-modificador" data-modificador-teste="int">(+0)</span>
+                    </button>
+                    <button type="button" class="teste-resistencia-atributo" data-atributo-teste="sab">
+                        <span class="teste-resistencia-rotulo">SAB</span>
+                        <span class="teste-resistencia-modificador" data-modificador-teste="sab">(+0)</span>
+                    </button>
+                    <button type="button" class="teste-resistencia-atributo" data-atributo-teste="car">
+                        <span class="teste-resistencia-rotulo">CAR</span>
+                        <span class="teste-resistencia-modificador" data-modificador-teste="car">(+0)</span>
+                    </button>
+                </div>
+
+                <div id="modalTesteResistenciaDadoContainer"></div>
+
+                <div class="ataque-modal-acoes teste-resistencia-acoes">
+                    <button type="button" class="ataque-botao" id="modalTesteResistenciaConfirmar">Confirmar</button>
+                    <button type="button" class="ataque-botao" id="modalTesteResistenciaCancelar">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="levelUpModal" class="levelup-overlay modal-overlay-base">
         <div class="levelup-box modal-base">
             <h2 id="levelUpTitulo">🎉 LEVEL UP!</h2>
@@ -5624,6 +5754,8 @@
         </div>
     </div>
 
+    <script src="../js/dice-core.js"></script>
+    <script src="../js/dice-system.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const classeSelect = document.getElementById('classeNomeID');
@@ -6729,8 +6861,9 @@
 
     <!-- LINHA 3 -->
     <div class="linha-acoes ataque-acoes">
-        <button type="button" class="ataque-botao" onclick="aplicarDanoNoPV()">Tomar Dano</button>
-        <button type="button" class="ataque-botao" onclick="curarPV()">Curar</button>
+        <button type="button" class="ataque-botao ataque-botao-resistencia" id="abrirTesteResistenciaBtn">Teste de<br>Resistência</button>
+        <button type="button" class="ataque-botao" onclick="aplicarDanoNoPV()">Tomar<br>Dano</button>
+        <button type="button" class="ataque-botao" onclick="curarPV()">Curar<br>Dano</button>
     </div>
 
 </div>
@@ -13445,6 +13578,158 @@ campoClasseMagia.value = textoClasse;
             ultimaRolagemDano: null
         };
 
+        const ATRIBUTOS_TESTE_RESISTENCIA = ['for', 'des', 'con', 'int', 'sab', 'car'];
+        const estadoTesteResistencia = {
+            atributo: 'for',
+            dadoSistema: null
+        };
+
+        function obterBonusTesteResistencia(chaveAtributo) {
+            const chave = String(chaveAtributo || '').toLowerCase();
+            const campoSalvaguarda = document.getElementById('salv_' + chave);
+            const bonusSalvaguarda = parseInt(String(campoSalvaguarda?.value || '').replace(/\+/g, ''), 10);
+            if (Number.isInteger(bonusSalvaguarda)) return bonusSalvaguarda;
+
+            return getModificadorBaseAtributo(chave) || 0;
+        }
+
+        function obterRotuloAtributoTesteResistencia(chaveAtributo) {
+            return String(chaveAtributo || '').toUpperCase();
+        }
+
+        function garantirSistemaDadoTesteResistencia() {
+            if (estadoTesteResistencia.dadoSistema) return estadoTesteResistencia.dadoSistema;
+
+            const container = document.getElementById('modalTesteResistenciaDadoContainer');
+            if (!container || typeof criarSistemaDado !== 'function') return null;
+
+            estadoTesteResistencia.dadoSistema = criarSistemaDado(container, {
+                titulo: 'Rolagem D20',
+                nota: '1d20',
+                quantidade: 1,
+                faces: 20,
+                bonus: 0,
+                rotuloDado: 'Dado',
+                rotuloBonus: '(FOR)',
+                textoBotao: 'Rolar',
+                onChange: atualizarBotaoConfirmarTesteResistencia
+            });
+
+            const campoDado = container.querySelector('[data-dice-value]');
+            if (campoDado) {
+                campoDado.id = 'modalTesteResistenciaDado';
+                campoDado.min = '1';
+                campoDado.max = '20';
+                campoDado.inputMode = 'numeric';
+                campoDado.setAttribute('aria-label', 'Dado tirado no teste de resistência');
+            }
+
+            return estadoTesteResistencia.dadoSistema;
+        }
+
+        function atualizarAtributosTesteResistencia() {
+            ATRIBUTOS_TESTE_RESISTENCIA.forEach(chave => {
+                const bonus = obterBonusTesteResistencia(chave);
+                const campoModificador = document.querySelector(`[data-modificador-teste="${chave}"]`);
+                if (campoModificador) campoModificador.textContent = `(${formatarBonusAtaqueModal(bonus)})`;
+            });
+
+            selecionarAtributoTesteResistencia(estadoTesteResistencia.atributo || 'for');
+        }
+
+        function selecionarAtributoTesteResistencia(chaveAtributo) {
+            const chave = ATRIBUTOS_TESTE_RESISTENCIA.includes(chaveAtributo) ? chaveAtributo : 'for';
+            estadoTesteResistencia.atributo = chave;
+
+            document.querySelectorAll('[data-atributo-teste]').forEach(botao => {
+                const ativo = botao.dataset.atributoTeste === chave;
+                botao.classList.toggle('ativo', ativo);
+                botao.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+            });
+
+            const bonus = obterBonusTesteResistencia(chave);
+            const sistema = garantirSistemaDadoTesteResistencia();
+            sistema?.setBonus(bonus);
+
+            const detalheBonus = document.querySelector('#modalTesteResistenciaDadoContainer .dado-modal-bonus-detalhe');
+            if (detalheBonus) detalheBonus.textContent = `(${obterRotuloAtributoTesteResistencia(chave)})`;
+
+            atualizarBotaoConfirmarTesteResistencia();
+        }
+
+        function obterDadoTesteResistencia() {
+            const sistema = estadoTesteResistencia.dadoSistema;
+            const dado = sistema?.getValor();
+            return Number.isInteger(dado) && dado >= 1 && dado <= 20 ? dado : null;
+        }
+
+        function obterTotalTesteResistencia() {
+            const dado = obterDadoTesteResistencia();
+            if (dado === null) return null;
+            return dado + obterBonusTesteResistencia(estadoTesteResistencia.atributo);
+        }
+
+        function atualizarBotaoConfirmarTesteResistencia() {
+            const botao = document.getElementById('modalTesteResistenciaConfirmar');
+            if (!botao) return;
+
+            const total = obterTotalTesteResistencia();
+            botao.textContent = Number.isInteger(total) ? `Confirmar (${total})` : 'Confirmar';
+
+            const campoTotal = document.querySelector('#modalTesteResistenciaDadoContainer [data-dice-total]');
+            if (campoTotal) {
+                campoTotal.innerHTML = `Total: <strong>${Number.isInteger(total) ? total : '-'}</strong>`;
+            }
+        }
+
+        function abrirModalTesteResistencia() {
+            const overlay = document.getElementById('modalTesteResistenciaOverlay');
+            const sistema = garantirSistemaDadoTesteResistencia();
+            if (!overlay || !sistema) return;
+
+            atualizarAtributosTesteResistencia();
+            sistema.setValor('');
+            atualizarBotaoConfirmarTesteResistencia();
+
+            overlay.classList.remove('oculto');
+            overlay.classList.add('ativo');
+            overlay.setAttribute('aria-hidden', 'false');
+
+            document.getElementById('modalTesteResistenciaDado')?.focus();
+        }
+
+        function fecharModalTesteResistencia() {
+            const overlay = document.getElementById('modalTesteResistenciaOverlay');
+            if (!overlay) return;
+
+            overlay.classList.remove('ativo');
+            overlay.classList.add('oculto');
+            overlay.setAttribute('aria-hidden', 'true');
+        }
+
+        function confirmarTesteResistencia() {
+            const dado = obterDadoTesteResistencia();
+            const campoDado = document.getElementById('modalTesteResistenciaDado');
+            if (dado === null) {
+                campoDado?.focus();
+                return;
+            }
+
+            const atributo = obterRotuloAtributoTesteResistencia(estadoTesteResistencia.atributo);
+            const bonus = obterBonusTesteResistencia(estadoTesteResistencia.atributo);
+            const total = dado + bonus;
+            const sinal = bonus >= 0 ? '+' : '-';
+            const valor = `${dado} ${sinal} ${Math.abs(bonus)} = ${total}`;
+
+            adicionarRegistroHistoricoCombate(
+                'Teste de Resistência',
+                `(${atributo}): ${valor}`,
+                obterIconeAtributoAtaque(atributo)
+            );
+
+            fecharModalTesteResistencia();
+        }
+
         function abrirItemCard(card) {
             if (!card) return;
             card.classList.remove('fechado', 'oculto');
@@ -13657,29 +13942,6 @@ campoClasseMagia.value = textoClasse;
             return "";
         }
 
-        function rolarDado(quantidade, faces) {
-            const qtd = parseInt(quantidade, 10);
-            const lados = parseInt(faces, 10);
-
-            if (!Number.isInteger(qtd) || !Number.isInteger(lados) || qtd < 1 || lados < 2) {
-                return {
-                    quantidade: 0,
-                    faces: 0,
-                    resultados: [],
-                    soma: 0
-                };
-            }
-
-            const resultados = Array.from({ length: qtd }, () => Math.floor(Math.random() * lados) + 1);
-
-            return {
-                quantidade: qtd,
-                faces: lados,
-                resultados,
-                soma: resultados.reduce((total, valor) => total + valor, 0)
-            };
-        }
-
         function preencherCampoComRolagem(campo, quantidade, faces) {
             if (!campo) return null;
             const rolagem = rolarDado(quantidade, faces);
@@ -13689,27 +13951,6 @@ campoClasseMagia.value = textoClasse;
             campo.dispatchEvent(new Event('input'));
             campo.dispatchEvent(new Event('change'));
             return rolagem;
-        }
-
-        function animarRolagemNoCampo(campo, quantidade, faces, duracaoMs = 1000, intervaloMs = 60) {
-            if (!campo) return Promise.resolve(null);
-
-            return new Promise(resolve => {
-                const inicio = Date.now();
-                const timer = setInterval(() => {
-                    const parcial = rolarDado(quantidade, faces);
-                    campo.value = parcial?.soma ?? '';
-                    campo.dispatchEvent(new Event('input'));
-                    if (Date.now() - inicio >= duracaoMs) {
-                        clearInterval(timer);
-                        const final = rolarDado(quantidade, faces);
-                        campo.value = final?.soma ?? '';
-                        campo.dispatchEvent(new Event('input'));
-                        campo.dispatchEvent(new Event('change'));
-                        resolve(final);
-                    }
-                }, intervaloMs);
-            });
         }
 
         function atualizarTotalModalAtaque() {
@@ -13725,15 +13966,6 @@ campoClasseMagia.value = textoClasse;
 
             const total = dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
             campoTotal.innerHTML = `Total: <strong>${total}</strong>`;
-        }
-
-        function criarBotaoHistoricoDado(valor, sufixo = '', destaque = false) {
-            const numero = parseInt(valor, 10);
-            if (!Number.isInteger(numero)) return '';
-
-            const texto = `${numero}${sufixo}`;
-            const classeDestaque = destaque ? ' destaque' : '';
-            return `<button type="button" class="dado-modal-historico-rolagem${classeDestaque}" data-valor-rolagem="${numero}" title="Usar ${numero} no dado">${texto}</button>`;
         }
 
         function atualizarHistoricoRolagensModalAtaque() {
@@ -14489,10 +14721,12 @@ campoClasseMagia.value = textoClasse;
         document.querySelectorAll('.prof-checkbox').forEach(el => {
             el.addEventListener('input', () => {
                 atualizarModificadoresSalvaguarda();
+                atualizarAtributosTesteResistencia();
                 atualizarPassivas();
             });
             el.addEventListener('change', () => {
                 atualizarModificadoresSalvaguarda();
+                atualizarAtributosTesteResistencia();
                 atualizarPassivas();
             });
         });
@@ -14517,6 +14751,7 @@ campoClasseMagia.value = textoClasse;
                 normalizarPontosDeVida();
                 desenharRadar();
                 atualizarModificadoresSalvaguarda();
+                atualizarAtributosTesteResistencia();
                 atualizarPericias();
                 atualizarPassivas();
                 atualizarMagias();
@@ -14528,6 +14763,7 @@ campoClasseMagia.value = textoClasse;
                 normalizarPontosDeVida();
                 desenharRadar();
                 atualizarModificadoresSalvaguarda();
+                atualizarAtributosTesteResistencia();
                 atualizarPericias();
                 atualizarPassivas();
                 atualizarMagias();
@@ -14541,6 +14777,7 @@ campoClasseMagia.value = textoClasse;
         function atualizarTudoDerivado() {
             atualizarBonusProficiencia();
             atualizarModificadoresSalvaguarda();
+            atualizarAtributosTesteResistencia();
             atualizarPericias();
             atualizarPassivas();
             atualizarMagias();
@@ -14782,6 +15019,27 @@ sincronizarCamposMagia(true, true);
             });
         }
 
+        const overlayTesteResistencia = document.getElementById('modalTesteResistenciaOverlay');
+        if (overlayTesteResistencia) {
+            overlayTesteResistencia.addEventListener('click', evento => {
+                if (evento.target === overlayTesteResistencia) {
+                    fecharModalTesteResistencia();
+                }
+            });
+        }
+
+        document.getElementById('abrirTesteResistenciaBtn')?.addEventListener('click', abrirModalTesteResistencia);
+        document.getElementById('modalTesteResistenciaConfirmar')?.addEventListener('click', confirmarTesteResistencia);
+        document.getElementById('modalTesteResistenciaCancelar')?.addEventListener('click', fecharModalTesteResistencia);
+        document.querySelectorAll('[data-atributo-teste]').forEach(botao => {
+            botao.addEventListener('click', () => selecionarAtributoTesteResistencia(botao.dataset.atributoTeste));
+        });
+        document.getElementById('modalTesteResistenciaDadoContainer')?.addEventListener('keydown', evento => {
+            if (evento.key === 'Enter' && evento.target?.matches?.('[data-dice-value]')) {
+                confirmarTesteResistencia();
+            }
+        });
+
         document.getElementById('modalAtaqueSucesso')?.addEventListener('click', abrirEtapaDanoAtaque);
         document.getElementById('modalAtaqueFracasso')?.addEventListener('click', confirmarFracassoAtaque);
         document.getElementById('modalAtaqueCancelar')?.addEventListener('click', fecharModalAtaqueArma);
@@ -14880,6 +15138,12 @@ sincronizarCamposMagia(true, true);
 
         document.addEventListener('keydown', evento => {
             if (evento.key === 'Escape') {
+                const overlayTeste = document.getElementById('modalTesteResistenciaOverlay');
+                if (overlayTeste && !overlayTeste.classList.contains('oculto')) {
+                    fecharModalTesteResistencia();
+                    return;
+                }
+
                 const overlay = document.getElementById('modalAtaqueOverlay');
                 if (overlay && !overlay.classList.contains('oculto')) {
                     fecharModalAtaqueArma();
