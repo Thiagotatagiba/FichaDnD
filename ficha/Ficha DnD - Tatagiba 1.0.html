@@ -6796,9 +6796,9 @@
                     <div class="magia-card">
                         <div class="status-titulo">Conjuração</div>
                         <div class="magia-topo">
-                            <div class="magia-campo">
+<div class="magia-campo">
                                 <label for="magiaClasseConjuradora">Classe Conjuradora</label>
-                                <input id="magiaClasseConjuradora" type="text" placeholder="Ex: Druida">
+                                <input id="magiaClasseConjuradora" type="text" placeholder="Ex: Druida" readonly tabIndex="-1">
                             </div>
                             <div class="magia-campo">
                                 <label for="magiaAtributoConjuracao">Atributo de Conjuração</label>
@@ -11916,7 +11916,13 @@ Bônus de Proficiência: +${bonusProf}
             const campoAtributoMagia = document.getElementById("magiaAtributoConjuracao");
 
             if (campoClasseBase && campoClasseMagia && (forcarClasse || !campoClasseMagia.value.trim())) {
-                campoClasseMagia.value = campoClasseBase.value.trim();
+                const optionSelecionada =
+    campoClasseBase.selectedOptions?.[0] ||
+    campoClasseBase.options[campoClasseBase.selectedIndex];
+
+const textoClasse = optionSelecionada?.text?.trim() || "";
+
+campoClasseMagia.value = textoClasse;
             }
 
             const classeReferencia = campoClasseMagia?.value.trim() || campoClasseBase?.value.trim() || "";
@@ -11930,6 +11936,38 @@ Bônus de Proficiência: +${bonusProf}
 
         function formatarRotuloAtributo(chaveAtributo) {
             const chaveNormalizada = normalizarChaveAtributo(chaveAtributo);
+
+            // ===== Conjuração por classe (sincronização automática) =====
+            // Mapeamento: classe selecionada -> atributo de conjuração
+            // Classes sem atributo retornam vazio "" (sem usar "-")
+            const ATRIBUTO_CONJURACAO_POR_CLASSE = {
+                barbaro: '',
+                guerreiro: '',
+                ladino: '',
+                monge: '',
+                paladino: '',
+                patrulheiro: '',
+                bardo: 'car',
+                bruxo: 'car',
+                feiticeiro: 'car',
+                mago: 'int',
+                druida: 'sab',
+                clerigo: 'sab',
+            };
+
+            
+
+            // Garante readonly por automação (caso algo tenha removido)
+            const campoClasseMagia = document.getElementById('magiaClasseConjuradora');
+            if (campoClasseMagia) campoClasseMagia.setAttribute('readonly', 'readonly');
+
+            // Listener: change de classe
+            const campoClasseBase = document.getElementById('classeNomeID');
+
+
+            // Initial sync (sem depender do estado anterior)
+            atualizarConjuracaoPorClasse();
+
 
             const mapa = {
                 for: "FOR",
@@ -14543,7 +14581,7 @@ Bônus de Proficiência: +${bonusProf}
         document.getElementById('classeNomeID').addEventListener('input', () => {
             sincronizarClasseNivel();
             sincronizarResumoCaracteristicas();
-            sincronizarCamposMagia();
+sincronizarCamposMagia(true, true);
             atualizarMagias();
             atualizarDadoVida();
             atualizarVidaMaxNivelUm();
@@ -14552,7 +14590,7 @@ Bônus de Proficiência: +${bonusProf}
         document.getElementById('classeNomeID').addEventListener('change', () => {
             sincronizarClasseNivel();
             sincronizarResumoCaracteristicas();
-            sincronizarCamposMagia();
+            sincronizarCamposMagia(true, true);
             atualizarMagias();
             atualizarDadoVida();
             atualizarVidaMaxNivelUm();
