@@ -1,73 +1,35 @@
-# TODO - Refatoração do Histórico de Combate
+# Task: Implement automatic sync of magic tab with selected class
 
-## 🧩 Estrutura de Dados
+## Plan Breakdown
 
-- [ ] Alterar registro de ataque para usar objeto ao invés de string
-- [ ] Garantir que `ataqueTotal` esteja disponível no estado do ataque
-- [ ] Incluir `tipoDano` no objeto da arma (fallback: "Cortante")
+### Step 1: ✅ Understand project
+- [x] Main file: `ficha/Ficha DnD - Tatagiba 1.0.html`
+- [x] Confirmed IDs: `#classeNomeID`, `#magiaClasseConjuradora`, `#magiaAtributoConjuracao`
+- [x] Class options match map (barbaro, bardo, etc.)
 
----
+### Step 2: 📋 Implementation Plan
+```
+1. Add const ATRIBUTO_CONJURACAO_POR_CLASSE = { ... } in JS section
+2. Ensure #magiaClasseConjuradora readonly="readonly"
+3. Implement function atualizarConjuracaoPorClasse()
+   - Sync class name (camelCase -> title case)
+   - Set #magiaAtributoConjuracao per map
+   - If null: clear/disable both fields
+4. Add event listener: #classeNomeID 'change' -> atualizarConjuracaoPorClasse()
+5. Call atualizarConjuracaoPorClasse() on DOMContentLoaded
+6. Test sync works on class change + page load
+```
 
-## ⚙️ Função registrarHistoricoAtaqueArma
+### Step 3: ✅ Create TODO.md
+- [x] ✅ TODO.md created with plan breakdown
 
-- [ ] Remover uso de `.join(' | ')`
-- [ ] Criar objeto estruturado com:
-  - [ ] arma
-  - [ ] ataqueTotal
-  - [ ] dano
-  - [ ] tipoDano
-- [ ] Enviar objeto para `adicionarRegistroHistoricoCombate`
+### Step 4: 📝 Code Implementation
+- [ ] ✅ Step 4.1: Add attribute mapping constant
+- [ ] ✅ Step 4.2: Make #magiaClasseConjuradora readonly
+- [ ] ✅ Step 4.3: Implement atualizarConjuracaoPorClasse() function
+- [ ] ✅ Step 4.4: Add change listener to #classeNomeID
+- [ ] ✅ Step 4.5: Call on DOMContentLoaded
+- [ ] ✅ Step 4.6: Test functionality
 
----
+**Next: Implementing code changes in ficha/Ficha DnD - Tatagiba 1.0.html**
 
-## 🧠 Função adicionarRegistroHistoricoCombate
-
-- [ ] Detectar quando `tipo === 'Ataque'` e `valor` é objeto
-- [ ] Criar renderização específica para ataque
-- [ ] Manter fallback para outros tipos (Cura, Dano, etc)
-- [ ] Separar lógica em variáveis (`conteudoTipo`, `conteudoValor`)
-
----
-
-## 🎨 Layout / HTML
-
-- [ ] Ajustar coluna Tipo para suportar múltiplas linhas
-- [ ] Inserir nome da arma como subtexto
-- [ ] Mostrar `[ataqueTotal]` ao lado de "Ataque"
-- [ ] Ajustar coluna Valor para mostrar apenas dano + tipo
-
----
-
-## 🎯 CSS
-
-- [ ] Criar classe `.sub`
-- [ ] Aplicar:
-  - [ ] font-size menor
-  - [ ] opacidade reduzida
-- [ ] Garantir alinhamento correto das colunas
-
----
-
-## 🔁 Compatibilidade
-
-- [ ] Testar registros antigos (string)
-- [ ] Garantir que Cura e Dano continuam funcionando
-- [ ] Validar fallback quando dados estiverem incompletos
-
----
-
-## 🧪 Testes
-
-- [ ] Testar ataque com dano
-- [ ] Testar ataque sem dano (caso futuro)
-- [ ] Testar múltiplos registros seguidos
-- [ ] Validar ordem com `prepend`
-
----
-
-## 🚀 Melhorias Futuras (não obrigatório agora)
-
-- [ ] Destacar crítico (ex: [20] em cor diferente)
-- [ ] Suporte a múltiplos tipos de dano
-- [ ] Agrupar ataques por rodada
-- [ ] Criar componente reutilizável para renderização
