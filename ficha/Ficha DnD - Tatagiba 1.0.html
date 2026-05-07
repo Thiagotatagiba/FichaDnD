@@ -2955,6 +2955,88 @@
             color: #fffaf2;
         }
 
+        .btn-conjurar-magia,
+        .btn-usar-magia {
+            align-self: flex-start;
+            min-height: 38px;
+            padding: 9px 14px;
+            border: 1px solid #8b4513;
+            border-radius: 10px;
+            background: #8b4513;
+            color: #fffaf2;
+            font-family: 'MedievalSharp';
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-conjurar-magia:hover,
+        .btn-usar-magia:hover,
+        .btn-conjurar-magia:focus-visible,
+        .btn-usar-magia:focus-visible {
+            background: #6f3610;
+        }
+
+        .magia-slot-modal-overlay {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background: rgba(33, 19, 10, 0.38);
+            z-index: 2200;
+        }
+
+        .magia-slot-modal-overlay.ativo {
+            display: flex;
+        }
+
+        .magia-slot-modal {
+            width: min(420px, 100%);
+            border: var(--modal-border);
+            border-radius: var(--modal-radius);
+            background: var(--modal-bg);
+            color: var(--modal-text);
+            box-shadow: var(--modal-shadow);
+            padding: 18px;
+            box-sizing: border-box;
+        }
+
+        .magia-slot-modal-titulo {
+            font-family: 'Metamorphous', serif;
+            font-size: 20px;
+            color: #6f3610;
+            margin-bottom: 12px;
+        }
+
+        .magia-slot-modal-texto {
+            margin-bottom: 12px;
+            color: #5f2d0c;
+            font-size: 14px;
+        }
+
+        .magia-slot-opcoes {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin: 12px 0 16px;
+        }
+
+        .magia-slot-opcao {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 9px 10px;
+            border: 1px solid #d5b993;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.58);
+            cursor: pointer;
+        }
+
+        .magia-slot-opcao input {
+            width: auto;
+        }
+
         .magia-card-detalhe {
             background: linear-gradient(180deg, #fffaf2, #f7efdf);
             border: 2px solid #8b4513;
@@ -5754,8 +5836,278 @@
         </div>
     </div>
 
-    <script src="../js/dice-core.js"></script>
-    <script src="../js/dice-system.js"></script>
+    <!-- ========================= -->
+    <!-- DICE CORE -->
+    <!-- ========================= -->
+    <script>
+        (function (global) {
+            function rolarDado(quantidade, faces) {
+                const qtd = parseInt(quantidade, 10);
+                const lados = parseInt(faces, 10);
+
+                if (!Number.isInteger(qtd) || !Number.isInteger(lados) || qtd < 1 || lados < 2) {
+                    return {
+                        quantidade: 0,
+                        faces: 0,
+                        resultados: [],
+                        soma: 0
+                    };
+                }
+
+                const resultados = Array.from({ length: qtd }, () => Math.floor(Math.random() * lados) + 1);
+
+                return {
+                    quantidade: qtd,
+                    faces: lados,
+                    resultados,
+                    soma: resultados.reduce((total, valor) => total + valor, 0)
+                };
+            }
+
+            function animarRolagemNoCampo(campo, quantidade, faces, duracaoMs = 1000, intervaloMs = 60) {
+                if (!campo) return Promise.resolve(null);
+
+                return new Promise(resolve => {
+                    const inicio = Date.now();
+                    const timer = setInterval(() => {
+                        const parcial = rolarDado(quantidade, faces);
+                        campo.value = parcial?.soma ?? '';
+                        campo.dispatchEvent(new Event('input'));
+                        if (Date.now() - inicio >= duracaoMs) {
+                            clearInterval(timer);
+                            const final = rolarDado(quantidade, faces);
+                            campo.value = final?.soma ?? '';
+                            campo.dispatchEvent(new Event('input'));
+                            campo.dispatchEvent(new Event('change'));
+                            resolve(final);
+                        }
+                    }, intervaloMs);
+                });
+            }
+
+            function criarBotaoHistoricoDado(valor, sufixo = '', destaque = false) {
+                const numero = parseInt(valor, 10);
+                if (!Number.isInteger(numero)) return '';
+
+                const texto = `${numero}${sufixo}`;
+                const classeDestaque = destaque ? ' destaque' : '';
+                return `<button type="button" class="dado-modal-historico-rolagem${classeDestaque}" data-valor-rolagem="${numero}" title="Usar ${numero} no dado">${texto}</button>`;
+            }
+
+            global.rolarDado = rolarDado;
+            global.animarRolagemNoCampo = animarRolagemNoCampo;
+            global.criarBotaoHistoricoDado = criarBotaoHistoricoDado;
+            global.DiceCore = {
+                rolarDado,
+                animarRolagemNoCampo,
+                criarBotaoHistoricoDado
+            };
+        })(window);
+    </script>
+
+    <!-- ========================= -->
+    <!-- DICE SYSTEM -->
+    <!-- ========================= -->
+    <script>
+        (function (global) {
+            function criarSistemaDado(container, options = {}) {
+                const raiz = typeof container === 'string'
+                    ? document.querySelector(container)
+                    : container;
+
+                if (!raiz) {
+                    throw new Error('criarSistemaDado requer um container valido.');
+                }
+
+                const config = {
+                    titulo: options.titulo || 'Rolagem',
+                    nota: options.nota || '',
+                    quantidade: options.quantidade || 1,
+                    faces: options.faces || 20,
+                    bonus: options.bonus || 0,
+                    rotuloDado: options.rotuloDado || 'Dado',
+                    rotuloBonus: options.rotuloBonus || 'Bonus',
+                    textoBotao: options.textoBotao || 'Rolar',
+                    duracaoMs: options.duracaoMs || 1000,
+                    intervaloMs: options.intervaloMs || 60,
+                    onChange: typeof options.onChange === 'function' ? options.onChange : null,
+                    onRoll: typeof options.onRoll === 'function' ? options.onRoll : null
+                };
+
+                const estado = {
+                    valor: null,
+                    bonus: parseInt(config.bonus, 10) || 0,
+                    historico: [],
+                    ultimaRolagem: null
+                };
+
+                raiz.innerHTML = `
+            <div class="dado-modal" data-dice-system>
+                <div class="dado-modal-cabecalho">
+                    <span class="dado-modal-titulo">${config.titulo}</span>
+                    <span class="dado-modal-nota">${config.nota || `${config.quantidade}d${config.faces}`}</span>
+                </div>
+                <div class="dado-modal-rolagem dado-modal-calculo">
+                    <div class="dado-modal-coluna">
+                        <div class="dado-modal-campo dado-modal-campo-com-dado dado-modal-grupo-dado">
+                            <span class="dado-modal-campo-rotulo">${config.rotuloDado}</span>
+                            <div class="dado-modal-botao-coluna">
+                                <button type="button" class="botao-dado" data-dice-roll>${config.textoBotao}</button>
+                                <div class="dado-modal-nota" data-dice-formula>${config.quantidade}d${config.faces}</div>
+                            </div>
+                            <input type="number" min="0" step="1" data-dice-value>
+                        </div>
+                    </div>
+                    <div class="dado-modal-bonus-bloco">
+                        <div class="dado-modal-bonus" data-dice-bonus>+0</div>
+                        <div class="dado-modal-bonus-detalhe">${config.rotuloBonus}</div>
+                    </div>
+                    <div class="dado-modal-total" data-dice-total>Total: <strong>-</strong></div>
+                </div>
+                <div class="dado-modal-historico">
+                    <span class="dado-modal-historico-rotulo">Historico:</span>
+                    <span class="dado-modal-historico-lista" data-dice-history>-</span>
+                </div>
+            </div>
+        `;
+
+                const campoValor = raiz.querySelector('[data-dice-value]');
+                const campoBonus = raiz.querySelector('[data-dice-bonus]');
+                const campoTotal = raiz.querySelector('[data-dice-total]');
+                const campoHistorico = raiz.querySelector('[data-dice-history]');
+                const botaoRolar = raiz.querySelector('[data-dice-roll]');
+
+                function normalizarValor(valor) {
+                    const numero = parseInt(valor, 10);
+                    return Number.isInteger(numero) ? numero : null;
+                }
+
+                function getValor() {
+                    return estado.valor;
+                }
+
+                function getTotal() {
+                    return Number.isInteger(estado.valor)
+                        ? estado.valor + estado.bonus
+                        : null;
+                }
+
+                function atualizarBonus() {
+                    const sinal = estado.bonus >= 0 ? '+' : '';
+                    campoBonus.textContent = `${sinal}${estado.bonus}`;
+                }
+
+                function atualizarTotal() {
+                    const total = getTotal();
+                    campoTotal.innerHTML = `Total: <strong>${Number.isInteger(total) ? total : '-'}</strong>`;
+                }
+
+                function atualizarHistorico() {
+                    if (!estado.historico.length) {
+                        campoHistorico.textContent = '-';
+                        return;
+                    }
+
+                    const maior = Math.max(...estado.historico);
+                    const menor = Math.min(...estado.historico);
+                    campoHistorico.innerHTML = [...estado.historico].reverse().map(valor => {
+                        const ehMaior = valor === maior;
+                        const ehMenor = valor === menor;
+                        const sufixo = ehMaior ? '⇧' : ehMenor ? '⇩' : '';
+                        return global.criarBotaoHistoricoDado(valor, sufixo, ehMaior || ehMenor);
+                    }).join(', ');
+                }
+
+                function notificarMudanca() {
+                    atualizarTotal();
+                    if (config.onChange) {
+                        config.onChange({
+                            valor: getValor(),
+                            bonus: estado.bonus,
+                            total: getTotal(),
+                            historico: [...estado.historico],
+                            ultimaRolagem: estado.ultimaRolagem
+                        });
+                    }
+                }
+
+                function setValor(valor, registrarHistorico = false) {
+                    const numero = normalizarValor(valor);
+                    estado.valor = numero;
+                    campoValor.value = Number.isInteger(numero) ? numero : '';
+
+                    if (registrarHistorico && Number.isInteger(numero)) {
+                        estado.historico = [...estado.historico, numero];
+                        atualizarHistorico();
+                    }
+
+                    notificarMudanca();
+                }
+
+                function setBonus(valor) {
+                    const numero = parseInt(valor, 10);
+                    estado.bonus = Number.isInteger(numero) ? numero : 0;
+                    atualizarBonus();
+                    notificarMudanca();
+                }
+
+                function rolar() {
+                    botaoRolar.disabled = true;
+                    return global.animarRolagemNoCampo(
+                        campoValor,
+                        config.quantidade,
+                        config.faces,
+                        config.duracaoMs,
+                        config.intervaloMs
+                    ).then(rolagem => {
+                        estado.ultimaRolagem = rolagem;
+                        setValor(rolagem?.soma, true);
+                        if (config.onRoll) config.onRoll(rolagem, api);
+                        return rolagem;
+                    }).finally(() => {
+                        botaoRolar.disabled = false;
+                    });
+                }
+
+                campoValor.addEventListener('input', () => {
+                    estado.valor = normalizarValor(campoValor.value);
+                    notificarMudanca();
+                });
+
+                campoValor.addEventListener('change', () => {
+                    setValor(campoValor.value);
+                });
+
+                botaoRolar.addEventListener('click', rolar);
+
+                campoHistorico.addEventListener('click', evento => {
+                    const botao = evento.target.closest('[data-valor-rolagem]');
+                    if (!botao) return;
+                    setValor(botao.dataset.valorRolagem);
+                });
+
+                const api = {
+                    element: raiz,
+                    setBonus,
+                    getValor,
+                    getTotal,
+                    setValor,
+                    rolar,
+                    getHistorico: () => [...estado.historico],
+                    getUltimaRolagem: () => estado.ultimaRolagem
+                };
+
+                setBonus(estado.bonus);
+                return api;
+            }
+
+            global.criarSistemaDado = criarSistemaDado;
+        })(window);
+    </script>
+
+    <!-- ========================= -->
+    <!-- CLASSES / LEVEL UP -->
+    <!-- ========================= -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const classeSelect = document.getElementById('classeNomeID');
@@ -7677,6 +8029,9 @@
 
     </div>
 
+    <!-- ========================= -->
+    <!-- INVENTÁRIO / EQUIPAMENTOS -->
+    <!-- ========================= -->
     <script>
         document.addEventListener('click', function (e) {
             const moedaIcon = e.target.closest('.item-emoji.moeda');
@@ -7738,6 +8093,13 @@
                 atualizarEmojiItem(select);
             });
         }
+
+    </script>
+
+    <!-- ========================= -->
+    <!-- ATRIBUTOS / PROFICIÊNCIAS -->
+    <!-- ========================= -->
+    <script>
         const campo = document.getElementById("bonusProf");
 
         Object.defineProperty(campo, "value", {
@@ -7749,6 +8111,13 @@
                 return this.getAttribute("value");
             }
         });
+
+    </script>
+
+    <!-- ========================= -->
+    <!-- COMBATE -->
+    <!-- ========================= -->
+    <script>
         function obterMaiorAtributoAtaque() {
             const modFor = getModificadorBaseAtributo('for');
             const modDes = getModificadorBaseAtributo('des');
@@ -8069,6 +8438,12 @@
         }
 
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- CORE / ESTADO GLOBAL -->
+    <!-- ========================= -->
+    <script>
         // Variáveis Globai
         let bloqueandoLevelUp = false;
         let armaduraEquipadaIndice = null;
@@ -8084,6 +8459,12 @@
         }
         let armaduraSelecionadaAtual = null;
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- ATRIBUTOS / PROFICIÊNCIAS -->
+    <!-- ========================= -->
+    <script>
         // ===== Lógica de Bônus de Proficiência =====
         const bonusInput = document.getElementById("bonusProf");
         // Retorna o modificador a partir do valor do atributo (ex: 18 -> 4)
@@ -8103,11 +8484,24 @@
         }
 
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- INICIALIZAÇÃO APP -->
+    <!-- ========================= -->
+    <script>
         // ===== Integracao e inicializacao =====
         window.api?.receberPersonagem((data) => {
             const personagem = JSON.parse(data);
             carregarFicha(personagem);
         });
+
+    </script>
+
+    <!-- ========================= -->
+    <!-- CLASSES / LEVEL UP -->
+    <!-- ========================= -->
+    <script>
 
         const mapaDadoVida = {
             barbaro: "d12",
@@ -9119,11 +9513,23 @@ Bônus de Proficiência: +${bonusProf}
             }
         }
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- UTILITÁRIOS -->
+    <!-- ========================= -->
+    <script>
         // ===== Função: Gerar ID único para cada item =====
         function gerarId() {
             return 'id_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
         }
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- INVENTÁRIO / EQUIPAMENTOS -->
+    <!-- ========================= -->
+    <script>
         // ===== Lógica de Munição Dinâmica =====
         function atualizarTodasMunicoesArmas() {
 
@@ -11452,6 +11858,12 @@ Bônus de Proficiência: +${bonusProf}
             }
         };
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
+    <!-- ========================= -->
+    <script>
         // ===== Persistencia da ficha =====
         function normalizarDadosImportacao(dadosOriginais) {
             if (!dadosOriginais || typeof dadosOriginais !== "object") return {}
@@ -11733,6 +12145,13 @@ Bônus de Proficiência: +${bonusProf}
             }
         }
         window.importarFicha = importarFicha;
+
+    </script>
+
+    <!-- ========================= -->
+    <!-- ATRIBUTOS / PROFICIÊNCIAS -->
+    <!-- ========================= -->
+    <script>
         // ===== Atributos, radar e navegacao principal =====
         function atualizarAtributos() {
 
@@ -11845,6 +12264,12 @@ Bônus de Proficiência: +${bonusProf}
             e.returnValue = ''
         })
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- UI / MODAIS / TABS -->
+    <!-- ========================= -->
+    <script>
         function trocarAba(nome, el) {
 
             document.querySelectorAll(".aba").forEach(a => {
@@ -12014,6 +12439,12 @@ Bônus de Proficiência: +${bonusProf}
             return mapa[textoNormalizado] || "";
         }
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- MAGIAS -->
+    <!-- ========================= -->
+    <script>
         // ===== Classe, caracteristicas e magia =====
         function inferirAtributoConjuracaoPorClasse(nomeClasse) {
             const nomeNormalizado = normalizarTextoComparacao(nomeClasse);
@@ -12124,6 +12555,11 @@ campoClasseMagia.value = textoClasse;
             nivel: 0,
             indice: null,
             modo: "visualizar"
+        };
+        const estadoModalUsoMagia = {
+            magia: null,
+            nivelMinimo: 1,
+            ultimoFoco: null
         };
         const TALENTOS_CONFIG = {
             classe: { campoId: "talentoClasse", listaId: "talentoClasseLista", rotulo: "Classe", resumoId: "talentoClasseResumo" },
@@ -12644,6 +13080,67 @@ campoClasseMagia.value = textoClasse;
             return nivel === 0 ? "Truque" : `Nível ${nivel}`;
         }
 
+        function escaparHtmlMagia(valor) {
+            return String(valor || "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function obterNomePersonagemHistoricoMagia() {
+            return String(document.getElementById("nomePersonagem")?.value || "Personagem").trim() || "Personagem";
+        }
+
+        function obterEstadoEspacoMagia(nivel) {
+            const campoTotal = document.getElementById(`magia${nivel}Total`);
+            const campoUsado = document.getElementById(`magia${nivel}Usado`);
+            const total = Math.max(0, parseInt(campoTotal?.value, 10) || 0);
+            const usado = Math.max(0, parseInt(campoUsado?.value, 10) || 0);
+
+            return {
+                nivel,
+                total,
+                usado,
+                restante: Math.max(0, total - usado),
+                campoTotal,
+                campoUsado
+            };
+        }
+
+        function obterEspacosDisponiveisParaMagia(nivelMagia) {
+            const nivelMinimo = Math.max(1, parseInt(nivelMagia, 10) || 1);
+            return NIVEIS_MAGIA
+                .filter(nivel => nivel >= nivelMinimo)
+                .map(obterEstadoEspacoMagia)
+                .filter(espaco => espaco.campoTotal && espaco.campoUsado && espaco.restante > 0);
+        }
+
+        function consumirEspacoMagia(nivelSlot) {
+            const espaco = obterEstadoEspacoMagia(nivelSlot);
+            if (!espaco.campoUsado || espaco.restante <= 0) return false;
+
+            espaco.campoUsado.value = String(espaco.usado + 1);
+            espaco.campoUsado.dispatchEvent(new Event("input", { bubbles: true }));
+            espaco.campoUsado.dispatchEvent(new Event("change", { bubbles: true }));
+            return true;
+        }
+
+        function registrarHistoricoMagia(magia, nivelSlot = null) {
+            const nomePersonagem = escaparHtmlMagia(obterNomePersonagemHistoricoMagia());
+            const nomeMagia = escaparHtmlMagia(magia?.nome || "Magia");
+            const valor = Number.isInteger(nivelSlot)
+                ? `${nomePersonagem} conjurou ${nomeMagia} usando espaço de magia Nv${nivelSlot}`
+                : `${nomePersonagem} conjurou ${nomeMagia}`;
+
+            adicionarRegistroHistoricoCombate("Magia", valor, "✨");
+        }
+
+        function conjurarTruque(magia) {
+            registrarHistoricoMagia(magia);
+        }
+
         function formatarTagsMagia(tags) {
             return (tags || [])
                 .map(tag => String(tag || "").trim())
@@ -12729,6 +13226,19 @@ campoClasseMagia.value = textoClasse;
                 magia.proximos_niveis ? `Próximos níveis: ${magia.proximos_niveis}` : ""
             ].filter(Boolean).join("\n\n");
 
+            const botaoUso = document.createElement("button");
+            botaoUso.type = "button";
+            botaoUso.className = magia.nivel === 0 ? "btn-conjurar-magia" : "btn-usar-magia";
+            botaoUso.textContent = magia.nivel === 0 ? "Conjurar" : "Usar Magia";
+            botaoUso.addEventListener("click", () => {
+                if (magia.nivel === 0) {
+                    conjurarTruque(magia);
+                    return;
+                }
+
+                abrirModalUsarMagia(magia);
+            });
+
             container.appendChild(header);
             container.appendChild(info);
             if (propriedades.childNodes.length) {
@@ -12736,6 +13246,7 @@ campoClasseMagia.value = textoClasse;
             }
             container.appendChild(efeitos);
             container.appendChild(descricao);
+            container.appendChild(botaoUso);
 
             return container;
         }
@@ -12863,6 +13374,140 @@ campoClasseMagia.value = textoClasse;
             document.body.appendChild(overlay);
         }
 
+        function obterModalUsoMagiaOverlay() {
+            return document.getElementById("magiaSlotModalOverlay");
+        }
+
+        function montarModalUsoMagia() {
+            if (obterModalUsoMagiaOverlay()) return;
+
+            const overlay = document.createElement("div");
+            overlay.id = "magiaSlotModalOverlay";
+            overlay.className = "magia-slot-modal-overlay oculto";
+            overlay.setAttribute("aria-hidden", "true");
+            overlay.innerHTML = `
+                <div class="magia-slot-modal" role="dialog" aria-modal="true" aria-labelledby="magiaSlotModalTitulo">
+                    <div id="magiaSlotModalTitulo" class="magia-slot-modal-titulo">Usar magia</div>
+                    <div class="magia-slot-modal-texto">Escolha o espaço utilizado:</div>
+                    <div id="magiaSlotModalOpcoes" class="magia-slot-opcoes"></div>
+                    <div class="magia-modal-acoes">
+                        <button type="button" class="magia-modal-botao" id="magiaSlotModalCancelar">Cancelar</button>
+                        <button type="button" class="magia-modal-botao primario" id="magiaSlotModalConfirmar">Confirmar</button>
+                    </div>
+                </div>
+            `;
+
+            document.body.appendChild(overlay);
+        }
+
+        function renderizarOpcoesSlotMagia(magia) {
+            const container = document.getElementById("magiaSlotModalOpcoes");
+            const botaoConfirmar = document.getElementById("magiaSlotModalConfirmar");
+            if (!container) return;
+
+            const espacos = obterEspacosDisponiveisParaMagia(magia?.nivel || 1);
+            container.replaceChildren();
+
+            if (!espacos.length) {
+                const vazio = document.createElement("div");
+                vazio.className = "magia-slot-modal-texto";
+                vazio.textContent = "Nenhum espaço de magia disponível.";
+                container.appendChild(vazio);
+                if (botaoConfirmar) botaoConfirmar.disabled = true;
+                return;
+            }
+
+            espacos.forEach((espaco, indice) => {
+                const id = `magiaSlotOpcao${espaco.nivel}`;
+                const label = document.createElement("label");
+                label.className = "magia-slot-opcao";
+                label.setAttribute("for", id);
+
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.name = "magiaSlotNivel";
+                input.id = id;
+                input.value = String(espaco.nivel);
+                input.checked = indice === 0;
+
+                const texto = document.createElement("span");
+                texto.textContent = `Nível ${espaco.nivel} (${espaco.restante} restantes)`;
+
+                label.appendChild(input);
+                label.appendChild(texto);
+                container.appendChild(label);
+            });
+
+            if (botaoConfirmar) botaoConfirmar.disabled = false;
+        }
+
+        function abrirModalUsarMagia(magia) {
+            const overlay = obterModalUsoMagiaOverlay();
+            if (!overlay || !magia) return;
+
+            estadoModalUsoMagia.magia = { ...magia };
+            estadoModalUsoMagia.nivelMinimo = Math.max(1, parseInt(magia.nivel, 10) || 1);
+            estadoModalUsoMagia.ultimoFoco = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+            const titulo = document.getElementById("magiaSlotModalTitulo");
+            if (titulo) titulo.textContent = `Usar "${magia.nome || "Magia"}"`;
+
+            renderizarOpcoesSlotMagia(magia);
+
+            overlay.classList.add("ativo");
+            overlay.classList.remove("oculto");
+            overlay.setAttribute("aria-hidden", "false");
+
+            const primeiroSlot = overlay.querySelector('input[name="magiaSlotNivel"]');
+            if (primeiroSlot instanceof HTMLElement) primeiroSlot.focus();
+            else document.getElementById("magiaSlotModalCancelar")?.focus();
+        }
+
+        function fecharModalUsarMagia() {
+            const overlay = obterModalUsoMagiaOverlay();
+            if (!overlay) return;
+
+            const focoAtual = document.activeElement;
+            if (focoAtual instanceof HTMLElement && overlay.contains(focoAtual)) {
+                focoAtual.blur();
+            }
+
+            overlay.classList.remove("ativo");
+            overlay.classList.add("oculto");
+            overlay.setAttribute("aria-hidden", "true");
+
+            if (estadoModalUsoMagia.ultimoFoco instanceof HTMLElement && document.contains(estadoModalUsoMagia.ultimoFoco)) {
+                estadoModalUsoMagia.ultimoFoco.focus();
+            }
+
+            estadoModalUsoMagia.magia = null;
+            estadoModalUsoMagia.nivelMinimo = 1;
+            estadoModalUsoMagia.ultimoFoco = null;
+        }
+
+        function obterSlotSelecionadoModalMagia() {
+            const selecionado = document.querySelector('#magiaSlotModalOpcoes input[name="magiaSlotNivel"]:checked');
+            const nivelSlot = parseInt(selecionado?.value, 10);
+            return Number.isInteger(nivelSlot) ? nivelSlot : null;
+        }
+
+        function confirmarUsoMagia() {
+            const magia = estadoModalUsoMagia.magia;
+            const nivelSlot = obterSlotSelecionadoModalMagia();
+            if (!magia || !Number.isInteger(nivelSlot)) return;
+            if (nivelSlot < estadoModalUsoMagia.nivelMinimo) return;
+
+            const consumiu = consumirEspacoMagia(nivelSlot);
+            if (!consumiu) {
+                renderizarOpcoesSlotMagia(magia);
+                return;
+            }
+
+            registrarHistoricoMagia(magia, nivelSlot);
+            atualizarMagias();
+            fecharModalUsarMagia();
+        }
+
         function prepararInterfaceNivelMagia(nivel) {
             const campo = obterCampoArmazenamentoMagia(nivel);
             if (!campo) return;
@@ -12887,6 +13532,7 @@ campoClasseMagia.value = textoClasse;
 
         function inicializarGerenciadorMagias() {
             montarModalMagia();
+            montarModalUsoMagia();
             preencherSelectMagia("magiaModalEscola", OPCOES_ESCOLA_MAGIA);
             preencherSelectMagia("magiaModalDanoTipo", OPCOES_TIPO_DANO_MAGIA);
             preencherSelectMagia("magiaModalResolucao", OPCOES_RESOLUCAO_MAGIA);
@@ -13511,6 +14157,12 @@ campoClasseMagia.value = textoClasse;
             document.getElementById('intPass').value = 10 + intuicao;
         }
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- COMBATE -->
+    <!-- ========================= -->
+    <script>
         // ===== Classe de armadura e resumo de combate =====
         function atualizarClasseArmaduraEquipada() {
             const armaduraCA = parseInt(document.getElementById('armaduraCA')?.value) || 0;
@@ -14717,6 +15369,12 @@ campoClasseMagia.value = textoClasse;
             atualizarProficienciaNoRadar();
         }
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- UI / MODAIS / TABS -->
+    <!-- ========================= -->
+    <script>
         // Atualiza quando checkbox muda
         document.querySelectorAll('.prof-checkbox').forEach(el => {
             el.addEventListener('input', () => {
@@ -14888,6 +15546,14 @@ sincronizarCamposMagia(true, true);
                 }
             });
         }
+        const overlayUsoMagia = document.getElementById('magiaSlotModalOverlay');
+        if (overlayUsoMagia) {
+            overlayUsoMagia.addEventListener('click', evento => {
+                if (evento.target === overlayUsoMagia) {
+                    fecharModalUsarMagia();
+                }
+            });
+        }
         const overlayTalento = document.getElementById('talentoModalOverlay');
         if (overlayTalento) {
             overlayTalento.addEventListener('click', evento => {
@@ -14911,6 +15577,8 @@ sincronizarCamposMagia(true, true);
         document.getElementById('magiaModalExcluir')?.addEventListener('click', excluirMagiaAtual);
         document.getElementById('magiaModalSalvar')?.addEventListener('click', salvarModalMagia);
         document.getElementById('magiaModalFechar')?.addEventListener('click', fecharModalMagia);
+        document.getElementById('magiaSlotModalConfirmar')?.addEventListener('click', confirmarUsoMagia);
+        document.getElementById('magiaSlotModalCancelar')?.addEventListener('click', fecharModalUsarMagia);
         document.getElementById('talentoModalEditar')?.addEventListener('click', editarTalentoAtual);
         document.getElementById('talentoModalExcluir')?.addEventListener('click', excluirTalentoAtual);
         document.getElementById('talentoModalSalvar')?.addEventListener('click', salvarModalTalento);
@@ -15150,6 +15818,12 @@ sincronizarCamposMagia(true, true);
                     return;
                 }
 
+                const overlayUsoMagiaAtivo = document.getElementById('magiaSlotModalOverlay');
+                if (overlayUsoMagiaAtivo && !overlayUsoMagiaAtivo.classList.contains('oculto')) {
+                    fecharModalUsarMagia();
+                    return;
+                }
+
                 const overlayMagiaAtivo = document.getElementById('magiaModalOverlay');
                 if (overlayMagiaAtivo && !overlayMagiaAtivo.classList.contains('oculto')) {
                     fecharModalMagia();
@@ -15171,6 +15845,12 @@ sincronizarCamposMagia(true, true);
 
 
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- INICIALIZAÇÃO APP -->
+    <!-- ========================= -->
+    <script>
         function atualizarFicha() {
 
             // ===== 1. BASE (fonte de verdade) =====
@@ -15259,6 +15939,12 @@ sincronizarCamposMagia(true, true);
         atualizarSubracas();
         marcarFichaComoSalva();
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
+    <!-- ========================= -->
+    <script>
         function aplicarDadosFicha(dados) {
             bloqueandoLevelUp = true;
             if (!dados || typeof dados !== "object") return;
@@ -15541,6 +16227,12 @@ sincronizarCamposMagia(true, true);
 
         }
 
+    </script>
+
+    <!-- ========================= -->
+    <!-- UI / MODAIS / TABS -->
+    <!-- ========================= -->
+    <script>
         // ===== SISTEMA DE EXPIRAÇÃO =====
         const DATA_EXPIRACAO = new Date("2026-05-14T12:00:00");
         console.log('[Debug] Data de expiração:', DATA_EXPIRACAO.toLocaleString('pt-BR'));
