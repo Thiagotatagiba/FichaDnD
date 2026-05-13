@@ -2744,6 +2744,60 @@
             gap: 8px;
         }
 
+        .magia-grupo-nivel {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .magia-grupo-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #6f3610;
+            font-size: 11px;
+            opacity: .72;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .magia-grupo-header::before,
+        .magia-grupo-header::after {
+            content: "";
+            height: 1px;
+            flex: 1 1 auto;
+            background: rgba(111, 54, 16, .28);
+        }
+
+        .magia-grupo-corpo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .magia-status-magico {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            color: #5f2d0c;
+            font-size: 11px;
+            opacity: .8;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .magia-status-magico-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .magia-status-magico-rotulo {
+            font-weight: bold;
+        }
+
         .magia-vazia {
             border: 1px dashed #bda68c;
             border-radius: 10px;
@@ -5731,7 +5785,7 @@
                                         class="botao-dado-icone">🎲</span></button>
                                 <div id="levelUpDadoDetalhe" class="dado-modal-nota">dado</div>
                             </div>
-                            <input type="text" id="inputVidaLevelUp" inputmode="numeric">
+                            <input type="number" id="inputVidaLevelUp" inputmode="numeric">
                         </div>
                     </div>
                     <div class="dado-modal-bonus-bloco">
@@ -13127,18 +13181,42 @@ campoClasseMagia.value = textoClasse;
             return true;
         }
 
-        function registrarHistoricoMagia(magia, nivelSlot = null) {
-            const nomePersonagem = escaparHtmlMagia(obterNomePersonagemHistoricoMagia());
-            const nomeMagia = escaparHtmlMagia(magia?.nome || "Magia");
-            const valor = Number.isInteger(nivelSlot)
-                ? `${nomePersonagem} conjurou ${nomeMagia} usando espaço de magia Nv${nivelSlot}`
-                : `${nomePersonagem} conjurou ${nomeMagia}`;
+function registrarHistoricoMagia(magia, nivelSlot = null) {
+    const nomePersonagem = escaparHtmlMagia(obterNomePersonagemHistoricoMagia());
+    const nomeMagia = escaparHtmlMagia(magia?.nome || "Magia");
 
-            adicionarRegistroHistoricoCombate("Magia", valor, "✨");
+    const ehTruque = !Number.isInteger(nivelSlot);
+    const tipoHistorico = ehTruque
+        ? "✨ Truque"
+        : `✨ Magia Nv ${nivelSlot}`;
+
+    // MVP (requisito):
+    // - Truque: valor = apenas o nome da magia
+    // - Magia: valor = nome completo da magia (inclui tags/título/\n mantém o padrão de exibição atual)
+    const valorHistorico = nomeMagia;
+
+    // (tipo usa o SLOT UTILIZADO via nivelSlot; truque não consome slot)
+    adicionarRegistroHistoricoCombate(tipoHistorico, valorHistorico, "");
+}
+
+        function abrirHistoricoCombateMagia() {
+            const abaCombate = [...document.querySelectorAll('.tab')]
+                .find(tab => String(tab.textContent || '').trim().toLowerCase().includes('combate'));
+            if (abaCombate instanceof HTMLElement) {
+                trocarAba('combate', abaCombate);
+            }
+
+            const botaoHistorico = [...document.querySelectorAll('.subaba-botao')]
+                .find(botao => String(botao.textContent || '').trim().toLowerCase().includes('hist'));
+            if (botaoHistorico instanceof HTMLElement) {
+                trocarSubAbaCombate('historico', botaoHistorico);
+            }
         }
 
         function conjurarTruque(magia) {
             registrarHistoricoMagia(magia);
+            fecharModalMagia();
+            abrirHistoricoCombateMagia();
         }
 
         function formatarTagsMagia(tags) {
@@ -13228,10 +13306,19 @@ campoClasseMagia.value = textoClasse;
 
             const botaoUso = document.createElement("button");
             botaoUso.type = "button";
-            botaoUso.className = magia.nivel === 0 ? "btn-conjurar-magia" : "btn-usar-magia";
-            botaoUso.textContent = magia.nivel === 0 ? "Conjurar" : "Usar Magia";
+            botaoUso.id = "magiaModalConjurarUsarBtn";
+            const ehTruque = Number(magia?.nivel) === 0;
+            botaoUso.className = ehTruque
+                ? "btn-conjurar-magia"
+                : "btn-usar-magia";
+            botaoUso.textContent = ehTruque
+                ? "Usar Truque"
+                : "Usar Magia";
+
             botaoUso.addEventListener("click", () => {
-                if (magia.nivel === 0) {
+                const ehTruque = Number(magia?.nivel) === 0;
+
+                if (ehTruque) {
                     conjurarTruque(magia);
                     return;
                 }
@@ -13246,7 +13333,16 @@ campoClasseMagia.value = textoClasse;
             }
             container.appendChild(efeitos);
             container.appendChild(descricao);
-            container.appendChild(botaoUso);
+
+            const headerInfo = document.querySelector('#magiaModalOverlay .magia-modal-topo-info');
+            const headerAcoes = document.querySelector('#magiaModalOverlay .magia-modal-acoes');
+            document.getElementById('magiaModalConjurarUsarBtn')?.remove();
+
+            if (headerInfo) {
+                headerInfo.insertBefore(botaoUso, headerInfo.children[1] || null);
+            } else if (headerAcoes) {
+                headerAcoes.insertBefore(botaoUso, headerAcoes.firstChild);
+            }
 
             return container;
         }
@@ -13491,7 +13587,7 @@ campoClasseMagia.value = textoClasse;
             return Number.isInteger(nivelSlot) ? nivelSlot : null;
         }
 
-        function confirmarUsoMagia() {
+function confirmarUsoMagia() {
             const magia = estadoModalUsoMagia.magia;
             const nivelSlot = obterSlotSelecionadoModalMagia();
             if (!magia || !Number.isInteger(nivelSlot)) return;
@@ -13506,6 +13602,8 @@ campoClasseMagia.value = textoClasse;
             registrarHistoricoMagia(magia, nivelSlot);
             atualizarMagias();
             fecharModalUsarMagia();
+            fecharModalMagia();
+            abrirHistoricoCombateMagia();
         }
 
         function prepararInterfaceNivelMagia(nivel) {
@@ -13560,7 +13658,62 @@ campoClasseMagia.value = textoClasse;
             });
         }
 
+        function obterResumoStatusMagico() {
+            return {
+                atributo: String(document.getElementById("magiaAtributoConjuracao")?.value || "-").toUpperCase() || "-",
+                cd: String(document.getElementById("magiaCD")?.value || "-").trim() || "-",
+                ataque: String(document.getElementById("magiaAtaqueMagico")?.value || "-").trim() || "-"
+            };
+        }
+
+        function criarLinhaStatusMagico() {
+            const status = obterResumoStatusMagico();
+            const linha = document.createElement("div");
+            linha.className = "magia-status-magico";
+
+            [
+                ["Conj.", status.atributo],
+                ["CD", status.cd],
+                ["Atq.", status.ataque]
+            ].forEach(([rotulo, valor]) => {
+                const item = document.createElement("span");
+                item.className = "magia-status-magico-item";
+
+                const label = document.createElement("span");
+                label.className = "magia-status-magico-rotulo";
+                label.textContent = rotulo;
+
+                const texto = document.createElement("span");
+                texto.textContent = valor;
+
+                item.appendChild(label);
+                item.appendChild(texto);
+                linha.appendChild(item);
+            });
+
+            return linha;
+        }
+
+        function atualizarLinhaStatusMagicoAbaMagia() {
+            const topo = document.querySelector("#magia .magia-topo");
+            if (!topo) return;
+
+            let linha = document.getElementById("magiaStatusMagicoAba");
+            if (!linha) {
+                linha = criarLinhaStatusMagico();
+                linha.id = "magiaStatusMagicoAba";
+                topo.insertAdjacentElement("afterend", linha);
+                return;
+            }
+
+            const status = obterResumoStatusMagico();
+            const valores = [status.atributo, status.cd, status.ataque];
+            linha.querySelectorAll(".magia-status-magico-item span:last-child")
+                .forEach((span, indice) => { span.textContent = valores[indice] || "-"; });
+        }
+
         function renderizarTodasMagias() {
+            atualizarLinhaStatusMagicoAbaMagia();
             NIVEIS_MAGIA.forEach(renderizarListaMagiasNivel);
             atualizarSubAbaMagiasCombate();
         }
@@ -13572,11 +13725,31 @@ campoClasseMagia.value = textoClasse;
             const magias = lerMagiasNivel(nivel);
             container.replaceChildren();
 
+            const grupo = document.createElement("section");
+            grupo.className = "magia-grupo-nivel";
+            grupo.dataset.nivel = String(nivel);
+
+            const header = document.createElement("div");
+            header.className = "magia-grupo-header";
+            if (nivel === 0) {
+                header.textContent = "Truques";
+            } else {
+                const espaco = obterEstadoEspacoMagia(nivel);
+                header.textContent = `Nível ${nivel} • ${espaco.restante}/${espaco.total}`;
+            }
+
+            const corpo = document.createElement("div");
+            corpo.className = "magia-grupo-corpo";
+
+            grupo.appendChild(header);
+            grupo.appendChild(corpo);
+            container.appendChild(grupo);
+
             if (!magias.length) {
                 const vazio = document.createElement("div");
                 vazio.className = "magia-vazia";
                 vazio.textContent = "Nenhuma magia cadastrada.";
-                container.appendChild(vazio);
+                corpo.appendChild(vazio);
                 return;
             }
 
@@ -13620,7 +13793,7 @@ campoClasseMagia.value = textoClasse;
                 item.appendChild(checkbox);
                 item.appendChild(nome);
                 item.appendChild(editar);
-                container.appendChild(item);
+                corpo.appendChild(item);
             });
         }
 
@@ -13640,13 +13813,16 @@ campoClasseMagia.value = textoClasse;
             if (!container) return;
 
             const magias = obterMagiasPreparadasCombate();
+            container.replaceChildren();
+            container.appendChild(criarLinhaStatusMagico());
 
             if (!magias.length) {
-                container.innerHTML = '<div class="subaba-vazia">Nenhuma magia preparada no momento.</div>';
+                const vazio = document.createElement('div');
+                vazio.className = 'subaba-vazia';
+                vazio.textContent = 'Nenhuma magia preparada no momento.';
+                container.appendChild(vazio);
                 return;
             }
-
-            container.replaceChildren();
 
             const lista = document.createElement('div');
             lista.className = 'magia-combate-lista';
@@ -13876,6 +14052,7 @@ campoClasseMagia.value = textoClasse;
             const botaoEditar = document.getElementById("magiaModalEditar");
             const botaoExcluir = document.getElementById("magiaModalExcluir");
             const botaoSalvar = document.getElementById("magiaModalSalvar");
+            const botaoUso = document.getElementById("magiaModalConjurarUsarBtn");
 
             estadoModalMagia.modo = modo;
 
@@ -13894,6 +14071,7 @@ campoClasseMagia.value = textoClasse;
             botaoEditar?.classList.toggle("oculto", modo !== "visualizar");
             botaoExcluir?.classList.toggle("oculto", modo !== "editar");
             botaoSalvar?.classList.toggle("oculto", modo !== "editar");
+            botaoUso?.classList.toggle("oculto", modo !== "visualizar");
         }
 
         function renderizarVisualizacaoModalMagia(magia) {
