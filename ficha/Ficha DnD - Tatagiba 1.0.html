@@ -2367,6 +2367,11 @@
         outline: none;
       }
 
+      .magia-combate-item.concentrando {
+        border-color: rgba(86, 123, 74, 0.82);
+        box-shadow: inset 0 0 0 1px rgba(86, 123, 74, 0.16);
+      }
+
       .magia-combate-topo {
         display: flex;
         align-items: center;
@@ -2375,6 +2380,8 @@
       }
 
       .magia-combate-nome {
+        flex: 1 1 auto;
+        min-width: 0;
         font-size: 16px;
         font-weight: bold;
         color: #5f2d0c;
@@ -2384,6 +2391,21 @@
         font-size: 10px;
         padding: 2px 7px;
         opacity: 0.82;
+      }
+
+      .magia-combate-concentracao {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        flex: 0 0 auto;
+        border: 1px solid rgba(86, 123, 74, 0.24);
+        border-radius: 999px;
+        background: rgba(245, 250, 240, 0.72);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+        font-size: 13px;
+        line-height: 1;
       }
 
       .magia-combate-meta {
@@ -2855,6 +2877,91 @@
 
       .magia-status-magico-rotulo {
         font-weight: bold;
+      }
+
+      .magia-concentracao-hud {
+        display: flex;
+        justify-content: center;
+        margin: -4px auto 14px auto;
+      }
+
+      .magia-concentracao-botao {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 100%;
+        border: 1px solid rgba(86, 123, 74, 0.34);
+        border-radius: 999px;
+        padding: 6px 13px;
+        background: linear-gradient(
+          to bottom,
+          rgba(248, 255, 242, 0.78),
+          rgba(235, 246, 225, 0.5)
+        );
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.6),
+          0 4px 10px rgba(86, 123, 74, 0.12);
+        color: #425f36;
+        font-family: "MedievalSharp";
+        font-size: 12px;
+        font-weight: bold;
+        line-height: 1.2;
+        cursor: pointer;
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease,
+          border-color 0.15s ease;
+      }
+
+      .magia-concentracao-botao:hover,
+      .magia-concentracao-botao:focus-visible {
+        transform: translateY(-1px);
+        border-color: rgba(86, 123, 74, 0.62);
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.7),
+          0 7px 15px rgba(86, 123, 74, 0.18);
+        outline: none;
+      }
+
+      .magia-concentracao-botao.feedback-sucesso {
+        animation: concentracaoPulse 0.7s ease;
+      }
+
+      .magia-concentracao-botao.feedback-falha {
+        animation: concentracaoShake 0.55s ease;
+        border-color: rgba(150, 48, 35, 0.55);
+        color: #7a2f25;
+      }
+
+      @keyframes concentracaoPulse {
+        0%,
+        100% {
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.6),
+            0 4px 10px rgba(86, 123, 74, 0.12);
+        }
+        45% {
+          box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.7),
+            0 0 0 4px rgba(86, 123, 74, 0.16),
+            0 8px 18px rgba(86, 123, 74, 0.2);
+        }
+      }
+
+      @keyframes concentracaoShake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-3px);
+        }
+        50% {
+          transform: translateX(3px);
+        }
+        75% {
+          transform: translateX(-2px);
+        }
       }
 
       .magia-vazia {
@@ -10843,18 +10950,57 @@
 
         dadosVidaTotalInput.value = nivel;
       }
-      function equiparArmadura(indice) {
+      function normalizarIndiceEquipamento(indice) {
+        if (indice === null || indice === undefined || indice === "") return null;
+        const numero = Number(indice);
+        return Number.isInteger(numero) && numero >= 0 ? numero : null;
+      }
+
+      function obterArmadurasParaEquipamento(armaduras = null) {
+        if (Array.isArray(armaduras)) return armaduras;
+        if (typeof coletarArmaduras === "function") return coletarArmaduras();
+        return Array.isArray(personagem?.armaduras) ? personagem.armaduras : [];
+      }
+
+      function marcarArmaduraEquipadaNoInventario(indice) {
+        document
+          .querySelectorAll("#lista-armaduras-equipamento input")
+          .forEach((input) => {
+            input.checked =
+              indice !== null && input.dataset.index === String(indice);
+          });
+      }
+
+      function equiparArmadura(indice, opcoes = {}) {
+        const armaduras = obterArmadurasParaEquipamento(opcoes.armaduras);
+        const indiceNormalizado = normalizarIndiceEquipamento(indice);
+        const armaduraSelecionada =
+          indiceNormalizado !== null
+            ? armaduras[indiceNormalizado] || null
+            : null;
+        const indiceFinal = armaduraSelecionada ? indiceNormalizado : null;
+
+        armaduraSelecionadaAtual = armaduraSelecionada;
+        armaduraEquipadaIndice = indiceFinal;
+
+        if (
+          opcoes.atualizarSelect !== false &&
+          typeof atualizarSelectNomeArmaduraEquipada === "function"
+        ) {
+          atualizarSelectNomeArmaduraEquipada(armaduras, indiceFinal);
+        }
+
         const select = document.getElementById("armaduraNome");
         if (select)
           select.value =
-            indice !== null && indice !== undefined ? String(indice) : "";
-        const armaduraSelecionada =
-          indice !== null && indice !== undefined
-            ? personagem.armaduras?.[indice] || null
-            : null;
-        armaduraSelecionadaAtual = armaduraSelecionada;
-        armaduraEquipadaIndice = indice;
+            indiceFinal !== null && indiceFinal !== undefined
+              ? String(indiceFinal)
+              : "";
+
+        marcarArmaduraEquipadaNoInventario(indiceFinal);
         atualizarCamposArmaduraSelecionada(armaduraSelecionada);
+
+        return armaduraSelecionada;
       }
 
       // ===== Lógica de Level Up e Modal =====
@@ -11910,13 +12056,7 @@ Bônus de Proficiência: +${bonusProf}
         .getElementById("armaduraNome")
         ?.addEventListener("change", function () {
           const indice = this.value !== "" ? parseInt(this.value, 10) : null;
-          const armadura =
-            indice !== null && personagem?.armaduras?.[indice]
-              ? personagem.armaduras[indice]
-              : null;
-          armaduraSelecionadaAtual = armadura;
-          armaduraEquipadaIndice = indice;
-          atualizarCamposArmaduraSelecionada(armadura);
+          equiparArmadura(indice);
         });
 
       function obterResumoCombateArma(arma) {
@@ -12034,6 +12174,7 @@ Bônus de Proficiência: +${bonusProf}
         maxSelecoes = null,
         selecionadoPorPadrao = null,
         aoAlterarSelecao = null,
+        preservarSelecaoAtual = true,
       }) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -12061,9 +12202,11 @@ Bônus de Proficiência: +${bonusProf}
           if (inputName) input.name = inputName;
           input.dataset.index = String(index);
           input.setAttribute("aria-label", ariaLabel);
-          const jaEstavaSelecionado = multiplo
-            ? selecionados.includes(String(index))
-            : selecionados[0] === String(index);
+          const jaEstavaSelecionado =
+            preservarSelecaoAtual &&
+            (multiplo
+              ? selecionados.includes(String(index))
+              : selecionados[0] === String(index));
           const marcarPorPadrao =
             !jaEstavaSelecionado && typeof selecionadoPorPadrao === "function"
               ? !!selecionadoPorPadrao(item, index)
@@ -12146,6 +12289,14 @@ Bônus de Proficiência: +${bonusProf}
           ariaLabel: "Selecionar armadura para equipamento",
           filtroItem: (armadura) => !!armadura?.armadura_nome?.trim(),
           maxSelecoes: 1,
+          preservarSelecaoAtual: false,
+          selecionadoPorPadrao: (_armadura, index) =>
+            normalizarIndiceEquipamento(armaduraEquipadaIndice) === index,
+          aoAlterarSelecao: ({ input, index }) => {
+            equiparArmadura(input.checked ? index : null, {
+              armaduras: listaArmaduras,
+            });
+          },
         });
       }
 
@@ -13392,11 +13543,13 @@ Bônus de Proficiência: +${bonusProf}
         const armaduraSelecionadaInput = document.querySelector(
           "#lista-armaduras-equipamento input:checked",
         );
-        const indice = armaduraSelecionadaInput
-          ? parseInt(armaduraSelecionadaInput.dataset.index, 10)
+        const indiceCheckbox = armaduraSelecionadaInput
+          ? normalizarIndiceEquipamento(armaduraSelecionadaInput.dataset.index)
           : null;
+        const indice =
+          indiceCheckbox ?? normalizarIndiceEquipamento(armaduraEquipadaIndice);
 
-        equiparArmadura(indice);
+        equiparArmadura(indice, { armaduras });
 
         const valorSlot2Atual =
           document.getElementById("arma2Nome")?.value || "";
@@ -14941,6 +15094,9 @@ Bônus de Proficiência: +${bonusProf}
         nivelMinimo: 1,
         ultimoFoco: null,
       };
+      let concentracaoAtiva = null;
+      let ultimoResultadoConcentracao = null;
+      let ultimoFocoModalConcentracao = null;
       const TALENTOS_CONFIG = {
         classe: {
           campoId: "talentoClasse",
@@ -15684,6 +15840,7 @@ Bônus de Proficiência: +${bonusProf}
 
       function conjurarTruque(magia) {
         registrarHistoricoMagia(magia);
+        iniciarConcentracaoMagia(magia);
         fecharModalMagia();
         abrirHistoricoCombateMagia();
       }
@@ -16094,6 +16251,7 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         registrarHistoricoMagia(magia, nivelSlot);
+        iniciarConcentracaoMagia(magia, nivelSlot);
         atualizarMagias();
         fecharModalUsarMagia();
         fecharModalMagia();
@@ -16201,6 +16359,189 @@ Bônus de Proficiência: +${bonusProf}
         });
 
         return linha;
+      }
+
+      function obterNomeConcentracao(magia = concentracaoAtiva?.magia) {
+        return String(magia?.nome || "magia").trim() || "magia";
+      }
+
+      function obterChaveConcentracaoMagia(magia) {
+        if (!magia) return "";
+        return [
+          Number(magia.nivel) || 0,
+          String(magia.nome || "").trim().toLowerCase(),
+        ].join("::");
+      }
+
+      function magiaExigeConcentracao(magia) {
+        return !!magia?.propriedades?.concentracao;
+      }
+
+      function magiaEstaConcentrada(magia) {
+        return (
+          !!concentracaoAtiva &&
+          obterChaveConcentracaoMagia(magia) === concentracaoAtiva.chave
+        );
+      }
+
+      function registrarHistoricoConcentracao(acao, magia, icone) {
+        adicionarRegistroHistoricoCombate(
+          "Concentração",
+          `${acao}: ${obterNomeConcentracao(magia)}`,
+          icone,
+        );
+      }
+
+      function iniciarConcentracaoMagia(magia, nivelSlot = null) {
+        if (!magiaExigeConcentracao(magia)) return;
+
+        if (concentracaoAtiva) {
+          registrarHistoricoConcentracao(
+            "encerrada",
+            concentracaoAtiva.magia,
+            "❌",
+          );
+        }
+
+        concentracaoAtiva = {
+          magia: { ...magia },
+          iniciadaEm: new Date().toISOString(),
+          nivelSlot,
+          chave: obterChaveConcentracaoMagia(magia),
+        };
+        ultimoResultadoConcentracao = null;
+
+        registrarHistoricoConcentracao("iniciada", magia, "🌀");
+        atualizarSubAbaMagiasCombate();
+      }
+
+      function encerrarConcentracao(motivo = "encerrada", opcoes = {}) {
+        if (!concentracaoAtiva) return;
+
+        const magia = concentracaoAtiva.magia;
+        concentracaoAtiva = null;
+        ultimoResultadoConcentracao = motivo === "perdida" ? "falha" : null;
+
+        if (opcoes.registrarHistorico !== false) {
+          registrarHistoricoConcentracao(motivo, magia, "❌");
+        }
+
+        atualizarSubAbaMagiasCombate();
+      }
+
+      function criarHudConcentracao() {
+        if (!concentracaoAtiva) return null;
+
+        const nome = obterNomeConcentracao();
+        const hud = document.createElement("div");
+        hud.className = "magia-concentracao-hud";
+
+        const botao = document.createElement("button");
+        botao.type = "button";
+        botao.className = "magia-concentracao-botao";
+        if (ultimoResultadoConcentracao === "sucesso") {
+          botao.classList.add("feedback-sucesso");
+          ultimoResultadoConcentracao = null;
+        } else if (ultimoResultadoConcentracao === "falha") {
+          botao.classList.add("feedback-falha");
+          ultimoResultadoConcentracao = null;
+        }
+        botao.textContent = `🌀 ${nome}`;
+        botao.title = `Você está concentrando na magia ${nome}`;
+        botao.addEventListener("click", abrirModalEncerrarConcentracao);
+
+        hud.appendChild(botao);
+        return hud;
+      }
+
+      function abrirModalEncerrarConcentracao() {
+        if (!concentracaoAtiva) return;
+
+        montarModalEncerrarConcentracao();
+        const overlay = document.getElementById("concentracaoModalOverlay");
+        const texto = document.getElementById("concentracaoModalTexto");
+        if (!overlay || !texto) return;
+
+        const nome = obterNomeConcentracao();
+        texto.textContent = `Deseja encerrar a concentração em ${nome}?`;
+        ultimoFocoModalConcentracao =
+          document.activeElement instanceof HTMLElement
+            ? document.activeElement
+            : null;
+
+        overlay.classList.remove("oculto");
+        overlay.classList.add("ativo");
+        overlay.setAttribute("aria-hidden", "false");
+        document.getElementById("concentracaoModalCancelar")?.focus();
+      }
+
+      function fecharModalEncerrarConcentracao() {
+        const overlay = document.getElementById("concentracaoModalOverlay");
+        if (!overlay) return;
+
+        overlay.classList.remove("ativo");
+        overlay.classList.add("oculto");
+        overlay.setAttribute("aria-hidden", "true");
+
+        if (
+          ultimoFocoModalConcentracao instanceof HTMLElement &&
+          document.contains(ultimoFocoModalConcentracao)
+        ) {
+          ultimoFocoModalConcentracao.focus();
+        }
+        ultimoFocoModalConcentracao = null;
+      }
+
+      function montarModalEncerrarConcentracao() {
+        if (document.getElementById("concentracaoModalOverlay")) return;
+
+        const overlay = document.createElement("div");
+        overlay.id = "concentracaoModalOverlay";
+        overlay.className = "ataque-modal-overlay modal-overlay-base oculto";
+        overlay.setAttribute("aria-hidden", "true");
+        overlay.innerHTML = `
+          <div class="ataque-modal modal-base" role="dialog" aria-modal="true" aria-labelledby="concentracaoModalTitulo">
+            <div class="ataque-modal-corpo">
+              <div id="concentracaoModalTitulo" class="ataque-modal-titulo">Concentração</div>
+              <div id="concentracaoModalTexto" class="magia-vazia"></div>
+              <div class="ataque-modal-acoes">
+                <button type="button" class="ataque-botao" id="concentracaoModalCancelar">Cancelar</button>
+                <button type="button" class="ataque-botao" id="concentracaoModalEncerrar">Encerrar</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        document
+          .getElementById("concentracaoModalCancelar")
+          ?.addEventListener("click", fecharModalEncerrarConcentracao);
+        document
+          .getElementById("concentracaoModalEncerrar")
+          ?.addEventListener("click", () => {
+            encerrarConcentracao("encerrada");
+            fecharModalEncerrarConcentracao();
+          });
+        overlay.addEventListener("click", (evento) => {
+          if (evento.target === overlay) fecharModalEncerrarConcentracao();
+        });
+      }
+
+      function abrirTesteConcentracaoPorDano(dano) {
+        if (!concentracaoAtiva || !(dano > 0)) return;
+
+        const cd = Math.max(10, Math.floor(dano / 2));
+        const nome = obterNomeConcentracao();
+        abrirModalTesteResistencia({
+          atributo: "con",
+          titulo: `Teste para manter concentração em ${nome}`,
+          contextoConcentracao: {
+            cd,
+            magia: concentracaoAtiva.magia,
+            chave: concentracaoAtiva.chave,
+          },
+        });
       }
 
       function renderizarTodasMagias() {
@@ -16365,6 +16706,8 @@ Bônus de Proficiência: +${bonusProf}
         const magias = obterMagiasPreparadasCombate();
         container.replaceChildren();
         container.appendChild(criarLinhaStatusMagico());
+        const hudConcentracao = criarHudConcentracao();
+        if (hudConcentracao) container.appendChild(hudConcentracao);
 
         if (!magias.length) {
           const vazio = document.createElement("div");
@@ -16412,6 +16755,8 @@ Bônus de Proficiência: +${bonusProf}
             const item = document.createElement("button");
             item.type = "button";
             item.className = "magia-combate-item";
+            const concentrando = magiaEstaConcentrada(magia);
+            item.classList.toggle("concentrando", concentrando);
             item.addEventListener("click", () =>
               abrirModalMagia(magia.nivel, magia.indiceLista, "visualizar"),
             );
@@ -16428,6 +16773,13 @@ Bônus de Proficiência: +${bonusProf}
             nivel.textContent = obterRotuloNivelMagia(magia.nivel);
 
             topo.appendChild(nome);
+            if (concentrando) {
+              const indicador = document.createElement("span");
+              indicador.className = "magia-combate-concentracao";
+              indicador.textContent = "🌀";
+              indicador.title = `Você está concentrando na magia ${magia.nome}`;
+              topo.appendChild(indicador);
+            }
             topo.appendChild(nivel);
 
             item.appendChild(topo);
@@ -17132,6 +17484,7 @@ Bônus de Proficiência: +${bonusProf}
       const estadoTesteResistencia = {
         atributo: "for",
         dadoSistema: null,
+        contextoConcentracao: null,
       };
 
       function obterBonusTesteResistencia(chaveAtributo) {
@@ -17202,8 +17555,11 @@ Bônus de Proficiência: +${bonusProf}
       }
 
       function selecionarAtributoTesteResistencia(chaveAtributo) {
-        const chave = ATRIBUTOS_TESTE_RESISTENCIA.includes(chaveAtributo)
-          ? chaveAtributo
+        const chaveForcada = estadoTesteResistencia.contextoConcentracao
+          ? "con"
+          : chaveAtributo;
+        const chave = ATRIBUTOS_TESTE_RESISTENCIA.includes(chaveForcada)
+          ? chaveForcada
           : "for";
         estadoTesteResistencia.atributo = chave;
 
@@ -17211,6 +17567,9 @@ Bônus de Proficiência: +${bonusProf}
           const ativo = botao.dataset.atributoTeste === chave;
           botao.classList.toggle("ativo", ativo);
           botao.setAttribute("aria-pressed", ativo ? "true" : "false");
+          botao.disabled =
+            !!estadoTesteResistencia.contextoConcentracao &&
+            botao.dataset.atributoTeste !== "con";
         });
 
         const bonus = obterBonusTesteResistencia(chave);
@@ -17257,12 +17616,22 @@ Bônus de Proficiência: +${bonusProf}
         }
       }
 
-      function abrirModalTesteResistencia() {
+      function abrirModalTesteResistencia(opcoes = {}) {
         const overlay = document.getElementById("modalTesteResistenciaOverlay");
         const sistema = garantirSistemaDadoTesteResistencia();
         if (!overlay || !sistema) return;
 
+        estadoTesteResistencia.contextoConcentracao =
+          opcoes.contextoConcentracao || null;
+        estadoTesteResistencia.atributo =
+          opcoes.atributo || estadoTesteResistencia.atributo || "for";
+
+        const titulo = document.getElementById("modalTesteResistenciaTitulo");
+        if (titulo)
+          titulo.textContent = opcoes.titulo || "Teste de Resistência";
+
         atualizarAtributosTesteResistencia();
+        selecionarAtributoTesteResistencia(estadoTesteResistencia.atributo);
         sistema.setValor("");
         atualizarBotaoConfirmarTesteResistencia();
 
@@ -17280,6 +17649,10 @@ Bônus de Proficiência: +${bonusProf}
         overlay.classList.remove("ativo");
         overlay.classList.add("oculto");
         overlay.setAttribute("aria-hidden", "true");
+        estadoTesteResistencia.contextoConcentracao = null;
+
+        const titulo = document.getElementById("modalTesteResistenciaTitulo");
+        if (titulo) titulo.textContent = "Teste de Resistência";
       }
 
       function confirmarTesteResistencia() {
@@ -17299,6 +17672,32 @@ Bônus de Proficiência: +${bonusProf}
         const total = dado + bonus;
         const sinal = bonus >= 0 ? "+" : "-";
         const valor = `${dado} ${sinal} ${Math.abs(bonus)} = ${total}`;
+        const contextoConcentracao =
+          estadoTesteResistencia.contextoConcentracao;
+
+        if (contextoConcentracao) {
+          const sucesso = total >= contextoConcentracao.cd;
+          const magia = contextoConcentracao.magia;
+          const nome = obterNomeConcentracao(magia);
+
+          adicionarRegistroHistoricoCombate(
+            "Concentração",
+            `${sucesso ? "mantida" : "perdida"}: ${nome} (CD ${contextoConcentracao.cd}, ${valor})`,
+            sucesso ? "✔" : "❌",
+          );
+
+          if (sucesso) {
+            ultimoResultadoConcentracao = "sucesso";
+            atualizarSubAbaMagiasCombate();
+          } else if (
+            concentracaoAtiva?.chave === contextoConcentracao.chave
+          ) {
+            encerrarConcentracao("perdida", { registrarHistorico: false });
+          }
+
+          fecharModalTesteResistencia();
+          return;
+        }
 
         adicionarRegistroHistoricoCombate(
           "Teste de Resistência",
@@ -18097,6 +18496,7 @@ Bônus de Proficiência: +${bonusProf}
         campoPV.value = Math.max(0, atual - dano);
         registrarHistoricoComandoCombate("Dano", dano);
         normalizarPontosDeVida();
+        abrirTesteConcentracaoPorDano(dano);
       }
 
       function curarPV() {
@@ -19171,6 +19571,9 @@ Bônus de Proficiência: +${bonusProf}
         dados = normalizarDadosImportacao(dados);
         configFicha = normalizarConfigFicha(dados.configFicha);
         personagem = dados;
+        armaduraEquipadaIndice = normalizarIndiceEquipamento(
+          dados.armaduraEquipadaIndice,
+        );
         console.log("OUTROS COM ID:", dados.outros);
         // 🔥 CAMPOS ESPECIAIS
         const camposEspeciais = {
@@ -19492,19 +19895,14 @@ Bônus de Proficiência: +${bonusProf}
         bloqueandoLevelUp = false;
         window.personagem = dados;
 
-        armaduraEquipadaIndice = dados.armaduraEquipadaIndice ?? null;
-
         atualizarSelectNomeArmaduraEquipada(
           dados.armaduras,
           armaduraEquipadaIndice,
         );
 
-        const selectArmadura = document.getElementById("armaduraNome");
-
-        if (selectArmadura) {
-          selectArmadura.value = String(armaduraEquipadaIndice ?? "");
-          selectArmadura.dispatchEvent(new Event("change"));
-        }
+        equiparArmadura(armaduraEquipadaIndice, {
+          armaduras: dados.armaduras,
+        });
 
         atualizarFicha();
       }
