@@ -45,6 +45,8 @@ Follow these steps to assist with RPG character sheet development:
    - Provide complete working examples
    - Include HTML, CSS, and JS if needed
 
+9. Se gerar comandos com `&&`, reescreva automaticamente para PowerShell antes de responder.
+
 ## Examples
 
 ### Example 1: Weapon State Button
