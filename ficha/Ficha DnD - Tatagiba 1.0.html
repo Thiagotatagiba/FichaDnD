@@ -1,4 +1,4 @@
-﻿<!doctype html>
+﻿﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -421,6 +421,7 @@
       }
 
       .shield input {
+        width: 50px;
         border: none;
         background: none;
         font-size: 32px;
@@ -919,6 +920,7 @@
       }
 
       .quadrado-combate input {
+        width: 50px;
         border: none;
         background: none;
         font-size: 22px;
@@ -2043,9 +2045,7 @@
         height: 82px;
       }
 
-      .ataque-mini-escudo .shield input {
-        font-size: 24px;
-      }
+
 
       .ataque-mini-escudo .bonus-escudo {
         right: -8px;
@@ -2059,17 +2059,22 @@
       }
 
       .ataque-status-linha {
-        display: flex;
+        display: grid;
+        grid-template-columns: auto minmax(160px, 1fr);
         align-items: center;
         gap: 6px;
-        flex-wrap: wrap;
+      }
+
+      .ataque-status-linha.combate-ativo {
+        grid-template-columns: 82px 108px minmax(150px, 1fr);
+        align-items: stretch;
       }
 
       .ataque-status-caixa {
         border: 1px solid #8b4513;
         border-radius: 7px;
         background: #fffaf2;
-        min-height: 34px;
+        min-height: 32px;
         padding: 3px 7px;
         box-sizing: border-box;
         display: flex;
@@ -2123,6 +2128,18 @@
         align-items: center;
       }
 
+      #combateInicioControle {
+        grid-column: 1;
+      }
+
+      #combatePosicaoCaixa {
+        grid-column: 1;
+      }
+
+      #combateRodadaCaixa {
+        grid-column: 2;
+      }
+
       .combate-rodada-grupo {
         display: flex;
         align-items: center;
@@ -2158,17 +2175,20 @@
         padding: 7px 12px;
         font-size: 13px;
         bottom: 0;
+        min-height: 32px;
       }
 
       .combate-botao-encerrar {
+        grid-column: 3;
         background: linear-gradient(180deg, #8b4513, #5f2d0c);
         color: #fffaf2;
         border-color: #4a240a;
         box-shadow: 0 4px 10px rgba(74, 36, 10, 0.18);
-        padding: 7px 12px;
+        width: 100%;
+        padding: 6px 12px;
         font-size: 13px;
         bottom: 0;
-        min-height: 34px;
+        min-height: 32px;
       }
 
       .combate-botao-encerrar:hover,
@@ -2191,20 +2211,22 @@
         justify-content: center;
       }
 
-      .combate-condicao-linha {
-        display: flex;
-        align-items: center;
-      }
-
       .combate-condicao-caixa {
-        width: min(100%, 220px);
+        grid-column: 2;
+        width: 100%;
         flex-direction: row;
         justify-content: flex-start;
         gap: 6px;
       }
 
+      .ataque-status-linha.combate-ativo .combate-condicao-caixa {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
       .combate-condicao-caixa input {
         text-align: left;
+        max-width: none;
       }
 
       .ataque-status-caixa.posicao input::-webkit-outer-spin-button,
@@ -4069,6 +4091,27 @@
         padding-right: 8px;
       }
 
+      .modal-iniciativa-posicao {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 2px;
+      }
+
+      .modal-iniciativa-posicao label {
+        white-space: nowrap;
+      }
+
+      #modalPosicaoIniciativa {
+        width: 92px;
+        min-height: 32px;
+        padding: 5px 8px;
+        text-align: center;
+        font-size: 15px;
+      }
+
       .dado-modal input:focus {
         outline: none;
         border-color: #8b5a2b;
@@ -4827,8 +4870,12 @@
         }
 
         .ataque-status-linha {
-          flex-wrap: wrap;
+          grid-template-columns: auto minmax(140px, 1fr);
           gap: 6px;
+        }
+
+        .ataque-status-linha.combate-ativo {
+          grid-template-columns: 78px 104px minmax(140px, 1fr);
         }
 
         .ataque-status-caixa {
@@ -4840,6 +4887,10 @@
         .ataque-status-caixa input {
           max-width: 50px;
           font-size: 12px;
+        }
+
+        .combate-condicao-caixa input {
+          max-width: none;
         }
       }
 
@@ -5095,8 +5146,12 @@
         }
 
         .ataque-status-linha {
-          flex-wrap: wrap;
+          grid-template-columns: auto minmax(130px, 1fr);
           gap: 6px;
+        }
+
+        .ataque-status-linha.combate-ativo {
+          grid-template-columns: 76px 102px minmax(130px, 1fr);
         }
 
         .ataque-status-caixa,
@@ -5106,6 +5161,10 @@
 
         .combate-condicao-caixa {
           width: 100%;
+        }
+
+        .combate-condicao-caixa input {
+          max-width: none;
         }
 
         #combate .combate-linha:first-of-type > .combate-card:first-child {
@@ -5169,6 +5228,26 @@
         .magia-topo,
         .historia-detalhes {
           grid-template-columns: 1fr;
+        }
+
+        .ataque-status-linha,
+        .ataque-status-linha.combate-ativo {
+          grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        }
+
+        #combateInicioControle,
+        .combate-condicao-caixa,
+        .ataque-status-linha.combate-ativo .combate-condicao-caixa {
+          grid-column: 1 / -1;
+        }
+
+        #combatePosicaoCaixa,
+        #combateRodadaCaixa {
+          width: 100%;
+        }
+
+        .combate-botao-encerrar {
+          grid-column: 1 / -1;
         }
 
         .jogador-xp {
@@ -6335,13 +6414,25 @@
                 <strong>-</strong>
               </div>
             </div>
-            <label for="modalPosicaoIniciativa">Posição na iniciativa</label>
-            <input
-              type="number"
-              id="modalPosicaoIniciativa"
-              min="1"
-              step="1"
-            />
+            <div class="modal-iniciativa-posicao">
+              <label for="modalPosicaoIniciativa"
+                >Posição na iniciativa:</label
+              >
+              <input
+                type="number"
+                id="modalPosicaoIniciativa"
+                min="1"
+                step="1"
+              />
+            </div>
+            <div class="ataque-modal-historico">
+              <span class="ataque-modal-historico-rotulo">Historico:</span>
+              <span
+                id="modalIniciativaHistoricoLista"
+                class="ataque-modal-historico-lista"
+                >-</span
+              >
+            </div>
           </div>
 
           <div class="ataque-modal-acoes">
@@ -8588,7 +8679,10 @@
                 <div class="status-titulo">Ataques e Conjuração</div>
                 <div class="ataque-topo">
                   <!-- LINHA 1 -->
-                  <div class="linha-status ataque-status-linha">
+                  <div
+                    class="linha-status ataque-status-linha"
+                    id="combateHud"
+                  >
                     <div class="combate-inicio-controle" id="combateInicioControle">
                       <button
                         id="btnRolarIniciativa"
@@ -8646,9 +8740,7 @@
                     >
                       Encerrar Combate
                     </button>
-                  </div>
 
-                  <div class="combate-condicao-linha">
                     <div class="ataque-status-caixa combate-condicao-caixa">
                       <label for="ataqueCondicao">Condição:</label>
                       <input
@@ -17742,6 +17834,7 @@ Bônus de Proficiência: +${bonusProf}
         dado: null,
         bonus: 0,
         total: null,
+        historicoRolagens: [],
       };
 
       function obterEstadoCombateParaSalvar() {
@@ -18449,6 +18542,47 @@ Bônus de Proficiência: +${bonusProf}
         }
       }
 
+      function atualizarHistoricoRolagensModalIniciativa() {
+        const campoHistorico = document.getElementById(
+          "modalIniciativaHistoricoLista",
+        );
+        if (!campoHistorico) return;
+
+        const historico = Array.isArray(estadoModalIniciativa.historicoRolagens)
+          ? [...estadoModalIniciativa.historicoRolagens]
+          : [];
+
+        if (!historico.length) {
+          campoHistorico.textContent = "-";
+          return;
+        }
+
+        const maior = Math.max(...historico);
+        const menor = Math.min(...historico);
+        campoHistorico.innerHTML = [...historico]
+          .reverse()
+          .map((valor) =>
+            criarBotaoHistoricoDado(
+              valor,
+              "",
+              historico.length > 1 && (valor === maior || valor === menor),
+            ),
+          )
+          .join(" ");
+      }
+
+      function registrarRolagemModalIniciativa(rolagem) {
+        const valor = rolagem?.soma;
+        if (!Number.isInteger(valor)) return;
+
+        estadoModalIniciativa.historicoRolagens = Array.isArray(
+          estadoModalIniciativa.historicoRolagens,
+        )
+          ? [...estadoModalIniciativa.historicoRolagens, valor]
+          : [valor];
+        atualizarHistoricoRolagensModalIniciativa();
+      }
+
       function atualizarInterfaceCombate() {
         const ativo = !!estadoCombateIniciativa.ativo;
         const rodada = ativo ? Math.max(1, parseInt(estadoCombateIniciativa.rodada, 10) || 1) : 0;
@@ -18457,6 +18591,9 @@ Bônus de Proficiência: +${bonusProf}
         document
           .getElementById("combateInicioControle")
           ?.classList.toggle("oculto-combate", ativo);
+        document
+          .getElementById("combateHud")
+          ?.classList.toggle("combate-ativo", ativo);
         document
           .getElementById("combatePosicaoCaixa")
           ?.classList.toggle("oculto-combate", !ativo);
@@ -18484,9 +18621,11 @@ Bônus de Proficiência: +${bonusProf}
 
         estadoModalIniciativa.dado = null;
         estadoModalIniciativa.total = null;
+        estadoModalIniciativa.historicoRolagens = [];
         campoDado.value = "";
         campoPosicao.value = estadoCombateIniciativa.posicao || "";
         atualizarTotalModalIniciativa();
+        atualizarHistoricoRolagensModalIniciativa();
 
         overlay.classList.remove("oculto");
         overlay.classList.add("ativo");
@@ -19735,6 +19874,7 @@ Bônus de Proficiência: +${bonusProf}
           botao.classList.add("rolando");
           animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then((rolagem) => {
             botao.classList.remove("rolando");
+            registrarRolagemModalIniciativa(rolagem);
             atualizarTotalModalIniciativa();
             if (rolagem?.resultados?.length) {
               botao.title = `1d20: ${rolagem.resultados.join(", ")}`;
@@ -19744,6 +19884,17 @@ Bônus de Proficiência: +${bonusProf}
               );
             }
           });
+        });
+      document
+        .getElementById("modalIniciativaHistoricoLista")
+        ?.addEventListener("click", (evento) => {
+          const botaoHistorico = evento.target.closest("[data-valor-rolagem]");
+          if (!botaoHistorico) return;
+
+          aplicarHistoricoDadoNoInput(
+            "modalIniciativaDado",
+            botaoHistorico.dataset.valorRolagem,
+          );
         });
       document
         .getElementById("modalTesteResistenciaConfirmar")
