@@ -1,4 +1,4 @@
-﻿﻿<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -252,9 +252,12 @@
 
       .hexagrama {
         position: relative;
-        height: 380px;
+        width: 100%;
+        max-width: 380px;
+        aspect-ratio: 1 / 1;
         border: 2px solid #bda68c;
         border-radius: 8px;
+        margin: 0 auto;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -269,12 +272,15 @@
       }
 
       #radar {
-        position: absolute;
+        position: relative;
+        width: 68%;
+        aspect-ratio: 1 / 1;
       }
 
       .atributo {
         position: absolute;
-        width: 70px;
+        width: 18%;
+        max-width: 70px;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -332,34 +338,42 @@
         line-height: 1;
       }
 
+      /* FOR - Topo */
       .for {
-        top: 20px;
-        left: 135px;
+        top: 2%;
+        left: 50%;
+        transform: translateX(-50%);
       }
 
+      /* DES - Direita cima */
       .des {
-        top: 110px;
-        right: 0;
+        top: 19%;
+        right: 1.6%;
       }
 
+      /* CON - Direita baixo */
       .con {
-        bottom: 110px;
-        right: 0;
+        bottom: 19%;
+        right: 1.6%;
       }
 
+      /* INT - Baixo */
       .int {
-        bottom: 20px;
-        left: 135px;
+        bottom: 2%;
+        left: 50%;
+        transform: translateX(-50%);
       }
 
+      /* SAB - Esquerda baixo */
       .sab {
-        bottom: 110px;
-        left: 0;
+        bottom: 19%;
+        left: 1.6%;
       }
 
+      /* CAR - Esquerda cima */
       .car {
-        top: 110px;
-        left: 0;
+        top: 19%;
+        left: 1.6%;
       }
 
       .combate {
@@ -1996,7 +2010,7 @@
       .ataque-topo {
         display: grid;
         grid-template-rows: auto auto auto;
-        gap: 12px;
+        gap: 8px;
       }
 
       .linha-status {
@@ -2045,26 +2059,28 @@
       }
 
       .ataque-status-linha {
-        display: grid;
-        grid-template-columns: auto auto auto;
-        gap: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
       }
 
       .ataque-status-caixa {
-        border: 2px solid #8b4513;
-        border-radius: 8px;
+        border: 1px solid #8b4513;
+        border-radius: 7px;
         background: #fffaf2;
-        padding: 6px 8px;
+        min-height: 34px;
+        padding: 3px 7px;
         box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 3px;
+        gap: 1px;
         justify-content: center;
       }
 
       .ataque-status-caixa label {
-        font-size: 9px;
+        font-size: 8px;
         font-weight: bold;
         color: #7a5a38;
         text-transform: uppercase;
@@ -2075,7 +2091,7 @@
         border: none;
         background: none;
         font-family: "MedievalSharp";
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
         padding: 0;
         margin: 0;
@@ -2086,7 +2102,7 @@
       }
 
       .ataque-status-caixa.posicao input {
-        width: 28px;
+        width: 24px;
         text-align: center;
         -moz-appearance: textfield;
         appearance: textfield;
@@ -2094,15 +2110,77 @@
       }
 
       .ataque-status-caixa:has(#combateRodada) input {
-        width: 30px;
+        width: 24px;
         text-align: center;
       }
 
-      .ataque-status-sufixo {
-        font-size: 16px;
+      .oculto-combate {
+        display: none !important;
+      }
+
+      .combate-inicio-controle {
+        display: flex;
+        align-items: center;
+      }
+
+      .combate-rodada-grupo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        width: 100%;
+      }
+
+      .combate-proxima-rodada {
+        width: 20px;
+        height: 20px;
+        border: 1px solid #8b4513;
+        border-radius: 5px;
+        background: #f3e3c5;
+        color: #5f2d0c;
+        font-family: "MedievalSharp";
+        font-size: 12px;
         font-weight: bold;
-        margin-left: -8px;
-        letter-spacing: -3px;
+        line-height: 1;
+        padding: 0;
+        cursor: pointer;
+      }
+
+      .combate-proxima-rodada:hover,
+      .combate-proxima-rodada:focus-visible {
+        background: #fffaf2;
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(139, 69, 19, 0.16);
+      }
+
+      .combate-botao-iniciativa {
+        white-space: nowrap;
+        padding: 7px 12px;
+        font-size: 13px;
+        bottom: 0;
+      }
+
+      .combate-botao-encerrar {
+        background: linear-gradient(180deg, #8b4513, #5f2d0c);
+        color: #fffaf2;
+        border-color: #4a240a;
+        box-shadow: 0 4px 10px rgba(74, 36, 10, 0.18);
+        padding: 7px 12px;
+        font-size: 13px;
+        bottom: 0;
+        min-height: 34px;
+      }
+
+      .combate-botao-encerrar:hover,
+      .combate-botao-encerrar:focus-visible {
+        background: linear-gradient(180deg, #9f5420, #6f3610);
+      }
+
+      .ataque-status-sufixo {
+        font-size: 14px;
+        font-weight: bold;
+        margin-left: -6px;
+        letter-spacing: -2px;
       }
 
       .ataque-status-input-group {
@@ -2111,6 +2189,22 @@
         gap: 2px;
         width: 100%;
         justify-content: center;
+      }
+
+      .combate-condicao-linha {
+        display: flex;
+        align-items: center;
+      }
+
+      .combate-condicao-caixa {
+        width: min(100%, 220px);
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 6px;
+      }
+
+      .combate-condicao-caixa input {
+        text-align: left;
       }
 
       .ataque-status-caixa.posicao input::-webkit-outer-spin-button,
@@ -3966,6 +4060,15 @@
         padding-right: 8px;
       }
 
+      #modalIniciativaDado {
+        width: 84px;
+        min-width: 84px;
+        text-align: center;
+        padding-top: 16px;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
       .dado-modal input:focus {
         outline: none;
         border-color: #8b5a2b;
@@ -4724,7 +4827,7 @@
         }
 
         .ataque-status-linha {
-          grid-template-columns: auto auto auto;
+          flex-wrap: wrap;
           gap: 6px;
         }
 
@@ -4791,7 +4894,7 @@
         }
 
         .ataque-status-linha {
-          grid-template-columns: auto auto;
+          flex-wrap: wrap;
           gap: 4px;
         }
 
@@ -4845,60 +4948,19 @@
         }
 
          .hexagrama {
-        height: 280px;
-    }
-
-    #radar {
-        width: 180px;
-        height: 180px;
+        width: 100%;
+        max-width: 280px;
+        margin: 0 auto;
     }
 
     .atributo {
-        width: 56px;
+        max-width: 56px;
         font-size: 11px;
     }
 
     .atributo input {
         width: 36px;
         font-size: 12px;
-    }
-
-    /* FOR */
-    .for {
-        top: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    /* DES */
-    .des {
-        top: 72px;
-        right: 6px;
-    }
-
-    /* CON */
-    .con {
-        bottom: 72px;
-        right: 6px;
-    }
-
-    /* INT */
-    .int {
-        bottom: 8px;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-
-    /* SAB */
-    .sab {
-        bottom: 72px;
-        left: 6px;
-    }
-
-    /* CAR */
-    .car {
-        top: 72px;
-        left: 6px;
     }
       }
 
@@ -4988,7 +5050,6 @@
         .hexagrama {
           width: 100%;
           max-width: 280px;
-          height: 300px;
           margin: 0 auto;
         }
 
@@ -5034,12 +5095,16 @@
         }
 
         .ataque-status-linha {
-          grid-template-columns: 1fr 1fr;
+          flex-wrap: wrap;
           gap: 6px;
         }
 
         .ataque-status-caixa,
         .ataque-status-caixa.posicao {
+          width: auto;
+        }
+
+        .combate-condicao-caixa {
           width: 100%;
         }
 
@@ -5102,8 +5167,7 @@
         .caixa-status,
         .passivas-linha,
         .magia-topo,
-        .historia-detalhes,
-        .ataque-status-linha {
+        .historia-detalhes {
           grid-template-columns: 1fr;
         }
 
@@ -6195,6 +6259,103 @@
               type="button"
               class="ataque-botao"
               id="modalTesteResistenciaCancelar"
+            >
+              Cancelar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="modalIniciativaOverlay"
+      class="ataque-modal-overlay modal-overlay-base oculto"
+      aria-hidden="true"
+    >
+      <div
+        class="ataque-modal modal-base"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalIniciativaTitulo"
+      >
+        <div class="ataque-modal-topo">
+          <div class="ataque-modal-rodada">Combate</div>
+        </div>
+        <div class="ataque-modal-corpo">
+          <div id="modalIniciativaTitulo" class="ataque-modal-titulo">
+            Rolar Iniciativa
+          </div>
+          <div id="modalIniciativaSubtitulo" class="ataque-modal-subtitulo">
+            1d20 + 0
+          </div>
+
+          <div class="dado-modal">
+            <div class="dado-modal-cabecalho">
+              <span class="dado-modal-titulo">Rolagem de iniciativa</span>
+              <span id="modalIniciativaFormula" class="dado-modal-nota"
+                >1d20</span
+              >
+            </div>
+            <div class="dado-modal-rolagem dado-modal-calculo">
+              <div class="dado-modal-coluna">
+                <div
+                  class="dado-modal-campo dado-modal-campo-com-dado dado-modal-grupo-dado"
+                >
+                  <span class="dado-modal-campo-rotulo">Dado</span>
+                  <div class="dado-modal-botao-coluna">
+                    <button
+                      type="button"
+                      id="modalIniciativaRolarDado"
+                      class="botao-dado"
+                      aria-label="Rolar 1d20"
+                      title="Rolar 1d20"
+                    >
+                      <span class="botao-dado-icone">🎲</span>
+                    </button>
+                  </div>
+                  <input
+                    id="modalIniciativaDado"
+                    type="number"
+                    min="1"
+                    max="20"
+                    step="1"
+                    inputmode="numeric"
+                    aria-label="Valor do dado de iniciativa"
+                  />
+                </div>
+              </div>
+              <div class="dado-modal-bonus-bloco">
+                <div id="modalIniciativaBonus" class="dado-modal-bonus">
+                  +0
+                </div>
+                <div class="dado-modal-bonus-detalhe">Iniciativa</div>
+              </div>
+              <div id="modalIniciativaTotal" class="dado-modal-total">
+                Total:
+                <strong>-</strong>
+              </div>
+            </div>
+            <label for="modalPosicaoIniciativa">Posição na iniciativa</label>
+            <input
+              type="number"
+              id="modalPosicaoIniciativa"
+              min="1"
+              step="1"
+            />
+          </div>
+
+          <div class="ataque-modal-acoes">
+            <button
+              type="button"
+              class="ataque-botao"
+              id="modalIniciativaConfirmar"
+            >
+              Confirmar
+            </button>
+            <button
+              type="button"
+              class="ataque-botao"
+              id="modalIniciativaCancelar"
             >
               Cancelar
             </button>
@@ -8428,8 +8589,18 @@
                 <div class="ataque-topo">
                   <!-- LINHA 1 -->
                   <div class="linha-status ataque-status-linha">
+                    <div class="combate-inicio-controle" id="combateInicioControle">
+                      <button
+                        id="btnRolarIniciativa"
+                        type="button"
+                        class="ataque-botao combate-botao-iniciativa"
+                      >
+                        🎲 Rolar Iniciativa
+                      </button>
+                    </div>
+
                     <!-- POSIÇÃO -->
-                    <div class="ataque-status-caixa posicao">
+                    <div class="ataque-status-caixa posicao oculto-combate" id="combatePosicaoCaixa">
                       <label for="ataquePosicao">Pos.:</label>
                       <div class="ataque-status-input-group">
                         <input
@@ -8445,20 +8616,40 @@
                     </div>
 
                     <!-- RODADA -->
-                    <div class="ataque-status-caixa">
+                    <div class="ataque-status-caixa oculto-combate" id="combateRodadaCaixa">
                       <label for="combateRodada">Rodada:</label>
-                      <input
-                        id="combateRodada"
-                        type="number"
-                        min="1"
-                        step="1"
-                        value="1"
-                        aria-label="Rodada do combate"
-                      />
+                      <div class="combate-rodada-grupo">
+                        <input
+                          id="combateRodada"
+                          type="number"
+                          min="1"
+                          step="1"
+                          value="1"
+                          aria-label="Rodada do combate"
+                        />
+                        <button
+                          id="btnProximaRodada"
+                          type="button"
+                          class="combate-proxima-rodada"
+                          title="Próxima rodada"
+                          aria-label="Próxima rodada"
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
 
-                    <!-- CONDIÇÃO -->
-                    <div class="ataque-status-caixa">
+                    <button
+                      type="button"
+                      class="ataque-botao combate-botao-encerrar oculto-combate"
+                      id="btnEncerrarCombate"
+                    >
+                      Encerrar Combate
+                    </button>
+                  </div>
+
+                  <div class="combate-condicao-linha">
+                    <div class="ataque-status-caixa combate-condicao-caixa">
                       <label for="ataqueCondicao">Condição:</label>
                       <input
                         id="ataqueCondicao"
@@ -8632,7 +8823,7 @@
                     <button
                       type="button"
                       class="ataque-botao ataque-botao-bloco"
-                      onclick="limparHistorico()"
+                      onclick="finalizarCombateLimparHistorico()"
                     >
                       Finalizar Combate (Limpar Histórico)
                     </button>
@@ -14518,6 +14709,13 @@ Bônus de Proficiência: +${bonusProf}
             if (!campo.id) return;
             if (campo.type === "file") return;
             if (campo.id === "importarFichaInput") return;
+            if (
+              [
+                "modalIniciativaDado",
+                "modalPosicaoIniciativa",
+              ].includes(campo.id)
+            )
+              return;
             dados[campo.id] =
               campo.type === "checkbox" ? campo.checked : campo.value;
           });
@@ -14533,6 +14731,9 @@ Bônus de Proficiência: +${bonusProf}
           JSON.stringify(talentosEstruturados),
         );
         dados.configFicha = JSON.parse(JSON.stringify(configFicha));
+        if (typeof obterEstadoCombateParaSalvar === "function") {
+          dados.estadoCombate = obterEstadoCombateParaSalvar();
+        }
 
         return adicionarAliasesLegacyAoSave(dados);
       }
@@ -17530,6 +17731,23 @@ Bônus de Proficiência: +${bonusProf}
         ultimaRolagemDano: null,
       };
 
+      const estadoCombateIniciativa = {
+        ativo: false,
+        rodada: 0,
+        posicao: null,
+        iniciativa: null,
+      };
+
+      const estadoModalIniciativa = {
+        dado: null,
+        bonus: 0,
+        total: null,
+      };
+
+      function obterEstadoCombateParaSalvar() {
+        return JSON.parse(JSON.stringify(estadoCombateIniciativa));
+      }
+
       const ATRIBUTOS_TESTE_RESISTENCIA = [
         "for",
         "des",
@@ -18198,9 +18416,152 @@ Bônus de Proficiência: +${bonusProf}
         atualizarTotalModalAtaque();
       }
 
-      function obterRodadaCombateAtual() {
+      function obterBonusIniciativaAtual() {
+        const valor = document.getElementById("iniciativa")?.value ?? "";
+        const bonus = parseInt(String(valor).replace(/[^\d-]/g, ""), 10);
+        return Number.isInteger(bonus) ? bonus : 0;
+      }
+
+      function atualizarTotalModalIniciativa() {
+        const campoDado = document.getElementById("modalIniciativaDado");
+        const campoBonus = document.getElementById("modalIniciativaBonus");
+        const campoTotal = document.querySelector(
+          "#modalIniciativaTotal strong",
+        );
+        const campoFormula = document.getElementById("modalIniciativaFormula");
+        const campoSubtitulo = document.getElementById(
+          "modalIniciativaSubtitulo",
+        );
+        const bonus = obterBonusIniciativaAtual();
+        const dado = parseInt(campoDado?.value, 10);
+        const total = Number.isInteger(dado) ? dado + bonus : null;
+        const textoBonus = `${bonus >= 0 ? "+" : ""}${bonus}`;
+
+        estadoModalIniciativa.dado = Number.isInteger(dado) ? dado : null;
+        estadoModalIniciativa.bonus = bonus;
+        estadoModalIniciativa.total = total;
+
+        if (campoBonus) campoBonus.textContent = textoBonus;
+        if (campoTotal) campoTotal.textContent = total === null ? "-" : total;
+        if (campoFormula) campoFormula.textContent = `1d20 ${textoBonus}`;
+        if (campoSubtitulo) {
+          campoSubtitulo.textContent = `1d20 ${textoBonus}`;
+        }
+      }
+
+      function atualizarInterfaceCombate() {
+        const ativo = !!estadoCombateIniciativa.ativo;
+        const rodada = ativo ? Math.max(1, parseInt(estadoCombateIniciativa.rodada, 10) || 1) : 0;
+        const posicao = ativo ? parseInt(estadoCombateIniciativa.posicao, 10) || 1 : 0;
+
+        document
+          .getElementById("combateInicioControle")
+          ?.classList.toggle("oculto-combate", ativo);
+        document
+          .getElementById("combatePosicaoCaixa")
+          ?.classList.toggle("oculto-combate", !ativo);
+        document
+          .getElementById("combateRodadaCaixa")
+          ?.classList.toggle("oculto-combate", !ativo);
+        document
+          .getElementById("btnEncerrarCombate")
+          ?.classList.toggle("oculto-combate", !ativo);
+
         const campoRodada = document.getElementById("combateRodada");
-        return parseInt(campoRodada?.value, 10) || 1;
+        const campoPosicao = document.getElementById("ataquePosicao");
+
+        if (campoRodada) campoRodada.value = ativo ? rodada : 0;
+        if (campoPosicao) campoPosicao.value = ativo ? posicao : 0;
+
+        atualizarRodadaModalAtaque();
+      }
+
+      function abrirModalIniciativa() {
+        const overlay = document.getElementById("modalIniciativaOverlay");
+        const campoDado = document.getElementById("modalIniciativaDado");
+        const campoPosicao = document.getElementById("modalPosicaoIniciativa");
+        if (!overlay || !campoDado || !campoPosicao) return;
+
+        estadoModalIniciativa.dado = null;
+        estadoModalIniciativa.total = null;
+        campoDado.value = "";
+        campoPosicao.value = estadoCombateIniciativa.posicao || "";
+        atualizarTotalModalIniciativa();
+
+        overlay.classList.remove("oculto");
+        overlay.classList.add("ativo");
+        overlay.removeAttribute("aria-hidden");
+        campoDado.focus();
+      }
+
+      function fecharModalIniciativa() {
+        const overlay = document.getElementById("modalIniciativaOverlay");
+        if (!overlay) return;
+        overlay.classList.remove("ativo");
+        overlay.classList.add("oculto");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
+      function confirmarIniciativa() {
+        const campoDado = document.getElementById("modalIniciativaDado");
+        const campoPosicao = document.getElementById("modalPosicaoIniciativa");
+        const dado = parseInt(campoDado?.value, 10);
+        const posicao = parseInt(campoPosicao?.value, 10);
+
+        if (!Number.isInteger(dado) || dado < 1 || dado > 20) {
+          campoDado?.focus();
+          return;
+        }
+
+        if (!Number.isInteger(posicao) || posicao < 1) {
+          campoPosicao?.focus();
+          return;
+        }
+
+        const total = dado + obterBonusIniciativaAtual();
+        estadoCombateIniciativa.ativo = true;
+        estadoCombateIniciativa.rodada = 1;
+        estadoCombateIniciativa.posicao = posicao;
+        estadoCombateIniciativa.iniciativa = total;
+
+        atualizarInterfaceCombate();
+        adicionarRegistroHistoricoCombate("Iniciativa", total, "🎲");
+        fecharModalIniciativa();
+      }
+
+      function avancarRodadaCombate() {
+        if (!estadoCombateIniciativa.ativo) return;
+        estadoCombateIniciativa.rodada = Math.max(1, parseInt(estadoCombateIniciativa.rodada, 10) || 1) + 1;
+        atualizarInterfaceCombate();
+      }
+
+      function encerrarCombate(opcoes = {}) {
+        estadoCombateIniciativa.ativo = false;
+        estadoCombateIniciativa.rodada = 0;
+        estadoCombateIniciativa.posicao = null;
+        estadoCombateIniciativa.iniciativa = null;
+        atualizarInterfaceCombate();
+
+        if (opcoes.limparHistorico) {
+          limparHistorico();
+        }
+      }
+
+      function finalizarCombateLimparHistorico() {
+        encerrarCombate({ limparHistorico: true });
+      }
+
+      function confirmarEncerrarCombate() {
+        if (!confirm("Deseja realmente encerrar a batalha?")) return;
+        encerrarCombate();
+      }
+
+      function obterRodadaAtualHistorico() {
+        return estadoCombateIniciativa.ativo ? estadoCombateIniciativa.rodada : 0;
+      }
+
+      function obterRodadaCombateAtual() {
+        return obterRodadaAtualHistorico();
       }
 
       function atualizarRodadaModalAtaque() {
@@ -18576,7 +18937,7 @@ Bônus de Proficiência: +${bonusProf}
         iconePersonalizado = "",
         detalheRodada = "",
       ) {
-        const rodada = obterRodadaCombateAtual();
+        const rodada = obterRodadaAtualHistorico();
         const registrosContainer =
           document.getElementById("historicoRegistros");
         if (!registrosContainer) return;
@@ -18852,6 +19213,21 @@ Bônus de Proficiência: +${bonusProf}
 
         const numero = parseInt(campo.value) || 0;
         campo.value = numero;
+        if (estadoCombateIniciativa.ativo) {
+          estadoCombateIniciativa.posicao = Math.max(1, numero);
+        }
+      }
+
+      function normalizarRodadaCombate() {
+        const campo = document.getElementById("combateRodada");
+        if (!campo) return;
+
+        const numero = Math.max(1, parseInt(campo.value, 10) || 1);
+        campo.value = numero;
+        if (estadoCombateIniciativa.ativo) {
+          estadoCombateIniciativa.rodada = numero;
+        }
+        atualizarRodadaModalAtaque();
       }
 
       function trocarSubAbaCombate(tipo, botao) {
@@ -19304,9 +19680,71 @@ Bônus de Proficiência: +${bonusProf}
         });
       }
 
+      const overlayIniciativa = document.getElementById(
+        "modalIniciativaOverlay",
+      );
+      if (overlayIniciativa) {
+        overlayIniciativa.addEventListener("click", (evento) => {
+          if (evento.target === overlayIniciativa) {
+            fecharModalIniciativa();
+          }
+        });
+      }
+
       document
         .getElementById("abrirTesteResistenciaBtn")
         ?.addEventListener("click", abrirModalTesteResistencia);
+      document
+        .getElementById("btnRolarIniciativa")
+        ?.addEventListener("click", abrirModalIniciativa);
+      document
+        .getElementById("btnProximaRodada")
+        ?.addEventListener("click", avancarRodadaCombate);
+      document
+        .getElementById("btnEncerrarCombate")
+        ?.addEventListener("click", confirmarEncerrarCombate);
+      document
+        .getElementById("modalIniciativaConfirmar")
+        ?.addEventListener("click", confirmarIniciativa);
+      document
+        .getElementById("modalIniciativaCancelar")
+        ?.addEventListener("click", fecharModalIniciativa);
+      document
+        .getElementById("modalIniciativaDado")
+        ?.addEventListener("input", atualizarTotalModalIniciativa);
+      document
+        .getElementById("modalIniciativaDado")
+        ?.addEventListener("change", atualizarTotalModalIniciativa);
+      document
+        .getElementById("modalIniciativaDado")
+        ?.addEventListener("keydown", (evento) => {
+          if (evento.key === "Enter") confirmarIniciativa();
+        });
+      document
+        .getElementById("modalPosicaoIniciativa")
+        ?.addEventListener("keydown", (evento) => {
+          if (evento.key === "Enter") confirmarIniciativa();
+        });
+      document
+        .getElementById("modalIniciativaRolarDado")
+        ?.addEventListener("click", () => {
+          const campoDado = document.getElementById("modalIniciativaDado");
+          const botao = document.getElementById("modalIniciativaRolarDado");
+          if (!campoDado || !botao) return;
+
+          botao.classList.add("rolando");
+          animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then((rolagem) => {
+            botao.classList.remove("rolando");
+            atualizarTotalModalIniciativa();
+            if (rolagem?.resultados?.length) {
+              botao.title = `1d20: ${rolagem.resultados.join(", ")}`;
+              botao.setAttribute(
+                "aria-label",
+                `Rolar 1d20. Último resultado ${rolagem.resultados.join(", ")}`,
+              );
+            }
+          });
+        });
       document
         .getElementById("modalTesteResistenciaConfirmar")
         ?.addEventListener("click", confirmarTesteResistencia);
@@ -19467,13 +19905,24 @@ Bônus de Proficiência: +${bonusProf}
 
       document
         .getElementById("combateRodada")
-        ?.addEventListener("input", atualizarRodadaModalAtaque);
+        ?.addEventListener("input", normalizarRodadaCombate);
       document
         .getElementById("combateRodada")
-        ?.addEventListener("change", atualizarRodadaModalAtaque);
+        ?.addEventListener("change", normalizarRodadaCombate);
 
       document.addEventListener("keydown", (evento) => {
         if (evento.key === "Escape") {
+          const overlayIniciativaAtivo = document.getElementById(
+            "modalIniciativaOverlay",
+          );
+          if (
+            overlayIniciativaAtivo &&
+            !overlayIniciativaAtivo.classList.contains("oculto")
+          ) {
+            fecharModalIniciativa();
+            return;
+          }
+
           const overlayTeste = document.getElementById(
             "modalTesteResistenciaOverlay",
           );
@@ -19526,6 +19975,7 @@ Bônus de Proficiência: +${bonusProf}
         campoPosicaoAtaque.addEventListener("input", normalizarPosicaoAtaque);
         campoPosicaoAtaque.addEventListener("change", normalizarPosicaoAtaque);
       }
+      atualizarInterfaceCombate();
     </script>
 
     <!-- ========================= -->
@@ -19572,6 +20022,7 @@ Bônus de Proficiência: +${bonusProf}
         aplicarFormatoCA("escudoCA");
         atualizarTodosEmojis();
         normalizarPosicaoAtaque();
+        atualizarInterfaceCombate();
         desenharRadar();
         try {
           renderTalentos();
@@ -19686,6 +20137,25 @@ Bônus de Proficiência: +${bonusProf}
 
           preencherCampo(campo, dados[key]);
         }
+
+        if (dados.estadoCombate && typeof dados.estadoCombate === "object") {
+          estadoCombateIniciativa.ativo = !!dados.estadoCombate.ativo;
+          estadoCombateIniciativa.rodada = estadoCombateIniciativa.ativo
+            ? Math.max(1, parseInt(dados.estadoCombate.rodada, 10) || 1)
+            : 0;
+          estadoCombateIniciativa.posicao = estadoCombateIniciativa.ativo
+            ? Math.max(1, parseInt(dados.estadoCombate.posicao, 10) || 1)
+            : null;
+          estadoCombateIniciativa.iniciativa = estadoCombateIniciativa.ativo
+            ? parseInt(dados.estadoCombate.iniciativa, 10) || 0
+            : null;
+        } else {
+          estadoCombateIniciativa.ativo = false;
+          estadoCombateIniciativa.rodada = 0;
+          estadoCombateIniciativa.posicao = null;
+          estadoCombateIniciativa.iniciativa = null;
+        }
+        atualizarInterfaceCombate();
 
         const campoSubclasse = garantirCampoSubclasseComoSelect();
         if (campoSubclasse) {
