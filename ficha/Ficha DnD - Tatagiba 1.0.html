@@ -4042,12 +4042,15 @@
       .dado-modal-campo-rotulo {
         position: absolute;
         top: 6px;
-        left: 48px;
+        left: calc(32px + 8px + 42px);
+        width: 84px;
+        transform: translateX(-50%);
         font-size: 9px;
         line-height: 1;
         color: #8b5a2b;
         text-transform: uppercase;
         letter-spacing: 0.08em;
+        text-align: center;
         pointer-events: none;
         z-index: 1;
       }
@@ -15438,11 +15441,13 @@ Bônus de Proficiência: +${bonusProf}
         nivel: 0,
         indice: null,
         modo: "visualizar",
+        origemCombate: false,
       };
       const estadoModalUsoMagia = {
         magia: null,
         nivelMinimo: 1,
         ultimoFoco: null,
+        origemCombate: false,
       };
       let concentracaoAtiva = null;
       let ultimoResultadoConcentracao = null;
@@ -16189,9 +16194,123 @@ Bônus de Proficiência: +${bonusProf}
       }
 
       function conjurarTruque(magia) {
+        const origemCombate = estadoModalMagia.origemCombate;
         registrarHistoricoMagia(magia);
         iniciarConcentracaoMagia(magia);
         fecharModalMagia();
+        estadoModalMagia.origemCombate = origemCombate;
+        resolverCombateMagia(magia, null);
+        estadoModalMagia.origemCombate = false;
+      }
+
+      function magiaPossuiDano(magia) {
+        if (magia?.propriedades?.dano) return true;
+        return (magia?.efeitos || []).some((efeito) => efeito?.tipo === "dano");
+      }
+
+      function obterEfeitoDanoMagia(magia) {
+        return (
+          (magia?.efeitos || []).find((efeito) => efeito?.tipo === "dano") ||
+          null
+        );
+      }
+
+      function obterChaveAtributoConjuracao() {
+        const valor = String(
+          document.getElementById("magiaAtributoConjuracao")?.value || "",
+        ).trim();
+        const chave = valor.slice(0, 3).toLowerCase();
+        return ["for", "des", "con", "int", "sab", "car"].includes(chave)
+          ? chave
+          : "int";
+      }
+
+      function obterBonusAtaqueMagicoAtual() {
+        const valor = String(
+          document.getElementById("magiaAtaqueMagico")?.value || "",
+        ).replace(/\+/g, "");
+        const bonus = parseInt(valor, 10);
+        return Number.isInteger(bonus) ? bonus : 0;
+      }
+
+      function parsearFormulaDanoMagia(formula) {
+        const texto = String(formula || "").trim();
+        const match = texto.match(/^(\d+)d(\d+)(?:\s*([+-])\s*(\d+|for|des|con|int|sab|car))?\s*$/i);
+        if (!match) return null;
+
+        let bonus = 0;
+        let rotuloBonus = "";
+        const operador = match[3] === "-" ? -1 : 1;
+        const termo = String(match[4] || "").toLowerCase();
+
+        if (termo) {
+          if (["for", "des", "con", "int", "sab", "car"].includes(termo)) {
+            bonus = operador * (getModificadorBaseAtributo(termo) || 0);
+            rotuloBonus = termo.toUpperCase();
+          } else {
+            bonus = operador * (parseInt(termo, 10) || 0);
+            rotuloBonus = String(Math.abs(bonus));
+          }
+        }
+
+        return {
+          qtd: parseInt(match[1], 10),
+          faces: parseInt(match[2], 10),
+          formulaDado: `${parseInt(match[1], 10)}d${parseInt(match[2], 10)}`,
+          bonus,
+          rotuloBonus,
+        };
+      }
+
+      function criarArmaVirtualMagia(magia) {
+        const efeitoDano = obterEfeitoDanoMagia(magia);
+        const infoDano = parsearFormulaDanoMagia(efeitoDano?.formula || "");
+        const chaveAtributo = obterChaveAtributoConjuracao();
+        const rotuloAtributo = chaveAtributo.toUpperCase();
+        const bonusAtaque = obterBonusAtaqueMagicoAtual();
+        const modBase = getModificadorBaseAtributo(chaveAtributo) || 0;
+
+        return {
+          nome: magia?.nome || "Magia",
+          tipo: "magia",
+          propriedade: magia?.resolucao || "",
+          chaveAtributo,
+          ataque: chaveAtributo,
+          dano: infoDano?.formulaDado || efeitoDano?.formula || "",
+          danoFormula: infoDano?.formulaDado || efeitoDano?.formula || "",
+          danoTipo: efeitoDano?.dano_tipo || "",
+          danoBonusMagia: infoDano?.bonus || 0,
+          danoBonusRotuloMagia: infoDano?.rotuloBonus || "",
+          magiaOriginal: { ...magia },
+          proficiente: true,
+          usaMunicao: false,
+          calculoMagia: {
+            rotuloAtributo,
+            totalAtaque: bonusAtaque,
+            textoResumo: formatarBonusAtaqueModal(bonusAtaque),
+            modBase,
+            bonusProf: bonusAtaque - modBase,
+          },
+        };
+      }
+
+      function resolverCombateMagia(magia, nivelSlot = null) {
+        if (!estadoModalMagia.origemCombate || !magiaPossuiDano(magia)) {
+          abrirHistoricoCombateMagia();
+          return;
+        }
+
+        const resolucao = String(magia?.resolucao || "");
+        if (resolucao === "Ataque") {
+          abrirModalAtaqueMagia(magia);
+          return;
+        }
+
+        if (resolucao.toLowerCase().includes("teste")) {
+          abrirModalDanoMagia(magia, { mostrarCD: true, nivelSlot });
+          return;
+        }
+
         abrirHistoricoCombateMagia();
       }
 
@@ -16305,7 +16424,9 @@ Bônus de Proficiência: +${bonusProf}
             return;
           }
 
-          abrirModalUsarMagia(magia);
+          abrirModalUsarMagia(magia, {
+            origemCombate: estadoModalMagia.origemCombate,
+          });
         });
 
         container.appendChild(header);
@@ -16525,11 +16646,12 @@ Bônus de Proficiência: +${bonusProf}
         if (botaoConfirmar) botaoConfirmar.disabled = false;
       }
 
-      function abrirModalUsarMagia(magia) {
+      function abrirModalUsarMagia(magia, opcoes = {}) {
         const overlay = obterModalUsoMagiaOverlay();
         if (!overlay || !magia) return;
 
         estadoModalUsoMagia.magia = { ...magia };
+        estadoModalUsoMagia.origemCombate = !!opcoes.origemCombate;
         estadoModalUsoMagia.nivelMinimo = Math.max(
           1,
           parseInt(magia.nivel, 10) || 1,
@@ -16578,6 +16700,7 @@ Bônus de Proficiência: +${bonusProf}
         estadoModalUsoMagia.magia = null;
         estadoModalUsoMagia.nivelMinimo = 1;
         estadoModalUsoMagia.ultimoFoco = null;
+        estadoModalUsoMagia.origemCombate = false;
       }
 
       function obterSlotSelecionadoModalMagia() {
@@ -16603,9 +16726,16 @@ Bônus de Proficiência: +${bonusProf}
         registrarHistoricoMagia(magia, nivelSlot);
         iniciarConcentracaoMagia(magia, nivelSlot);
         atualizarMagias();
+        const origemCombate = estadoModalUsoMagia.origemCombate;
         fecharModalUsarMagia();
         fecharModalMagia();
-        abrirHistoricoCombateMagia();
+        if (origemCombate) {
+          estadoModalMagia.origemCombate = true;
+          resolverCombateMagia(magia, nivelSlot);
+          estadoModalMagia.origemCombate = false;
+        } else {
+          abrirHistoricoCombateMagia();
+        }
       }
 
       function prepararInterfaceNivelMagia(nivel) {
@@ -17108,7 +17238,9 @@ Bônus de Proficiência: +${bonusProf}
             const concentrando = magiaEstaConcentrada(magia);
             item.classList.toggle("concentrando", concentrando);
             item.addEventListener("click", () =>
-              abrirModalMagia(magia.nivel, magia.indiceLista, "visualizar"),
+              abrirModalMagia(magia.nivel, magia.indiceLista, "visualizar", {
+                origemCombate: true,
+              }),
             );
 
             const topo = document.createElement("div");
@@ -17457,7 +17589,7 @@ Bônus de Proficiência: +${bonusProf}
         container.appendChild(renderizarCardDetalheMagia(magia));
       }
 
-      function abrirModalMagia(nivel, indice, modo = "visualizar") {
+      function abrirModalMagia(nivel, indice, modo = "visualizar", opcoes = {}) {
         const overlay = obterModalMagiaOverlay();
         if (!overlay) return;
 
@@ -17467,6 +17599,7 @@ Bônus de Proficiência: +${bonusProf}
             : null;
         estadoModalMagia.nivel = nivel;
         estadoModalMagia.indice = indice;
+        estadoModalMagia.origemCombate = !!opcoes.origemCombate;
 
         const magia = obterMagiaDoEstadoModal();
         atualizarCabecalhoModalMagia(magia);
@@ -17504,6 +17637,7 @@ Bônus de Proficiência: +${bonusProf}
           ultimoFocoModalMagia.focus();
         }
         ultimoFocoModalMagia = null;
+        estadoModalMagia.origemCombate = false;
       }
 
       function salvarModalMagia() {
@@ -17821,6 +17955,10 @@ Bônus de Proficiência: +${bonusProf}
         danoFormula: "",
         danoModBase: 0,
         ultimaRolagemDano: null,
+        origem: "arma",
+        magia: null,
+        danoTipo: "",
+        infoCD: "",
       };
 
       const estadoCombateIniciativa = {
@@ -18221,6 +18359,9 @@ Bônus de Proficiência: +${bonusProf}
       }
 
       function obterResumoBonusAtaqueArma(arma) {
+        if (arma?.tipo === "magia" && arma.calculoMagia) {
+          return arma.calculoMagia;
+        }
         return getResumoCalculoAtaque(arma, arma?.ataque);
       }
 
@@ -18302,6 +18443,9 @@ Bônus de Proficiência: +${bonusProf}
       }
 
       function obterBonusDanoEfetivoModalAtaque() {
+        if (estadoAtaqueArma.origem === "magia") {
+          return estadoAtaqueArma.danoModBase || 0;
+        }
         return estadoAtaqueArma.tipoAcao === "Ação bônus"
           ? 0
           : estadoAtaqueArma.danoModBase || 0;
@@ -18321,6 +18465,9 @@ Bônus de Proficiência: +${bonusProf}
 
         campoBonus.textContent = formatarBonusAtaqueModal(modBase);
         campoDetalhe.textContent =
+          estadoAtaqueArma.origem === "magia"
+            ? `(${estadoAtaqueArma.arma?.danoBonusRotuloMagia || "magia"})`
+            :
           estadoAtaqueArma.tipoAcao === "Ação bônus"
             ? "(sem MOD)"
             : `(${modBase}${iconeAtributo})`;
@@ -18780,6 +18927,10 @@ Bônus de Proficiência: +${bonusProf}
         estadoAtaqueArma.danoFormula = "";
         estadoAtaqueArma.danoModBase = 0;
         estadoAtaqueArma.ultimaRolagemDano = null;
+        estadoAtaqueArma.origem = "arma";
+        estadoAtaqueArma.magia = null;
+        estadoAtaqueArma.danoTipo = "";
+        estadoAtaqueArma.infoCD = "";
 
         if (campoDado) campoDado.value = "";
         if (campoDano) campoDano.value = "";
@@ -18829,6 +18980,10 @@ Bônus de Proficiência: +${bonusProf}
           obterResumoBonusAtaqueArma(arma);
 
         estadoAtaqueArma.arma = arma;
+        estadoAtaqueArma.origem = arma?.tipo === "magia" ? "magia" : "arma";
+        estadoAtaqueArma.magia = arma?.magiaOriginal || null;
+        estadoAtaqueArma.danoTipo = arma?.danoTipo || "";
+        estadoAtaqueArma.infoCD = "";
         estadoAtaqueArma.dado = null;
         estadoAtaqueArma.totalAtaque = totalAtaque;
         estadoAtaqueArma.modBase = modBase || 0;
@@ -18840,13 +18995,19 @@ Bônus de Proficiência: +${bonusProf}
         estadoAtaqueArma.danoQtd = infoDano.qtd;
         estadoAtaqueArma.danoFaces = infoDano.faces;
         estadoAtaqueArma.danoFormula = formulaDano;
-        estadoAtaqueArma.danoModBase = modBase || 0;
+        estadoAtaqueArma.danoModBase =
+          estadoAtaqueArma.origem === "magia"
+            ? arma?.danoBonusMagia || 0
+            : modBase || 0;
         estadoAtaqueArma.tipoAcao = "Ação";
         estadoAtaqueArma.historicoRolagens = [];
         estadoAtaqueArma.historicoRolagensDano = [];
         estadoAtaqueArma.ultimaRolagemDano = null;
 
-        titulo.innerHTML = `Ataque com <span class="ataque-modal-titulo-arma">${arma?.nome || "arma"}</span>`;
+        titulo.innerHTML =
+          estadoAtaqueArma.origem === "magia"
+            ? `Ataque mágico com <span class="ataque-modal-titulo-arma">${arma?.nome || "magia"}</span>`
+            : `Ataque com <span class="ataque-modal-titulo-arma">${arma?.nome || "arma"}</span>`;
         subtitulo.textContent = obterSubtituloModalAtaque(arma);
         resumo.textContent = "";
         campoDado.value = "";
@@ -18868,6 +19029,10 @@ Bônus de Proficiência: +${bonusProf}
         overlay.setAttribute("aria-hidden", "false");
 
         setTimeout(() => campoDado.focus(), 0);
+      }
+
+      function abrirModalAtaqueMagia(magia) {
+        abrirModalAtaqueArma(criarArmaVirtualMagia(magia));
       }
 
       function obterDadoModalAtaque() {
@@ -18913,10 +19078,14 @@ Bônus de Proficiência: +${bonusProf}
         const formulaDanoTexto = estadoAtaqueArma.danoFormula || "?";
         const bonusDanoEfetivo = obterBonusDanoEfetivoModalAtaque();
         const detalheDano =
-          estadoAtaqueArma.tipoAcao === "Ação bônus"
+          estadoAtaqueArma.origem === "magia"
+            ? estadoAtaqueArma.arma?.danoBonusRotuloMagia || "bônus da magia"
+            : estadoAtaqueArma.tipoAcao === "Ação bônus"
             ? "sem modificador em ação bônus"
             : tooltipDano;
-        resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? " ataque-modal-resumo-dado-critico" : ""}"><span class="calc-item" title="Valor do dado"><span class="numero">${dado}</span><span class="emoji">🎲</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="${tooltipAtributo}"><span class="numero">${estadoAtaqueArma.modBase || 0}</span><span class="emoji">${iconeAtributo}</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="Bônus de Proficiência"><span class="numero">${estadoAtaqueArma.bonusProf || 0}</span><span class="emoji">🅿️</span></span></span>)<br>Dano da arma: <span class="ataque-modal-resumo-destaque">${formulaDanoTexto} + <span class="calc-item" title="${detalheDano}"><span class="numero">${bonusDanoEfetivo}</span><span class="emoji">${bonusDanoEfetivo === 0 && estadoAtaqueArma.tipoAcao === "Ação bônus" ? "" : iconeDano}</span></span></span>`;
+        const rotuloDano =
+          estadoAtaqueArma.origem === "magia" ? "Dano da magia" : "Dano da arma";
+        resumo.innerHTML = `Ataque: <span class="ataque-modal-resumo-destaque">${totalAtaque}</span> (<span class="ataque-modal-resumo-destaque${dado === 20 ? " ataque-modal-resumo-dado-critico" : ""}"><span class="calc-item" title="Valor do dado"><span class="numero">${dado}</span><span class="emoji">🎲</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="${tooltipAtributo}"><span class="numero">${estadoAtaqueArma.modBase || 0}</span><span class="emoji">${iconeAtributo}</span></span></span> + <span class="ataque-modal-resumo-destaque"><span class="calc-item" title="Bônus de ataque"><span class="numero">${estadoAtaqueArma.bonusProf || 0}</span><span class="emoji">🅿️</span></span></span>)<br>${rotuloDano}: <span class="ataque-modal-resumo-destaque">${formulaDanoTexto} + <span class="calc-item" title="${detalheDano}"><span class="numero">${bonusDanoEfetivo}</span><span class="emoji">${bonusDanoEfetivo === 0 && estadoAtaqueArma.tipoAcao === "Ação bônus" ? "" : iconeDano}</span></span></span>`;
         const botaoRolarDano = document.getElementById("modalAtaqueRolarDano");
         if (botaoRolarDano) {
           const formulaBtn =
@@ -18940,6 +19109,77 @@ Bônus de Proficiência: +${bonusProf}
 
         atualizarHistoricoRolagensModalDano();
         alternarEtapaModalAtaque(true);
+        setTimeout(() => campoDano.focus(), 0);
+      }
+
+      function configurarBotaoRolarDanoModal() {
+        const botaoRolarDano = document.getElementById("modalAtaqueRolarDano");
+        if (!botaoRolarDano) return;
+
+        const formulaBtn =
+          estadoAtaqueArma.danoFaces > 0
+            ? estadoAtaqueArma.danoQtd + "d" + estadoAtaqueArma.danoFaces
+            : "dano";
+        const textoRolar = "Rolar " + formulaBtn;
+        botaoRolarDano.setAttribute("aria-label", textoRolar);
+        botaoRolarDano.setAttribute("title", textoRolar);
+      }
+
+      function abrirModalDanoMagia(magia, opcoes = {}) {
+        const overlay = document.getElementById("modalAtaqueOverlay");
+        const titulo = document.getElementById("modalAtaqueTitulo");
+        const subtitulo = document.getElementById("modalAtaqueSubtitulo");
+        const resumo = document.getElementById("modalAtaqueResumo");
+        const campoDado = document.getElementById("modalAtaqueDado");
+        const campoDano = document.getElementById("modalAtaqueDano");
+        const arma = criarArmaVirtualMagia(magia);
+        const infoDano = parsearFormulaDano(arma.danoFormula || "");
+        if (!overlay || !titulo || !subtitulo || !resumo || !campoDano) return;
+
+        estadoAtaqueArma.arma = arma;
+        estadoAtaqueArma.origem = "magia";
+        estadoAtaqueArma.magia = arma.magiaOriginal || null;
+        estadoAtaqueArma.dado = null;
+        estadoAtaqueArma.totalAtaque = 0;
+        estadoAtaqueArma.modBase = arma.calculoMagia?.modBase || 0;
+        estadoAtaqueArma.bonusProf = arma.calculoMagia?.bonusProf || 0;
+        estadoAtaqueArma.rotuloAtributo = arma.calculoMagia?.rotuloAtributo || "";
+        estadoAtaqueArma.textoResumo = "";
+        estadoAtaqueArma.tipoAcao = "Ação";
+        estadoAtaqueArma.historicoRolagens = [];
+        estadoAtaqueArma.historicoRolagensDano = [];
+        estadoAtaqueArma.danoQtd = infoDano.qtd;
+        estadoAtaqueArma.danoFaces = infoDano.faces;
+        estadoAtaqueArma.danoFormula = arma.danoFormula || "";
+        estadoAtaqueArma.danoModBase = arma.danoBonusMagia || 0;
+        estadoAtaqueArma.ultimaRolagemDano = null;
+        estadoAtaqueArma.danoTipo = arma.danoTipo || "";
+        estadoAtaqueArma.infoCD = opcoes.mostrarCD
+          ? `CD para Evitar suas Magias: ${String(document.getElementById("magiaCD")?.value || "-").trim() || "-"}`
+          : "";
+
+        titulo.innerHTML = `Dano de <span class="ataque-modal-titulo-arma">${arma.nome}</span>`;
+        subtitulo.textContent = magia?.teste_resistencia
+          ? `Teste de Resistência: ${magia.teste_resistencia}`
+          : "Teste de Resistência";
+        if (campoDado) campoDado.value = "";
+        campoDano.value = "";
+
+        const linhaCD = estadoAtaqueArma.infoCD
+          ? `<div>${estadoAtaqueArma.infoCD}</div>`
+          : "";
+        resumo.innerHTML = `${linhaCD}<div>Dano da magia: <span class="ataque-modal-resumo-destaque">${estadoAtaqueArma.danoFormula || "dano"} + ${formatarBonusAtaqueModal(estadoAtaqueArma.danoModBase || 0)}</span></div>`;
+
+        atualizarRodadaModalAtaque();
+        configurarBotaoRolarDanoModal();
+        atualizarDetalheBonusDanoModal();
+        atualizarDetalheDadoDanoModal();
+        atualizarTotalModalDano();
+        atualizarHistoricoRolagensModalDano();
+        alternarEtapaModalAtaque(true);
+        overlay.classList.add("ativo");
+        overlay.classList.remove("oculto");
+        overlay.setAttribute("aria-hidden", "false");
         setTimeout(() => campoDano.focus(), 0);
       }
 
@@ -19089,6 +19329,7 @@ Bônus de Proficiência: +${bonusProf}
           Sucesso: "🍀",
           "Ataque falhou!": "❌",
           "Ataque!": "⚔️",
+          "Dano Mágico": "✨",
         };
         icones["Ataque"] = "⚔️";
 
@@ -19119,21 +19360,39 @@ Bônus de Proficiência: +${bonusProf}
       function registrarHistoricoAtaqueArma(sucesso, dano) {
         const arma = estadoAtaqueArma.arma;
         const dado = estadoAtaqueArma.dado;
-        if (!arma || dado === null) return;
+        if (!arma || (dado === null && estadoAtaqueArma.origem !== "magia")) return;
 
-        consumirMunicao(1, arma);
+        if (estadoAtaqueArma.origem !== "magia") consumirMunicao(1, arma);
 
-        const valor = [
-          arma.nome || "Arma",
-          `Dado: ${dado}`,
-          sucesso ? "Sucesso" : "Fracasso",
-          `Dano: ${dano}`,
-        ].join(" | ");
+        const valor =
+          estadoAtaqueArma.origem === "magia"
+            ? [
+                arma.nome || "Magia",
+                dado === null ? "" : `Dado: ${dado}`,
+                sucesso ? "Sucesso" : "Fracasso",
+                `Dano: ${dano}`,
+                estadoAtaqueArma.danoTipo || "",
+                estadoAtaqueArma.infoCD || "",
+              ]
+                .filter(Boolean)
+                .join(" | ")
+            : [
+                arma.nome || "Arma",
+                `Dado: ${dado}`,
+                sucesso ? "Sucesso" : "Fracasso",
+                `Dano: ${dano}`,
+              ].join(" | ");
 
         adicionarRegistroHistoricoCombate(
-          "Ataque",
+          estadoAtaqueArma.origem === "magia" && dado === null
+            ? "Dano Mágico"
+            : "Ataque",
           valor,
-          arma.usaMunicao ? "🏹" : "⚔️",
+          estadoAtaqueArma.origem === "magia"
+            ? "✨"
+            : arma.usaMunicao
+              ? "🏹"
+              : "⚔️",
           obterTipoAcaoSelecionadoModalAtaque().toLowerCase(),
         );
       }

@@ -28,7 +28,7 @@
   "int": "10",
   "sab": "10",
   "car": "10",
-  "ca_valor": "12",
+  "ca_valor": "13",
   "iniciativa": "+0",
   "deslocamento": "9m",
   "pvTotal": "8",
@@ -119,17 +119,17 @@
   "arma2Ataque": "for",
   "arma2Dano": "",
   "arma2MunicaoSelect": "",
-  "armaduraNome": "",
-  "armaduraCA": "10",
+  "armaduraNome": "0",
+  "armaduraCA": "11",
   "armaduraFurtividade": "Normal",
   "escudoNome": "Escudo",
   "escudoCA": "+2",
   "outroEquipadoTipo": "",
   "outroEquipadoCA": "0",
   "ataquePosicao": "0",
-  "combateRodada": "1",
+  "combateRodada": "0",
   "ataqueCondicao": "Normal",
-  "ataqueCaTotal": "12",
+  "ataqueCaTotal": "13",
   "ataqueCaEscudo": "+2",
   "magiaClasseConjuradora": "Clérigo",
   "magiaAtributoConjuracao": "sab",
@@ -205,7 +205,7 @@
   "magiaModalProximosNiveis": "",
   "arma1EquipadaIndice": "0",
   "arma2EquipadaIndice": "__escudo__0",
-  "armaduraEquipadaIndice": null,
+  "armaduraEquipadaIndice": 0,
   "talentosEstruturados": {
     "classe": [
       {
@@ -302,6 +302,12 @@
       "raca": "",
       "subraca": ""
     }
+  },
+  "estadoCombate": {
+    "ativo": false,
+    "rodada": 0,
+    "posicao": null,
+    "iniciativa": null
   },
   "nomePlayer": "Tatagiba",
   "classeNome": "clerigo",
