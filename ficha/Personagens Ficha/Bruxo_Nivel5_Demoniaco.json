@@ -1,0 +1,137 @@
+{
+  "nomePersonagem": "Kael Vharos",
+  "jogador": "Tatagiba",
+  "nomePlayer": "Tatagiba",
+  "classeID": "bruxo NV 5",
+  "classeNomeID": "bruxo",
+  "classeNivelID": "5",
+  "classeNome": "bruxo",
+  "classeNivel": "5",
+  "subclasse": "O Ínfero",
+  "racaID": "Tiefling",
+  "raca": "Tiefling",
+  "antecedenteID": "Charlatão",
+  "antecedente": "Charlatão",
+  "alinhamentoID": "Caótico e Neutro (CN)",
+  "alinhamento": "Caótico e Neutro (CN)",
+
+  "for": "8",
+  "des": "14",
+  "con": "16",
+  "int": "12",
+  "sab": "10",
+  "car": "18",
+
+  "forBase": "8",
+  "desBase": "14",
+  "conBase": "16",
+  "intBase": "12",
+  "sabBase": "10",
+  "carBase": "18",
+
+  "bonusProf": "+3",
+  "bonusProficiencia": "+3",
+
+  "ca_valor": "14",
+  "ataqueCaTotal": "14",
+  "iniciativa": "+2",
+  "deslocamento": "9m",
+
+  "pvTotal": "38",
+  "pvAtual": "38",
+  "pvTemporario": "0",
+
+  "dadosVidaTipo": "d8",
+  "dadosVidaTotal": "5",
+  "dadosVidaRestantes": "5",
+
+  "prof_salv_sab": true,
+  "prof_salv_car": true,
+  "prof_sab": true,
+  "prof_car": true,
+
+  "magiaClasseConjuradora": "Bruxo",
+  "magiaAtributoConjuracao": "car",
+  "magiaCD": "15",
+  "magiaAtaqueMagico": "+7",
+
+  "profArmaSimples": true,
+  "profArmaduraLeves": true,
+
+  "proficienciaIdiomas": "Comum, Infernal",
+  "proficienciaFerramentas": "Kit de disfarce",
+
+  "arma1Nome": "Adaga",
+  "arma1Ataque": "des",
+  "arma1Dano": "1d4 Perfurante",
+
+  "armaduraNome": "0",
+  "armaduraCA": "12",
+  "armaduraFurtividade": "Normal",
+
+  "magia0Texto": "[{\"id\":\"eldritch_blast\",\"nivel\":0,\"preparada\":true,\"nome\":\"Rajada Mística (Eldritch Blast)\",\"escola\":\"Evocação\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"36 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"Ataque Mágico\",\"teste_resistencia\":\"\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"1d10\",\"dano_tipo\":\"Energia\",\"regra\":\"2 raios no nível 5\"}],\"descricao\":\"Você dispara raios de energia arcana.\",\"proximos_niveis\":\"3 raios no nível 11 e 4 raios no nível 17.\"}]",
+
+  "magia1Texto": "[{\"id\":\"hex\",\"nivel\":1,\"preparada\":true,\"nome\":\"Hex\",\"escola\":\"Encantamento\",\"tempo_conjuracao\":\"1 ação bônus\",\"alcance\":\"27 m\",\"duracao\":\"Concentração, até 1 hora\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":true},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"1d6\",\"dano_tipo\":\"Necrótico\",\"regra\":\"dano extra\"}],\"descricao\":\"Amaldiçoa um alvo causando dano extra.\",\"proximos_niveis\":\"\"}]",
+
+  "magia2Texto": "[{\"id\":\"misty_step\",\"nivel\":2,\"preparada\":true,\"nome\":\"Passo Nebuloso (Misty Step)\",\"escola\":\"Conjuração\",\"tempo_conjuracao\":\"1 ação bônus\",\"alcance\":\"Pessoal\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":false,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Teletransporta até 9 metros.\",\"proximos_niveis\":\"\"}]",
+
+  "magia3Texto": "[{\"id\":\"fireball\",\"nivel\":3,\"preparada\":true,\"nome\":\"Bola de Fogo (Fireball)\",\"escola\":\"Evocação\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"45 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":true},\"resolucao\":\"Teste de Resistência\",\"teste_resistencia\":\"DES\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"8d6\",\"dano_tipo\":\"Fogo\",\"regra\":\"Metade no sucesso\"}],\"descricao\":\"Explosão flamejante em área.\",\"proximos_niveis\":\"\"}]",
+
+  "magia3Total": "2",
+  "magia3Usado": "0",
+
+  "talentoClasse": "Pacto Mágico, Invocações Místicas, Dádiva do Pacto",
+  "talentoArquetipo": "Bênção do Próprio Sombrio",
+  "talentoRaca": "Visão no Escuro, Resistência Infernal, Legado Infernal",
+  "talentoAntecedente": "Identidade falsa",
+
+  "historiaPersonagem": "Kael Vharos fez um pacto infernal em troca de poder arcano e agora vaga pelo mundo acumulando conhecimento proibido.",
+
+  "armas": [
+    {
+      "arma_preco": "2",
+      "arma_peso": "1",
+      "nome": "Adaga",
+      "arma_dano": "1d4",
+      "arma_tipo_dano": "Perfurante",
+      "arma_tipo": "Simples",
+      "arma_dist_curto": "6",
+      "arma_dist_longo": "18",
+      "arma_municao_id": "",
+      "arma_descricao": "",
+      "propriedades": {
+        "acuidade": true,
+        "alcance": false,
+        "arremesso": true,
+        "carregamento": false,
+        "duas_maos": false,
+        "leve": true,
+        "municao": false,
+        "pesada": false,
+        "versatil": false,
+        "especial": false
+      },
+      "usaMunicao": false,
+      "arma_item_magico": false,
+      "arma_sintonizado": false,
+      "proficiente": true
+    }
+  ],
+
+  "armaduras": [
+    {
+      "armadura_preco": "45",
+      "armadura_peso": "6.5",
+      "armadura_nome": "Armadura de couro batido",
+      "armadura_ca": "12",
+      "armadura_bonus": "DES",
+      "armadura_forca": "0",
+      "armadura_furtividade": "Normal",
+      "armadura_tipo": "Leve",
+      "armadura_descricao": "",
+      "armadura_item_magico": false,
+      "armadura_sintonizado": false,
+      "proficiente": true
+    }
+  ]
+}
