@@ -107,6 +107,13 @@
         });
       }
 
+      async function testarComFetch(classe) {
+        log(`[Tentando Fetch] ${classe}`);
+        const response = await fetch(`./ficha/Classes/caracteristica_${classe}.json`);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.json();
+      }
+
       async function testar(classe) {
         log(`\n=== Testando carregamento de ${classe} ===`);
         const resultDiv = document.getElementById("result");
@@ -116,7 +123,15 @@
           const classePath = `./ficha/Classes/caracteristica_${classe}.json`;
           log(`Caminho resolvido: ${classePath}`);
 
-          const data = await carregarJSONViaXHR(classePath);
+          // Tenta Fetch primeiro (mais compatível com file://)
+          let data;
+          try {
+            data = await testarComFetch(classe);
+            log(`[Fetch] Sucesso!`);
+          } catch (fetchErr) {
+            log(`[Fetch falhou] ${fetchErr.message}, tentando XHR...`);
+            data = await carregarJSONViaXHR(classePath);
+          }
 
           log(`Sucesso! Dados recebidos:`);
           log(`  - nome: ${data.nome}`);

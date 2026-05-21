@@ -7298,11 +7298,11 @@
 
         // Remove o texto descritivo "Selecione sua classe..."
         const descritivo = document.querySelector(
-          '#aba-caracteristica-classe > .config-bloco > div[style*="text-align: center"]'
+          '#aba-caracteristica-classe > .config-bloco > div[style*="text-align: center"]',
         );
         if (descritivo) {
           console.log("[Ficha] Ocultando texto descritivo");
-          descritivo.style.display = 'none';
+          descritivo.style.display = "none";
         } else {
           console.warn("[Ficha] Elemento descritivo não encontrado");
         }
@@ -7311,29 +7311,79 @@
           console.log("[Ficha] Chamando aplicarDadosClasseNoCard");
           aplicarDadosClasseNoCard(classeData, classe);
         } else {
-          console.error("[Ficha] Função aplicarDadosClasseNoCard não encontrada!");
+          console.error(
+            "[Ficha] Função aplicarDadosClasseNoCard não encontrada!",
+          );
         }
       }
 
-      // Helper para carregar JSON via XMLHttpRequest (evita CORS em file://)
+      // Helper para carregar JSON com múltiplos fallbacks
+      // Tenta: 1) Dados embutidos, 2) Fetch, 3) XMLHttpRequest
+      async function carregarJSONClasse(caminho, classe = "") {
+        console.log("[CardLoad] Tentando carregar classe:", { caminho, classe });
+
+        // Primeiro: tenta dados embutidos em CLASSES_EMBUTIDAS
+        if (classe && window.CLASSES_EMBUTIDAS) {
+          const classeNormalizada = classe
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLowerCase()
+            .trim();
+          if (window.CLASSES_EMBUTIDAS[classeNormalizada]) {
+            console.log("[CardLoad] Usando dados embutidos para:", classe);
+            return window.CLASSES_EMBUTIDAS[classeNormalizada];
+          }
+        }
+
+        // Segundo: tenta Fetch (melhor handling de erro que XHR)
+        try {
+          console.log("[CardLoad] Tentando Fetch para:", caminho);
+          const response = await fetch(caminho);
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+          const data = await response.json();
+          console.log("[CardLoad] Fetch sucesso!");
+          return data;
+        } catch (fetchError) {
+          console.warn("[CardLoad] Fetch falhou:", fetchError.message);
+        }
+
+        // Terceiro: tenta XMLHttpRequest
+        try {
+          console.log("[CardLoad] Tentando XMLHttpRequest para:", caminho);
+          return await carregarJSONViaXHR(caminho);
+        } catch (xhrError) {
+          console.warn("[CardLoad] XMLHttpRequest falhou:", xhrError.message);
+        }
+
+        // Se tudo falhou, lança erro informativo
+        throw new Error(
+          `Não foi possível carregar ${classe}. Tente: 1) Usar servidor HTTP, 2) Abrir em Electron, ou 3) Verificar arquivo ${caminho}`
+        );
+      }
+
+      // Helper para carregar JSON via XMLHttpRequest (fallback)
       function carregarJSONViaXHR(caminho) {
         return new Promise((resolve, reject) => {
           const xhr = new XMLHttpRequest();
-          xhr.open('GET', caminho, true);
-          xhr.onload = function() {
+          xhr.open("GET", caminho, true);
+          xhr.onload = function () {
             try {
               // Status 0 é válido para file:// protocol, status 200+ para http/https
-              const statusValido = (xhr.status >= 200 && xhr.status < 300) || (xhr.status === 0 && xhr.responseText);
+              const statusValido =
+                (xhr.status >= 200 && xhr.status < 300) ||
+                (xhr.status === 0 && xhr.responseText);
               if (statusValido) {
                 resolve(JSON.parse(xhr.responseText));
               } else {
-                reject(new Error(`HTTP ${xhr.status}: ${caminho}`));
+                reject(new Error(`HTTP ${xhr.status}`));
               }
             } catch (error) {
               reject(new Error(`JSON parse error: ${error.message}`));
             }
           };
-          xhr.onerror = () => reject(new Error(`Erro ao carregar: ${caminho}`));
+          xhr.onerror = () => reject(new Error(`XHR network error`));
           xhr.send();
         });
       }
@@ -7343,8 +7393,12 @@
         nivel = 1,
         subclasse = "",
       ) {
-        console.log("[CardLoad] carregarCaracteristicasClasse chamada com:", { classe, nivel, subclasse });
-        
+        console.log("[CardLoad] carregarCaracteristicasClasse chamada com:", {
+          classe,
+          nivel,
+          subclasse,
+        });
+
         if (!classe) {
           console.log("[CardLoad] Classe vazia, limpando");
           limparListasTalentos();
@@ -7357,13 +7411,13 @@
         try {
           limparListasTalentos();
 
-          // Carrega classe principal - usa XMLHttpRequest para evitar CORS em file://
+          // Carrega classe principal - usa múltiplos métodos de carregamento
           const classePath = `./Classes/caracteristica_${classe}.json`;
           console.log("[CardLoad] Carregando JSON de:", classePath);
-          
-          const classeData = await carregarJSONViaXHR(classePath);
+
+          const classeData = await carregarJSONClasse(classePath, classe);
           console.log("[CardLoad] JSON carregado com sucesso:", classeData);
-          
+
           document.getElementById("classeData").value =
             JSON.stringify(classeData);
           enviarClasseParaCard(classe, classeData);
@@ -7463,11 +7517,11 @@
         }
       });
 
-       window.carregarFicha = function (personagem) {
-         if (originalCarregarFicha) originalCarregarFicha(personagem);
-         // Trigger reload após load
-         setTimeout(handleClasseChange, 100);
-       };
+      window.carregarFicha = function (personagem) {
+        if (originalCarregarFicha) originalCarregarFicha(personagem);
+        // Trigger reload após load
+        setTimeout(handleClasseChange, 100);
+      };
 
       // Inicial load
       handleClasseChange();
