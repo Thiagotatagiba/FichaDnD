@@ -7320,7 +7320,10 @@
       // Helper para carregar JSON com múltiplos fallbacks
       // Tenta: 1) Dados embutidos, 2) Fetch, 3) XMLHttpRequest
       async function carregarJSONClasse(caminho, classe = "") {
-        console.log("[CardLoad] Tentando carregar classe:", { caminho, classe });
+        console.log("[CardLoad] Tentando carregar classe:", {
+          caminho,
+          classe,
+        });
 
         // Primeiro: tenta dados embutidos em CLASSES_EMBUTIDAS
         if (classe && window.CLASSES_EMBUTIDAS) {
@@ -7359,7 +7362,7 @@
 
         // Se tudo falhou, lança erro informativo
         throw new Error(
-          `Não foi possível carregar ${classe}. Tente: 1) Usar servidor HTTP, 2) Abrir em Electron, ou 3) Verificar arquivo ${caminho}`
+          `Não foi possível carregar ${classe}. Tente: 1) Usar servidor HTTP, 2) Abrir em Electron, ou 3) Verificar arquivo ${caminho}`,
         );
       }
 
