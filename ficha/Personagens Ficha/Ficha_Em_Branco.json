@@ -1,0 +1,245 @@
+{
+  "schema_version": "1.0",
+  "schema_notes": [
+    "Este JSON é um template para IA gerar uma ficha de personagem (D&D 5e) compatível com o seu editor HTML/JS.",
+    "Campos com valor \"__PREENCHER__\" são obrigatórios para deixar a ficha completa.",
+    "Campos com listas (magias, armas, armaduras etc.) devem ser preenchidos com a mesma estrutura esperada pelo sistema."
+  ],
+  "nomePersonagem": "__PREENCHER__",
+  "jogador": "__PREENCHER__",
+  "nomePlayer": "__PREENCHER__",
+
+  "classeID": "__PREENCHER__",
+  "classeNomeID": "__PREENCHER__",
+  "classeNivelID": "__PREENCHER__",
+  "classeNome": "__PREENCHER__",
+  "classeNivel": "__PREENCHER__",
+  "subclasse": "__PREENCHER__",
+
+  "racaID": "__PREENCHER__",
+  "raca": "__PREENCHER__",
+  "antecedenteID": "__PREENCHER__",
+  "antecedente": "__PREENCHER__",
+  "alinhamentoID": "__PREENCHER__",
+  "alinhamento": "__PREENCHER__",
+
+  "for": "__PREENCHER__",
+  "des": "__PREENCHER__",
+  "con": "__PREENCHER__",
+  "int": "__PREENCHER__",
+  "sab": "__PREENCHER__",
+  "car": "__PREENCHER__",
+
+  "forBase": "__PREENCHER__",
+  "desBase": "__PREENCHER__",
+  "conBase": "__PREENCHER__",
+  "intBase": "__PREENCHER__",
+  "sabBase": "__PREENCHER__",
+  "carBase": "__PREENCHER__",
+
+  "bonusProf": "__PREENCHER__",
+  "bonusProficiencia": "__PREENCHER__",
+
+  "ca_valor": "__PREENCHER__",
+  "ataqueCaTotal": "__PREENCHER__",
+  "iniciativa": "__PREENCHER__",
+  "deslocamento": "__PREENCHER__",
+
+  "pvTotal": "__PREENCHER__",
+  "pvAtual": "__PREENCHER__",
+  "pvTemporario": "0",
+
+  "dadosVidaTipo": "__PREENCHER__",
+  "dadosVidaTotal": "__PREENCHER__",
+  "dadosVidaRestantes": "__PREENCHER__",
+
+  "prof_salv_sab": false,
+  "prof_salv_car": false,
+  "prof_salv_for": false,
+  "prof_salv_des": false,
+  "prof_salv_con": false,
+
+  "prof_sab": false,
+  "prof_car": false,
+  "prof_for": false,
+  "prof_des": false,
+  "prof_con": false,
+
+  "magiaClasseConjuradora": "__PREENCHER__",
+  "magiaAtributoConjuracao": "__PREENCHER__",
+  "magiaCD": "__PREENCHER__",
+  "magiaAtaqueMagico": "__PREENCHER__",
+
+  "profArmaSimples": false,
+  "profArmaduraLeves": false,
+
+  "proficienciaIdiomas": "__PREENCHER__",
+  "proficienciaFerramentas": "__PREENCHER__",
+
+  "arma1Nome": "__PREENCHER__",
+  "arma1Ataque": "__PREENCHER__",
+  "arma1Dano": "__PREENCHER__",
+
+  "armaduraNome": "__PREENCHER__",
+  "armaduraCA": "__PREENCHER__",
+  "armaduraFurtividade": "Normal",
+
+  "magia0Texto": "[]",
+  "magia1Texto": "[]",
+  "magia2Texto": "[]",
+  "magia3Texto": "[]",
+  "magia3Total": "0",
+  "magia3Usado": "0",
+
+  "talentoClasse": "",
+  "talentoArquetipo": "",
+  "talentoRaca": "",
+  "talentoAntecedente": "",
+
+  "historiaPersonagem": "__PREENCHER__",
+
+  "armas": [],
+  "armaduras": [],
+
+  "instrucoes_ia": {
+    "objetivo": "Gerar uma ficha completa preenchendo todos os campos necessários para o editor funcionar e renderizar a ficha.",
+    "passos_recomendados": [
+      "1) Definir nome, jogador, classe/nivel/subclasse, raça, antecedente, alinhamento.",
+      "2) Definir atributos (FOR, DES, CON, INT, SAB, CAR) e seus valores base.",
+      "3) Calcular/definir derivados: CA, iniciativa, deslocamento, proficiência, PV total/atual.",
+      "4) Definir flags de proficiência (salvamentos/perícias) conforme o personagem.",
+      "5) Definir lista de armas (armas[]) com a estrutura exigida.",
+      "6) Definir lista de armaduras (armaduras[]) com a estrutura exigida.",
+      "7) Definir magias por nível (magia0Texto, magia1Texto, etc.) no formato JSON-string esperado pelo seu editor.",
+      "8) Definir talentos e histórico."
+    ],
+    "observacao_importante_selects": [
+      "Quando houver campos do tipo select (classe, raça, alinhamento etc.), NÃO invente nomes. Use apenas opções existentes no template do editor.",
+      "Para campos livres (ex: antecedente), use texto livre.",
+      "Se um valor não existir nas opções do editor, prefira usar \"\" (vazio) ou o placeholder \"__PREENCHER__\" ao invés de criar um valor novo."
+    ],
+    "opcoes_selecionaveis_no_editor": {
+      "classeNomeID": [
+        "barbaro",
+        "bardo",
+        "bruxo",
+        "clerigo",
+        "druida",
+        "feiticeiro",
+        "guerreiro",
+        "ladino",
+        "mago",
+        "monge",
+        "paladino",
+        "patrulheiro"
+      ],
+      "racaID": [
+        "Humano",
+        "Elfo",
+        "Anão",
+        "Halfling",
+        "Tiefling",
+        "Draconato",
+        "Gnomo",
+        "Meio-Orc",
+        "Meio-Elfo"
+      ],
+      "alinhamentoID": [
+        "Leal e Bom (LB)",
+        "Neutro e Bom (NB)",
+        "Caótico e Bom (CB)",
+        "Leal e Neutro (LN)",
+        "Neutro (N)",
+        "Caótico e Neutro (CN)",
+        "Leal e Mau (LM)",
+        "Neutro e Mau (NM)",
+        "Caótico e Mau (CM)"
+      ]
+    },
+    "observacao_importante_magias": [
+      "No seu sistema, os campos de magias como \"magia1Texto\" parecem ser JSON-string (texto) contendo uma lista de objetos.",
+      "Se a IA receber uma lista de magias como objetos, ela deve converter para string JSON exatamente no formato esperado."
+    ],
+    "observacao_estruturas": [
+      "armas[] e armaduras[] devem ser arrays de objetos com as mesmas chaves do template do exemplo existente.",
+      "Campos numéricos podem ser serializados como string (ex: \"14\") ou número (ex: 14). Para evitar quebra, mantenha o mesmo padrão do seu JSON de exemplo (string para muitos campos)."
+    ]
+  },
+
+  "armas_template": {
+    "arma_preco": "0",
+    "arma_peso": "0",
+    "nome": "Nome da arma",
+    "arma_dano": "1d4",
+    "arma_tipo_dano": "Perfurante",
+    "arma_tipo": "Simples",
+    "arma_dist_curto": "0",
+    "arma_dist_longo": "0",
+    "arma_municao_id": "",
+    "arma_descricao": "",
+    "propriedades": {
+      "acuidade": false,
+      "alcance": false,
+      "arremesso": false,
+      "carregamento": false,
+      "duas_maos": false,
+      "leve": false,
+      "municao": false,
+      "pesada": false,
+      "versatil": false,
+      "especial": false
+    },
+    "usaMunicao": false,
+    "arma_item_magico": false,
+    "arma_sintonizado": false,
+    "proficiente": false
+  },
+
+  "armaduras_template": {
+    "armadura_preco": "0",
+    "armadura_peso": "0",
+    "armadura_nome": "Nome da armadura",
+    "armadura_ca": "10",
+    "armadura_bonus": "DES",
+    "armadura_forca": "0",
+    "armadura_furtividade": "Normal",
+    "armadura_tipo": "Leve",
+    "armadura_descricao": "",
+    "armadura_item_magico": false,
+    "armadura_sintonizado": false,
+    "proficiente": false
+  },
+
+  "magias_objeto_template": {
+    "id": "id_unico_da_magia",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Nome da magia",
+    "escola": "Escola",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "alcance",
+    "duracao": "duração",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Necrótico",
+        "regra": "regra opcional"
+      }
+    ],
+    "descricao": "Descrição da magia",
+    "proximos_niveis": ""
+  }
+}

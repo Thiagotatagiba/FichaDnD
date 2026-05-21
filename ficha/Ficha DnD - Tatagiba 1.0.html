@@ -6897,7 +6897,7 @@
 
                 <h3>📜 Características de Classe</h3>
                 <!-- This area now uses the integrated card component -->
-                <div style="display: none;"></div>
+                <div style="display: none"></div>
                 <div
                   style="
                     text-align: center;
@@ -7223,30 +7223,38 @@
           // Auto-load quando classe muda
           classeSelect.addEventListener("change", function (e) {
             const classe = e.target.value;
-            const cardContainer = document.getElementById("cardClasseContainer");
-            
+            const cardContainer = document.getElementById(
+              "cardClasseContainer",
+            );
+
             if (classe && cardContainer) {
-              const urlParams = new URL(window.location, window.location.origin);
-              urlParams.searchParams.set('classe', classe);
-              
+              const urlParams = new URL(
+                window.location,
+                window.location.origin,
+              );
+              urlParams.searchParams.set("classe", classe);
+
               console.log("[Ficha] Carregando classe no card:", classe);
-              
+
               // Carrega o JSON da classe e exibe no card integrado
               const caminhoJson = `Classes/caracteristica_${classe}.json`;
-              if (typeof carregarJSONClasse === 'function') {
+              if (typeof carregarJSONClasse === "function") {
                 carregarJSONClasse(caminhoJson, classe)
-                  .then(data => {
-                    if (typeof aplicarDadosClasseNoCard === 'function') {
+                  .then((data) => {
+                    if (typeof aplicarDadosClasseNoCard === "function") {
                       aplicarDadosClasseNoCard(data, classe);
                     }
                   })
-                  .catch(error => {
+                  .catch((error) => {
                     console.warn("[Ficha] Erro ao carregar classe:", error);
                   });
               }
-              
+
               // Scroll suave para o card se necessário
-              cardContainer.scrollIntoView({ behavior: "smooth", block: "nearest" });
+              cardContainer.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+              });
             }
           });
 
@@ -7286,10 +7294,39 @@
         // Agora integrado no card - não precisa mais de iframe
         // Apenas dispara o loading do novo sistema
         console.log("[Ficha] Carregando classe no card integrado:", classe);
-        
-        if (typeof aplicarDadosClasseNoCard === 'function') {
+
+        // Remove o texto descritivo "Selecione sua classe..."
+        const descritivo = document.querySelector(
+          '#aba-caracteristica-classe > .config-bloco > div[style*="text-align: center"]'
+        );
+        if (descritivo) {
+          descritivo.style.display = 'none';
+        }
+
+        if (typeof aplicarDadosClasseNoCard === "function") {
           aplicarDadosClasseNoCard(classeData, classe);
         }
+      }
+
+      // Helper para carregar JSON via XMLHttpRequest (evita CORS em file://)
+      function carregarJSONViaXHR(caminho) {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open('GET', caminho, true);
+          xhr.onload = function() {
+            try {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                resolve(JSON.parse(xhr.responseText));
+              } else {
+                reject(new Error(`HTTP ${xhr.status}: ${caminho}`));
+              }
+            } catch (error) {
+              reject(new Error(`JSON parse error: ${error.message}`));
+            }
+          };
+          xhr.onerror = () => reject(new Error(`Erro ao carregar: ${caminho}`));
+          xhr.send();
+        });
       }
 
       async function carregarCaracteristicasClasse(
@@ -7308,12 +7345,9 @@
         try {
           limparListasTalentos();
 
-          // Carrega classe principal
+          // Carrega classe principal - usa XMLHttpRequest para evitar CORS em file://
           const classePath = `./Classes/caracteristica_${classe}.json`;
-          const classeResp = await fetch(classePath);
-          if (!classeResp.ok)
-            throw new Error(`JSON classe não encontrado: ${classePath}`);
-          const classeData = await classeResp.json();
+          const classeData = await carregarJSONViaXHR(classePath);
           document.getElementById("classeData").value =
             JSON.stringify(classeData);
           enviarClasseParaCard(classe, classeData);
@@ -7412,11 +7446,11 @@
         }
       });
 
-      window.carregarFicha = function (personagem) {
-        if (originalCarregarFicha) originalCarregarFicha(personagem);
-        // Trigger reload após load
-        setTimeout(handleClasseChange, 100);
-      };
+       window.carregarFicha = function (personagem) {
+         if (originalCarregarFicha) originalCarregarFicha(personagem);
+         // Trigger reload após load
+         setTimeout(handleClasseChange, 100);
+       };
 
       // Inicial load
       handleClasseChange();
@@ -16788,7 +16822,7 @@ Bônus de Proficiência: +${bonusProf}
                             </div>
                             <div class="magia-formulario-campo col-8 oculto" id="magiaModalCampoCuraRegra">
                                 <label for="magiaModalCuraRegra">Cura</label>
-                                <input id="magiaModalCuraRegra" type="text" placeholder="Ex: metade do dano causado">
+                                <input id="magiaModalCuraRegra" type="text" placeholder="Ex: 2d4 +2">
                             </div>
                         </div>
                         </div>
@@ -19749,7 +19783,7 @@ Bônus de Proficiência: +${bonusProf}
           const registroIniciativa = document.createElement("div");
           registroIniciativa.className = "historico-registro iniciativa";
           const posicao = estadoCombateIniciativa.posicao || "-";
-          registroIniciativa.innerHTML = `🎲 Inic. ${escaparHtmlHistorico(valor)} | Pos: ${escaparHtmlHistorico(posicao)}º`;
+          registroIniciativa.innerHTML = `Batalha Iniciada: 🎲 Inic. ${escaparHtmlHistorico(valor)} | Pos: ${escaparHtmlHistorico(posicao)}º`;
           registrosContainer.prepend(registroIniciativa);
           return;
         }
@@ -21318,7 +21352,7 @@ Bônus de Proficiência: +${bonusProf}
     <!-- ========================= -->
     <script>
       // ===== SISTEMA DE EXPIRAÇÃO =====
-      const DATA_EXPIRACAO = new Date("2026-05-21T12:00:00");
+      const DATA_EXPIRACAO = new Date("2026-05-28T12:00:00");
       console.log(
         "[Debug] Data de expiração:",
         DATA_EXPIRACAO.toLocaleString("pt-BR"),
@@ -21360,7 +21394,7 @@ Bônus de Proficiência: +${bonusProf}
     <script src="./Classes/classes-embutidas.js"></script>
 
     <script>
-      // ===== INTEGRAÇÃO Card Classes Vazio ===== 
+      // ===== INTEGRAÇÃO Card Classes Vazio =====
       const CARD_CLASSE_HTML = `
         <div class="container">
           <div class="topo">
@@ -21416,71 +21450,80 @@ Bônus de Proficiência: +${bonusProf}
       let subclasseAtual = "";
 
       function inicializarCardClasse() {
-        const container = document.getElementById('cardClasseContainer');
+        const container = document.getElementById("cardClasseContainer");
         if (!container) return;
         container.innerHTML = CARD_CLASSE_HTML;
       }
 
       function aplicarNaFicha() {
         if (!dadosClasse) {
-          alert('Carregue uma classe primeiro!');
+          alert("Carregue uma classe primeiro!");
           return;
         }
 
-        const classeAtual = document.getElementById('tituloClasse').textContent.toLowerCase().replace(' ', '');
-        const subclasseAtual = document.getElementById('selectSubclasse').value || '';
-        const nivelAtual = document.getElementById('classeNivelID')?.value || 1;
+        const classeAtual = document
+          .getElementById("tituloClasse")
+          .textContent.toLowerCase()
+          .replace(" ", "");
+        const subclasseAtual =
+          document.getElementById("selectSubclasse").value || "";
+        const nivelAtual = document.getElementById("classeNivelID")?.value || 1;
 
-        if (typeof carregarCaracteristicasClasse === 'function') {
+        if (typeof carregarCaracteristicasClasse === "function") {
           carregarCaracteristicasClasse(classeAtual, dadosClasse);
         }
 
-        alert('✅ Características aplicadas na ficha!');
+        alert("✅ Características aplicadas na ficha!");
       }
 
-      function atualizarStatusCargaClasse(mensagem, tipo = 'info') {
-        const status = document.getElementById('statusCargaClasse');
+      function atualizarStatusCargaClasse(mensagem, tipo = "info") {
+        const status = document.getElementById("statusCargaClasse");
         if (!status) return;
 
         const cores = {
-          info: '#5a3b1d',
-          sucesso: '#1f6f3e',
-          erro: '#a11d1d'
+          info: "#5a3b1d",
+          sucesso: "#1f6f3e",
+          erro: "#a11d1d",
         };
 
         status.textContent = mensagem;
         status.style.color = cores[tipo] || cores.info;
-        console.log('[CardClasse]', mensagem);
+        console.log("[CardClasse]", mensagem);
       }
 
       function nomeArquivoAtual() {
-        return 'Ficha DnD - Tatagiba 1.0.html';
+        return "Ficha DnD - Tatagiba 1.0.html";
       }
 
-      function carregarJSONClasse(caminho, classe = '') {
-        const classeNormalizada = String(classe || '')
-          .normalize('NFD')
-          .replace(/[\u0300-\u036f]/g, '')
+      function carregarJSONClasse(caminho, classe = "") {
+        const classeNormalizada = String(classe || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
           .toLowerCase()
           .trim();
 
-        if (classeNormalizada && window.CLASSES_EMBUTIDAS?.[classeNormalizada]) {
+        if (
+          classeNormalizada &&
+          window.CLASSES_EMBUTIDAS?.[classeNormalizada]
+        ) {
           return Promise.resolve(window.CLASSES_EMBUTIDAS[classeNormalizada]);
         }
 
         return fetch(caminho)
-          .then(response => {
-            if (!response.ok) throw new Error('JSON not found');
+          .then((response) => {
+            if (!response.ok) throw new Error("JSON not found");
             return response.json();
           })
-          .catch(errorFetch => {
+          .catch((errorFetch) => {
             return new Promise((resolve, reject) => {
               const request = new XMLHttpRequest();
-              request.open('GET', caminho, true);
+              request.open("GET", caminho, true);
 
-              request.onload = function() {
-                const statusValido = request.status >= 200 && request.status < 300;
-                const arquivoLocalValido = request.status === 0 && request.responseText;
+              request.onload = function () {
+                const statusValido =
+                  request.status >= 200 && request.status < 300;
+                const arquivoLocalValido =
+                  request.status === 0 && request.responseText;
 
                 if (!statusValido && !arquivoLocalValido) {
                   reject(errorFetch);
@@ -21494,7 +21537,7 @@ Bônus de Proficiência: +${bonusProf}
                 }
               };
 
-              request.onerror = function() {
+              request.onerror = function () {
                 reject(errorFetch);
               };
 
@@ -21503,51 +21546,65 @@ Bônus de Proficiência: +${bonusProf}
           });
       }
 
-      function importarJSONNoCard(conteudoJSON, origem = 'JSON', classe = '') {
-        const data = typeof conteudoJSON === 'string' ? JSON.parse(conteudoJSON) : conteudoJSON;
-        if (!data) throw new Error('JSON vazio');
+      function importarJSONNoCard(conteudoJSON, origem = "JSON", classe = "") {
+        const data =
+          typeof conteudoJSON === "string"
+            ? JSON.parse(conteudoJSON)
+            : conteudoJSON;
+        if (!data) throw new Error("JSON vazio");
 
         dadosClasse = data;
-        document.getElementById('tituloClasse').textContent = data.nome || classe || 'Classe';
-        document.getElementById('nomeSubclasse').textContent = '';
-        const selectSubclasse = document.getElementById('selectSubclasse');
-        if (selectSubclasse) selectSubclasse.value = '';
+        document.getElementById("tituloClasse").textContent =
+          data.nome || classe || "Classe";
+        document.getElementById("nomeSubclasse").textContent = "";
+        const selectSubclasse = document.getElementById("selectSubclasse");
+        if (selectSubclasse) selectSubclasse.value = "";
         montarTabela();
         carregarSubclasses();
 
         const totalNiveis = Array.isArray(data.niveis) ? data.niveis.length : 0;
         atualizarStatusCargaClasse(
-          `Arquivo upado no card via ${origem}: ${data.nome || classe || 'Classe'} (${totalNiveis} níveis)`,
-          'sucesso'
+          `Arquivo upado no card via ${origem}: ${data.nome || classe || "Classe"} (${totalNiveis} níveis)`,
+          "sucesso",
         );
       }
 
-      function aplicarDadosClasseNoCard(data, classe = '') {
+      function aplicarDadosClasseNoCard(data, classe = "") {
         if (!data) return;
-        importarJSONNoCard(data, 'carregamento automatico', classe);
+        importarJSONNoCard(data, "carregamento automatico", classe);
       }
 
-      window.addEventListener('message', function(event) {
-        if (event.data?.action !== 'loadClassCardData' || !event.data?.jsonData) return;
-        atualizarStatusCargaClasse(`Dados recebidos via ficha principal para ${event.data.classe || event.data.jsonData?.nome || 'classe'}.`, 'info');
-        aplicarDadosClasseNoCard(event.data.jsonData, event.data.classe || '');
+      window.addEventListener("message", function (event) {
+        if (event.data?.action !== "loadClassCardData" || !event.data?.jsonData)
+          return;
+        atualizarStatusCargaClasse(
+          `Dados recebidos via ficha principal para ${event.data.classe || event.data.jsonData?.nome || "classe"}.`,
+          "info",
+        );
+        aplicarDadosClasseNoCard(event.data.jsonData, event.data.classe || "");
       });
 
       function importarJSON() {
         document.getElementById("fileInput").click();
       }
 
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener("DOMContentLoaded", function () {
         const fileInput = document.getElementById("fileInput");
         if (fileInput) {
-          fileInput.addEventListener("change", e => {
+          fileInput.addEventListener("change", (e) => {
             const reader = new FileReader();
-            reader.onload = evt => {
+            reader.onload = (evt) => {
               try {
-                importarJSONNoCard(evt.target.result, e.target.files[0]?.name || 'importacao manual');
+                importarJSONNoCard(
+                  evt.target.result,
+                  e.target.files[0]?.name || "importacao manual",
+                );
               } catch (err) {
-                atualizarStatusCargaClasse('Erro ao importar o JSON manualmente.', 'erro');
-                alert('Erro ao parsear JSON');
+                atualizarStatusCargaClasse(
+                  "Erro ao importar o JSON manualmente.",
+                  "erro",
+                );
+                alert("Erro ao parsear JSON");
               }
             };
             reader.readAsText(e.target.files[0]);
@@ -21558,11 +21615,11 @@ Bônus de Proficiência: +${bonusProf}
       function montarTabela() {
         const tbody = document.getElementById("tbodyClasse");
         if (!tbody || !dadosClasse) return;
-        
+
         document.getElementById("tituloClasse").textContent = dadosClasse.nome;
         tbody.innerHTML = "";
 
-        dadosClasse.niveis.forEach(n => {
+        dadosClasse.niveis.forEach((n) => {
           const tr = document.createElement("tr");
 
           tr.innerHTML = `
@@ -21580,10 +21637,13 @@ Bônus de Proficiência: +${bonusProf}
       function renderTags(texto) {
         if (!texto) return "–";
 
-        return texto.split(",").map(t => {
-          t = t.trim();
-          return `<span class="tag" onclick="abrirModal('${t}')">${t}</span>`;
-        }).join("");
+        return texto
+          .split(",")
+          .map((t) => {
+            t = t.trim();
+            return `<span class="tag" onclick="abrirModal('${t}')">${t}</span>`;
+          })
+          .join("");
       }
 
       function renderSlots(magias) {
@@ -21598,7 +21658,7 @@ Bônus de Proficiência: +${bonusProf}
       function carregarSubclasses() {
         const select = document.getElementById("selectSubclasse");
         if (!select || !dadosClasse) return;
-        
+
         select.innerHTML = `<option value="">Subclasse</option>`;
 
         for (let nome in dadosClasse.subclasses) {
@@ -21627,7 +21687,6 @@ Bônus de Proficiência: +${bonusProf}
           const regra = dadosClasse.subclasses[subclasse][nivel];
 
           if (regra) {
-
             if (regra.replace && texto.includes(regra.replace)) {
               texto = texto.replace(regra.replace, regra.value);
             }
@@ -21658,32 +21717,33 @@ Bônus de Proficiência: +${bonusProf}
         document.getElementById("modal").style.display = "none";
       }
 
-      document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
-        const classe = urlParams.get('classe');
+        const classe = urlParams.get("classe");
         if (classe) {
           const caminhoJson = `Classes/caracteristica_${classe}.json`;
-          atualizarStatusCargaClasse(
-            `Classe solicitada: ${classe}`,
-            'info'
-          );
+          atualizarStatusCargaClasse(`Classe solicitada: ${classe}`, "info");
           carregarJSONClasse(caminhoJson, classe)
-            .then(data => {
+            .then((data) => {
               aplicarDadosClasseNoCard(data, classe);
             })
-            .catch(error => {
-              console.error('Erro ao carregar JSON:', error);
+            .catch((error) => {
+              console.error("Erro ao carregar JSON:", error);
               atualizarStatusCargaClasse(
                 `Falha ao carregar JSON: ${caminhoJson}`,
-                'erro'
+                "erro",
               );
-              const titulo = document.getElementById('tituloClasse');
-              if (titulo) titulo.textContent = 'Classe: ' + classe;
-              const tbody = document.querySelector('#tbodyClasse');
-              if (tbody) tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:#666;">JSON não encontrado: Classes/caracteristica_' + classe + '.json<br>Carregue manualmente ou adicione o arquivo.</td></tr>';
+              const titulo = document.getElementById("tituloClasse");
+              if (titulo) titulo.textContent = "Classe: " + classe;
+              const tbody = document.querySelector("#tbodyClasse");
+              if (tbody)
+                tbody.innerHTML =
+                  '<tr><td colspan="13" style="text-align:center; color:#666;">JSON não encontrado: Classes/caracteristica_' +
+                  classe +
+                  ".json<br>Carregue manualmente ou adicione o arquivo.</td></tr>";
             });
         } else {
-          atualizarStatusCargaClasse(`Aguardando seleção de classe...`, 'info');
+          atualizarStatusCargaClasse(`Aguardando seleção de classe...`, "info");
         }
 
         inicializarCardClasse();

@@ -1,13 +1,21 @@
 {
+  "schema_version": "1.0",
+  "schema_notes": [
+    "Ficha ajustada para compatibilidade com o template do editor.",
+    "Este JSON é usado pelo sistema de carregamento da ficha; chaves extras de template podem ser ignoradas pelo editor."
+  ],
+
   "nomePersonagem": "Kael Vharos",
   "jogador": "Tatagiba",
   "nomePlayer": "Tatagiba",
+
   "classeID": "bruxo NV 5",
   "classeNomeID": "bruxo",
   "classeNivelID": "5",
   "classeNome": "bruxo",
   "classeNivel": "5",
-  "subclasse": "O Ínfero",
+  "subclasse": "O Demônio",
+
   "racaID": "Tiefling",
   "raca": "Tiefling",
   "antecedenteID": "Charlatão",
@@ -47,8 +55,15 @@
 
   "prof_salv_sab": true,
   "prof_salv_car": true,
+  "prof_salv_for": false,
+  "prof_salv_des": false,
+  "prof_salv_con": false,
+
   "prof_sab": true,
   "prof_car": true,
+  "prof_for": false,
+  "prof_des": false,
+  "prof_con": false,
 
   "magiaClasseConjuradora": "Bruxo",
   "magiaAtributoConjuracao": "car",
@@ -59,23 +74,103 @@
   "profArmaduraLeves": true,
 
   "proficienciaIdiomas": "Comum, Infernal",
-  "proficienciaFerramentas": "Kit de disfarce",
+  "proficienciaFerramentas": "Kit de Disfarce",
 
   "arma1Nome": "Adaga",
   "arma1Ataque": "des",
   "arma1Dano": "1d4 Perfurante",
 
-  "armaduraNome": "0",
+  "armaduraNome": "Armadura de couro batido",
   "armaduraCA": "12",
   "armaduraFurtividade": "Normal",
 
-  "magia0Texto": "[{\"id\":\"eldritch_blast\",\"nivel\":0,\"preparada\":true,\"nome\":\"Rajada Mística (Eldritch Blast)\",\"escola\":\"Evocação\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"36 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"Ataque Mágico\",\"teste_resistencia\":\"\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"1d10\",\"dano_tipo\":\"Energia\",\"regra\":\"2 raios no nível 5\"}],\"descricao\":\"Você dispara raios de energia arcana.\",\"proximos_niveis\":\"3 raios no nível 11 e 4 raios no nível 17.\"}]",
+  "pp": "187",
+  "po": "32",
+  "pe": "14",
+  "pc": "6",
 
-  "magia1Texto": "[{\"id\":\"hex\",\"nivel\":1,\"preparada\":true,\"nome\":\"Hex\",\"escola\":\"Encantamento\",\"tempo_conjuracao\":\"1 ação bônus\",\"alcance\":\"27 m\",\"duracao\":\"Concentração, até 1 hora\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":true},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"1d6\",\"dano_tipo\":\"Necrótico\",\"regra\":\"dano extra\"}],\"descricao\":\"Amaldiçoa um alvo causando dano extra.\",\"proximos_niveis\":\"\"}]",
+  "itens": [
+    {
+      "nome": "Mochila",
+      "quantidade": "1",
+      "peso": "2.5",
+      "descricao": "Mochila de couro escuro bastante usada."
+    },
+    {
+      "nome": "Livro de Sombras",
+      "quantidade": "1",
+      "peso": "1",
+      "descricao": "Tomado de símbolos infernais e anotações arcanas."
+    },
+    {
+      "nome": "Foco Arcano (Cristal Infernal)",
+      "quantidade": "1",
+      "peso": "0.5",
+      "descricao": "Cristal vermelho utilizado como foco de conjuração."
+    },
+    {
+      "nome": "Poção de Cura",
+      "quantidade": "2",
+      "peso": "0.5",
+      "descricao": "Recupera 2d4+2 PV."
+    },
+    {
+      "nome": "Kit de Disfarce",
+      "quantidade": "1",
+      "peso": "1.5",
+      "descricao": "Utilizado para manter identidades falsas."
+    },
+    {
+      "nome": "Manto Escuro com Capuz",
+      "quantidade": "1",
+      "peso": "2",
+      "descricao": "Vestimenta usada para ocultar sua aparência tiefling."
+    },
+    {
+      "nome": "Rações de viagem",
+      "quantidade": "10",
+      "peso": "5",
+      "descricao": "Comida seca suficiente para vários dias."
+    },
+    {
+      "nome": "Tocha",
+      "quantidade": "5",
+      "peso": "5",
+      "descricao": "Fonte simples de iluminação."
+    },
+    {
+      "nome": "Pederneira",
+      "quantidade": "1",
+      "peso": "0.1",
+      "descricao": "Usada para acender fogo."
+    },
+    {
+      "nome": "Bolsa de Componentes",
+      "quantidade": "1",
+      "peso": "1",
+      "descricao": "Bolsa contendo pequenos componentes arcanos."
+    },
+    {
+      "nome": "Corrente de prata",
+      "quantidade": "1",
+      "peso": "0.2",
+      "descricao": "Símbolo do pacto demoníaco de Kael."
+    },
+    {
+      "nome": "Virotes",
+      "quantidade": "20",
+      "peso": "1.5",
+      "descricao": "Munição para besta leve."
+    }
+  ],
+
+  "magia0Texto": "[{\"id\":\"eldritch_blast\",\"nivel\":0,\"preparada\":true,\"nome\":\"Rajada Mística (Eldritch Blast)\",\"escola\":\"Evocação\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"36 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"Ataque\",\"teste_resistencia\":\"\",\"ataque_magico\":true,\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"1d10\",\"dano_tipo\":\"Força\",\"regra\":\"2 raios no nível 5\"}],\"descricao\":\"Você dispara raios de energia arcana.\",\"proximos_niveis\":\"3 raios no nível 11 e 4 raios no nível 17.\"},{\"id\":\"mage_hand\",\"nivel\":0,\"preparada\":true,\"nome\":\"Mão Mágica (Mage Hand)\",\"escola\":\"Conjuração\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"9 m\",\"duracao\":\"1 minuto\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Cria uma mão espectral flutuante.\",\"proximos_niveis\":\"\"},{\"id\":\"minor_illusion\",\"nivel\":0,\"preparada\":true,\"nome\":\"Ilusão Menor (Minor Illusion)\",\"escola\":\"Ilusão\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"9 m\",\"duracao\":\"1 minuto\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":false,\"somatico\":true,\"material\":true},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Cria sons ou imagens ilusórias simples.\",\"proximos_niveis\":\"\"}]",
+
+  "magia1Texto": "[{\"id\":\"hex\",\"nivel\":1,\"preparada\":true,\"nome\":\"Hex\",\"escola\":\"Encantamento\",\"tempo_conjuracao\":\"1 ação bônus\",\"alcance\":\"27 m\",\"duracao\":\"Concentração, até 1 hora\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":true},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"1d6\",\"dano_tipo\":\"Necrótico\",\"regra\":\"dano extra\"}],\"descricao\":\"Amaldiçoa um alvo causando dano extra.\",\"proximos_niveis\":\"\"},{\"id\":\"armor_of_agathys\",\"nivel\":1,\"preparada\":true,\"nome\":\"Armadura de Agathys\",\"escola\":\"Abjuração\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"Pessoal\",\"duracao\":\"1 hora\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"15\",\"dano_tipo\":\"Frio\",\"regra\":\"Ao receber ataque corpo a corpo\"}],\"descricao\":\"Ganha PV temporários e causa dano de frio em atacantes.\",\"proximos_niveis\":\"Escala com slots maiores.\"}]",
 
   "magia2Texto": "[{\"id\":\"misty_step\",\"nivel\":2,\"preparada\":true,\"nome\":\"Passo Nebuloso (Misty Step)\",\"escola\":\"Conjuração\",\"tempo_conjuracao\":\"1 ação bônus\",\"alcance\":\"Pessoal\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":false,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Teletransporta até 9 metros.\",\"proximos_niveis\":\"\"}]",
 
-  "magia3Texto": "[{\"id\":\"fireball\",\"nivel\":3,\"preparada\":true,\"nome\":\"Bola de Fogo (Fireball)\",\"escola\":\"Evocação\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"45 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":true},\"resolucao\":\"Teste de Resistência\",\"teste_resistencia\":\"DES\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"8d6\",\"dano_tipo\":\"Fogo\",\"regra\":\"Metade no sucesso\"}],\"descricao\":\"Explosão flamejante em área.\",\"proximos_niveis\":\"\"}]",
+  "magia3Texto": "[{\"id\":\"fireball\",\"nivel\":3,\"preparada\":true,\"nome\":\"Bola de Fogo (Fireball)\",\"escola\":\"Evocação\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"45 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":true},\"resolucao\":\"Teste de Resistência\",\"teste_resistencia\":\"DES\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"8d6\",\"dano_tipo\":\"Fogo\",\"regra\":\"Metade no sucesso\"}],\"descricao\":\"Explosão flamejante em área.\",\"proximos_niveis\":\"\"},{\"id\":\"counterspell\",\"nivel\":3,\"preparada\":true,\"nome\":\"Contramágica (Counterspell)\",\"escola\":\"Abjuração\",\"tempo_conjuracao\":\"1 reação\",\"alcance\":\"18 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":false,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Interrompe uma magia sendo conjurada.\",\"proximos_niveis\":\"\"}]",
 
   "magia3Total": "2",
   "magia3Usado": "0",
