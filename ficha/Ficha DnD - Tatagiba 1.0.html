@@ -7294,17 +7294,24 @@
         // Agora integrado no card - não precisa mais de iframe
         // Apenas dispara o loading do novo sistema
         console.log("[Ficha] Carregando classe no card integrado:", classe);
+        console.log("[Ficha] Dados recebidos:", classeData);
 
         // Remove o texto descritivo "Selecione sua classe..."
         const descritivo = document.querySelector(
           '#aba-caracteristica-classe > .config-bloco > div[style*="text-align: center"]'
         );
         if (descritivo) {
+          console.log("[Ficha] Ocultando texto descritivo");
           descritivo.style.display = 'none';
+        } else {
+          console.warn("[Ficha] Elemento descritivo não encontrado");
         }
 
         if (typeof aplicarDadosClasseNoCard === "function") {
+          console.log("[Ficha] Chamando aplicarDadosClasseNoCard");
           aplicarDadosClasseNoCard(classeData, classe);
+        } else {
+          console.error("[Ficha] Função aplicarDadosClasseNoCard não encontrada!");
         }
       }
 
@@ -7315,7 +7322,9 @@
           xhr.open('GET', caminho, true);
           xhr.onload = function() {
             try {
-              if (xhr.status >= 200 && xhr.status < 300) {
+              // Status 0 é válido para file:// protocol, status 200+ para http/https
+              const statusValido = (xhr.status >= 200 && xhr.status < 300) || (xhr.status === 0 && xhr.responseText);
+              if (statusValido) {
                 resolve(JSON.parse(xhr.responseText));
               } else {
                 reject(new Error(`HTTP ${xhr.status}: ${caminho}`));
@@ -7334,7 +7343,10 @@
         nivel = 1,
         subclasse = "",
       ) {
+        console.log("[CardLoad] carregarCaracteristicasClasse chamada com:", { classe, nivel, subclasse });
+        
         if (!classe) {
+          console.log("[CardLoad] Classe vazia, limpando");
           limparListasTalentos();
           document.getElementById("classeData").value = "";
           document.getElementById("subclasseData").value = "";
@@ -7347,7 +7359,11 @@
 
           // Carrega classe principal - usa XMLHttpRequest para evitar CORS em file://
           const classePath = `./Classes/caracteristica_${classe}.json`;
+          console.log("[CardLoad] Carregando JSON de:", classePath);
+          
           const classeData = await carregarJSONViaXHR(classePath);
+          console.log("[CardLoad] JSON carregado com sucesso:", classeData);
+          
           document.getElementById("classeData").value =
             JSON.stringify(classeData);
           enviarClasseParaCard(classe, classeData);
@@ -7381,9 +7397,10 @@
           document.getElementById("talentoClasseResumo").textContent =
             `${classe} (${featuresClasse.length})`;
         } catch (error) {
-          console.error("Erro carregando características:", error);
+          console.error("[CardError] Erro carregando características:", error);
+          console.error("[CardError] Stack:", error.stack);
           alert(
-            `Erro: ${error.message}. Verifique se o JSON existe em Classes/.`,
+            `Erro ao carregar ${classe}: ${error.message}. Verifique se o arquivo Classes/caracteristica_${classe}.json existe.`,
           );
           limparListasTalentos();
         } finally {
