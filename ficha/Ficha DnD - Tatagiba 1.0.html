@@ -2401,51 +2401,171 @@
       .historico-tabela {
         display: flex;
         flex-direction: column;
-        gap: 0;
+        gap: 8px;
       }
 
       .historico-cabecalho {
-        display: grid;
-        grid-template-columns: 80px 100px 1fr;
-        gap: 10px;
-        font-weight: bold;
-        background: #8b4513;
-        color: white;
-        padding: 8px;
-        border-radius: 6px 6px 0 0;
-        font-size: 12px;
+        display: none;
       }
 
       .historico-registros {
         display: flex;
         flex-direction: column;
-        gap: 1px;
-        max-height: 300px;
+        gap: 6px;
+        max-height: 360px;
         overflow-y: auto;
+        padding-right: 4px;
       }
 
       .historico-registro {
-        display: grid;
-        grid-template-columns: 80px 100px 1fr;
-        gap: 10px;
-        padding: 8px;
-        background: white;
-        border: 1px solid #bda68c;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        padding: 7px 9px;
+        background: linear-gradient(180deg, #fffaf2 0%, #f7ead8 100%);
+        border: 1px solid rgba(139, 69, 19, 0.32);
+        border-left: 3px solid #c7a97b;
+        border-radius: 7px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
         font-size: 12px;
+        color: #3f2412;
+      }
+
+      .historico-registro.iniciativa {
+        align-items: center;
+        background: #8b4513;
+        border-color: #6f3610;
+        color: #fff7e8;
+        font-weight: bold;
+        letter-spacing: 0;
+      }
+
+      .historico-registro.critico {
+        background: linear-gradient(180deg, #fff9df 0%, #eef4f8 100%);
+        border-color: rgba(122, 74, 34, 0.58);
+        border-left-color: #6e86a8;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.8),
+          0 0 0 1px rgba(199, 169, 123, 0.2),
+          0 0 10px rgba(110, 134, 168, 0.22);
+      }
+
+      .historico-registro.falha-critica {
+        background: linear-gradient(180deg, #fff4ec 0%, #f6e1d8 100%);
+        border-color: rgba(124, 31, 22, 0.42);
+        border-left-color: #9d3326;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.72),
+          0 0 8px rgba(124, 31, 22, 0.14);
+      }
+
+      .historico-registro.simples {
+        gap: 0;
+        padding-block: 6px;
+      }
+
+      .historico-rodada-divisor {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        margin: 2px 0;
+        color: #7a4a22;
+        font-size: 11px;
+        font-weight: bold;
+        opacity: 0.82;
+      }
+
+      .historico-rodada-divisor::before,
+      .historico-rodada-divisor::after {
+        content: "";
+        flex: 1;
+        max-width: 96px;
+        border-top: 1px solid rgba(139, 69, 19, 0.28);
+      }
+
+      .historico-evento-topo {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
+        line-height: 1.25;
+      }
+
+      .historico-acao-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1px 6px;
+        border: 1px solid rgba(139, 69, 19, 0.34);
+        border-radius: 999px;
+        background: rgba(199, 169, 123, 0.24);
+        color: #5f3518;
+        font-size: 10px;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      .historico-acao-badge.bonus {
+        background: rgba(118, 76, 36, 0.14);
+      }
+
+      .historico-acao-badge.reacao {
+        background: rgba(139, 69, 19, 0.18);
+      }
+
+      .historico-evento-tipo {
+        font-weight: bold;
+        color: #4e2b14;
+      }
+
+      .historico-concentracao {
+        margin-left: auto;
+        color: #5b4c9a;
+        font-size: 11px;
+        font-weight: bold;
+        white-space: nowrap;
+      }
+
+      .historico-evento-nome,
+      .historico-evento-resultado {
+        line-height: 1.25;
+      }
+
+      .historico-evento-nome {
+        color: #2f1a0d;
+        font-weight: 600;
+      }
+
+      .historico-evento-resultado {
+        color: #5a3418;
+      }
+
+      .historico-evento-critico {
+        color: #8b4513;
+        font-weight: bold;
+      }
+
+      .historico-evento-falha {
+        color: #7c1f16;
+        font-weight: bold;
+      }
+
+      .historico-evento-simples {
+        color: #4e2b14;
+        font-weight: 600;
+        line-height: 1.25;
       }
 
       .historico-col-rodada,
       .historico-col-tipo,
       .historico-col-valor {
-        display: flex;
-        align-items: center;
+        display: block;
         text-align: center;
-        justify-content: center;
       }
 
       .historico-col-rodada {
-        flex-direction: column;
-        gap: 2px;
+        display: none;
       }
 
       .historico-col-rodada-acao {
@@ -16150,15 +16270,11 @@ Bônus de Proficiência: +${bonusProf}
       }
 
       function registrarHistoricoMagia(magia, nivelSlot = null) {
-        const nomePersonagem = escaparHtmlMagia(
-          obterNomePersonagemHistoricoMagia(),
-        );
-        const nomeMagia = escaparHtmlMagia(magia?.nome || "Magia");
+        const nomeMagiaOriginal = magia?.nome || "Magia";
+        const nomeMagia = escaparHtmlMagia(nomeMagiaOriginal);
 
         const ehTruque = !Number.isInteger(nivelSlot);
-        const tipoHistorico = ehTruque
-          ? "✨ Truque"
-          : `✨ Magia Nv ${nivelSlot}`;
+        const tipoHistorico = ehTruque ? "Truque" : `Magia NV ${nivelSlot}`;
 
         // MVP (requisito):
         // - Truque: valor = apenas o nome da magia
@@ -16166,7 +16282,14 @@ Bônus de Proficiência: +${bonusProf}
         const valorHistorico = nomeMagia;
 
         // (tipo usa o SLOT UTILIZADO via nivelSlot; truque não consome slot)
-        adicionarRegistroHistoricoCombate(tipoHistorico, valorHistorico, "");
+        adicionarRegistroHistoricoCombate(tipoHistorico, valorHistorico, "", "Ação", {
+          timeline: {
+            titulo: tipoHistorico,
+            nome: nomeMagiaOriginal,
+            iconeNome: "🪄",
+            concentrando: magiaExigeConcentracao(magia),
+          },
+        });
       }
 
       function abrirHistoricoCombateMagia() {
@@ -16195,7 +16318,9 @@ Bônus de Proficiência: +${bonusProf}
 
       function conjurarTruque(magia) {
         const origemCombate = estadoModalMagia.origemCombate;
-        registrarHistoricoMagia(magia);
+        if (!(origemCombate && magiaPossuiDano(magia))) {
+          registrarHistoricoMagia(magia);
+        }
         iniciarConcentracaoMagia(magia);
         fecharModalMagia();
         estadoModalMagia.origemCombate = origemCombate;
@@ -16302,7 +16427,7 @@ Bônus de Proficiência: +${bonusProf}
 
         const resolucao = String(magia?.resolucao || "");
         if (resolucao === "Ataque") {
-          abrirModalAtaqueMagia(magia);
+          abrirModalAtaqueMagia(magia, nivelSlot);
           return;
         }
 
@@ -16723,10 +16848,12 @@ Bônus de Proficiência: +${bonusProf}
           return;
         }
 
-        registrarHistoricoMagia(magia, nivelSlot);
+        const origemCombate = estadoModalUsoMagia.origemCombate;
+        if (!(origemCombate && magiaPossuiDano(magia))) {
+          registrarHistoricoMagia(magia, nivelSlot);
+        }
         iniciarConcentracaoMagia(magia, nivelSlot);
         atualizarMagias();
-        const origemCombate = estadoModalUsoMagia.origemCombate;
         fecharModalUsarMagia();
         fecharModalMagia();
         if (origemCombate) {
@@ -16865,23 +16992,29 @@ Bônus de Proficiência: +${bonusProf}
       }
 
       function registrarHistoricoConcentracao(acao, magia, icone) {
+        const rotulos = {
+          perdida: "Perdida",
+          encerrada: "Encerrada",
+          mantida: "Mantida",
+        };
+        const rotulo = rotulos[acao] || String(acao || "Atualizada");
         adicionarRegistroHistoricoCombate(
           "Concentração",
-          `${acao}: ${obterNomeConcentracao(magia)}`,
+          `${rotulo}: ${obterNomeConcentracao(magia)}`,
           icone,
+          "",
+          {
+            timeline: {
+              simples: true,
+              exibirBadge: false,
+              texto: `${icone || "🌀"} Concentração ${rotulo}`,
+            },
+          },
         );
       }
 
       function iniciarConcentracaoMagia(magia, nivelSlot = null) {
         if (!magiaExigeConcentracao(magia)) return;
-
-        if (concentracaoAtiva) {
-          registrarHistoricoConcentracao(
-            "encerrada",
-            concentracaoAtiva.magia,
-            "❌",
-          );
-        }
 
         concentracaoAtiva = {
           magia: { ...magia },
@@ -16891,7 +17024,6 @@ Bônus de Proficiência: +${bonusProf}
         };
         ultimoResultadoConcentracao = null;
 
-        registrarHistoricoConcentracao("iniciada", magia, "🌀");
         atualizarSubAbaMagiasCombate();
       }
 
@@ -17957,6 +18089,7 @@ Bônus de Proficiência: +${bonusProf}
         ultimaRolagemDano: null,
         origem: "arma",
         magia: null,
+        nivelSlot: null,
         danoTipo: "",
         infoCD: "",
       };
@@ -18190,6 +18323,14 @@ Bônus de Proficiência: +${bonusProf}
             "Concentração",
             `${sucesso ? "mantida" : "perdida"}: ${nome} (CD ${contextoConcentracao.cd}, ${valor})`,
             sucesso ? "✔" : "❌",
+            "",
+            {
+              timeline: {
+                simples: true,
+                exibirBadge: false,
+                texto: `${sucesso ? "✔" : "❌"} Concentração ${sucesso ? "Mantida" : "Perdida"}`,
+              },
+            },
           );
 
           if (sucesso) {
@@ -18209,6 +18350,14 @@ Bônus de Proficiência: +${bonusProf}
           "Teste de Resistência",
           `(${atributo}): ${valor}`,
           obterIconeAtributoAtaque(atributo),
+          "",
+          {
+            timeline: {
+              simples: true,
+              exibirBadge: false,
+              texto: `${obterIconeAtributoAtaque(atributo)} Teste de Resistência ${atributo}: ${valor}`,
+            },
+          },
         );
 
         fecharModalTesteResistencia();
@@ -18929,6 +19078,7 @@ Bônus de Proficiência: +${bonusProf}
         estadoAtaqueArma.ultimaRolagemDano = null;
         estadoAtaqueArma.origem = "arma";
         estadoAtaqueArma.magia = null;
+        estadoAtaqueArma.nivelSlot = null;
         estadoAtaqueArma.danoTipo = "";
         estadoAtaqueArma.infoCD = "";
 
@@ -18982,6 +19132,9 @@ Bônus de Proficiência: +${bonusProf}
         estadoAtaqueArma.arma = arma;
         estadoAtaqueArma.origem = arma?.tipo === "magia" ? "magia" : "arma";
         estadoAtaqueArma.magia = arma?.magiaOriginal || null;
+        estadoAtaqueArma.nivelSlot = Number.isInteger(arma?.nivelSlot)
+          ? arma.nivelSlot
+          : null;
         estadoAtaqueArma.danoTipo = arma?.danoTipo || "";
         estadoAtaqueArma.infoCD = "";
         estadoAtaqueArma.dado = null;
@@ -19031,8 +19184,10 @@ Bônus de Proficiência: +${bonusProf}
         setTimeout(() => campoDado.focus(), 0);
       }
 
-      function abrirModalAtaqueMagia(magia) {
-        abrirModalAtaqueArma(criarArmaVirtualMagia(magia));
+      function abrirModalAtaqueMagia(magia, nivelSlot = null) {
+        const arma = criarArmaVirtualMagia(magia);
+        arma.nivelSlot = Number.isInteger(nivelSlot) ? nivelSlot : null;
+        abrirModalAtaqueArma(arma);
       }
 
       function obterDadoModalAtaque() {
@@ -19139,6 +19294,9 @@ Bônus de Proficiência: +${bonusProf}
         estadoAtaqueArma.arma = arma;
         estadoAtaqueArma.origem = "magia";
         estadoAtaqueArma.magia = arma.magiaOriginal || null;
+        estadoAtaqueArma.nivelSlot = Number.isInteger(opcoes.nivelSlot)
+          ? opcoes.nivelSlot
+          : null;
         estadoAtaqueArma.dado = null;
         estadoAtaqueArma.totalAtaque = 0;
         estadoAtaqueArma.modBase = arma.calculoMagia?.modBase || 0;
@@ -19171,6 +19329,7 @@ Bônus de Proficiência: +${bonusProf}
         resumo.innerHTML = `${linhaCD}<div>Dano da magia: <span class="ataque-modal-resumo-destaque">${estadoAtaqueArma.danoFormula || "dano"} + ${formatarBonusAtaqueModal(estadoAtaqueArma.danoModBase || 0)}</span></div>`;
 
         atualizarRodadaModalAtaque();
+        marcarTipoAcaoModalAtaque("Ação");
         configurarBotaoRolarDanoModal();
         atualizarDetalheBonusDanoModal();
         atualizarDetalheDadoDanoModal();
@@ -19310,11 +19469,128 @@ Bônus de Proficiência: +${bonusProf}
         normalizarPontosDeVida();
       }
 
+      function escaparHtmlHistorico(valor) {
+        return String(valor ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      function normalizarTipoAcaoHistorico(tipoAcao = "Ação") {
+        const texto = String(tipoAcao || "Ação").toLowerCase();
+        if (texto.includes("reação") || texto.includes("reacao")) {
+          return { texto: "REAÇÃO", classe: "reacao" };
+        }
+        if (texto.includes("bônus") || texto.includes("bonus")) {
+          return { texto: "BÔNUS", classe: "bonus" };
+        }
+        return { texto: "AÇÃO", classe: "acao" };
+      }
+
+      function obterTituloMagiaHistorico(nivelSlot) {
+        return Number.isInteger(nivelSlot) && nivelSlot > 0
+          ? `Magia NV ${nivelSlot}`
+          : "Truque";
+      }
+
+      function criarDivisorRodadaHistorico(rodada) {
+        const divisor = document.createElement("div");
+        divisor.className = "historico-rodada-divisor";
+        divisor.dataset.rodadaDivisor = String(rodada);
+        divisor.textContent = `Rodada ${rodada}`;
+        return divisor;
+      }
+
+      function garantirDivisorRodadaHistorico(container, rodada) {
+        if (!rodada) return;
+        const primeiro = container.firstElementChild;
+        if (primeiro?.dataset?.rodadaDivisor === String(rodada)) return;
+        if (primeiro?.dataset?.rodada === String(rodada)) {
+          const segundo = primeiro.nextElementSibling;
+          if (segundo?.dataset?.rodadaDivisor === String(rodada)) {
+            container.insertBefore(segundo, primeiro);
+            return;
+          }
+          container.insertBefore(criarDivisorRodadaHistorico(rodada), primeiro);
+          return;
+        }
+        container.prepend(criarDivisorRodadaHistorico(rodada));
+      }
+
+      function montarRegistroTimelineHistorico(dados) {
+        const registro = document.createElement("div");
+        registro.className = "historico-registro";
+        if (dados.classe) registro.classList.add(dados.classe);
+        if (dados.simples) registro.classList.add("simples");
+        if (dados.dado === 20) registro.classList.add("critico");
+        if (dados.dado === 1) registro.classList.add("falha-critica");
+
+        const tipoAcao = normalizarTipoAcaoHistorico(dados.tipoAcao);
+        const titulo = escaparHtmlHistorico(dados.titulo || dados.tipo || "Ação");
+        const nome = escaparHtmlHistorico(dados.nome || dados.valor || "");
+        const iconeNome = dados.iconeNome || dados.icone || "";
+        const danoTipo = escaparHtmlHistorico(dados.danoTipo || "");
+        const partesResultado = [];
+
+        if (dados.simples) {
+          const textoSimples = escaparHtmlHistorico(dados.texto || nome || titulo);
+          registro.innerHTML = `<div class="historico-evento-simples">${textoSimples}</div>`;
+          return registro;
+        }
+
+        if (Number.isInteger(dados.dado)) {
+          const bonusAtaque = Number.isFinite(dados.bonusAtaque)
+            ? dados.bonusAtaque
+            : null;
+          const totalAtaque = Number.isFinite(dados.totalAtaque)
+            ? dados.totalAtaque
+            : bonusAtaque === null
+              ? dados.dado
+              : dados.dado + bonusAtaque;
+          const detalheAtaque =
+            bonusAtaque === null
+              ? ""
+              : ` (${dados.dado}${bonusAtaque >= 0 ? "+" : ""}${bonusAtaque})`;
+          if (dados.dado === 20) {
+            partesResultado.push(`<span class="historico-evento-critico">🎲 ${totalAtaque}${detalheAtaque} ✦</span>`);
+          } else if (dados.dado === 1) {
+            partesResultado.push(`<span class="historico-evento-falha">🎲 ${totalAtaque}${detalheAtaque} ✖ Falha Crítica</span>`);
+          } else if (dados.sucesso === false) {
+            partesResultado.push(`🎲 ${totalAtaque}${detalheAtaque} ✖`);
+          } else {
+            partesResultado.push(`🎲 ${totalAtaque}${detalheAtaque} ✔`);
+          }
+        }
+
+        if (Number.isFinite(dados.dano) && dados.dano > 0) {
+          partesResultado.push(`💥 ${danoTipo ? `${danoTipo} ` : ""}${dados.dano}`);
+        }
+
+        if (Number.isFinite(dados.cura) && dados.cura > 0) {
+          partesResultado.push(`💚 ${dados.cura} Cura`);
+        }
+
+        registro.innerHTML = `
+          <div class="historico-evento-topo">
+            ${dados.exibirBadge === false ? "" : `<span class="historico-acao-badge ${tipoAcao.classe}">${tipoAcao.texto}</span>`}
+            <span class="historico-evento-tipo">${titulo}</span>
+            ${dados.concentrando ? '<span class="historico-concentracao">🌀Concentração Iniciada</span>' : ""}
+          </div>
+          ${nome ? `<div class="historico-evento-nome">${iconeNome ? `${iconeNome} ` : ""}${nome}</div>` : ""}
+          ${partesResultado.length ? `<div class="historico-evento-resultado">${partesResultado.join(" • ")}</div>` : ""}
+        `;
+
+        return registro;
+      }
+
       function adicionarRegistroHistoricoCombate(
         tipo,
         valor,
         iconePersonalizado = "",
         detalheRodada = "",
+        opcoes = {},
       ) {
         const rodada = obterRodadaAtualHistorico();
         const registrosContainer =
@@ -19335,26 +19611,58 @@ Bônus de Proficiência: +${bonusProf}
 
         const icone = iconePersonalizado || icones[tipo] || "";
 
-        const registro = document.createElement("div");
-        registro.className = "historico-registro";
-        registro.innerHTML = `
-        <div class="historico-col-rodada">
-            <div>${rodada}</div>
-            ${detalheRodada ? `<div class="historico-col-rodada-acao">(${detalheRodada})</div>` : ""}
-        </div>
-        <div class="historico-col-tipo">${icone} ${tipo}</div>
-        <div class="historico-col-valor">
-            ${
-              tipo === "Dano"
-                ? `-${valor}`
-                : tipo === "Cura"
-                  ? `+${valor}`
-                  : `${valor}`
+        if (tipo === "Iniciativa") {
+          const registroIniciativa = document.createElement("div");
+          registroIniciativa.className = "historico-registro iniciativa";
+          const posicao = estadoCombateIniciativa.posicao || "-";
+          registroIniciativa.innerHTML = `🎲 Inic. ${escaparHtmlHistorico(valor)} | Pos: ${escaparHtmlHistorico(posicao)}º`;
+          registrosContainer.prepend(registroIniciativa);
+          return;
+        }
+
+        const dadosTimeline = opcoes.timeline
+          ? {
+              tipo,
+              valor,
+              icone,
+              tipoAcao: detalheRodada || opcoes.tipoAcao || "Ação",
+              ...opcoes.timeline,
             }
-        </div>
-            `;
+          : {
+              tipo,
+              valor:
+                tipo === "Dano"
+                  ? `${valor}`
+                  : tipo === "Cura"
+                    ? `${valor}`
+                    : valor,
+              icone,
+              tipoAcao: detalheRodada || opcoes.tipoAcao || "Ação",
+              titulo: tipo,
+              nome:
+                tipo === "Dano"
+                  ? "Dano recebido"
+                  : tipo === "Cura"
+                    ? "Cura recebida"
+                    : valor,
+              dano: tipo === "Dano" ? Number(valor) : null,
+              cura: tipo === "Cura" ? Number(valor) : null,
+              iconeNome: tipo === "Cura" ? "💚" : icone,
+              simples: true,
+              exibirBadge: false,
+              texto:
+                tipo === "Dano"
+                  ? `💥 Dano ${valor}`
+                  : tipo === "Cura"
+                    ? `💚 Cura ${valor}`
+                    : `${icone ? `${icone} ` : ""}${tipo}${valor ? ` ${valor}` : ""}`,
+            };
+
+        const registro = montarRegistroTimelineHistorico(dadosTimeline);
+        registro.dataset.rodada = String(rodada);
 
         registrosContainer.prepend(registro);
+        garantirDivisorRodadaHistorico(registrosContainer, rodada);
       }
 
       function registrarHistoricoAtaqueArma(sucesso, dano) {
@@ -19364,14 +19672,30 @@ Bônus de Proficiência: +${bonusProf}
 
         if (estadoAtaqueArma.origem !== "magia") consumirMunicao(1, arma);
 
+        const ehMagia = estadoAtaqueArma.origem === "magia";
+        const nivelMagia =
+          Number.isInteger(estadoAtaqueArma.nivelSlot)
+            ? estadoAtaqueArma.nivelSlot
+            : Number(estadoAtaqueArma.magia?.nivel) || 0;
+        const tipoDano =
+          estadoAtaqueArma.danoTipo ||
+          arma?.arma_tipo_dano ||
+          arma?.tipo_dano ||
+          arma?.bruto?.arma_tipo_dano ||
+          arma?.bruto?.tipo_dano ||
+          "";
+        const bonusAtaque =
+          Number(estadoAtaqueArma.modBase || 0) +
+          Number(estadoAtaqueArma.bonusProf || 0);
+        const totalAtaque = Number.isInteger(dado) ? dado + bonusAtaque : null;
         const valor =
-          estadoAtaqueArma.origem === "magia"
+          ehMagia
             ? [
                 arma.nome || "Magia",
                 dado === null ? "" : `Dado: ${dado}`,
                 sucesso ? "Sucesso" : "Fracasso",
                 `Dano: ${dano}`,
-                estadoAtaqueArma.danoTipo || "",
+                tipoDano,
                 estadoAtaqueArma.infoCD || "",
               ]
                 .filter(Boolean)
@@ -19384,16 +19708,32 @@ Bônus de Proficiência: +${bonusProf}
               ].join(" | ");
 
         adicionarRegistroHistoricoCombate(
-          estadoAtaqueArma.origem === "magia" && dado === null
+          ehMagia && dado === null
             ? "Dano Mágico"
             : "Ataque",
           valor,
-          estadoAtaqueArma.origem === "magia"
+          ehMagia
             ? "✨"
             : arma.usaMunicao
               ? "🏹"
               : "⚔️",
           obterTipoAcaoSelecionadoModalAtaque().toLowerCase(),
+          {
+            timeline: {
+              titulo: ehMagia
+                ? obterTituloMagiaHistorico(nivelMagia)
+                : "Ataque com arma",
+              nome: arma.nome || (ehMagia ? "Magia" : "Arma"),
+              iconeNome: ehMagia ? "🪄" : "🗡️",
+              dado,
+              bonusAtaque,
+              totalAtaque,
+              sucesso,
+              dano,
+              danoTipo: tipoDano,
+              concentrando: ehMagia && magiaExigeConcentracao(estadoAtaqueArma.magia),
+            },
+          },
         );
       }
 
