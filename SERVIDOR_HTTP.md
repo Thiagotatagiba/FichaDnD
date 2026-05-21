@@ -9,31 +9,48 @@ Quando você abre um arquivo HTML diretamente (duplo clique):
 
 ## A Solução: Servidor HTTP Local
 
-### Opção 1: Python (Recomendado - Mais Simples)
+### ⭐ Opção 1 (Mais Fácil): Duplo Clique no arquivo batch
 
-**Se tem Python 3.x instalado:**
+**Arquivo:** `iniciar_servidor.bat` (está na raiz do FichaDnD)
 
-```bash
-# Abra terminal/PowerShell na pasta FichaDnD
-cd "C:\Seu\Caminho\FichaDnD"
-
-# Execute:
-python -m http.server 8000
-
-# Saída esperada:
-# Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...
+1. Localize na pasta FichaDnD: `iniciar_servidor.bat`
+2. **Duplo clique** para iniciar
+3. Uma janela PowerShell abrirá
+4. Saída esperada:
 ```
+🚀 Servidor HTTP Local - FichaDnD
 
-**Depois acesse:**
-```
+Servidor rodando em: http://localhost:8000
+
+Abra a Ficha em:
 http://localhost:8000/ficha/Ficha%20DnD%20-%20Tatagiba%201.0.html
+
+Teste o Card em:
+http://localhost:8000/teste_xhr.html
+
+Pressione CTRL+C para parar o servidor
 ```
+
+5. **Depois acesse:**
+   ```
+   http://localhost:8000/ficha/Ficha%20DnD%20-%20Tatagiba%201.0.html
+   ```
 
 ---
 
-### Opção 2: Node.js (Alternativa)
+### Opção 2: Node.js Direto (Você tem instalado!)
 
-**Se tem Node.js instalado:**
+**No PowerShell, na pasta FichaDnD:**
+
+```bash
+node server.js
+```
+
+Saída esperada: mesma mensagem acima
+
+---
+
+### Opção 3: npx http-server (Alternativa rápida)
 
 ```bash
 # Na pasta FichaDnD:
@@ -45,9 +62,7 @@ npx http-server -p 8000
 
 ---
 
-### Opção 3: VS Code (Muito Fácil!)
-
-**Se tem VS Code com extensão Live Server:**
+### Opção 4: VS Code (Se tiver a extensão Live Server)
 
 1. Clique direito em `ficha/Ficha DnD - Tatagiba 1.0.html`
 2. Selecione: **"Open with Live Server"**
@@ -74,6 +89,11 @@ Com servidor rodando, teste novamente:
 3. Procure por `[CardLoad]`, `[Tentando Fetch]`
 4. ✅ Deve ver os logs de carregamento
 
+### Teste 4: Teste de Diagnóstico
+1. URL: `http://localhost:8000/teste_xhr.html`
+2. Clique em "Testar: Carregar Bardo"
+3. ✅ Deve mostrar "✓ Sucesso!" com detalhes
+
 ---
 
 ## 🐛 Debug com Servidor HTTP
@@ -88,22 +108,43 @@ Com servidor rodando, você terá:
 
 ---
 
-## ⚠️ Se Não Tiver Python/Node
+## ⚠️ Se Tiver Erro na Porta
 
-Use **Electron** (se o projeto usa):
+Se receber erro "Porta 8000 já em uso":
+
 ```bash
-npm start
-# Ou conforme configurado em package.json
+# Tente uma porta diferente:
+node server.js  # ou edite server.js para mudar PORT
+
+# Ou com http-server:
+npx http-server -p 9000
 ```
+
+Depois acesse: `http://localhost:9000` (se usar porta 9000)
+
+---
+
+## 📝 Arquivos de Servidor
+
+- **server.js** - Servidor Node.js customizado
+- **iniciar_servidor.bat** - Atalho para iniciar (duplo clique)
 
 ---
 
 ## 🔗 Links Úteis
 
-- **Python Download**: https://www.python.org/downloads/
 - **Node.js Download**: https://nodejs.org/
 - **VS Code**: https://code.visualstudio.com/
+- **VS Code Live Server Extension**: https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer
 
 ---
 
-**Depois de rodar servidor HTTP, teste novamente e me avise se funciona!**
+**Próximo passo:**
+1. **Duplo clique em `iniciar_servidor.bat`** (mais fácil!)
+   OU
+2. Execute: `node server.js` no PowerShell
+3. Abra o link em seu navegador
+4. Teste a ficha!
+
+**Me avise se funciona! 🚀**
+
