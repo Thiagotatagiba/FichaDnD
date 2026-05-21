@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test XMLHttpRequest for Class Loading</title>
+    <style>
+      body {
+        font-family: Arial;
+        margin: 20px;
+      }
+      .result {
+        margin-top: 20px;
+        padding: 10px;
+        border: 1px solid #ccc;
+      }
+      .success {
+        background: #d4edda;
+        color: #155724;
+      }
+      .error {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .log {
+        background: #f0f0f0;
+        padding: 10px;
+        margin-top: 10px;
+        max-height: 300px;
+        overflow-y: auto;
+        font-size: 12px;
+      }
+      pre {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Teste de Carregamento de Classe via XMLHttpRequest</h1>
+
+    <button onclick="testCarregarBardo()">Testar: Carregar Bardo</button>
+    <button onclick="testCarregarGuerreiro()">
+      Testar: Carregar Guerreiro
+    </button>
+    <button onclick="clearLog()">Limpar Log</button>
+
+    <div id="result" class="result"></div>
+    <div id="log" class="log"><pre id="logContent"></pre></div>
+
+    <script>
+      const logs = [];
+
+      function log(msg) {
+        console.log(msg);
+        logs.push(msg);
+        document.getElementById("logContent").textContent = logs.join("\n");
+        document.getElementById("log").scrollTop =
+          document.getElementById("log").scrollHeight;
+      }
+
+      function clearLog() {
+        logs.length = 0;
+        document.getElementById("logContent").textContent = "";
+        document.getElementById("result").innerHTML = "";
+      }
+
+      function carregarJSONViaXHR(caminho) {
+        log(`[XHR] Iniciando XMLHttpRequest para: ${caminho}`);
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("GET", caminho, true);
+
+          xhr.onload = function () {
+            log(`[XHR] onload acionado. Status: ${xhr.status}`);
+            try {
+              const statusValido =
+                (xhr.status >= 200 && xhr.status < 300) ||
+                (xhr.status === 0 && xhr.responseText);
+              log(
+                `[XHR] Status válido? ${statusValido} (responseText length: ${xhr.responseText.length})`,
+              );
+
+              if (statusValido) {
+                const data = JSON.parse(xhr.responseText);
+                log(
+                  `[XHR] JSON parseado com sucesso. Keys: ${Object.keys(data).join(", ")}`,
+                );
+                resolve(data);
+              } else {
+                reject(new Error(`HTTP ${xhr.status}: ${caminho}`));
+              }
+            } catch (error) {
+              log(`[XHR] Erro ao parsear JSON: ${error.message}`);
+              reject(new Error(`JSON parse error: ${error.message}`));
+            }
+          };
+
+          xhr.onerror = function () {
+            log(`[XHR] onerror acionado`);
+            reject(new Error(`Erro ao carregar: ${caminho}`));
+          };
+
+          xhr.onprogress = function (e) {
+            log(`[XHR] progress: ${e.loaded} bytes`);
+          };
+
+          log(`[XHR] Enviando requisição...`);
+          xhr.send();
+        });
+      }
+
+      async function testar(classe) {
+        log(`\n=== Testando carregamento de ${classe} ===`);
+        const resultDiv = document.getElementById("result");
+        resultDiv.innerHTML = "";
+
+        try {
+          const classePath = `./ficha/Classes/caracteristica_${classe}.json`;
+          log(`Caminho resolvido: ${classePath}`);
+
+          const data = await carregarJSONViaXHR(classePath);
+
+          log(`Sucesso! Dados recebidos:`);
+          log(`  - nome: ${data.nome}`);
+          log(`  - features: ${data.features?.length || 0} itens`);
+          log(
+            `  - subclasses: ${Object.keys(data.subclasses || {}).length} subclasses`,
+          );
+
+          resultDiv.className = "result success";
+          resultDiv.innerHTML = `<strong>✓ Sucesso!</strong> Classe "${classe}" carregada com ${data.features?.length || 0} features.`;
+        } catch (error) {
+          log(`Erro: ${error.message}`);
+          log(`Stack: ${error.stack}`);
+
+          resultDiv.className = "result error";
+          resultDiv.innerHTML = `<strong>✗ Erro:</strong> ${error.message}`;
+        }
+      }
+
+      function testCarregarBardo() {
+        testar("bardo");
+      }
+
+      function testCarregarGuerreiro() {
+        testar("guerreiro");
+      }
+    </script>
+  </body>
+</html>
