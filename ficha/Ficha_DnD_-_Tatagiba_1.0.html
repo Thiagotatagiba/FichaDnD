@@ -1817,7 +1817,7 @@
       }
 
       .config-modal {
-        width: min(100%, 720px);
+        width: min(100%, 980px);
         max-height: min(82vh, 760px);
         overflow: auto;
         border: 2px solid #8b4513;
@@ -6253,6 +6253,64 @@
       #cardClasseContainer .ficha-btn:active {
         transform: translateY(0) !important;
       }
+
+      .caracteristica-classe-controles {
+        display: grid;
+        grid-template-columns: minmax(180px, 1fr) auto;
+        gap: 10px;
+        align-items: end;
+        margin: 0 0 12px;
+      }
+
+      .caracteristica-classe-controles label {
+        display: grid;
+        gap: 5px;
+        color: #5a3b1d;
+        font-size: 13px;
+      }
+
+      .caracteristica-classe-controles select {
+        min-width: 0;
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid rgba(139, 69, 19, 0.45);
+        border-radius: 8px;
+        background: #fffaf2;
+        color: #3f2712;
+        font-family: "MedievalSharp", serif;
+      }
+
+      .caracteristica-classe-aviso {
+        position: fixed;
+        right: 18px;
+        bottom: 18px;
+        z-index: 3600;
+        max-width: min(420px, calc(100vw - 36px));
+        padding: 12px 14px;
+        border: 1px solid rgba(139, 69, 19, 0.3);
+        border-radius: 10px;
+        background: #fffaf2;
+        box-shadow: 0 12px 30px rgba(33, 19, 10, 0.2);
+        color: #3f2712;
+        font-size: 13px;
+        line-height: 1.35;
+      }
+
+      .caracteristica-classe-aviso.sucesso {
+        border-color: rgba(31, 111, 62, 0.35);
+        color: #1f6f3e;
+      }
+
+      .caracteristica-classe-aviso.erro {
+        border-color: rgba(161, 29, 29, 0.35);
+        color: #a11d1d;
+      }
+
+      @media (max-width: 720px) {
+        .caracteristica-classe-controles {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
 
@@ -6876,6 +6934,18 @@
                 <h3 class="card-classe-features-titulo">
                   📜 Características da Classe
                 </h3>
+                <div class="caracteristica-classe-controles">
+                  <label for="caracteristicaClasseArquivo">
+                    Arquivo de características
+                    <select id="caracteristicaClasseArquivo">
+                      <option value="">Selecione um arquivo</option>
+                    </select>
+                  </label>
+                  <button id="caracteristicaClasseImportar" type="button">
+                    Importar
+                  </button>
+                </div>
+                <input id="caracteristicaClasseSubclasse" type="hidden" />
                 <div
                   id="cardClasseContainerFeatures"
                   style="
@@ -7224,13 +7294,262 @@
     <!-- CLASSES / LEVEL UP -->
     <!-- ========================= -->
     <script>
+      window.CARACTERISTICA_CLASSE_ARQUIVOS =
+        window.CARACTERISTICA_CLASSE_ARQUIVOS || [
+          "caracteristica_barbaro.json",
+          "caracteristica_bardo.json",
+          "caracteristica_bruxo.json",
+          "caracteristica_clerigo.json",
+          "caracteristica_druida.json",
+          "caracteristica_feiticeiro.json",
+          "caracteristica_guerreiro.json",
+          "caracteristica_ladino.json",
+          "caracteristica_mago.json",
+          "caracteristica_monge.json",
+          "caracteristica_paladino.json",
+          "caracteristica_patrulheiro.json",
+        ];
+
+      function normalizarTextoClasse(valor) {
+        return String(valor || "")
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .trim()
+          .replace(/ç/g, "c")
+          .replace(/[^a-z0-9]+/g, "_")
+          .replace(/^_+|_+$/g, "");
+      }
+
+      function obterSlugArquivoCaracteristica(arquivo) {
+        return normalizarTextoClasse(
+          String(arquivo || "")
+            .replace(/^caracteristica_/i, "")
+            .replace(/\.(json|js)$/i, ""),
+        );
+      }
+
+      function obterArquivoCaracteristicaPorClasse(classe) {
+        const slugClasse = normalizarTextoClasse(classe);
+        if (!slugClasse) return "";
+
+        return (
+          window.CARACTERISTICA_CLASSE_ARQUIVOS.find(
+            (arquivo) => obterSlugArquivoCaracteristica(arquivo) === slugClasse,
+          ) || ""
+        );
+      }
+
+      function avisarCaracteristicaClasse(mensagem, tipo = "info") {
+        if (typeof atualizarStatusCargaClasse === "function") {
+          atualizarStatusCargaClasse(mensagem, tipo);
+        } else {
+          console[tipo === "erro" ? "warn" : "log"](
+            "[CaracteristicaClasse]",
+            mensagem,
+          );
+        }
+
+        let aviso = document.getElementById("caracteristicaClasseAviso");
+        if (!aviso) {
+          aviso = document.createElement("div");
+          aviso.id = "caracteristicaClasseAviso";
+          aviso.className = "caracteristica-classe-aviso";
+          aviso.setAttribute("role", "status");
+          document.body.appendChild(aviso);
+        }
+
+        aviso.textContent = mensagem;
+        aviso.className = `caracteristica-classe-aviso ${tipo}`;
+        clearTimeout(window.caracteristicaClasseAvisoTimer);
+        window.caracteristicaClasseAvisoTimer = setTimeout(() => {
+          aviso.remove();
+        }, tipo === "erro" ? 9000 : 5200);
+      }
+
+      function mensagemImportacaoManualCaracteristica() {
+        return "Você pode importar manualmente escolhendo um arquivo no select da aba Característica de Classe e clicando em Importar.";
+      }
+
+      function caminhoArquivoCaracteristica(arquivo) {
+        const nomeArquivo = String(arquivo || "").trim();
+        if (!nomeArquivo) return "";
+        if (/^(?:\.\/|\/|https?:)/i.test(nomeArquivo)) return nomeArquivo;
+        return `./Classes/${nomeArquivo}`;
+      }
+
+      function preencherSelectArquivosCaracteristica() {
+        const select = document.getElementById("caracteristicaClasseArquivo");
+        if (!select) return;
+
+        const valorAtual = select.value;
+        select.innerHTML = '<option value="">Selecione um arquivo</option>';
+
+        window.CARACTERISTICA_CLASSE_ARQUIVOS.forEach((arquivo) => {
+          const option = document.createElement("option");
+          option.value = arquivo;
+          option.textContent = arquivo;
+          select.appendChild(option);
+        });
+
+        if (valorAtual) {
+          if (!window.CARACTERISTICA_CLASSE_ARQUIVOS.includes(valorAtual)) {
+            const option = document.createElement("option");
+            option.value = valorAtual;
+            option.textContent = valorAtual;
+            select.appendChild(option);
+          }
+          select.value = valorAtual;
+        }
+      }
+
+      function sincronizarArquivoCaracteristicaComClasse(forcar = false) {
+        const select = document.getElementById("caracteristicaClasseArquivo");
+        const campoClasse = document.getElementById("classeNomeID");
+        if (!select || !campoClasse) return "";
+
+        const arquivoClasse = obterArquivoCaracteristicaPorClasse(
+          campoClasse.value,
+        );
+        if (arquivoClasse && (forcar || !select.value)) {
+          select.value = arquivoClasse;
+        } else if (forcar && !arquivoClasse) {
+          select.value = "";
+        }
+
+        return select.value || arquivoClasse || "";
+      }
+
+      function obterSubclassesCaracteristica(classeData) {
+        if (!classeData?.subclasses || typeof classeData.subclasses !== "object")
+          return [];
+        return Object.keys(classeData.subclasses);
+      }
+
+      function encontrarSubclasseCaracteristica(classeData, subclasse) {
+        const subclasseNormalizada = normalizarTextoClasse(subclasse);
+        if (!subclasseNormalizada) return "";
+
+        return (
+          obterSubclassesCaracteristica(classeData).find(
+            (nome) => normalizarTextoClasse(nome) === subclasseNormalizada,
+          ) || ""
+        );
+      }
+
+      function definirSubclasseCaracteristica(valor) {
+        const subclasse = String(valor || "");
+        const campo = document.getElementById("caracteristicaClasseSubclasse");
+        if (campo) campo.value = subclasse;
+
+        const select = document.getElementById("selectSubclasse");
+        if (select && subclasse) {
+          select.value = subclasse;
+        }
+
+        if (typeof subclasseAtual !== "undefined") {
+          subclasseAtual = subclasse;
+        }
+      }
+
+      function nivelCaracteristicaValor(valor) {
+        const numero = parseInt(String(valor ?? "").replace(/[^\d-]/g, ""), 10);
+        return Number.isNaN(numero) ? 1 : numero;
+      }
+
+      function criarFeatureCaracteristica(nome, classeData, nivel) {
+        const nomeLimpo = String(nome || "").trim();
+        if (!nomeLimpo) return null;
+        return {
+          name: nomeLimpo,
+          desc: classeData?.descricoes?.[nomeLimpo] || "",
+          level: nivel,
+        };
+      }
+
+      function extrairFeaturesClasse(classeData, nivel) {
+        if (Array.isArray(classeData?.features)) {
+          return classeData.features.filter((f) => (f.level || 1) <= nivel);
+        }
+
+        if (!Array.isArray(classeData?.niveis)) return [];
+
+        return classeData.niveis
+          .filter((linha) => nivelCaracteristicaValor(linha.nivel) <= nivel)
+          .flatMap((linha) =>
+            String(linha.caracteristicas || "")
+              .split(",")
+              .map((nome) =>
+                criarFeatureCaracteristica(
+                  nome,
+                  classeData,
+                  nivelCaracteristicaValor(linha.nivel),
+                ),
+              )
+              .filter(Boolean),
+          );
+      }
+
+      function extrairFeaturesSubclasse(classeData, subclasse, nivel) {
+        const dadosSubclasse = classeData?.subclasses?.[subclasse];
+        if (!dadosSubclasse) return [];
+
+        if (Array.isArray(dadosSubclasse)) {
+          return dadosSubclasse.filter((f) => (f.level || 1) <= nivel);
+        }
+
+        return Object.entries(dadosSubclasse)
+          .filter(([nivelRegra]) => nivelCaracteristicaValor(nivelRegra) <= nivel)
+          .flatMap(([nivelRegra, regra]) => {
+            const nomes = [];
+            if (Array.isArray(regra?.add)) nomes.push(...regra.add);
+            if (regra?.value) nomes.push(regra.value);
+            return nomes
+              .map((nome) =>
+                criarFeatureCaracteristica(
+                  nome,
+                  classeData,
+                  nivelCaracteristicaValor(nivelRegra),
+                ),
+              )
+              .filter(Boolean);
+          });
+      }
+
       document.addEventListener("DOMContentLoaded", function () {
+        preencherSelectArquivosCaracteristica();
+        document
+          .getElementById("caracteristicaClasseArquivo")
+          ?.addEventListener("change", function () {
+            const classeNome =
+              document.getElementById("classeNomeID")?.value ||
+              obterSlugArquivoCaracteristica(this.value);
+            const classeNivel =
+              parseInt(document.getElementById("classeNivelID")?.value) || 1;
+            const sub = document.getElementById("subclasse")?.value || "";
+            carregarCaracteristicasClasse(classeNome, classeNivel, sub);
+          });
+        document
+          .getElementById("caracteristicaClasseImportar")
+          ?.addEventListener("click", function () {
+            const classeNome =
+              document.getElementById("classeNomeID")?.value ||
+              obterSlugArquivoCaracteristica(
+                document.getElementById("caracteristicaClasseArquivo")?.value,
+              );
+            const classeNivel =
+              parseInt(document.getElementById("classeNivelID")?.value) || 1;
+            const sub = document.getElementById("subclasse")?.value || "";
+            carregarCaracteristicasClasse(classeNome, classeNivel, sub);
+          });
         const classeSelect = document.getElementById("classeNomeID");
 
         if (classeSelect) {
           // Auto-load quando classe muda
           classeSelect.addEventListener("change", function (e) {
             const classe = e.target.value;
+            sincronizarArquivoCaracteristicaComClasse(true);
+            definirSubclasseCaracteristica("");
             const cardContainer = document.getElementById(
               "cardClasseContainer",
             );
@@ -7245,7 +7564,10 @@
               console.log("[Ficha] Carregando classe no card:", classe);
 
               // Carrega o JSON da classe e exibe no card integrado
-              const caminhoJson = `Classes/caracteristica_${classe}.json`;
+              const arquivo = sincronizarArquivoCaracteristicaComClasse(true);
+              const caminhoJson =
+                caminhoArquivoCaracteristica(arquivo) ||
+                `Classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
               if (typeof carregarJSONClasse === "function") {
                 carregarJSONClasse(caminhoJson, classe)
                   .then((data) => {
@@ -7412,6 +7734,7 @@
         classe = "",
         nivel = 1,
         subclasse = "",
+        opcoes = {},
       ) {
         console.log("[CardLoad] carregarCaracteristicasClasse chamada com:", {
           classe,
@@ -7421,62 +7744,93 @@
 
         if (!classe) {
           console.log("[CardLoad] Classe vazia, limpando");
-          limparListasTalentos();
           document.getElementById("classeData").value = "";
           document.getElementById("subclasseData").value = "";
+          definirSubclasseCaracteristica("");
           return;
         }
 
         mostrarCarregando(true);
         try {
-          limparListasTalentos();
-
           // Carrega classe principal - usa múltiplos métodos de carregamento
-          const classePath = `./Classes/caracteristica_${classe}.json`;
+          const arquivoSelecionado =
+            sincronizarArquivoCaracteristicaComClasse(false) ||
+            obterArquivoCaracteristicaPorClasse(classe);
+          const classePath =
+            caminhoArquivoCaracteristica(arquivoSelecionado) ||
+            `./Classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
+          const classeReferencia =
+            obterSlugArquivoCaracteristica(arquivoSelecionado) ||
+            normalizarTextoClasse(classe);
           console.log("[CardLoad] Carregando JSON de:", classePath);
 
-          const classeData = await carregarJSONClasse(classePath, classe);
+          const classeData = await carregarJSONClasse(
+            classePath,
+            classeReferencia || classe,
+          );
           console.log("[CardLoad] JSON carregado com sucesso:", classeData);
+
+          const selectArquivo = document.getElementById(
+            "caracteristicaClasseArquivo",
+          );
+          if (selectArquivo && arquivoSelecionado) {
+            selectArquivo.value = arquivoSelecionado;
+          }
 
           document.getElementById("classeData").value =
             JSON.stringify(classeData);
-          enviarClasseParaCard(classe, classeData);
+          enviarClasseParaCard(classeReferencia || classe, classeData);
 
-          // Filtra features por nível
-          const featuresClasse = (classeData.features || []).filter(
-            (f) => f.level <= nivel,
+          avisarCaracteristicaClasse(
+            `Característica de classe importada: ${arquivoSelecionado || classePath}.`,
+            "sucesso",
           );
 
-          // Popula categoria 'classe'
-          popularTalentoLista("classe", featuresClasse);
-
-          // Subclasse/arquetipo
-          let featuresSub = [];
-          if (
-            subclasse &&
-            classeData.subclasses &&
-            classeData.subclasses[subclasse]
-          ) {
-            featuresSub = classeData.subclasses[subclasse].filter(
-              (f) => f.level <= nivel,
+          const subclasseSalva =
+            opcoes.subclasseCaracteristicaSalva ||
+            document.getElementById("caracteristicaClasseSubclasse")?.value ||
+            "";
+          const subclasseEncontrada =
+            encontrarSubclasseCaracteristica(classeData, subclasseSalva) ||
+            encontrarSubclasseCaracteristica(classeData, subclasse);
+          if (subclasseEncontrada) {
+            definirSubclasseCaracteristica(subclasseEncontrada);
+            if (typeof aplicarSubclasse === "function") aplicarSubclasse();
+            avisarCaracteristicaClasse(
+              `Subclasse importada na característica: ${subclasseEncontrada}.`,
+              "sucesso",
             );
-            document.getElementById("subclasseData").value =
-              JSON.stringify(featuresSub);
-            popularTalentoLista("arquetipo", featuresSub);
-            document.getElementById("talentoArquetipoResumo").textContent =
-              subclasse;
+          } else {
+            definirSubclasseCaracteristica("");
+            if (subclasse || subclasseSalva) {
+              avisarCaracteristicaClasse(
+                `Não encontrei a subclasse "${subclasse || subclasseSalva}" neste arquivo. ${mensagemImportacaoManualCaracteristica()}`,
+                "erro",
+              );
+            }
           }
 
-          // Atualiza resumos (ex: count)
-          document.getElementById("talentoClasseResumo").textContent =
-            `${classe} (${featuresClasse.length})`;
+          const featuresSub = extrairFeaturesSubclasse(
+            classeData,
+            subclasseEncontrada,
+            nivel,
+          );
+          if (subclasseEncontrada && featuresSub.length) {
+            document.getElementById("subclasseData").value =
+              JSON.stringify(featuresSub);
+          } else {
+            document.getElementById("subclasseData").value = "";
+          }
         } catch (error) {
           console.error("[CardError] Erro carregando características:", error);
           console.error("[CardError] Stack:", error.stack);
-          alert(
-            `Erro ao carregar ${classe}: ${error.message}. Verifique se o arquivo Classes/caracteristica_${classe}.json existe.`,
+          avisarCaracteristicaClasse(
+            `Não encontrei característica para "${classe}". ${mensagemImportacaoManualCaracteristica()}`,
+            "erro",
           );
-          limparListasTalentos();
+          document.getElementById("classeData").value = "";
+          document.getElementById("subclasseData").value = "";
+          definirSubclasseCaracteristica("");
         } finally {
           mostrarCarregando(false);
         }
@@ -7507,6 +7861,7 @@
         const classeNome = classeNomeInput.value;
         const classeNivel = parseInt(classeNivelInput.value) || 1;
         const sub = subInput?.value || "";
+        sincronizarArquivoCaracteristicaComClasse(false);
         carregarCaracteristicasClasse(classeNome, classeNivel, sub);
       }
 
@@ -7519,7 +7874,10 @@
         classeNomeInput.addEventListener("change", handleClasseChange);
       if (classeNivelInput)
         classeNivelInput.addEventListener("input", handleClasseChange);
-      if (subInput) subInput.addEventListener("input", handleClasseChange);
+      if (subInput) {
+        subInput.addEventListener("input", handleClasseChange);
+        subInput.addEventListener("change", handleClasseChange);
+      }
 
       // Integra com load (chama após carregarFicha)
       const originalCarregarFicha = window.carregarFicha;
@@ -7592,7 +7950,7 @@
 
       <div class="linha-personagem">
         <div class="campo">
-              <div class="campo-titulo">Classe e Nível</div>
+          <div class="campo-titulo">Classe e Nível</div>
           <input id="classeID" type="hidden" />
           <input id="classeData" type="hidden" value="" />
           <input id="subclasseData" type="hidden" value="" />
@@ -7600,13 +7958,12 @@
             class="campo-duplo"
             title="Selecione a classe e o nível do personagem"
           >
-            <label class="oculto-acessivel" for="classeNomeID">Classe</label>
+
             <select
               id="classeNomeID"
               title="Selecione a classe"
               class="classe-nome"
             >
-
               <option value="">Selecione uma classe</option>
               <option value="barbaro">Bárbaro</option>
               <option value="bardo">Bardo</option>
@@ -7622,8 +7979,8 @@
               <option value="patrulheiro">Patrulheiro</option>
             </select>
             <span class="classe-separador" title="Nível">NV</span>
-            < aria-label="Nível do personagem" id="classeNivelID"
-            class="classe-nivel" value="1" type="number" readonly />
+            <input aria-label="Nível do personagem" id="classeNivelID"
+            class="classe-nivel" value="1" type="number" readonly /input>
           </div>
           <div id="containerSubclasse" class="subclasse-container hidden">
             <input type="text" id="subclasse" placeholder="Subclasse" />
@@ -15173,6 +15530,14 @@ Bônus de Proficiência: +${bonusProf}
         if (typeof obterEstadoCombateParaSalvar === "function") {
           dados.estadoCombate = obterEstadoCombateParaSalvar();
         }
+        dados.caracteristicaClasseArquivo =
+          document.getElementById("caracteristicaClasseArquivo")?.value || "";
+        dados.caracteristicaClasseSubclasse =
+          document.getElementById("caracteristicaClasseSubclasse")?.value ||
+          document.getElementById("selectSubclasse")?.value ||
+          "";
+        dados.caracteristicaClasseSubdominio =
+          dados.caracteristicaClasseSubclasse;
 
         return adicionarAliasesLegacyAoSave(dados);
       }
@@ -15196,6 +15561,14 @@ Bônus de Proficiência: +${bonusProf}
         const dados = coletarDadosFicha();
         dados.classeData = classeData;
         dados.subclasseData = subData;
+        dados.caracteristicaClasseArquivo =
+          document.getElementById("caracteristicaClasseArquivo")?.value || "";
+        dados.caracteristicaClasseSubclasse =
+          document.getElementById("caracteristicaClasseSubclasse")?.value ||
+          document.getElementById("selectSubclasse")?.value ||
+          "";
+        dados.caracteristicaClasseSubdominio =
+          dados.caracteristicaClasseSubclasse;
         dados.armas = coletarArmas();
         dados.armaduras = coletarArmaduras();
         dados.escudos = coletarEscudos();
@@ -21409,6 +21782,43 @@ Bônus de Proficiência: +${bonusProf}
         atualizarSubAbaArmas();
         sincronizarClasseNivel(true);
         sincronizarResumoCaracteristicas(true);
+        if (typeof preencherSelectArquivosCaracteristica === "function") {
+          preencherSelectArquivosCaracteristica();
+        }
+        if (typeof carregarCaracteristicasClasse === "function") {
+          const arquivoSalvo = document.getElementById(
+            "caracteristicaClasseArquivo",
+          )?.value;
+          const subclasseCaracteristicaSalva =
+            dados.caracteristicaClasseSubclasse ||
+            dados.caracteristicaClasseSubdominio ||
+            dados.selectSubclasse ||
+            "";
+          if (!arquivoSalvo) {
+            sincronizarArquivoCaracteristicaComClasse(false);
+            avisarCaracteristicaClasse(
+              "A ficha importada não tinha arquivo de característica salvo. Vou tentar importar pela classe e subclasse da ficha.",
+              "info",
+            );
+          } else {
+            avisarCaracteristicaClasse(
+              `A ficha importada trouxe a característica salva: ${arquivoSalvo}. Vou tentar recarregar esse arquivo.`,
+              "info",
+            );
+          }
+          setTimeout(() => {
+            carregarCaracteristicasClasse(
+              document.getElementById("classeNomeID")?.value ||
+                obterSlugArquivoCaracteristica(
+                  document.getElementById("caracteristicaClasseArquivo")
+                    ?.value,
+                ),
+              parseInt(document.getElementById("classeNivelID")?.value) || 1,
+              document.getElementById("subclasse")?.value || "",
+              { subclasseCaracteristicaSalva },
+            );
+          }, 0);
+        }
         sincronizarCamposMagia();
         atualizarMagias();
         atualizarVidaMaxNivelUm();
@@ -21440,7 +21850,7 @@ Bônus de Proficiência: +${bonusProf}
     <!-- ========================= -->
     <script>
       // ===== SISTEMA DE EXPIRAÇÃO =====
-      const DATA_EXPIRACAO = new Date("2026-05-28T12:00:00");
+      const DATA_EXPIRACAO = new Date("2026-06-04T12:00:00");
       console.log(
         "[Debug] Data de expiração:",
         DATA_EXPIRACAO.toLocaleString("pt-BR"),
@@ -21492,7 +21902,7 @@ Bônus de Proficiência: +${bonusProf}
 
           <button class="ficha-btn" onclick="importarJSON()">📤 Importar JSON</button>
           <button class="ficha-btn ficha-btn-aplicar-na-ficha" onclick="aplicarNaFicha()">✅ Aplicar na Ficha</button>
-          <input type="file" id="fileInput" hidden>
+          <input type="file" id="classeFileInput" hidden>
 
           <br>
 
@@ -21541,6 +21951,51 @@ Bônus de Proficiência: +${bonusProf}
         const container = document.getElementById("cardClasseContainer");
         if (!container) return;
         container.innerHTML = CARD_CLASSE_HTML;
+        configurarImportacaoManualCard();
+      }
+
+      function configurarImportacaoManualCard() {
+        const fileInput = document.getElementById("classeFileInput");
+        if (!fileInput || fileInput.dataset.listenerConfigurado === "true")
+          return;
+
+        fileInput.dataset.listenerConfigurado = "true";
+        fileInput.addEventListener("change", (e) => {
+          const arquivo = e.target.files?.[0];
+          if (!arquivo) return;
+
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            try {
+              const selectArquivo = document.getElementById(
+                "caracteristicaClasseArquivo",
+              );
+              if (selectArquivo && arquivo.name) {
+                if (
+                  ![...selectArquivo.options].some(
+                    (option) => option.value === arquivo.name,
+                  )
+                ) {
+                  const option = document.createElement("option");
+                  option.value = arquivo.name;
+                  option.textContent = arquivo.name;
+                  selectArquivo.appendChild(option);
+                }
+                selectArquivo.value = arquivo.name;
+              }
+              importarJSONNoCard(evt.target.result, arquivo.name);
+            } catch (err) {
+              atualizarStatusCargaClasse(
+                "Erro ao importar o JSON manualmente.",
+                "erro",
+              );
+              alert("Erro ao parsear JSON");
+            } finally {
+              fileInput.value = "";
+            }
+          };
+          reader.readAsText(arquivo);
+        });
       }
 
       function aplicarNaFicha() {
@@ -21558,7 +22013,11 @@ Bônus de Proficiência: +${bonusProf}
         const nivelAtual = document.getElementById("classeNivelID")?.value || 1;
 
         if (typeof carregarCaracteristicasClasse === "function") {
-          carregarCaracteristicasClasse(classeAtual, dadosClasse);
+          carregarCaracteristicasClasse(
+            classeAtual,
+            parseInt(nivelAtual) || 1,
+            subclasseAtual,
+          );
         }
 
         alert("✅ Características aplicadas na ficha!");
@@ -21584,17 +22043,15 @@ Bônus de Proficiência: +${bonusProf}
       }
 
       function carregarJSONClasse(caminho, classe = "") {
-        const classeNormalizada = String(classe || "")
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .toLowerCase()
-          .trim();
+        const classeNormalizada =
+          normalizarTextoClasse(classe) ||
+          obterSlugArquivoCaracteristica(String(caminho || "").split("/").pop());
+        const dadosEmbutidos = classeNormalizada
+          ? window.CLASSES_EMBUTIDAS?.[classeNormalizada]
+          : null;
 
-        if (
-          classeNormalizada &&
-          window.CLASSES_EMBUTIDAS?.[classeNormalizada]
-        ) {
-          return Promise.resolve(window.CLASSES_EMBUTIDAS[classeNormalizada]);
+        if (!caminho && dadosEmbutidos) {
+          return Promise.resolve(dadosEmbutidos);
         }
 
         return fetch(caminho)
@@ -21626,11 +22083,19 @@ Bônus de Proficiência: +${bonusProf}
               };
 
               request.onerror = function () {
+                if (dadosEmbutidos) {
+                  resolve(dadosEmbutidos);
+                  return;
+                }
                 reject(errorFetch);
               };
 
               request.send();
             });
+          })
+          .catch((error) => {
+            if (dadosEmbutidos) return dadosEmbutidos;
+            throw error;
           });
       }
 
@@ -21650,10 +22115,33 @@ Bônus de Proficiência: +${bonusProf}
         montarTabela();
         carregarSubclasses();
 
+        const subclasseFicha = document.getElementById("subclasse")?.value || "";
+        const subclasseSalva =
+          document.getElementById("caracteristicaClasseSubclasse")?.value || "";
+        const subclasseEncontrada =
+          encontrarSubclasseCaracteristica(data, subclasseFicha) ||
+          encontrarSubclasseCaracteristica(data, subclasseSalva);
+
+        if (subclasseEncontrada) {
+          definirSubclasseCaracteristica(subclasseEncontrada);
+          aplicarSubclasse();
+        } else {
+          definirSubclasseCaracteristica("");
+        }
+
         const totalNiveis = Array.isArray(data.niveis) ? data.niveis.length : 0;
+        const detalheSubclasse = subclasseEncontrada
+          ? ` Subclasse selecionada: ${subclasseEncontrada}.`
+          : subclasseFicha || subclasseSalva
+            ? ` Não encontrei subclasse correspondente. ${mensagemImportacaoManualCaracteristica()}`
+            : "";
         atualizarStatusCargaClasse(
-          `Arquivo upado no card via ${origem}: ${data.nome || classe || "Classe"} (${totalNiveis} níveis)`,
-          "sucesso",
+          `Arquivo importado no card via ${origem}: ${data.nome || classe || "Classe"} (${totalNiveis} níveis).${detalheSubclasse}`,
+          subclasseFicha || subclasseSalva
+            ? subclasseEncontrada
+              ? "sucesso"
+              : "erro"
+            : "sucesso",
         );
       }
 
@@ -21673,31 +22161,11 @@ Bônus de Proficiência: +${bonusProf}
       });
 
       function importarJSON() {
-        document.getElementById("fileInput").click();
+        document.getElementById("classeFileInput")?.click();
       }
 
       document.addEventListener("DOMContentLoaded", function () {
-        const fileInput = document.getElementById("fileInput");
-        if (fileInput) {
-          fileInput.addEventListener("change", (e) => {
-            const reader = new FileReader();
-            reader.onload = (evt) => {
-              try {
-                importarJSONNoCard(
-                  evt.target.result,
-                  e.target.files[0]?.name || "importacao manual",
-                );
-              } catch (err) {
-                atualizarStatusCargaClasse(
-                  "Erro ao importar o JSON manualmente.",
-                  "erro",
-                );
-                alert("Erro ao parsear JSON");
-              }
-            };
-            reader.readAsText(e.target.files[0]);
-          });
-        }
+        configurarImportacaoManualCard();
       });
 
       function montarTabela() {
@@ -21749,7 +22217,7 @@ Bônus de Proficiência: +${bonusProf}
 
         select.innerHTML = `<option value="">Subclasse</option>`;
 
-        for (let nome in dadosClasse.subclasses) {
+        for (let nome in dadosClasse.subclasses || {}) {
           select.innerHTML += `<option value="${nome}">${nome}</option>`;
         }
       }
@@ -21757,6 +22225,12 @@ Bônus de Proficiência: +${bonusProf}
       function aplicarSubclasse() {
         const subclasse = document.getElementById("selectSubclasse").value;
         subclasseAtual = subclasse;
+        const campoSubclasseCaracteristica = document.getElementById(
+          "caracteristicaClasseSubclasse",
+        );
+        if (campoSubclasseCaracteristica) {
+          campoSubclasseCaracteristica.value = subclasse;
+        }
 
         document.getElementById("nomeSubclasse").textContent = subclasse;
 
@@ -21806,10 +22280,16 @@ Bônus de Proficiência: +${bonusProf}
       }
 
       document.addEventListener("DOMContentLoaded", function () {
+        inicializarCardClasse();
+        preencherSelectArquivosCaracteristica();
+
         const urlParams = new URLSearchParams(window.location.search);
         const classe = urlParams.get("classe");
         if (classe) {
-          const caminhoJson = `Classes/caracteristica_${classe}.json`;
+          const arquivo = obterArquivoCaracteristicaPorClasse(classe);
+          const caminhoJson =
+            caminhoArquivoCaracteristica(arquivo) ||
+            `Classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
           atualizarStatusCargaClasse(`Classe solicitada: ${classe}`, "info");
           carregarJSONClasse(caminhoJson, classe)
             .then((data) => {
@@ -21832,9 +22312,19 @@ Bônus de Proficiência: +${bonusProf}
             });
         } else {
           atualizarStatusCargaClasse(`Aguardando seleção de classe...`, "info");
+          const classeAtual = document.getElementById("classeNomeID")?.value;
+          const arquivoAtual =
+            document.getElementById("caracteristicaClasseArquivo")?.value ||
+            obterArquivoCaracteristicaPorClasse(classeAtual);
+          if (classeAtual || arquivoAtual) {
+            sincronizarArquivoCaracteristicaComClasse(false);
+            carregarCaracteristicasClasse(
+              classeAtual || obterSlugArquivoCaracteristica(arquivoAtual),
+              parseInt(document.getElementById("classeNivelID")?.value) || 1,
+              document.getElementById("subclasse")?.value || "",
+            );
+          }
         }
-
-        inicializarCardClasse();
       });
     </script>
 
