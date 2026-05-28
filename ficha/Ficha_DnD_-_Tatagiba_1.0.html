@@ -6142,13 +6142,31 @@
         border: 3px solid #8b4513;
         border-radius: 10px;
         padding: 15px;
+        box-shadow: 0 4px 14px rgba(45, 27, 10, 0.12);
       }
 
       /* HEADER */
       #cardClasseContainer .topo {
         display: flex;
         justify-content: space-between;
-        align-items: center;
+        align-items: flex-start;
+        gap: 12px;
+        border-bottom: 1px solid rgba(139, 69, 19, 0.18);
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+      }
+
+      #cardClasseContainer #tituloClasse {
+        margin: 0;
+        color: #5c3211;
+        line-height: 1.05;
+      }
+
+      #cardClasseContainer .classe-nivel-atual {
+        margin-top: 4px;
+        color: #6f4b24;
+        font-size: 15px;
+        font-weight: bold;
       }
 
       #cardClasseContainer .subclasse {
@@ -6168,6 +6186,7 @@
         width: 100%;
         border-collapse: collapse;
         font-size: 13px;
+        background: #fffaf0;
       }
 
       #cardClasseContainer th,
@@ -6175,14 +6194,53 @@
         border: 1px solid #bda68c;
         padding: 6px;
         text-align: center;
+        transition:
+          background 0.22s ease,
+          color 0.22s ease,
+          opacity 0.22s ease,
+          box-shadow 0.22s ease;
       }
 
       #cardClasseContainer th {
         background: #d6c7a8;
+        color: #3f2712;
       }
 
       #cardClasseContainer td:nth-child(3) {
         text-align: left;
+      }
+
+      #cardClasseContainer tbody tr.linha-passada {
+        background: #eef5e8;
+        color: #344b2a;
+      }
+
+      #cardClasseContainer tbody tr.linha-atual {
+        position: relative;
+        background: #f8edc9;
+        color: #3f2712;
+        box-shadow:
+          inset 3px 0 0 rgba(139, 69, 19, 0.55),
+          0 0 8px rgba(218, 166, 48, 0.2);
+        outline: 1px solid rgba(139, 69, 19, 0.28);
+        outline-offset: -2px;
+      }
+
+      #cardClasseContainer tbody tr.linha-atual td {
+        border-top-color: rgba(139, 69, 19, 0.34);
+        border-bottom-color: rgba(139, 69, 19, 0.34);
+        font-weight: 700;
+      }
+
+      #cardClasseContainer tbody tr.linha-futura {
+        background: #f0ece3;
+        color: #786f62;
+        opacity: 0.62;
+      }
+
+      #cardClasseContainer tbody tr:hover {
+        opacity: 1;
+        background-color: #f7efd9;
       }
 
       /* TAGS */
@@ -6973,20 +7031,7 @@
                   botão "Importar JSON" na tabela!
                 </div>
 
-                <h3>📜 Características de Classe</h3>
-                <!-- This area now uses the integrated card component -->
-                <div style="display: none"></div>
-                <div
-                  style="
-                    text-align: center;
-                    margin-top: 10px;
-                    font-size: 12px;
-                    color: #666;
-                  "
-                >
-                  Selecione sua classe na ficha principal para carregar
-                  automaticamente as características na aba Status.
-                </div>
+                
               </div>
             </div>
           </div>
@@ -7873,7 +7918,15 @@
       if (classeNomeInput)
         classeNomeInput.addEventListener("change", handleClasseChange);
       if (classeNivelInput)
-        classeNivelInput.addEventListener("input", handleClasseChange);
+        classeNivelInput.addEventListener("input", () => {
+          handleClasseChange();
+          if (typeof montarTabela === "function") montarTabela();
+        });
+      if (classeNivelInput)
+        classeNivelInput.addEventListener("change", () => {
+          handleClasseChange();
+          if (typeof montarTabela === "function") montarTabela();
+        });
       if (subInput) {
         subInput.addEventListener("input", handleClasseChange);
         subInput.addEventListener("change", handleClasseChange);
@@ -15497,6 +15550,25 @@ Bônus de Proficiência: +${bonusProf}
       function carregarFicha(personagem) {
         aplicarDadosFicha(personagem);
       }
+
+      function obterNivelSalvoFicha(dados = {}) {
+        const candidatos = [
+          dados.classeNivelID,
+          dados.classeNivel,
+          String(dados.classeID || "").match(/NV\s*(\d+)/i)?.[1],
+        ];
+
+        for (const valor of candidatos) {
+          const nivel = parseInt(
+            String(valor ?? "").replace(/[^\d-]/g, ""),
+            10,
+          );
+          if (Number.isInteger(nivel) && nivel > 0) return nivel;
+        }
+
+        return null;
+      }
+
       function coletarDadosFicha() {
         const dados = {};
 
@@ -21511,6 +21583,14 @@ Bônus de Proficiência: +${bonusProf}
           preencherCampo(campo, dados[key]);
         }
 
+        const nivelSalvoFicha = obterNivelSalvoFicha(dados);
+        if (nivelSalvoFicha) {
+          const campoNivelImportado = document.getElementById("classeNivelID");
+          if (campoNivelImportado) {
+            campoNivelImportado.value = String(nivelSalvoFicha);
+          }
+        }
+
         if (dados.estadoCombate && typeof dados.estadoCombate === "object") {
           estadoCombateIniciativa.ativo = !!dados.estadoCombate.ativo;
           estadoCombateIniciativa.rodada = estadoCombateIniciativa.ativo
@@ -21781,6 +21861,13 @@ Bônus de Proficiência: +${bonusProf}
         atualizarClasseArmaduraEquipada();
         atualizarSubAbaArmas();
         sincronizarClasseNivel(true);
+        if (nivelSalvoFicha) {
+          const campoNivelImportado = document.getElementById("classeNivelID");
+          if (campoNivelImportado) {
+            campoNivelImportado.value = String(nivelSalvoFicha);
+            sincronizarClasseNivel(false);
+          }
+        }
         sincronizarResumoCaracteristicas(true);
         if (typeof preencherSelectArquivosCaracteristica === "function") {
           preencherSelectArquivosCaracteristica();
@@ -21896,7 +21983,10 @@ Bônus de Proficiência: +${bonusProf}
       const CARD_CLASSE_HTML = `
         <div class="container">
           <div class="topo">
-            <h2 id="tituloClasse">Classe</h2>
+            <div>
+              <h2 id="tituloClasse">Classe</h2>
+              <div id="nivelClasseAtualCard" class="classe-nivel-atual">Nível 1</div>
+            </div>
             <span id="nomeSubclasse" class="subclasse"></span>
           </div>
 
@@ -22168,15 +22258,46 @@ Bônus de Proficiência: +${bonusProf}
         configurarImportacaoManualCard();
       });
 
+      function obterNivelAtualClasseCard() {
+        const nivelDom = parseInt(
+          document.getElementById("classeNivelID")?.value,
+          10,
+        );
+        if (Number.isInteger(nivelDom) && nivelDom > 0) return nivelDom;
+
+        const nivelPersonagem = obterNivelSalvoFicha(window.personagem || {});
+        if (nivelPersonagem) return nivelPersonagem;
+
+        const nivel = parseInt(document.getElementById("classeNivelID")?.value, 10);
+        return Number.isNaN(nivel) || nivel < 1 ? 1 : nivel;
+      }
+
+      function atualizarNivelClasseCard() {
+        const nivelCard = document.getElementById("nivelClasseAtualCard");
+        if (nivelCard) {
+          nivelCard.textContent = `Nível ${obterNivelAtualClasseCard()}`;
+        }
+      }
+
+      function classeLinhaNivelCard(nivelLinha, nivelAtual) {
+        const nivel = nivelCaracteristicaValor(nivelLinha);
+        if (nivel < nivelAtual) return "linha-passada";
+        if (nivel === nivelAtual) return "linha-atual";
+        return "linha-futura";
+      }
+
       function montarTabela() {
         const tbody = document.getElementById("tbodyClasse");
         if (!tbody || !dadosClasse) return;
 
         document.getElementById("tituloClasse").textContent = dadosClasse.nome;
+        atualizarNivelClasseCard();
         tbody.innerHTML = "";
 
+        const nivelAtual = obterNivelAtualClasseCard();
         dadosClasse.niveis.forEach((n) => {
           const tr = document.createElement("tr");
+          tr.classList.add(classeLinhaNivelCard(n.nivel, nivelAtual));
 
           tr.innerHTML = `
             <td>${n.nivel}</td>
