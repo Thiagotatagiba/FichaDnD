@@ -11296,6 +11296,7 @@
               proficiente: !!arma.proficiente,
               usaMunicao: !!arma.propriedades?.municao,
               arma_municao_id: arma.arma_municao_id || null,
+              arma_tipo_dano: arma.arma_tipo_dano || "",
               slot,
             };
           })
@@ -20156,7 +20157,7 @@ Bônus de Proficiência: +${bonusProf}
         estadoAtaqueArma.danoFormula = arma.danoFormula || "";
         estadoAtaqueArma.danoModBase = arma.danoBonusMagia || 0;
         estadoAtaqueArma.ultimaRolagemDano = null;
-        estadoAtaqueArma.danoTipo = arma.danoTipo || "";
+        estadoAtaqueArma.danoTipo = arma.arma_tipo_dano || "";
         estadoAtaqueArma.infoCD = opcoes.mostrarCD
           ? `CD para Evitar suas Magias: ${String(document.getElementById("magiaCD")?.value || "-").trim() || "-"}`
           : "";
