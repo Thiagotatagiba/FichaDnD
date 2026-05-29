@@ -20420,7 +20420,7 @@ Bônus de Proficiência: +${bonusProf}
 
         if (Number.isFinite(dados.dano) && dados.dano > 0) {
           partesResultado.push(
-            `💥 ${danoTipo ? `${danoTipo} ` : ""}${dados.dano}`,
+            `💥${dados.dano}${danoTipo ? ` ${danoTipo}` : ""}`,
           );
         }
 
