@@ -6243,6 +6243,125 @@
         background-color: #f7efd9;
       }
 
+      .campo-titulo-caracteristica {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .classe-info-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        padding: 0;
+        border: 1px solid rgba(139, 69, 19, 0.35);
+        border-radius: 50%;
+        background: #fffaf2;
+        color: #6f3610;
+        cursor: pointer;
+        font-size: 14px;
+        line-height: 1;
+      }
+
+      .classe-info-btn[hidden] {
+        display: none;
+      }
+
+      .classe-info-btn:hover,
+      .classe-info-btn:focus-visible {
+        background: #f3e3c5;
+        outline: none;
+      }
+
+      .consulta-caracteristica-overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(33, 19, 10, 0.48);
+        z-index: 3450;
+      }
+
+      .consulta-caracteristica-overlay.ativo {
+        display: flex;
+      }
+
+      .consulta-caracteristica-modal {
+        width: min(100%, 980px);
+        max-height: min(86vh, 780px);
+        overflow: auto;
+        padding: 16px;
+        border: 2px solid #8b4513;
+        border-radius: 12px;
+        background: #f6f2ea;
+        box-shadow: 0 24px 60px rgba(33, 19, 10, 0.32);
+      }
+
+      .consulta-caracteristica-fechar {
+        float: right;
+        margin: 0 0 10px 10px;
+        border: 1px solid rgba(139, 69, 19, 0.45);
+        border-radius: 8px;
+        background: #fffaf2;
+        color: #6f3610;
+        cursor: pointer;
+        font-family: "MedievalSharp", serif;
+        padding: 6px 10px;
+      }
+
+      .consulta-caracteristica-conteudo table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: "Georgia", serif;
+        font-size: 13px;
+        background: #fffaf0;
+      }
+
+      .consulta-caracteristica-conteudo th,
+      .consulta-caracteristica-conteudo td {
+        border: 1px solid #bda68c;
+        padding: 6px;
+        text-align: center;
+      }
+
+      .consulta-caracteristica-conteudo th {
+        background: #d6c7a8;
+        color: #3f2712;
+      }
+
+      .consulta-caracteristica-conteudo td:nth-child(3) {
+        text-align: left;
+      }
+
+      .consulta-caracteristica-conteudo tr.linha-passada {
+        background: #eef5e8;
+        color: #344b2a;
+      }
+
+      .consulta-caracteristica-conteudo tr.linha-atual {
+        background: #f8edc9;
+        color: #3f2712;
+        box-shadow:
+          inset 3px 0 0 rgba(139, 69, 19, 0.55),
+          0 0 8px rgba(218, 166, 48, 0.2);
+        outline: 1px solid rgba(139, 69, 19, 0.28);
+        outline-offset: -2px;
+      }
+
+      .consulta-caracteristica-conteudo tr.linha-atual td {
+        font-weight: 700;
+      }
+
+      .consulta-caracteristica-conteudo tr.linha-futura {
+        background: #f0ece3;
+        color: #786f62;
+        opacity: 0.62;
+      }
+
       /* TAGS */
       #cardClasseContainer .tag {
         background: #d6c7a8;
@@ -7039,6 +7158,26 @@
       </div>
     </div>
 
+    <div
+      id="consultaCaracteristicaClasseOverlay"
+      class="consulta-caracteristica-overlay"
+      aria-hidden="true"
+    >
+      <div class="consulta-caracteristica-modal" role="dialog" aria-modal="true">
+        <button
+          id="fecharConsultaCaracteristicaClasse"
+          class="consulta-caracteristica-fechar"
+          type="button"
+        >
+          Fechar
+        </button>
+        <div
+          id="consultaCaracteristicaClasseConteudo"
+          class="consulta-caracteristica-conteudo"
+        ></div>
+      </div>
+    </div>
+
     <!-- ========================= -->
     <!-- DICE CORE -->
     <!-- ========================= -->
@@ -7792,6 +7931,8 @@
           document.getElementById("classeData").value = "";
           document.getElementById("subclasseData").value = "";
           definirSubclasseCaracteristica("");
+          dadosClasse = null;
+          atualizarAtalhoConsultaCaracteristicaClasse();
           return;
         }
 
@@ -7876,6 +8017,8 @@
           document.getElementById("classeData").value = "";
           document.getElementById("subclasseData").value = "";
           definirSubclasseCaracteristica("");
+          dadosClasse = null;
+          atualizarAtalhoConsultaCaracteristicaClasse();
         } finally {
           mostrarCarregando(false);
         }
@@ -8003,7 +8146,18 @@
 
       <div class="linha-personagem">
         <div class="campo">
-          <div class="campo-titulo">Classe e Nível</div>
+          <div class="campo-titulo campo-titulo-caracteristica">
+            Classe e Nível
+            <button
+              id="abrirConsultaCaracteristicaClasse"
+              class="classe-info-btn"
+              type="button"
+              hidden
+              aria-label="Abrir característica da classe"
+            >
+              ℹ️
+            </button>
+          </div>
           <input id="classeID" type="hidden" />
           <input id="classeData" type="hidden" value="" />
           <input id="subclasseData" type="hidden" value="" />
@@ -22128,6 +22282,60 @@ Bônus de Proficiência: +${bonusProf}
         console.log("[CardClasse]", mensagem);
       }
 
+      function atualizarAtalhoConsultaCaracteristicaClasse() {
+        const botao = document.getElementById(
+          "abrirConsultaCaracteristicaClasse",
+        );
+        if (!botao) return;
+
+        const nomeClasse =
+          dadosClasse?.nome ||
+          document.getElementById("classeNomeID")?.selectedOptions?.[0]?.text ||
+          document.getElementById("classeNomeID")?.value ||
+          "";
+
+        const temTabela = !!dadosClasse && !!document.querySelector(
+          "#cardClasseContainer table",
+        );
+
+        botao.hidden = !temTabela;
+        if (temTabela) {
+          botao.title = `Característica da Classe ${nomeClasse}`;
+          botao.setAttribute(
+            "aria-label",
+            `Abrir característica da classe ${nomeClasse}`,
+          );
+        }
+      }
+
+      function abrirConsultaCaracteristicaClasse() {
+        if (!dadosClasse) return;
+        montarTabela();
+
+        const tabela = document.querySelector("#cardClasseContainer table");
+        const conteudo = document.getElementById(
+          "consultaCaracteristicaClasseConteudo",
+        );
+        const overlay = document.getElementById(
+          "consultaCaracteristicaClasseOverlay",
+        );
+        if (!tabela || !conteudo || !overlay) return;
+
+        conteudo.innerHTML = "";
+        conteudo.appendChild(tabela.cloneNode(true));
+        overlay.classList.add("ativo");
+        overlay.setAttribute("aria-hidden", "false");
+      }
+
+      function fecharConsultaCaracteristicaClasse() {
+        const overlay = document.getElementById(
+          "consultaCaracteristicaClasseOverlay",
+        );
+        if (!overlay) return;
+        overlay.classList.remove("ativo");
+        overlay.setAttribute("aria-hidden", "true");
+      }
+
       function nomeArquivoAtual() {
         return "Ficha_DnD_-_Tatagiba_1.0.html";
       }
@@ -22233,6 +22441,7 @@ Bônus de Proficiência: +${bonusProf}
               : "erro"
             : "sucesso",
         );
+        atualizarAtalhoConsultaCaracteristicaClasse();
       }
 
       function aplicarDadosClasseNoCard(data, classe = "") {
@@ -22256,6 +22465,19 @@ Bônus de Proficiência: +${bonusProf}
 
       document.addEventListener("DOMContentLoaded", function () {
         configurarImportacaoManualCard();
+        document
+          .getElementById("abrirConsultaCaracteristicaClasse")
+          ?.addEventListener("click", abrirConsultaCaracteristicaClasse);
+        document
+          .getElementById("fecharConsultaCaracteristicaClasse")
+          ?.addEventListener("click", fecharConsultaCaracteristicaClasse);
+        document
+          .getElementById("consultaCaracteristicaClasseOverlay")
+          ?.addEventListener("click", (event) => {
+            if (event.target.id === "consultaCaracteristicaClasseOverlay") {
+              fecharConsultaCaracteristicaClasse();
+            }
+          });
       });
 
       function obterNivelAtualClasseCard() {

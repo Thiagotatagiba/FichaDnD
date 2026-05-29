@@ -9,6 +9,9 @@
   "customSubclasse": "",
   "customRaca": "",
   "customSubraca": "",
+  "caracteristicaClasseArquivo": "caracteristica_clerigo.json",
+  "caracteristicaClasseSubclasse": "",
+  "selectSubclasse": "",
   "nomePersonagem": "Waldo Malaphael",
   "jogador": "Tatagiba",
   "xp": "0",
@@ -309,6 +312,7 @@
     "posicao": null,
     "iniciativa": null
   },
+  "caracteristicaClasseSubdominio": "",
   "nomePlayer": "Tatagiba",
   "classeNome": "clerigo",
   "classeNivel": "1",
