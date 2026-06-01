@@ -20157,7 +20157,7 @@ Bônus de Proficiência: +${bonusProf}
         estadoAtaqueArma.danoFormula = arma.danoFormula || "";
         estadoAtaqueArma.danoModBase = arma.danoBonusMagia || 0;
         estadoAtaqueArma.ultimaRolagemDano = null;
-        estadoAtaqueArma.danoTipo = arma.arma_tipo_dano || "";
+        estadoAtaqueArma.danoTipo = arma.danoTipo || arma?.arma_tipo_dano || "";
         estadoAtaqueArma.infoCD = opcoes.mostrarCD
           ? `CD para Evitar suas Magias: ${String(document.getElementById("magiaCD")?.value || "-").trim() || "-"}`
           : "";
