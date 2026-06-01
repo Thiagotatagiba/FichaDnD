@@ -2914,6 +2914,21 @@
         outline: none;
       }
 
+      .magia-contador {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+        border: 2px solid #8b4513;
+        border-radius: 10px;
+        padding: 8px 10px;
+        background: #fffaf2;
+        font-family: "MedievalSharp";
+        font-size: 14px;
+        font-weight: bold;
+        color: #6f3610;
+      }
+
       .magia-niveis {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -18056,6 +18071,27 @@ Bônus de Proficiência: +${bonusProf}
           header.setAttribute("aria-expanded", aberto ? "true" : "false");
       }
 
+      function atualizarContadorMagiasPreparadas() {
+        let totalPreparadas = 0;
+        let totalDisponiveis = 0;
+
+        for (let nivel = 1; nivel <= 9; nivel++) {
+          const magias = lerMagiasNivel(nivel);
+          magias.forEach((magia) => {
+            const temNome = String(magia.nome || "").trim();
+            if (temNome) {
+              totalDisponiveis++;
+              if (magia.preparada) totalPreparadas++;
+            }
+          });
+        }
+
+        const contador = document.getElementById("magiaContadorPreparadas");
+        if (contador) {
+          contador.textContent = `${totalPreparadas}/${totalDisponiveis}`;
+        }
+      }
+
       function renderizarListaMagiasNivel(nivel) {
         const container = obterContainerListaMagias(nivel);
         if (!container) return;
@@ -18075,22 +18111,27 @@ Bônus de Proficiência: +${bonusProf}
           const item = document.createElement("div");
           item.className = "magia-item";
 
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.className = "magia-item-preparada";
-          checkbox.checked = !!magia.preparada;
-          checkbox.setAttribute(
-            "aria-label",
-            `Magia preparada: ${magia.nome || "sem nome"}`,
-          );
-          checkbox.addEventListener("change", () => {
-            const registros = lerMagiasNivel(nivel);
-            if (!registros[indice]) return;
-            registros[indice].preparada = checkbox.checked;
-            salvarMagiasNivel(nivel, registros);
-            renderizarListaMagiasNivel(nivel);
-            atualizarSubAbaMagiasCombate();
-          });
+          const ehTruque = nivel === 0;
+          if (!ehTruque) {
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.className = "magia-item-preparada";
+            checkbox.checked = !!magia.preparada;
+            checkbox.setAttribute(
+              "aria-label",
+              `Magia preparada: ${magia.nome || "sem nome"}`,
+            );
+            checkbox.addEventListener("change", () => {
+              const registros = lerMagiasNivel(nivel);
+              if (!registros[indice]) return;
+              registros[indice].preparada = checkbox.checked;
+              salvarMagiasNivel(nivel, registros);
+              renderizarListaMagiasNivel(nivel);
+              atualizarSubAbaMagiasCombate();
+              atualizarContadorMagiasPreparadas();
+            });
+            item.appendChild(checkbox);
+          }
 
           const nome = document.createElement("button");
           nome.type = "button";
@@ -18121,20 +18162,24 @@ Bônus de Proficiência: +${bonusProf}
             abrirModalMagia(nivel, indice, "editar"),
           );
 
-          item.appendChild(checkbox);
           item.appendChild(nome);
           item.appendChild(editar);
           container.appendChild(item);
         });
+
+        atualizarContadorMagiasPreparadas();
       }
 
       function obterMagiasPreparadasCombate() {
         return NIVEIS_MAGIA.flatMap((nivel) =>
           lerMagiasNivel(nivel)
             .map((magia, indice) => ({ ...magia, indiceLista: indice }))
-            .filter(
-              (magia) => magia.preparada && String(magia.nome || "").trim(),
-            ),
+            .filter((magia) => {
+              const temNome = String(magia.nome || "").trim();
+              if (!temNome) return false;
+              const ehTruque = nivel === 0;
+              return ehTruque || magia.preparada;
+            }),
         ).sort((a, b) => {
           if ((a.nivel ?? 0) !== (b.nivel ?? 0))
             return (a.nivel ?? 0) - (b.nivel ?? 0);
@@ -18154,6 +18199,8 @@ Bônus de Proficiência: +${bonusProf}
         container.appendChild(criarLinhaStatusMagico());
         const hudConcentracao = criarHudConcentracao();
         if (hudConcentracao) container.appendChild(hudConcentracao);
+
+        atualizarContadorMagiasPreparadas();
 
         if (!magias.length) {
           const vazio = document.createElement("div");
@@ -18684,6 +18731,7 @@ Bônus de Proficiência: +${bonusProf}
 
         campoCD.value = cd;
         campoAtaque.value = (ataque >= 0 ? "+" : "") + ataque;
+        atualizarContadorMagiasPreparadas();
         renderizarTodasMagias();
       }
 
