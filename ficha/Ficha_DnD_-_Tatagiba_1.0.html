@@ -20587,6 +20587,15 @@ Bônus de Proficiência: +${bonusProf}
         );
       }
 
+      function abrirHistoricoAposFinalizar() {
+        const botaoHistorico = document.querySelector(
+          '.subaba-botao[onclick*="historico"]'
+        );
+        if (botaoHistorico) {
+          trocarSubAbaCombate("historico", botaoHistorico);
+        }
+      }
+
       function confirmarFracassoAtaque() {
         const dado = obterDadoModalAtaque();
         if (dado === null) return;
@@ -20594,6 +20603,7 @@ Bônus de Proficiência: +${bonusProf}
         estadoAtaqueArma.dado = dado;
         registrarHistoricoAtaqueArma(false, 0);
         fecharModalAtaqueArma();
+        abrirHistoricoAposFinalizar();
       }
 
       function confirmarDanoAtaque() {
@@ -20609,6 +20619,7 @@ Bônus de Proficiência: +${bonusProf}
         const danoTotal = danoRolado + obterBonusDanoEfetivoModalAtaque();
         registrarHistoricoAtaqueArma(true, danoTotal);
         fecharModalAtaqueArma();
+        abrirHistoricoAposFinalizar();
       }
 
       function registrarHistoricoComandoCombate(tipo, valor) {
