@@ -1,78 +1,33 @@
-# TODO — Refatoração da Aba de Magias
+FASE 1
+- Criar subaba Habilidades em Combate
+- Criar estrutura de renderização
 
-## PRIORIDADE 1 — CRÍTICO
+FASE 2
+- Adicionar campo "Habilidade Ativa" no modal de característica
+- Adicionar campo "Tipo de Ação"
+- Adicionar campo "Causa Dano"
 
-### Corrigir botão principal da magia
+FASE 3
+- Reaproveitar sistema de dano das magias
+- Adaptar para características
 
-* [ ] remover stale state
-* [ ] corrigir texto do botão
-* [ ] corrigir listener
-* [ ] impedir reutilização bugada
-* [ ] corrigir magia salva no histórico
+FASE 4
+- Persistir novos campos no JSON
+- Garantir importação/exportação
 
----
+FASE 5
+- Criar modal de visualização da habilidade
+- Adicionar botão Utilizar
 
-### Truques
+FASE 6
+- Integrar com Histórico
+- Trocar automaticamente para aba Histórico após uso
 
-* [ ] renomear botão para “Usar Truque”
-* [ ] não consumir slot
-* [ ] registrar histórico
-* [ ] fechar modal automaticamente
-* [ ] abrir subaba Histórico
-
----
-
-### Magias N1+
-
-* [ ] manter botão “Usar Magia”
-* [ ] abrir modal de slot
-* [ ] consumir slot
-* [ ] registrar histórico correto
-* [ ] fechar modal
-* [ ] abrir Histórico automaticamente
-
----
-
-# PRIORIDADE 2 — UX
-
-### Linha compacta de status mágico
-
-* [ ] adicionar [Conj.]
-* [ ] adicionar [CD]
-* [ ] adicionar [Atq.]
-* [ ] layout horizontal compacto
-* [ ] aplicar na aba Combate
-* [ ] aplicar na subaba Magia
-
----
-
-### Melhorar organização visual da lista
-
-* [ ] separar Truques
-* [ ] separar Nível 1+
-* [ ] exibir slots por nível
-* [ ] criar divisores visuais
-* [ ] diminuir fonte dos headers
-
----
-
-# PRIORIDADE 3 — ESTRUTURA FUTURA
-
-### Preparar sistema para collapse
-
-* [ ] agrupar magias por container de nível
-* [ ] evitar lista flat
-* [ ] facilitar futura expansão/retração
-
----
-
-# FUTURO (NÃO IMPLEMENTAR AGORA)
-
-* [ ] collapse por nível
-* [ ] badge de concentração
-* [ ] filtros de magia
-* [ ] busca rápida
-* [ ] favoritos
-* [ ] buffs ativos
-* [ ] duração ativa
-* [ ] rastreador de concentração
+FASE 7
+- QA completo
+- Testar personagens antigos
+- Testar JSON antigo sem os novos campos
+- Testar importação/exportação
+- Testar habilidades sem dano
+- Testar habilidades com dano
+- Testar Ação, Ação Bônus e Reação

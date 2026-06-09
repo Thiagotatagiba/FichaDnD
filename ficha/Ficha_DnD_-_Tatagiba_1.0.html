@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="author" content="Thiago Tatagiba" />
-    <meta name="versao" content="1.0" />
+    <meta name="versao" content="1.0.6.1" />
     <title>Ficha D&D</title>
 
     <link
@@ -6328,29 +6328,6 @@
         padding: 6px 10px;
       }
 
-      .consulta-caracteristica-cabecalho {
-        margin: 0 0 12px;
-        padding: 0 0 10px;
-        border-bottom: 1px solid rgba(139, 69, 19, 0.18);
-        color: #5c3211;
-      }
-
-      .consulta-caracteristica-titulo {
-        margin: 0;
-        font-size: 24px;
-        line-height: 1.1;
-      }
-
-      .consulta-caracteristica-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px 14px;
-        margin-top: 6px;
-        color: #6f4b24;
-        font-size: 14px;
-        font-weight: 700;
-      }
-
       .consulta-caracteristica-conteudo table {
         width: 100%;
         border-collapse: collapse;
@@ -6398,64 +6375,6 @@
         background: #f0ece3;
         color: #786f62;
         opacity: 0.62;
-      }
-
-      .consulta-caracteristica-conteudo .tag {
-        background: #d6c7a8;
-        padding: 3px 6px;
-        border-radius: 4px;
-        margin: 2px;
-        display: inline-block;
-        cursor: pointer;
-        transition:
-          background 0.2s ease,
-          transform 0.15s ease;
-      }
-
-      .consulta-caracteristica-conteudo .tag:hover,
-      .consulta-caracteristica-conteudo .tag:focus-visible {
-        background: #c0ad88;
-        outline: none;
-        transform: translateY(-1px);
-      }
-
-      .consulta-descricao-overlay {
-        position: fixed;
-        inset: 0;
-        display: none;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        background: rgba(33, 19, 10, 0.45);
-        z-index: 3700;
-      }
-
-      .consulta-descricao-overlay.ativo {
-        display: flex;
-      }
-
-      .consulta-descricao-modal {
-        width: min(100%, 560px);
-        max-height: min(80vh, 680px);
-        overflow: auto;
-        padding: 18px;
-        border: 2px solid #8b4513;
-        border-radius: 12px;
-        background: #fffaf2;
-        color: #3f2712;
-        box-shadow: 0 20px 50px rgba(33, 19, 10, 0.32);
-        font-family: "Georgia", serif;
-      }
-
-      .consulta-descricao-modal h3 {
-        margin: 0 0 10px;
-        color: #6f3610;
-      }
-
-      .consulta-descricao-modal p {
-        margin: 0;
-        white-space: pre-line;
-        line-height: 1.45;
       }
 
       /* TAGS */
@@ -7267,10 +7186,6 @@
         >
           Fechar
         </button>
-        <div
-          id="consultaCaracteristicaClasseCabecalho"
-          class="consulta-caracteristica-cabecalho"
-        ></div>
         <div
           id="consultaCaracteristicaClasseConteudo"
           class="consulta-caracteristica-conteudo"
@@ -8287,7 +8202,7 @@
             </select>
             <span class="classe-separador" title="Nível">NV</span>
             <input aria-label="Nível do personagem" id="classeNivelID"
-            class="classe-nivel" value="1" type="number" readonly /input>
+            class="classe-nivel" value="1" type="number" readonly />
           </div>
           <div id="containerSubclasse" class="subclasse-container hidden">
             <input type="text" id="subclasse" placeholder="Subclasse" />
@@ -22230,7 +22145,7 @@ Bônus de Proficiência: +${bonusProf}
     <!-- ========================= -->
     <script>
       // ===== SISTEMA DE EXPIRAÇÃO =====
-      const DATA_EXPIRACAO = new Date("2026-06-04T12:00:00");
+      const DATA_EXPIRACAO = new Date("2026-07-01T12:00:00");
       console.log(
         "[Debug] Data de expiração:",
         DATA_EXPIRACAO.toLocaleString("pt-BR"),
@@ -22447,53 +22362,19 @@ Bônus de Proficiência: +${bonusProf}
         }
       }
 
-      function escaparHTMLConsultaCaracteristica(valor) {
-        return String(valor ?? "")
-          .replace(/&/g, "&amp;")
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")
-          .replace(/"/g, "&quot;")
-          .replace(/'/g, "&#39;");
-      }
-
       function abrirConsultaCaracteristicaClasse() {
         if (!dadosClasse) return;
         montarTabela();
 
         const tabela = document.querySelector("#cardClasseContainer table");
-        const cabecalho = document.getElementById(
-          "consultaCaracteristicaClasseCabecalho",
-        );
         const conteudo = document.getElementById(
           "consultaCaracteristicaClasseConteudo",
         );
         const overlay = document.getElementById(
           "consultaCaracteristicaClasseOverlay",
         );
-        if (!tabela || !cabecalho || !conteudo || !overlay) return;
+        if (!tabela || !conteudo || !overlay) return;
 
-        const nomeClasse =
-          dadosClasse?.nome ||
-          document.getElementById("classeNomeID")?.selectedOptions?.[0]?.text ||
-          document.getElementById("classeNomeID")?.value ||
-          "Classe";
-        const nivel = obterNivelAtualClasseCard();
-        const subclasse =
-          document.getElementById("caracteristicaClasseSubclasse")?.value ||
-          document.getElementById("subclasse")?.value ||
-          "";
-
-        cabecalho.innerHTML = `
-          <h3 class="consulta-caracteristica-titulo">${escaparHTMLConsultaCaracteristica(nomeClasse)}</h3>
-          <div class="consulta-caracteristica-meta">
-            <span>Nível ${escaparHTMLConsultaCaracteristica(nivel)}</span>
-            ${
-              subclasse
-                ? `<span>Subclasse: ${escaparHTMLConsultaCaracteristica(subclasse)}</span>`
-                : ""
-            }
-          </div>
-        `;
         conteudo.innerHTML = "";
         conteudo.appendChild(tabela.cloneNode(true));
         overlay.classList.add("ativo");
@@ -22782,54 +22663,17 @@ Bônus de Proficiência: +${bonusProf}
         });
       }
 
-      function garantirModalDescricaoCaracteristica() {
-        let overlay = document.getElementById("consultaDescricaoCaracteristica");
-        if (overlay) return overlay;
-
-        overlay = document.createElement("div");
-        overlay.id = "consultaDescricaoCaracteristica";
-        overlay.className = "consulta-descricao-overlay";
-        overlay.setAttribute("aria-hidden", "true");
-        overlay.innerHTML = `
-          <div class="consulta-descricao-modal" role="dialog" aria-modal="true" onclick="event.stopPropagation()">
-            <h3 id="consultaDescricaoCaracteristicaTitulo"></h3>
-            <p id="consultaDescricaoCaracteristicaTexto"></p>
-          </div>
-        `;
-        overlay.addEventListener("click", fecharModal);
-        document.body.appendChild(overlay);
-
-        return overlay;
-      }
-
       function abrirModal(nome) {
-        const desc = dadosClasse.descricoes?.[nome] || "Sem descrição.";
-        const overlayConsulta = garantirModalDescricaoCaracteristica();
-        document.getElementById("consultaDescricaoCaracteristicaTitulo").textContent =
-          nome;
-        document.getElementById("consultaDescricaoCaracteristicaTexto").textContent =
-          desc;
-        overlayConsulta.classList.add("ativo");
-        overlayConsulta.setAttribute("aria-hidden", "false");
-
-        const modalCard = document.getElementById("modal");
-        if (!modalCard) return;
-
         document.getElementById("modalTitulo").textContent = nome;
+
+        const desc = dadosClasse.descricoes?.[nome] || "Sem descrição.";
         document.getElementById("modalTexto").textContent = desc;
 
-        modalCard.style.display = "none";
+        document.getElementById("modal").style.display = "flex";
       }
 
       function fecharModal() {
         document.getElementById("modal").style.display = "none";
-        const overlayConsulta = document.getElementById(
-          "consultaDescricaoCaracteristica",
-        );
-        if (overlayConsulta) {
-          overlayConsulta.classList.remove("ativo");
-          overlayConsulta.setAttribute("aria-hidden", "true");
-        }
       }
 
       document.addEventListener("DOMContentLoaded", function () {
