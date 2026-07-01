@@ -22770,38 +22770,5 @@ Bônus de Proficiência: +${bonusProf}
         <p class="aviso">VERSÃO DE TESTE! Proibida cópia</p>
       </div>
     </footer>
-
-    <!-- ========================= -->
-    <!-- IMPORTAÇÃO VINDA DA TELA INICIAL (index.html) -->
-    <!-- ========================= -->
-    <script>
-      (function aplicarImportacaoPendenteDaTelaInicial() {
-        try {
-          const dadosPendentesTexto = localStorage.getItem(
-            "fichaImportarPendente",
-          );
-          if (!dadosPendentesTexto) return;
-
-          localStorage.removeItem("fichaImportarPendente");
-          const dadosPendentes = JSON.parse(dadosPendentesTexto);
-
-          if (typeof aplicarDadosFicha === "function") {
-            aplicarDadosFicha(dadosPendentes);
-          } else {
-            console.warn(
-              "aplicarDadosFicha não encontrada ao tentar importar personagem vindo da tela inicial.",
-            );
-          }
-        } catch (erro) {
-          console.error(
-            "Falha ao aplicar personagem importado pela tela inicial:",
-            erro,
-          );
-          alert(
-            "Não foi possível importar o personagem selecionado. Tente importar novamente pelo botão 📤 Importar dentro da ficha.",
-          );
-        }
-      })();
-    </script>
   </body>
 </html>
