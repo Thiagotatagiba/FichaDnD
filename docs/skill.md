@@ -1,5 +1,5 @@
 ---
-name: ficha-dnd-skill
+name: docs
 description: "Diretrizes de trabalho da IA para o projeto de ficha D&D; consulte agentes e exemplos antes de agir."
 model: sonnet
 ---
