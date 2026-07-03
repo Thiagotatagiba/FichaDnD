@@ -4,6 +4,9 @@
         if (!dados || typeof dados !== "object") return;
 
         dados = normalizarDadosImportacao(dados);
+        if (typeof aplicarTema === "function") {
+          aplicarTema(dados.tema || "tema-padrao");
+        }
         configFicha = normalizarConfigFicha(dados.configFicha);
         personagem = dados;
         armaduraEquipadaIndice = normalizarIndiceEquipamento(

@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="../css/responsivo.css" />
   </head>
 
-  <body>
+  <body class="tema-padrao">
     <div
       id="modalAtaqueOverlay"
       class="ataque-modal-overlay modal-overlay-base oculto"
@@ -602,8 +602,38 @@
 
           <div class="config-conteudo">
             <div class="config-aba ativa" id="aba-geral">
-              <div class="config-aba-placeholder">
-                Espaço reservado para configurações gerais da ficha.
+              <div class="config-bloco">
+                <h3>Tema</h3>
+
+                <div class="tema-opcoes" role="radiogroup" aria-label="Tema da interface">
+                  <label class="tema-opcao selecionado">
+                    <input
+                      type="radio"
+                      name="temaFicha"
+                      value="tema-padrao"
+                      checked
+                    />
+                    <span>Padrão</span>
+                  </label>
+
+                  <label class="tema-opcao">
+                    <input
+                      type="radio"
+                      name="temaFicha"
+                      value="tema-classico"
+                    />
+                    <span>Clássica</span>
+                  </label>
+
+                  <label class="tema-opcao">
+                    <input
+                      type="radio"
+                      name="temaFicha"
+                      value="tema-escuro"
+                    />
+                    <span>Escuro</span>
+                  </label>
+                </div>
               </div>
             </div>
 
@@ -3688,6 +3718,7 @@
     <!-- CORE / ESTADO GLOBAL -->
     <!-- ========================= -->
     <script src="../js/core/config.js"></script>
+    <script src="../js/core/tema.js"></script>
 
     <!-- ========================= -->
     <!-- ATRIBUTOS / PROFICIÊNCIAS -->

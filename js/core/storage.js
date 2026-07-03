@@ -187,6 +187,8 @@
           JSON.stringify(talentosEstruturados),
         );
         dados.configFicha = JSON.parse(JSON.stringify(configFicha));
+        dados.tema =
+          typeof obterTemaAtual === "function" ? obterTemaAtual() : "tema-padrao";
         if (typeof obterEstadoCombateParaSalvar === "function") {
           dados.estadoCombate = obterEstadoCombateParaSalvar();
         }
