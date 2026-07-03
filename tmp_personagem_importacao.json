@@ -1,0 +1,18 @@
+{
+  "jogador": "Jogador Teste",
+  "nomePlayer": "Teste Importação",
+  "classeNomeID": "guerreiro",
+  "classeNome": "Guerreiro",
+  "racaID": "Humano",
+  "raca": "Humano",
+  "talentosEstruturados": [],
+  "configFicha": {},
+  "nomePersonagem": "Teste Importação",
+  "xp": 0,
+  "for": 16,
+  "des": 14,
+  "con": 15,
+  "int": 10,
+  "sab": 12,
+  "car": 8
+}

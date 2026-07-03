@@ -3785,6 +3785,38 @@
     <!-- ========================= -->
     <script src="../js/modules/importacao.js"></script>
 
+    <script>
+      const CHAVE_IMPORTACAO_PENDENTE = "fichaImportarPendente";
+
+      function processarImportacaoPendente() {
+        const textoImportado = localStorage.getItem(CHAVE_IMPORTACAO_PENDENTE);
+        if (!textoImportado) return;
+
+        try {
+          const dados = JSON.parse(textoImportado);
+
+          if (typeof aplicarDadosFicha === "function") {
+            aplicarDadosFicha(dados);
+            localStorage.removeItem(CHAVE_IMPORTACAO_PENDENTE);
+            return;
+          }
+
+          console.warn(
+            "aplicarDadosFicha ainda não disponível ao processar importação pendente.",
+          );
+        } catch (erro) {
+          console.error("Erro ao aplicar ficha importada pendente:", erro);
+          localStorage.removeItem(CHAVE_IMPORTACAO_PENDENTE);
+        }
+      }
+
+      if (document.readyState === "loading") {
+        window.addEventListener("load", processarImportacaoPendente);
+      } else {
+        processarImportacaoPendente();
+      }
+    </script>
+
     <!-- ========================= -->
     <!-- UI / MODAIS / TABS -->
     <!-- ========================= -->
@@ -3809,7 +3841,7 @@
 
     <footer class="meu-rodape">
       <div class="footer-content">
-        <p>Criado por: <strong>Thiago Tatagiba</strong></p>
+        <p>Criado por: <strong>Tatagiba RPG Studio</strong></p>
         <p>&copy; 2026 Todos os direitos reservados</p>
         <p class="aviso">VERSÃO DE TESTE! Proibida cópia</p>
       </div>

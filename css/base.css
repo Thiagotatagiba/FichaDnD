@@ -4181,9 +4181,7 @@ body {
 .dado-modal-campo-rotulo {
   position: absolute;
   top: 6px;
-  left: calc(32px + 8px + 42px);
-  width: 84px;
-  transform: translateX(-50%);
+  left: 48px;
   font-size: 9px;
   line-height: 1;
   color: #8b5a2b;
@@ -4195,15 +4193,17 @@ body {
 }
 
 .dado-modal input {
-  width: 100%;
+  width: 84px;
+  min-width: 84px;
   min-height: 38px;
   border: 2px solid #bda68c;
   border-radius: 10px;
   background: #fffaf2;
-  padding: 8px 10px;
+  padding: 16px 8px 8px;
   box-sizing: border-box;
   font-family: "Metamorphous", serif;
   font-size: 18px;
+  text-align: center;
 }
 
 #modalAtaqueDado {
