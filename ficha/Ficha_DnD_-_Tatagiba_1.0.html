@@ -605,34 +605,33 @@
               <div class="config-bloco">
                 <h3>Tema</h3>
 
-                <div class="tema-opcoes" role="radiogroup" aria-label="Tema da interface">
-                  <label class="tema-opcao selecionado">
-                    <input
-                      type="radio"
-                      name="temaFicha"
-                      value="tema-padrao"
-                      checked
-                    />
-                    <span>Padrão</span>
-                  </label>
+                <div class="tema-opcoes" role="group" aria-label="Tema da interface">
+                  <button
+                    class="tema-opcao selecionado"
+                    type="button"
+                    data-tema="tema-padrao"
+                    aria-pressed="true"
+                  >
+                    Padrão
+                  </button>
 
-                  <label class="tema-opcao">
-                    <input
-                      type="radio"
-                      name="temaFicha"
-                      value="tema-classico"
-                    />
-                    <span>Clássica</span>
-                  </label>
+                  <button
+                    class="tema-opcao"
+                    type="button"
+                    data-tema="tema-classico"
+                    aria-pressed="false"
+                  >
+                    Clássico
+                  </button>
 
-                  <label class="tema-opcao">
-                    <input
-                      type="radio"
-                      name="temaFicha"
-                      value="tema-escuro"
-                    />
-                    <span>Escuro</span>
-                  </label>
+                  <button
+                    class="tema-opcao"
+                    type="button"
+                    data-tema="tema-escuro"
+                    aria-pressed="false"
+                  >
+                    Escuro
+                  </button>
                 </div>
               </div>
             </div>
@@ -2577,13 +2576,16 @@
                 <div class="magia-cabecalho">
                   <div class="magia-nivel">1</div>
                   <div class="magia-espaco">
+                    <label for="magia1Rest">Espaço Restante</label>
+                    <input id="magia1Rest" type="number" min="0" value="0" />
+                  </div>
+                  <div class="magia-espaco">
                     <label for="magia1Total">Total de Espaço</label>
                     <input id="magia1Total" type="number" min="0" value="0" />
                   </div>
-                  <div class="magia-espaco">
-                    <label for="magia1Usado">Espaço Utilizado</label>
-                    <input id="magia1Usado" type="number" min="0" value="0" />
-                  </div>
+
+
+
                 </div>
                 <textarea
                   id="magia1Texto"
@@ -2596,13 +2598,15 @@
                 <div class="magia-cabecalho">
                   <div class="magia-nivel">2</div>
                   <div class="magia-espaco">
+                    <label for="magia2Rest">Espaço Restante</label>
+                    <input id="magia2Rest" type="number" min="0" value="0" />
+                  </div>
+
+                  <div class="magia-espaco">
                     <label for="magia2Total">Total de Espaço</label>
                     <input id="magia2Total" type="number" min="0" value="0" />
                   </div>
-                  <div class="magia-espaco">
-                    <label for="magia2Usado">Espaço Utilizado</label>
-                    <input id="magia2Usado" type="number" min="0" value="0" />
-                  </div>
+
                 </div>
                 <textarea
                   id="magia2Texto"
@@ -2612,15 +2616,15 @@
               </div>
 
               <div class="magia-card">
-                <div class="magia-cabecalho">
+<div class="magia-cabecalho">
                   <div class="magia-nivel">3</div>
+                  <div class="magia-espaco">
+                    <label for="magia3Rest">Espaço Restante</label>
+                    <input id="magia3Rest" type="number" min="0" value="0" />
+                  </div>
                   <div class="magia-espaco">
                     <label for="magia3Total">Total de Espaço</label>
                     <input id="magia3Total" type="number" min="0" value="0" />
-                  </div>
-                  <div class="magia-espaco">
-                    <label for="magia3Usado">Espaço Utilizado</label>
-                    <input id="magia3Usado" type="number" min="0" value="0" />
                   </div>
                 </div>
                 <textarea
@@ -2631,15 +2635,15 @@
               </div>
 
               <div class="magia-card">
-                <div class="magia-cabecalho">
+<div class="magia-cabecalho">
                   <div class="magia-nivel">4</div>
+                  <div class="magia-espaco">
+                    <label for="magia4Rest">Espaço Restante</label>
+                    <input id="magia4Rest" type="number" min="0" value="0" />
+                  </div>
                   <div class="magia-espaco">
                     <label for="magia4Total">Total de Espaço</label>
                     <input id="magia4Total" type="number" min="0" value="0" />
-                  </div>
-                  <div class="magia-espaco">
-                    <label for="magia4Usado">Espaço Utilizado</label>
-                    <input id="magia4Usado" type="number" min="0" value="0" />
                   </div>
                 </div>
                 <textarea
@@ -2650,15 +2654,15 @@
               </div>
 
               <div class="magia-card">
-                <div class="magia-cabecalho">
+<div class="magia-cabecalho">
                   <div class="magia-nivel">5</div>
+                  <div class="magia-espaco">
+                    <label for="magia5Rest">Espaço Restante</label>
+                    <input id="magia5Rest" type="number" min="0" value="0" />
+                  </div>
                   <div class="magia-espaco">
                     <label for="magia5Total">Total de Espaço</label>
                     <input id="magia5Total" type="number" min="0" value="0" />
-                  </div>
-                  <div class="magia-espaco">
-                    <label for="magia5Usado">Espaço Utilizado</label>
-                    <input id="magia5Usado" type="number" min="0" value="0" />
                   </div>
                 </div>
                 <textarea
@@ -2669,15 +2673,15 @@
               </div>
 
               <div class="magia-card">
-                <div class="magia-cabecalho">
+<div class="magia-cabecalho">
                   <div class="magia-nivel">6</div>
+                  <div class="magia-espaco">
+                    <label for="magia6Rest">Espaço Restante</label>
+                    <input id="magia6Rest" type="number" min="0" value="0" />
+                  </div>
                   <div class="magia-espaco">
                     <label for="magia6Total">Total de Espaço</label>
                     <input id="magia6Total" type="number" min="0" value="0" />
-                  </div>
-                  <div class="magia-espaco">
-                    <label for="magia6Usado">Espaço Utilizado</label>
-                    <input id="magia6Usado" type="number" min="0" value="0" />
                   </div>
                 </div>
                 <textarea
@@ -2688,17 +2692,17 @@
               </div>
 
               <div class="magia-card">
-                <div class="magia-cabecalho">
-                  <div class="magia-nivel">7</div>
-                  <div class="magia-espaco">
-                    <label for="magia7Total">Total de Espaço</label>
-                    <input id="magia7Total" type="number" min="0" value="0" />
-                  </div>
-                  <div class="magia-espaco">
-                    <label for="magia7Usado">Espaço Utilizado</label>
-                    <input id="magia7Usado" type="number" min="0" value="0" />
-                  </div>
+<div class="magia-cabecalho">
+                <div class="magia-nivel">7</div>
+                <div class="magia-espaco">
+                  <label for="magia7Rest">Espaço Restante</label>
+                  <input id="magia7Rest" type="number" min="0" value="0" />
                 </div>
+                <div class="magia-espaco">
+                  <label for="magia7Total">Total de Espaço</label>
+                  <input id="magia7Total" type="number" min="0" value="0" />
+                </div>
+              </div>
                 <textarea
                   id="magia7Texto"
                   class="magia-texto"
@@ -2710,12 +2714,12 @@
                 <div class="magia-cabecalho">
                   <div class="magia-nivel">8</div>
                   <div class="magia-espaco">
-                    <label for="magia8Total">Total de Espaço</label>
-                    <input id="magia8Total" type="number" min="0" value="0" />
+                    <label for="magia8Rest">Espaço Restante</label>
+                    <input id="magia8Rest" type="number" min="0" value="0" />
                   </div>
                   <div class="magia-espaco">
-                    <label for="magia8Usado">Espaço Utilizado</label>
-                    <input id="magia8Usado" type="number" min="0" value="0" />
+                    <label for="magia8Total">Total de Espaço</label>
+                    <input id="magia8Total" type="number" min="0" value="0" />
                   </div>
                 </div>
                 <textarea
@@ -2729,12 +2733,12 @@
                 <div class="magia-cabecalho">
                   <div class="magia-nivel">9</div>
                   <div class="magia-espaco">
-                    <label for="magia9Total">Total de Espaço</label>
-                    <input id="magia9Total" type="number" min="0" value="0" />
+                    <label for="magia9Rest">Espaço Restante</label>
+                    <input id="magia9Rest" type="number" min="0" value="0" />
                   </div>
                   <div class="magia-espaco">
-                    <label for="magia9Usado">Espaço Utilizado</label>
-                    <input id="magia9Usado" type="number" min="0" value="0" />
+                    <label for="magia9Total">Total de Espaço</label>
+                    <input id="magia9Total" type="number" min="0" value="0" />
                   </div>
                 </div>
                 <textarea

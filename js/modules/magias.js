@@ -825,11 +825,29 @@
       }
 
       function obterEstadoEspacoMagia(nivel) {
+        // Versões mais recentes da ficha podem expor o contador como
+        // `magia{nivel}Rest` (restantes) em vez de `magia{nivel}Usado`.
         const campoTotal = document.getElementById(`magia${nivel}Total`);
+        const campoRest = document.getElementById(`magia${nivel}Rest`);
         const campoUsado = document.getElementById(`magia${nivel}Usado`);
-        const total = Math.max(0, parseInt(campoTotal?.value, 10) || 0);
-        const usado = Math.max(0, parseInt(campoUsado?.value, 10) || 0);
 
+        const total = Math.max(0, parseInt(campoTotal?.value, 10) || 0);
+
+        // Prioriza `Rest`, caso exista.
+        if (campoRest) {
+          const restante = Math.max(0, parseInt(campoRest?.value, 10) || 0);
+          return {
+            nivel,
+            total,
+            restante,
+            usado: Math.max(0, total - restante),
+            campoTotal,
+            campoRest,
+            campoUsado,
+          };
+        }
+
+        const usado = Math.max(0, parseInt(campoUsado?.value, 10) || 0);
         return {
           nivel,
           total,
@@ -844,15 +862,31 @@
         const nivelMinimo = Math.max(1, parseInt(nivelMagia, 10) || 1);
         return NIVEIS_MAGIA.filter((nivel) => nivel >= nivelMinimo)
           .map(obterEstadoEspacoMagia)
-          .filter(
-            (espaco) =>
-              espaco.campoTotal && espaco.campoUsado && espaco.restante > 0,
+          .filter((espaco) =>
+            espaco.restante > 0 &&
+            // aceita tanto Rest quanto legado Usado
+            (espaco.campoRest || espaco.campoUsado),
           );
       }
 
       function consumirEspacoMagia(nivelSlot) {
         const espaco = obterEstadoEspacoMagia(nivelSlot);
-        if (!espaco.campoUsado || espaco.restante <= 0) return false;
+        if (espaco.restante <= 0) return false;
+
+        // Se a ficha estiver usando `Rest` (magia{nivel}Rest), apenas decrementa.
+        if (espaco.campoRest) {
+          espaco.campoRest.value = String(Math.max(0, espaco.restante - 1));
+          espaco.campoRest.dispatchEvent(
+            new Event("input", { bubbles: true }),
+          );
+          espaco.campoRest.dispatchEvent(
+            new Event("change", { bubbles: true }),
+          );
+          return true;
+        }
+
+        // Legado: usa `Usado` (magia{nivel}Usado).
+        if (!espaco.campoUsado) return false;
 
         espaco.campoUsado.value = String(espaco.usado + 1);
         espaco.campoUsado.dispatchEvent(new Event("input", { bubbles: true }));

@@ -2956,20 +2956,23 @@ body {
 }
 
 .magia-nivel {
-  min-width: 42px;
-  min-height: 42px;
+  width: 42px;
+  height: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
+  padding: 0;
   border: 2px solid #8b4513;
-  border-radius: 999px;
+  border-radius: 50%;
   background: #fffaf2;
   color: #6f3610;
   font-weight: bold;
   font-size: 16px;
   box-sizing: border-box;
+  line-height: 1;
+  flex: 0 0 auto;
 }
+
 
 .magia-titulo-nivel {
   font-size: 16px;
@@ -5407,20 +5410,36 @@ body {
     flex-basis: 100%;
   }
 
+  /* Mantém o quadrado perfeito (layout em % continua consistente) */
   .hexagrama {
     max-width: 240px;
-    height: 250px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    display: grid;
+    place-items: center;
   }
 
+  /* Evita transform: scale() (desalinha com posicionamento em % absoluto) */
   .atributo {
-    transform: scale(0.78);
-    transform-origin: center;
+    transform: none;
+    /* assegura que o layout absoluto use o box correto */
+    width: 18%;
+  }
+
+  /* Correção extra: FOR e INT ficam centralizados no Radar (remove translateX e trava alinhamento) */
+  .atributo.for,
+  .atributo.int {
+    transform: translateX(-50%) !important;
+    left: 50% !important;
   }
 
   #radar {
-    transform: scale(0.78);
-    transform-origin: center;
+    transform: none;
+    width: 68%;
   }
+
+
+
 
   .magia-modal-botao {
     flex-basis: 100%;
@@ -6534,32 +6553,32 @@ body.tema-classico {
 }
 
 body.tema-escuro {
-  --cor-fundo: #120d08;
-  --cor-painel: #251b12;
-  --cor-campo: #302318;
-  --cor-campo-secundario: #2a1f16;
-  --cor-texto: #f5ead7;
-  --cor-texto-suave: #d9c4a4;
-  --cor-borda: #c9a06a;
-  --cor-borda-suave: #8f744e;
-  --cor-titulo: #f0c987;
-  --cor-botao: #6f3610;
-  --cor-botao-texto: #fff8ef;
-  --cor-hover: #49351f;
+  --cor-fundo: #111111;
+  --cor-painel: #1b1b1b;
+  --cor-campo: #242424;
+  --cor-campo-secundario: #2f2f2f;
+  --cor-texto: #f2f2f2;
+  --cor-texto-suave: #c7c7c7;
+  --cor-borda: #6f6f6f;
+  --cor-borda-suave: #4d4d4d;
+  --cor-titulo: #ffffff;
+  --cor-botao: #333333;
+  --cor-botao-texto: #ffffff;
+  --cor-hover: #3a3a3a;
   --cor-sombra: rgba(0, 0, 0, 0.48);
   --cor-overlay: rgba(0, 0, 0, 0.72);
-  --cor-gradiente-painel: linear-gradient(180deg, #302318 0%, #21170f 100%);
-  --cor-gradiente-botao: linear-gradient(180deg, #8b5a2b 0%, #5f2d0c 100%);
-  --modal-bg: linear-gradient(180deg, #302318 0%, #21170f 100%);
-  --modal-border: 2px solid #c9a06a;
+  --cor-gradiente-painel: #1b1b1b;
+  --cor-gradiente-botao: #333333;
+  --modal-bg: #1b1b1b;
+  --modal-border: 2px solid #6f6f6f;
   --modal-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
   --modal-overlay-bg: rgba(0, 0, 0, 0.72);
-  --modal-header-border: 1px solid rgba(201, 160, 106, 0.35);
-  --modal-button-bg: #302318;
-  --modal-button-hover: #49351f;
-  --modal-text: #f5ead7;
-  --modal-title: #f0c987;
-  --modal-subtitle: #d9c4a4;
+  --modal-header-border: 1px solid #4d4d4d;
+  --modal-button-bg: #333333;
+  --modal-button-hover: #3a3a3a;
+  --modal-text: #f2f2f2;
+  --modal-title: #ffffff;
+  --modal-subtitle: #c7c7c7;
 }
 
 body.tema-classico,
@@ -6890,8 +6909,21 @@ body.tema-classico :where(*, *::before, *::after) {
   text-shadow: none !important;
   background-image: none !important;
   accent-color: #000000 !important;
-  fill: #000000 !important;
+}
+
+body.tema-classico .pv-heart-bg {
+  fill: #ffffff !important;
   stroke: #000000 !important;
+  stroke-width: 8px;
+}
+
+body.tema-classico .pv-heart-fill-red,
+body.tema-classico .pv-heart-fill-blue {
+  fill: #000000 !important;
+}
+
+body.tema-classico .pv-heart svg {
+  background: transparent !important;
 }
 
 body.tema-classico
@@ -7045,6 +7077,612 @@ body.tema-classico .inventario-botao-add-inferior:hover {
   background: #d7d7d7 !important;
 }
 
+body.tema-escuro
+  :where(
+    .magia-card,
+    .magia-topo,
+    .magia-campo,
+    .magia-contador,
+    .magia-nivel,
+    .magia-texto,
+    .magia-status-magico,
+    .magia-concentracao-botao,
+    .magia-vazia,
+    .magia-item,
+    .magia-modal,
+    .magia-slot-modal,
+    .magia-card-detalhe,
+    .magia-card-detalhe-header,
+    .magia-card-detalhe-nome,
+    .magia-card-detalhe-info,
+    .magia-item-editar,
+    .magia-item-nome,
+    .magia-grupo-header,
+    .magia-grupo-slots,
+    .magia-grupo-seta,
+    .magia-grupo-header::before,
+    .magia-grupo-header::after,
+    .magia-grupo-corpo,
+    .magia-formulario-bloco,
+    .magia-componentes-checks label,
+    .magia-propriedades-checks label
+  ) {
+  background: var(--cor-painel) !important;
+  border-color: var(--cor-borda-suave) !important;
+  color: var(--cor-texto) !important;
+}
+
+body.tema-escuro
+  :where(
+    .magia-campo input,
+    .magia-campo select,
+    .magia-espaco input,
+    .magia-formulario-campo input,
+    .magia-formulario-campo select,
+    .magia-formulario-campo textarea,
+    .magia-slot-opcao,
+    .magia-card-detalhe-tag,
+    .magia-card-detalhe-efeitos,
+    .magia-card-detalhe-descricao
+  ) {
+  background: var(--cor-campo) !important;
+  border-color: var(--cor-borda-suave) !important;
+  color: var(--cor-texto) !important;
+}
+
+body.tema-escuro
+  :where(
+    .magia-campo label,
+    .magia-titulo-nivel,
+    .magia-espaco label,
+    .magia-modal-titulo,
+    .magia-modal-nivel,
+    .magia-modal-meta,
+    .magia-slot-modal-titulo,
+    .magia-slot-modal-texto,
+    .magia-card-detalhe-nome,
+    .magia-card-detalhe-nivel,
+    .magia-formulario-bloco-titulo,
+    .magia-formulario-campo label,
+    .magia-grupo-header,
+    .magia-status-magico-rotulo,
+    .magia-item-preparada,
+    .magia-item-editar
+  ) {
+  color: var(--cor-titulo) !important;
+}
+
+body.tema-escuro
+  :where(
+    .magia-botao-add,
+    .magia-modal-botao,
+    .btn-conjurar-magia,
+    .btn-usar-magia,
+    .magia-slot-modal button
+  ) {
+  background: var(--cor-gradiente-botao) !important;
+  border-color: var(--cor-borda) !important;
+  color: var(--cor-botao-texto) !important;
+}
+
+body.tema-escuro
+  :where(
+    .magia-botao-add:hover,
+    .magia-modal-botao:hover,
+    .btn-conjurar-magia:hover,
+    .btn-usar-magia:hover,
+    .magia-item:hover,
+    .magia-item:focus-within
+  ) {
+  background: var(--cor-hover) !important;
+  border-color: var(--cor-borda) !important;
+  color: var(--cor-texto) !important;
+}
+
+body.tema-escuro
+  :where(.magia-modal-overlay, .magia-slot-modal-overlay) {
+  background: var(--cor-overlay) !important;
+}
+
+/* Revisao geral do tema escuro */
+body.tema-escuro {
+  --cor-fundo: #121212;
+  --cor-painel: #1e1e1e;
+  --cor-campo: #262626;
+  --cor-campo-secundario: #303030;
+  --cor-texto: #f1f1f1;
+  --cor-texto-suave: #c5c5c5;
+  --cor-borda: #5f5f5f;
+  --cor-borda-suave: #424242;
+  --cor-titulo: #ffffff;
+  --cor-botao: #2f2f2f;
+  --cor-botao-texto: #ffffff;
+  --cor-hover: #383838;
+  --cor-sombra: 0 18px 44px rgba(0, 0, 0, 0.44);
+  --cor-overlay: rgba(0, 0, 0, 0.76);
+  --cor-gradiente-painel: #1e1e1e;
+  --cor-gradiente-botao: #303030;
+  background: var(--cor-fundo) !important;
+  color: var(--cor-texto) !important;
+}
+
+body.tema-escuro
+  :where(
+    .ficha,
+    .abas,
+    .conteudo-abas,
+    .aba,
+    .abaPrincipal,
+    .config-modal,
+    .modal-base,
+    .config-bloco,
+    .status-bloco,
+    .campo,
+    .box-combate,
+    .caixa-pv,
+    .caixa-salvaguarda,
+    .caixa-pericias,
+    .caixa-passivas,
+    .subaba-combate,
+    .magia-card,
+    .magia-topo,
+    .magia-item,
+    .magia-modal,
+    .magia-slot-modal,
+    .inventario-card,
+    .inventario-coluna,
+    .arma-card,
+    .armadura-card,
+    .item-card,
+    .consulta-caracteristica-modal,
+    .levelup-box,
+    .expiracao-modal
+  ) {
+  background: var(--cor-painel) !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda-suave) !important;
+  box-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    input,
+    select,
+    textarea,
+    table,
+    th,
+    td,
+    .pv-current-shell,
+    .pv-atual,
+    .pv-bloco,
+    .dv-container-principal,
+    .dv-orbe-overlay,
+    .bonus-orbe,
+    .bonus-retangulo,
+    .salvaguarda-caixa,
+    .salvaguarda-caixa .valor-atributo,
+    .modificador-orbe,
+    .ataque-pv-valor,
+    .ataque-contra-morte,
+    .contra-morte-dot,
+    .historico-registro,
+    .magia-contador,
+    .magia-nivel,
+    .magia-texto,
+    .magia-campo input,
+    .magia-campo select,
+    .magia-espaco input,
+    .magia-slot-opcao,
+    .item-preco-peso,
+    .item-descricao,
+    .equipados-grid input,
+    .equipados-grid select,
+    .botao-dado
+  ) {
+  background: var(--cor-campo) !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda) !important;
+  box-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    .tabs,
+    .abas,
+    .subabas-botoes,
+    .config-tabs
+  ) {
+  background: transparent !important;
+  border-color: var(--cor-borda) !important;
+}
+
+body.tema-escuro
+  :where(
+    .tab,
+    .subaba-botao,
+    .config-tab,
+    .tema-opcao
+  ) {
+  background: #252525 !important;
+  color: var(--cor-texto-suave) !important;
+  border-color: var(--cor-borda-suave) !important;
+  box-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    .tab:hover,
+    .tab:focus-visible,
+    .subaba-botao:hover,
+    .subaba-botao:focus-visible,
+    .config-tab:hover,
+    .config-tab:focus-visible,
+    .tema-opcao:hover,
+    .tema-opcao:focus-visible
+  ) {
+  background: var(--cor-hover) !important;
+  color: var(--cor-titulo) !important;
+}
+
+body.tema-escuro
+  :where(
+    .tab.active,
+    .subaba-botao.ativa,
+    .config-tab.active,
+    .tema-opcao.selecionado
+  ) {
+  background: var(--cor-campo) !important;
+  color: var(--cor-titulo) !important;
+  border-color: var(--cor-borda) !important;
+  box-shadow: inset 0 2px 0 #8c8c8c !important;
+}
+
+body.tema-escuro .tab.active::after {
+  background: var(--cor-campo) !important;
+}
+
+body.tema-escuro .subaba-botao.ativa {
+  border-bottom-color: var(--cor-campo) !important;
+}
+
+body.tema-escuro
+  :where(
+    h1,
+    h2,
+    h3,
+    .campo-titulo,
+    .status-titulo,
+    .aba h3,
+    .config-modal-titulo,
+    .magia-campo label,
+    .magia-titulo-nivel,
+    .magia-espaco label,
+    .magia-modal-titulo,
+    .magia-formulario-bloco-titulo,
+    .inventario-subtitulo,
+    .inventario-subtitulo-barra,
+    .contra-morte-titulo,
+    .pv-bloco-titulo,
+    .pv-atual-titulo,
+    .dv-label,
+    .pv-ribbon-label
+  ) {
+  color: var(--cor-titulo) !important;
+}
+
+body.tema-escuro
+  :where(
+    .config-modal-subtitulo,
+    .config-aba-placeholder,
+    small,
+    .classe-nivel-atual,
+    .subclasse,
+    .magia-card-detalhe-info,
+    .magia-card-detalhe-descricao,
+    .historico-registro,
+    .xp-texto
+  ) {
+  color: var(--cor-texto-suave) !important;
+}
+
+body.tema-escuro
+  :where(
+    button,
+    .acoes button,
+    .ficha-btn,
+    .config-modal-fechar,
+    .config-bloco button,
+    #configBtn,
+    .ataque-botao,
+    .combate-botao-iniciativa,
+    .combate-botao-encerrar,
+    .magia-botao-add,
+    .magia-modal-botao,
+    .btn-conjurar-magia,
+    .btn-usar-magia,
+    .inventario-botao-add,
+    .inventario-botao-add-inferior,
+    .consulta-caracteristica-fechar,
+    .descanso-longo-botao
+  ) {
+  background: var(--cor-botao) !important;
+  color: var(--cor-botao-texto) !important;
+  border-color: var(--cor-borda) !important;
+  box-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    button:hover,
+    button:focus-visible,
+    .ataque-botao:hover,
+    .ataque-botao:focus-visible,
+    .magia-botao-add:hover,
+    .magia-botao-add:focus-visible,
+    .inventario-botao-add:hover,
+    .inventario-botao-add-inferior:hover
+  ) {
+  background: var(--cor-hover) !important;
+  color: var(--cor-titulo) !important;
+}
+
+body.tema-escuro
+  :where(
+    .modal-overlay-base,
+    .config-modal-overlay,
+    .ataque-modal-overlay,
+    .magia-modal-overlay,
+    .magia-slot-modal-overlay,
+    .consulta-caracteristica-overlay,
+    .levelup-overlay
+  ) {
+  background: var(--cor-overlay) !important;
+}
+
+body.tema-escuro
+  :where(
+    .status-titulo::after,
+    .aba h3::after,
+    .magia-grupo-header::before,
+    .magia-grupo-header::after
+  ) {
+  background: var(--cor-borda) !important;
+}
+
+body.tema-escuro .pv-heart-bg {
+  fill: #2a2a2a !important;
+  stroke: #6f6f6f !important;
+}
+
+body.tema-escuro .pv-heart-fill-red {
+  fill: #d85f5f !important;
+}
+
+body.tema-escuro .pv-heart-fill-blue {
+  fill: #6ea8ff !important;
+}
+
+/* Cobertura das abas fora de magia no tema escuro */
+body.tema-escuro
+  :where(
+    .status-grid,
+    .status-colunas,
+    .status-primeira-linha,
+    .status-segunda-linha,
+    .status-linhas,
+    .passivas-linha,
+    .coluna-salvaguardas,
+    .salvaguardas-grid,
+    .historia-grid,
+    .historia-blocos,
+    .inventario-colunas,
+    .equipados-secoes,
+    .equipados-secao,
+    .equipados-grid,
+    .equipados-armas-bloco,
+    .equipados-armas-item
+  ) {
+  background: transparent !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda-suave) !important;
+  box-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    .status-bloco,
+    .status-coluna-card,
+    .pericias-card,
+    .proficiencias-card,
+    .talentos-card,
+    .talento-secao,
+    .talento-lista,
+    .talento-item,
+    .talento-lista-vazia,
+    .historia-card,
+    .inventario-card,
+    .inventario-coluna,
+    .inventario-subtitulo-barra,
+    .combate-card,
+    .combate-card-placeholder,
+    .ataque-status-linha,
+    .ataque-status-caixa,
+    .ataque-pv-bloco,
+    .ataque-contra-morte,
+    .equipados-slot-com-emoji,
+    .equipados-mao-emoji,
+    .equipados-checkbox,
+    .equipados-propriedade-linha,
+    .arma-resumo-item,
+    .dado-modal,
+    .teste-resistencia-atributo
+  ) {
+  background: var(--cor-painel) !important;
+  background-image: none !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda-suave) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    .salvaguarda-caixa,
+    .salvaguarda-caixa.proficiente,
+    .salvaguarda-caixa .valor-atributo,
+    .modificador-orbe,
+    .bonus-orbe,
+    .bonus-retangulo,
+    .pericia-valor,
+    .pericia-valor[readonly],
+    .proficiencia-texto,
+    .talento-texto,
+    .talento-subtitulo input,
+    .historia-detalhe input,
+    .historia-texto,
+    .ataque-status-caixa input,
+    .combate-condicao-caixa input,
+    .ataque-pv-valor,
+    .contra-morte-dot,
+    .equipados-grid input,
+    .equipados-grid select,
+    .equipados-grid input[readonly],
+    .equipados-municao-select,
+    .empunhadura-menu-botao,
+    .dado-modal input,
+    .teste-resistencia-atributo.ativo
+  ) {
+  background: var(--cor-campo) !important;
+  background-image: none !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    .salvaguardas-rodape,
+    .proficiencia-subtitulo,
+    .talento-subtitulo,
+    .historia-detalhe label,
+    .arma-resumo-topo,
+    .ataque-status-caixa label,
+    .contra-morte-titulo,
+    .contra-morte-label,
+    .equipados-subtitulo,
+    .equipados-grid-cabecalho,
+    .equipados-grid-cabecalho-centro,
+    .equipados-propriedade-rotulo,
+    .dado-modal-titulo,
+    .dado-modal label,
+    .dado-modal-total strong,
+    .ataque-modal-titulo,
+    .ataque-modal-resumo-destaque,
+    .teste-resistencia-modificador
+  ) {
+  color: var(--cor-titulo) !important;
+  text-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    .pericia-nome,
+    .arma-resumo-detalhes,
+    .ataque-status-sufixo,
+    .equipados-municao-icone,
+    .equipados-propriedade-linha,
+    .dado-modal-bonus-detalhe,
+    .dado-modal-total,
+    .ataque-modal-subtitulo,
+    .ataque-modal-resumo,
+    .ataque-modal-historico,
+    .subaba-vazia
+  ) {
+  color: var(--cor-texto-suave) !important;
+}
+
+body.tema-escuro .talento-item {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--cor-texto-suave) !important;
+}
+
+body.tema-escuro .talento-item::before {
+  color: var(--cor-titulo) !important;
+}
+
+body.tema-escuro .talento-item:hover,
+body.tema-escuro .talento-item:focus-visible,
+body.tema-escuro .talento-botao-add:hover,
+body.tema-escuro .talento-botao-add:focus-visible {
+  color: var(--cor-titulo) !important;
+}
+
+body.tema-escuro .talento-botao-add {
+  background: transparent !important;
+  border-color: transparent !important;
+  color: var(--cor-texto-suave) !important;
+}
+
+body.tema-escuro .bonus-orbe {
+  background: var(--cor-campo) !important;
+  border-color: var(--cor-borda) !important;
+  border-radius: 50% !important;
+  overflow: hidden;
+}
+
+body.tema-escuro .bonus-orbe input,
+body.tema-escuro .bonus-orbe input[readonly] {
+  background: transparent !important;
+  border: none !important;
+  border-radius: 50% !important;
+  color: var(--cor-texto) !important;
+  box-shadow: none !important;
+}
+
+body.tema-escuro .hexagrama {
+  background: var(--cor-painel) !important;
+  border-color: var(--cor-borda) !important;
+}
+
+body.tema-escuro .titulo-atributos {
+  background: var(--cor-painel) !important;
+  color: var(--cor-titulo) !important;
+}
+
+body.tema-escuro .status-separador {
+  border-top-color: var(--cor-borda) !important;
+}
+
+body.tema-escuro .contra-morte-dot.ativo {
+  background: var(--cor-titulo) !important;
+  border-color: var(--cor-titulo) !important;
+}
+
+body.tema-escuro
+  :where(.arma-card::after, .armadura-card::after, .item-card::after) {
+  background: none !important;
+  border-color: var(--cor-borda-suave) !important;
+  box-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    .arma-card input,
+    .arma-card select,
+    .armadura-card input,
+    .armadura-card select,
+    .item-card input,
+    .item-card select,
+    .item-preco-peso,
+    .item-descricao
+  ) {
+  background: var(--cor-campo) !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda) !important;
+}
+
 .tema-opcoes {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -7063,11 +7701,9 @@ body.tema-classico .inventario-botao-add-inferior:hover {
   background: var(--cor-campo);
   color: var(--cor-texto);
   cursor: pointer;
+  font-family: "MedievalSharp";
+  font-size: 14px;
   font-weight: bold;
-}
-
-.tema-opcao input {
-  accent-color: var(--cor-borda);
 }
 
 .tema-opcao.selecionado {

@@ -17,11 +17,11 @@ function atualizarSeletorTema(tema) {
   const temaNormalizado = normalizarTema(tema);
 
   document
-    .querySelectorAll('input[name="temaFicha"]')
-    .forEach((radio) => {
-      const selecionado = radio.value === temaNormalizado;
-      radio.checked = selecionado;
-      radio.closest(".tema-opcao")?.classList.toggle("selecionado", selecionado);
+    .querySelectorAll("[data-tema]")
+    .forEach((botao) => {
+      const selecionado = botao.dataset.tema === temaNormalizado;
+      botao.classList.toggle("selecionado", selecionado);
+      botao.setAttribute("aria-pressed", String(selecionado));
     });
 }
 
@@ -37,13 +37,12 @@ function inicializarTemaInterface() {
   aplicarTema(obterTemaAtual());
 
   document
-    .querySelectorAll('input[name="temaFicha"]')
-    .forEach((radio) => {
-      radio.addEventListener("change", () => {
-        if (radio.checked) aplicarTema(radio.value);
+    .querySelectorAll("[data-tema]")
+    .forEach((botao) => {
+      botao.addEventListener("click", () => {
+        aplicarTema(botao.dataset.tema);
       });
     });
 }
 
 document.addEventListener("DOMContentLoaded", inicializarTemaInterface);
-
