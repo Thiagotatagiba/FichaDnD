@@ -5929,8 +5929,9 @@ body {
 }
 
 .xp-bar-container {
+  position: relative;
   width: 100%;
-  height: 12px;
+  height: 10px;
   background: #ddd;
   border-radius: 10px;
   overflow: hidden;
@@ -5938,10 +5939,34 @@ body {
 }
 
 .xp-bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   height: 100%;
   width: 0%;
-  background: linear-gradient(90deg, #4caf50, #8bc34a);
   transition: width 0.3s ease;
+}
+
+.xp-bar-fill-base {
+  left: 0;
+}
+
+.xp-bar-fill-overlay {
+  left: 0;
+}
+
+.xp-bar-fill-current {
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  z-index: 1;
+}
+
+.xp-bar-fill-next {
+  background: linear-gradient(
+    90deg,
+    rgba(33, 150, 243, 0.85),
+    rgba(3, 169, 244, 0.85)
+  );
+  z-index: 2;
 }
 
 .xp-texto {

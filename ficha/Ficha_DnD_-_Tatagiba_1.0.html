@@ -565,22 +565,40 @@
           </div>
 
           <div class="xp-block xp-info-block">
-            <div class="xp-current-row">
-              <div class="xp-current-label">XP Atual</div>
-              <div class="xp-current-value" id="xpAddModalCurrent">0</div>
-            </div>
-
-            <div class="xp-input-row">
-              <label for="xpAddModalInput" class="dado-modal-campo-rotulo">Adicionar</label>
-              <input type="number" id="xpAddModalInput" inputmode="numeric" min="0" step="1" placeholder="0" />
-            </div>
-
-            <div class="xp-preview-row">
-              <div class="xp-preview-item">
-                <div class="xp-preview-label">Resultado</div>
-                <div class="xp-preview-value" id="xpAddModalTotal">0</div>
+            <div class="xp-entry-columns">
+              <div class="xp-input-column">
+                <div class="xp-input-title">XP Adquirido</div>
+                <label for="xpAddModalInput" class="dado-modal-campo-rotulo">Adicionar XP</label>
+                <input
+                  type="number"
+                  id="xpAddModalInput"
+                  inputmode="numeric"
+                  min="0"
+                  step="1"
+                  placeholder="0"
+                  aria-describedby="xpAddModalInputDesc"
+                />
+                <div id="xpAddModalInputDesc" class="visually-hidden">
+                  Digite a quantidade de XP a adicionar.
+                </div>
               </div>
-              <div class="xp-missing" id="xpAddModalMissing">Faltam 0 XP para o próximo nível.</div>
+
+              <div class="xp-summary-column" aria-live="polite">
+                <div class="xp-current-row">
+                  <div class="xp-current-label">XP Atual</div>
+                  <div class="xp-current-value" id="xpAddModalCurrent">0</div>
+                </div>
+                <div class="xp-preview-row">
+                  <div class="xp-preview-label">Resultado</div>
+                  <div class="xp-preview-value" id="xpAddModalTotal" aria-live="polite">0</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="xp-missing-row">
+              <div class="xp-missing" id="xpAddModalMissing" role="status" aria-live="polite">
+                Faltam 0 XP para o próximo nível.
+              </div>
             </div>
           </div>
 
@@ -837,8 +855,9 @@
           <input id="xp" value="0" />
 
           <!-- barra -->
-          <div class="xp-bar-container">
-            <div class="xp-bar-fill" id="xpBar"></div>
+          <div class="xp-bar-container" id="xpBar">
+            <div class="xp-bar-fill xp-bar-fill-current xp-bar-fill-base" id="xpBarCurrent"></div>
+            <div class="xp-bar-fill xp-bar-fill-next xp-bar-fill-overlay" id="xpBarNext"></div>
           </div>
 
           <!-- linha com texto + botão -->

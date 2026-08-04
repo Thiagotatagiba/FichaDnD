@@ -16,6 +16,34 @@ const mapaDadoVida = {
   feiticeiro: "d6",
 };
 
+// Accessibility helper: avoid setting aria-hidden='true' on an element that still contains focus.
+(function preventAriaHiddenFocusIssue() {
+  const origSet = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function (name, value) {
+    try {
+      if (
+        String(name).toLowerCase() === "aria-hidden" &&
+        String(value) === "true" &&
+        this.contains(document.activeElement)
+      ) {
+        try {
+          // move focus to body or blur the active element first to avoid the a11y issue
+          document.activeElement.blur && document.activeElement.blur();
+          if (document.body && typeof document.body.focus === "function") {
+            document.body.focus();
+          }
+        } catch (e) {
+          // ignore
+        }
+      }
+    } catch (err) {
+      // defensive: don't break page
+    }
+
+    return origSet.call(this, name, value);
+  };
+})();
+
 const SUBCLASSES = {
   barbaro: [
     "Caminho do Berserker",
@@ -750,6 +778,9 @@ function pegarFraseXP() {
   return frasesXP[Math.floor(Math.random() * frasesXP.length)];
 }
 
+// Animação visual simples para celebrar Level Up.
+// (celebração visual removida por solicitação — sem efeitos extras)
+
 function abrirModalAdicionarXP() {
   return new Promise((resolve) => {
     const modal = document.getElementById("xpAddModal");
@@ -789,7 +820,10 @@ function abrirModalAdicionarXP() {
     frase.textContent = pegarFraseXP();
     input.value = "";
     input.classList.remove("invalido");
+    input.disabled = false;
     btnConfirm.disabled = true;
+    btnCancel.disabled = false;
+    btnClose.disabled = false;
     currentEl.textContent = xpAtual;
     totalEl.textContent = xpAtual;
     progressText.textContent = `${xpAtual}/${xpProximoNivel} XP`;
@@ -801,17 +835,80 @@ function abrirModalAdicionarXP() {
     missingEl.textContent = `Faltam ${Math.max(0, xpProximoNivel - xpAtual)} XP para o próximo nível.`;
     btnConfirm.textContent = `Adicionar 0 XP`;
 
+    let elementoAnteriorFocado = null;
+
+    function keydownHandler(e) {
+      if (!modal.classList.contains("ativo") && modal.style.display !== "flex")
+        return;
+      if (e.key === "Escape") {
+        e.preventDefault();
+        if (typeof fecharModal === "function") fecharModal();
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const focusaveis = Array.from(
+          modal.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        ).filter((el) => el.offsetParent !== null);
+
+        if (!focusaveis.length) return;
+
+        const idx = focusaveis.indexOf(document.activeElement);
+        let nextIndex = 0;
+        if (e.shiftKey) {
+          nextIndex = idx <= 0 ? focusaveis.length - 1 : idx - 1;
+        } else {
+          nextIndex = idx === -1 || idx === focusaveis.length - 1 ? 0 : idx + 1;
+        }
+
+        focusaveis[nextIndex].focus();
+        e.preventDefault();
+      }
+    }
+
+    let btnConfirmHandler;
+    let fecharModal;
+
     const abrir = () => {
+      elementoAnteriorFocado = document.activeElement;
+      btnConfirm.disabled = true;
+      input.disabled = false;
+      input.removeAttribute("disabled");
+      btnCancel.disabled = false;
+      btnCancel.removeAttribute("disabled");
+      btnClose.disabled = false;
+      btnClose.removeAttribute("disabled");
       modal.style.display = "flex";
-      input.focus();
-      input.select();
+      // small delay to ensure display applied before focusing
+      setTimeout(() => {
+        input.focus();
+        input.select();
+      }, 0);
+      document.addEventListener("keydown", keydownHandler);
     };
 
     const limpar = () => {
       input.oninput = null;
-      btnConfirm.onclick = null;
-      btnCancel.onclick = null;
-      btnClose.onclick = null;
+      if (btnConfirmHandler) {
+        btnConfirm.removeEventListener("click", btnConfirmHandler);
+        btnConfirmHandler = null;
+      }
+      btnCancel.removeEventListener("click", fecharModal);
+      btnClose.removeEventListener("click", fecharModal);
+      document.removeEventListener("keydown", keydownHandler);
+
+      try {
+        if (
+          elementoAnteriorFocado &&
+          typeof elementoAnteriorFocado.focus === "function"
+        ) {
+          elementoAnteriorFocado.focus();
+        }
+      } catch (err) {
+        // ignore
+      }
     };
 
     function atualizarPreview() {
@@ -836,15 +933,16 @@ function abrirModalAdicionarXP() {
       progressText.textContent = `${novo}/${xpProximoNivel} XP`;
     }
 
-    btnCancel.onclick = () => {
+    fecharModal = () => {
       limpar();
       modal.style.display = "none";
       resolve(null);
     };
 
-    btnClose.onclick = btnCancel;
+    btnCancel.addEventListener("click", fecharModal);
+    btnClose.addEventListener("click", fecharModal);
 
-    btnConfirm.onclick = () => {
+    btnConfirmHandler = () => {
       const valor = Number(input.value) || 0;
       if (!Number.isInteger(valor) || valor <= 0) return;
 
@@ -885,6 +983,8 @@ function abrirModalAdicionarXP() {
         }, 650);
       }
     };
+
+    btnConfirm.addEventListener("click", btnConfirmHandler);
 
     input.oninput = atualizarPreview;
     abrir();
@@ -932,9 +1032,68 @@ Bônus de Proficiência: +${bonusProf}
       input.setAttribute("step", "1");
     }
 
+    let elementoAnteriorFocadoLevelUp = null;
+
+    function keydownHandlerLevelUp(e) {
+      if (
+        !modal ||
+        (modal.style.display !== "flex" && !modal.classList.contains("ativo"))
+      )
+        return;
+      if (e.key === "Escape") {
+        e.preventDefault();
+        // try to close by disabling modal and resolving with default value 0
+        limparLevelUp();
+        modal.style.display = "none";
+        resolve(0);
+        return;
+      }
+
+      if (e.key === "Tab") {
+        const focusaveis = Array.from(
+          modal.querySelectorAll(
+            'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
+        ).filter((el) => el.offsetParent !== null);
+
+        if (!focusaveis.length) return;
+        const idx = focusaveis.indexOf(document.activeElement);
+        let nextIndex = 0;
+        if (e.shiftKey) {
+          nextIndex = idx <= 0 ? focusaveis.length - 1 : idx - 1;
+        } else {
+          nextIndex = idx === -1 || idx === focusaveis.length - 1 ? 0 : idx + 1;
+        }
+
+        focusaveis[nextIndex].focus();
+        e.preventDefault();
+      }
+    }
+
     modal.style.display = "flex";
 
     const botao = document.getElementById("btnConfirmarLevelUp");
+
+    function limparLevelUp() {
+      document.removeEventListener("keydown", keydownHandlerLevelUp);
+      try {
+        if (
+          elementoAnteriorFocadoLevelUp &&
+          typeof elementoAnteriorFocadoLevelUp.focus === "function"
+        )
+          elementoAnteriorFocadoLevelUp.focus();
+      } catch (err) {
+        // ignore
+      }
+    }
+
+    elementoAnteriorFocadoLevelUp = document.activeElement;
+    // small delay to ensure visible
+    setTimeout(() => {
+      if (input) input.focus();
+      else if (botao) botao.focus();
+    }, 0);
+    document.addEventListener("keydown", keydownHandlerLevelUp);
 
     function validarInput() {
       const valor = Number(input.value);
@@ -1034,6 +1193,7 @@ Bônus de Proficiência: +${bonusProf}
 
       const valor = Number(input.value);
 
+      limparLevelUp();
       modal.style.display = "none";
 
       resolve(valor);
@@ -1112,11 +1272,71 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("input", atualizarDadosVidaTotal);
 
   document.getElementById("btnAddXP").addEventListener("click", async () => {
-    const xpAtual = Number(document.getElementById("xp").value);
+    const xpInput = document.getElementById("xp");
+    const xpAtual = Number(xpInput.value);
     const valor = await abrirModalAdicionarXP();
 
     if (valor !== null && valor !== undefined) {
-      setXP(xpAtual + valor);
+      const novo = xpAtual + valor;
+
+      // calcula limites do nível atual (mesma lógica que usar em atualizarXPENivel)
+      let xpNivelAtual = 0;
+      let xpProximoNivel = tabelaXP[tabelaXP.length - 1].xp;
+      for (let i = 0; i < tabelaXP.length; i++) {
+        if (xpAtual >= tabelaXP[i].xp) {
+          xpNivelAtual = tabelaXP[i].xp;
+          if (tabelaXP[i + 1]) xpProximoNivel = tabelaXP[i + 1].xp;
+        }
+      }
+      const denom = Math.max(1, xpProximoNivel - xpNivelAtual);
+
+      const xpBar = document.getElementById("xpBar");
+      const xpBarNext = document.getElementById("xpBarNext");
+      const xpBarCurrent = document.getElementById("xpBarCurrent");
+
+      const animateBar = (toPercent, duration) =>
+        new Promise((res) => {
+          // escolher elemento a animar: em NÍVEL 1 animamos a camada base (xpBarCurrent),
+          // caso contrário animamos a camada overlay (xpBarNext). Isso evita que
+          // ambas cresçam ao mesmo tempo no nível 1.
+          let nivelAtualCalc = 1;
+          for (let i = 0; i < tabelaXP.length; i++) {
+            if (xpAtual >= tabelaXP[i].xp) {
+              nivelAtualCalc = tabelaXP[i].nivel;
+            } else {
+              break;
+            }
+          }
+
+          const target =
+            (nivelAtualCalc === 1 ? xpBarCurrent : xpBarNext) ||
+            xpBarNext ||
+            xpBarCurrent ||
+            xpBar;
+          if (!target) {
+            res();
+            return;
+          }
+          target.style.transition = `width ${duration}ms ease`;
+          target.style.width = `${toPercent}%`;
+          setTimeout(() => {
+            target.style.transition = "";
+            res();
+          }, duration + 40);
+        });
+
+      if (novo >= xpProximoNivel) {
+        // anima até 100% antes de aplicar o XP e disparar level-up
+        await animateBar(100, 800);
+        setXP(novo);
+      } else {
+        const progressoNovo = Math.max(
+          0,
+          Math.min(1, (novo - xpNivelAtual) / denom),
+        );
+        await animateBar(progressoNovo * 100, 600);
+        setXP(novo);
+      }
     }
   });
 
@@ -1161,7 +1381,8 @@ document.addEventListener("change", (e) => {
 function atualizarXPENivel() {
   const xpInput = document.getElementById("xp");
   const nivelInput = document.getElementById("classeNivelID");
-  const xpBar = document.getElementById("xpBar");
+  const xpBarCurrent = document.getElementById("xpBarCurrent");
+  const xpBarNext = document.getElementById("xpBarNext");
   const xpTexto = document.getElementById("xpTexto");
 
   const xp = parseInt(xpInput.value) || 0;
@@ -1201,8 +1422,58 @@ function atualizarXPENivel() {
 
   progresso = Math.max(0, Math.min(1, progresso));
 
-  // 🔹 aplicar barra
-  xpBar.style.width = progresso * 100 + "%";
+  // 🔹 aplicar barra com sobreposição: base fixa, apenas camada ativa muda
+  if (xpBarCurrent && xpBarNext) {
+    // Alterna cor garantindo que o elemento ANIMADO receba a cor adequada:
+    // - níveis ímpares: elemento animado = verde, outro = azul
+    // - níveis pares: elemento animado = azul, outro = verde
+    const animandoNext = nivelAtual > 1; // quando >1 animamos a overlay (xpBarNext)
+    const corVerde = "linear-gradient(90deg, #4caf50, #8bc34a)";
+    const corAzul =
+      "linear-gradient(90deg, rgba(33,150,243,0.85), rgba(3,169,244,0.85))";
+
+    if (nivelAtual % 2 === 1) {
+      // nível ímpar -> animado = verde
+      if (animandoNext) {
+        xpBarNext.style.background = corVerde;
+        xpBarCurrent.style.background = corAzul;
+      } else {
+        xpBarCurrent.style.background = corVerde;
+        xpBarNext.style.background = corAzul;
+      }
+    } else {
+      // nível par -> animado = azul
+      if (animandoNext) {
+        xpBarNext.style.background = corAzul;
+        xpBarCurrent.style.background = corVerde;
+      } else {
+        xpBarCurrent.style.background = corAzul;
+        xpBarNext.style.background = corVerde;
+      }
+    }
+
+    // âncoras à esquerda (preenchimento left→right)
+    xpBarCurrent.style.left = "0";
+    xpBarNext.style.left = "0";
+    xpBarCurrent.style.right = "auto";
+    xpBarNext.style.right = "auto";
+
+    if (nivelAtual > 1) {
+      // se já existe um nível anterior, a camada base fica fixa e não sofre transição
+      xpBarCurrent.style.transition = "none";
+      xpBarCurrent.style.width = "100%";
+
+      // camada ativa (overlay) cresce sobre a base
+      xpBarNext.style.transition = "width 0.3s ease";
+      xpBarNext.style.width = progresso * 100 + "%";
+    } else {
+      // nível 1: não há base fixa — usamos apenas a camada current para mostrar progresso
+      xpBarCurrent.style.transition = "width 0.3s ease";
+      xpBarCurrent.style.width = progresso * 100 + "%";
+      xpBarNext.style.transition = "none";
+      xpBarNext.style.width = "0%";
+    }
+  }
 
   // 🔹 texto
   if (nivelAtual < 20) {
