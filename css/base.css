@@ -1369,15 +1369,31 @@ body {
 }
 
 .pericia-prof {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  min-width: 50px;
+  min-width: auto;
+  min-height: auto;
+  gap: 0;
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  background: transparent;
 }
 
 .pericia-prof input {
-  margin: 0;
+  display: none;
+}
+
+.pericia-prof-indicador {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  font-size: 1.5rem;
+  line-height: 1;
+  font-weight: bold;
 }
 
 .pericia-valor {
@@ -2972,7 +2988,6 @@ body {
   line-height: 1;
   flex: 0 0 auto;
 }
-
 
 .magia-titulo-nivel {
   font-size: 16px;
@@ -5438,9 +5453,6 @@ body {
     width: 68%;
   }
 
-
-
-
   .magia-modal-botao {
     flex-basis: 100%;
   }
@@ -7179,8 +7191,7 @@ body.tema-escuro
   color: var(--cor-texto) !important;
 }
 
-body.tema-escuro
-  :where(.magia-modal-overlay, .magia-slot-modal-overlay) {
+body.tema-escuro :where(.magia-modal-overlay, .magia-slot-modal-overlay) {
   background: var(--cor-overlay) !important;
 }
 
@@ -7246,6 +7257,24 @@ body.tema-escuro
 
 body.tema-escuro
   :where(
+    .pv-classico-widget,
+    .pv-main,
+    .pv-ribbon,
+    .pv-ribbons,
+    .quadrado-combate,
+    .shield,
+    .d20
+  ) {
+  background: var(--cor-campo) !important;
+  background-color: var(--cor-campo) !important;
+  background-image: none !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda) !important;
+  box-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
     input,
     select,
     textarea,
@@ -7285,24 +7314,12 @@ body.tema-escuro
   box-shadow: none !important;
 }
 
-body.tema-escuro
-  :where(
-    .tabs,
-    .abas,
-    .subabas-botoes,
-    .config-tabs
-  ) {
+body.tema-escuro :where(.tabs, .abas, .subabas-botoes, .config-tabs) {
   background: transparent !important;
   border-color: var(--cor-borda) !important;
 }
 
-body.tema-escuro
-  :where(
-    .tab,
-    .subaba-botao,
-    .config-tab,
-    .tema-opcao
-  ) {
+body.tema-escuro :where(.tab, .subaba-botao, .config-tab, .tema-opcao) {
   background: #252525 !important;
   color: var(--cor-texto-suave) !important;
   border-color: var(--cor-borda-suave) !important;
@@ -7509,6 +7526,8 @@ body.tema-escuro
     .ataque-status-caixa,
     .ataque-pv-bloco,
     .ataque-contra-morte,
+    .equipamento-colunas,
+    .equipamento-coluna,
     .equipados-slot-com-emoji,
     .equipados-mao-emoji,
     .equipados-checkbox,

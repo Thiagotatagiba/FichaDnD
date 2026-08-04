@@ -1,0 +1,162 @@
+/* Estilos específicos para o modal de adicionar XP */
+.xp-modal {
+  width: min(100%, 560px);
+  max-height: 82vh;
+  box-sizing: border-box;
+}
+.xp-modal .modal-body-base {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.xp-modal input[type="number"] {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: 1px solid var(--cor-borda);
+  background: var(--modal-button-bg);
+  color: var(--modal-text);
+  box-shadow: none;
+}
+.xp-modal .ataque-botao {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.xp-modal .modal-header-base {
+  align-items: center;
+  gap: 12px;
+}
+.xp-modal .modal-subtitulo {
+  color: var(--modal-subtitle);
+  font-size: 13px;
+  margin-top: 4px;
+}
+.xp-modal .frase-levelup {
+  font-style: italic;
+  color: var(--modal-subtitle);
+  margin: 0;
+}
+.xp-modal .modal-close-base {
+  margin-left: 8px;
+}
+.xp-modal .ataque-modal-acoes {
+  display: flex;
+  gap: 8px;
+}
+.xp-modal .ataque-modal-acoes .modal-close-base {
+  flex: 0 0 auto;
+}
+#xpAddModalConfirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Forçar overlay na frente de tudo */
+.xp-modal-overlay {
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.xp-modal-overlay.ativo {
+  display: flex;
+}
+
+/* Fallback: se qualquer modal-overlay-base for ativado, force display flex */
+.modal-overlay-base.ativo {
+  display: flex;
+  z-index: 9999;
+}
+
+/* Progress bar and preview styles */
+.xp-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.xp-progress-bar {
+  width: 100%;
+  height: 14px;
+  background: linear-gradient(180deg, #f3e8cf, #e8dcc0);
+  border: 2px solid #8b4513;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 2px rgba(139, 69, 19, 0.04);
+}
+.xp-progress-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, #c8a95e 0%, #ffd56b 60%);
+  transition: width 300ms ease;
+}
+.xp-progress-text {
+  font-size: 13px;
+  color: var(--modal-text);
+  text-align: right;
+}
+
+.xp-info-block {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+.xp-current-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.xp-current-label {
+  font-size: 13px;
+  color: var(--modal-subtitle);
+}
+.xp-current-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--modal-title);
+}
+
+.xp-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.xp-preview-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+.xp-preview-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.xp-preview-label {
+  font-size: 12px;
+  color: var(--modal-subtitle);
+}
+.xp-preview-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--modal-title);
+}
+.xp-missing {
+  font-size: 13px;
+  color: var(--modal-subtitle);
+  text-align: right;
+}
+
+/* Glow animation for level up */
+.xp-glow {
+  box-shadow:
+    0 0 18px 6px rgba(255, 215, 90, 0.35),
+    0 0 40px 10px rgba(255, 215, 90, 0.12) !important;
+}
+
+/* Ensure modal sits above other overlays */
+.xp-modal-overlay {
+  z-index: 99999;
+}

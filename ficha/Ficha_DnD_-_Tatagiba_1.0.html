@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="../css/abas.css" />
     <link rel="stylesheet" href="../css/modal.css" />
     <link rel="stylesheet" href="../css/responsivo.css" />
+    <link rel="stylesheet" href="../css/xp-modal.css" />
   </head>
 
   <body class="tema-padrao">
@@ -539,6 +540,55 @@
         </div>
 
         <button id="btnConfirmarLevelUp">Confirmar</button>
+      </div>
+    </div>
+
+    <div id="xpAddModal" class="xp-modal-overlay modal-overlay-base" aria-hidden="true" style="display: none;">
+      <div class="xp-modal modal-base" role="dialog" aria-modal="true" aria-labelledby="xpAddModalTitle">
+        <div class="modal-header-base">
+          <div>
+            <div id="xpAddModalTitle" class="config-modal-titulo">✨ XP da Aventura</div>
+            <div class="modal-subtitulo">Registre quanto XP foi ganho em combate, exploração ou roleplay.</div>
+          </div>
+          <button type="button" class="modal-close-base" id="xpAddModalClose" aria-label="Fechar">✕</button>
+        </div>
+        <div class="modal-body-base">
+          <p id="xpAddModalEpicPhrase" class="frase-levelup" style="margin-bottom: 8px;"></p>
+
+          <div class="xp-block xp-header-block">
+            <div class="xp-progress">
+              <div class="xp-progress-bar" id="xpAddModalProgressBar" aria-hidden="true">
+                <div class="xp-progress-fill" id="xpAddModalProgressFill"></div>
+              </div>
+              <div class="xp-progress-text"><span id="xpAddModalProgressText">0 / 300 XP</span></div>
+            </div>
+          </div>
+
+          <div class="xp-block xp-info-block">
+            <div class="xp-current-row">
+              <div class="xp-current-label">XP Atual</div>
+              <div class="xp-current-value" id="xpAddModalCurrent">0</div>
+            </div>
+
+            <div class="xp-input-row">
+              <label for="xpAddModalInput" class="dado-modal-campo-rotulo">Adicionar</label>
+              <input type="number" id="xpAddModalInput" inputmode="numeric" min="0" step="1" placeholder="0" />
+            </div>
+
+            <div class="xp-preview-row">
+              <div class="xp-preview-item">
+                <div class="xp-preview-label">Resultado</div>
+                <div class="xp-preview-value" id="xpAddModalTotal">0</div>
+              </div>
+              <div class="xp-missing" id="xpAddModalMissing">Faltam 0 XP para o próximo nível.</div>
+            </div>
+          </div>
+
+          <div class="ataque-modal-acoes" style="margin-top: 12px;">
+            <button type="button" class="ataque-botao" id="xpAddModalConfirm" disabled>Adicionar 0 XP</button>
+            <button type="button" class="modal-close-base" id="xpAddModalCancel">Cancelar</button>
+          </div>
+        </div>
       </div>
     </div>
 
