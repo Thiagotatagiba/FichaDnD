@@ -5947,6 +5947,29 @@ body {
   transition: width 0.3s ease;
 }
 
+.xp-bar-fill {
+  will-change: width;
+}
+
+.xp-bar-tip {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(50%, -50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
 .xp-bar-fill-base {
   left: 0;
 }

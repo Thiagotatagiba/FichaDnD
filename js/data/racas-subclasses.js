@@ -1320,6 +1320,19 @@ document.addEventListener("DOMContentLoaded", () => {
           target.style.transition = `width ${duration}ms ease`;
           target.style.width = `${toPercent}%`;
           setTimeout(() => {
+            // se animamos até 100%, movemos a ponta para a esquerda (wrap)
+            try {
+              const tip =
+                (target &&
+                  target.querySelector &&
+                  target.querySelector(".xp-bar-tip")) ||
+                null;
+              if (tip && toPercent >= 100) {
+                tip.style.left = "0";
+                tip.style.right = "auto";
+                tip.style.transform = "translate(-50%, -50%)";
+              }
+            } catch (err) {}
             target.style.transition = "";
             res();
           }, duration + 40);
@@ -1472,6 +1485,44 @@ function atualizarXPENivel() {
       xpBarCurrent.style.width = progresso * 100 + "%";
       xpBarNext.style.transition = "none";
       xpBarNext.style.width = "0%";
+    }
+
+    // Ajuste de opacidade e ponta brilhante:
+    try {
+      const tipCurrent = xpBarCurrent.querySelector(".xp-bar-tip");
+      const tipNext = xpBarNext.querySelector(".xp-bar-tip");
+
+      if (nivelAtual > 1) {
+        xpBarCurrent.style.opacity = "0.6";
+        xpBarNext.style.opacity = "1";
+
+        if (tipNext) {
+          tipNext.style.opacity = progresso > 0 ? "1" : "0";
+          const cor =
+            nivelAtual % 2 === 1
+              ? "rgba(76,175,80,0.95)"
+              : "rgba(33,150,243,0.95)";
+          tipNext.style.boxShadow = `0 0 8px ${cor}`;
+          tipNext.style.borderColor = cor;
+        }
+        if (tipCurrent) tipCurrent.style.opacity = "0.4";
+      } else {
+        xpBarCurrent.style.opacity = "1";
+        xpBarNext.style.opacity = "0.6";
+
+        if (tipCurrent) {
+          tipCurrent.style.opacity = progresso > 0 ? "1" : "0";
+          const cor =
+            nivelAtual % 2 === 1
+              ? "rgba(76,175,80,0.95)"
+              : "rgba(33,150,243,0.95)";
+          tipCurrent.style.boxShadow = `0 0 8px ${cor}`;
+          tipCurrent.style.borderColor = cor;
+        }
+        if (tipNext) tipNext.style.opacity = "0";
+      }
+    } catch (err) {
+      // ignorar se elementos não existirem
     }
   }
 
