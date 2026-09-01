@@ -117,6 +117,9 @@
         normalizarPlaceholdersCamposBase();
         preencherFormularioConfigFicha();
         aplicarConfigCustomizacaoNaFicha(false);
+        if (typeof carregarDiarioAventura === "function") {
+          carregarDiarioAventura(dados.historiaDiarioAventura);
+        }
 
         inicializarTalentos(dados);
 

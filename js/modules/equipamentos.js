@@ -1520,6 +1520,7 @@
       function fecharMenuEmpunhadura() {
         const menu = obterMenuEmpunhadura();
         if (!menu) return;
+        if (menu.classList.contains("oculto")) return;
 
         menu.classList.add("oculto");
         menu.innerHTML = "";

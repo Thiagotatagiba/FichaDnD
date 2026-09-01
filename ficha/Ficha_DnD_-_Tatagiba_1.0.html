@@ -1321,7 +1321,18 @@
             </div>
 
             <div class="caixa-salvaguarda">
-              <div class="campo-titulo">Anotações</div>
+              <div class="anotacoes-topo">
+                <div class="campo-titulo">Anotações</div>
+                <button
+                  type="button"
+                  class="historia-diario-botao anotacoes-diario-botao"
+                  title="Salvar no Diário"
+                  aria-label="Salvar no Diário"
+                  onclick="salvarAnotacoesNoDiario()"
+                >
+                  💾
+                </button>
+              </div>
               <textarea
                 id="anotacoes"
                 class="proficiencia-texto"
@@ -2918,13 +2929,33 @@
               </div>
             </div>
 
-            <div class="historia-card">
-              <div class="status-titulo">Aliados e Organizações</div>
-              <textarea
-                id="historiaAliadosOrganizacoes"
-                class="historia-texto historia-texto-medio"
-                aria-label="Aliados e organizações"
-              ></textarea>
+            <div class="historia-blocos historia-blocos-apoio">
+              <div class="historia-card">
+                <div class="status-titulo">Aliados e Organizações</div>
+                <textarea
+                  id="historiaAliadosOrganizacoes"
+                  class="historia-texto historia-texto-medio"
+                  aria-label="Aliados e organizações"
+                ></textarea>
+              </div>
+
+              <div class="historia-card historia-diario-card">
+                <div class="historia-diario-topo">
+                  <div class="status-titulo">Diário de Aventura</div>
+                  <button
+                    type="button"
+                    class="historia-diario-botao"
+                    onclick="abrirModalDiarioAventura()"
+                  >
+                    + Novo evento
+                  </button>
+                </div>
+                <div
+                  id="historiaDiarioLista"
+                  class="historia-diario-lista"
+                  aria-label="Eventos do diário de aventura"
+                ></div>
+              </div>
             </div>
 
             <div class="historia-card">
@@ -3776,6 +3807,63 @@
       </div>
     </div>
 
+    <div
+      id="historiaDiarioModalOverlay"
+      class="modal-overlay-base historia-diario-modal-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="historiaDiarioModalTitulo"
+    >
+      <div class="modal-base historia-diario-modal">
+        <div class="modal-header-base">
+          <h2 id="historiaDiarioModalTitulo" class="modal-title-base">
+            Diário de Aventura
+          </h2>
+          <button
+            type="button"
+            class="modal-close-base"
+            aria-label="Fechar diário de aventura"
+            onclick="fecharModalDiarioAventura()"
+          >
+            ×
+          </button>
+        </div>
+        <div class="modal-body-base historia-diario-modal-corpo">
+          <label class="historia-diario-campo">
+            <span>Título</span>
+            <input
+              type="text"
+              data-diario-campo="titulo"
+              placeholder="Ex: A emboscada na estrada"
+            />
+          </label>
+          <label class="historia-diario-campo">
+            <span>Texto longo</span>
+            <textarea
+              data-diario-campo="texto"
+              placeholder="Registre aqui o que aconteceu na aventura..."
+            ></textarea>
+          </label>
+          <div class="historia-diario-modal-acoes">
+            <button
+              type="button"
+              class="historia-diario-botao historia-diario-botao-perigo"
+              onclick="removerEventoDiarioAventura()"
+            >
+              Remover
+            </button>
+            <button
+              type="button"
+              class="historia-diario-botao"
+              onclick="salvarEventoDiarioAventura()"
+            >
+              Salvar evento
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- ========================= -->
     <!-- INVENTÁRIO / EQUIPAMENTOS -->
     <!-- ========================= -->
@@ -3816,6 +3904,7 @@
     <!-- UTILITÁRIOS -->
     <!-- ========================= -->
     <script src="../js/core/helpers.js"></script>
+    <script src="../js/modules/historico.js"></script>
 
     <!-- ========================= -->
     <!-- INVENTÁRIO / EQUIPAMENTOS -->

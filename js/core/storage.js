@@ -192,6 +192,9 @@
         if (typeof obterEstadoCombateParaSalvar === "function") {
           dados.estadoCombate = obterEstadoCombateParaSalvar();
         }
+        if (typeof obterEventosDiarioAventuraParaSalvar === "function") {
+          dados.historiaDiarioAventura = obterEventosDiarioAventuraParaSalvar();
+        }
         dados.caracteristicaClasseArquivo =
           document.getElementById("caracteristicaClasseArquivo")?.value || "";
         dados.caracteristicaClasseSubclasse =
