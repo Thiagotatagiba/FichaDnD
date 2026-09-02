@@ -1834,6 +1834,99 @@ body {
   outline: none;
 }
 
+.modal-vida-header {
+  align-items: center;
+  padding: 16px 18px 12px;
+}
+
+.modal-vida-header-texto {
+  flex: 1;
+  min-width: 0;
+}
+
+.modal-vida-titulo {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.modal-vida-subtitulo {
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--modal-subtitle);
+}
+
+.modal-vida-fechar {
+  flex-shrink: 0;
+  min-width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 10px;
+}
+
+.modal-vida-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 18px;
+  padding-bottom: 14px;
+}
+
+.modal-vida-label {
+  position: static;
+  display: block;
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--modal-title);
+}
+
+#modalVidaInput.modal-valor-input {
+  display: block;
+  width: 180px;
+  max-width: 100%;
+  min-height: 46px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 2px solid var(--cor-borda-suave);
+  border-radius: 12px;
+  background: var(--cor-campo);
+  color: var(--cor-texto);
+  font-family: "MedievalSharp";
+  font-size: 18px;
+  line-height: 1.2;
+  box-sizing: border-box;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+#modalVidaInput.modal-valor-input:focus {
+  outline: none;
+  border-color: var(--cor-borda);
+  box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
+  transform: translateY(-1px);
+}
+
+.modal-vida-acoes {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.modal-vida-confirmar {
+  min-width: 170px;
+  min-height: 42px;
+  padding: 10px 18px;
+  font-size: 1rem;
+  border-radius: 12px;
+}
+
 @media (max-width: 640px) {
   .modal-overlay-base {
     padding: 12px;
@@ -7368,8 +7461,6 @@ body.tema-escuro
     .magia-card-detalhe-header,
     .magia-card-detalhe-nome,
     .magia-card-detalhe-info,
-    .magia-item-editar,
-    .magia-item-nome,
     .magia-grupo-header,
     .magia-grupo-slots,
     .magia-grupo-seta,
@@ -7382,6 +7473,23 @@ body.tema-escuro
   ) {
   background: var(--cor-painel) !important;
   border-color: var(--cor-borda-suave) !important;
+  color: var(--cor-texto) !important;
+}
+
+body.tema-escuro
+  :where(
+    .magia-item-editar,
+    .magia-item-nome,
+    .magia-item-preparada,
+    .magia-status-magico-item,
+    .magia-card-detalhe-descricao,
+    .magia-card-detalhe-info,
+    .magia-formulario-campo label,
+    .magia-grupo-header,
+    .magia-status-magico-rotulo
+  ) {
+  background: transparent !important;
+  border-color: transparent !important;
   color: var(--cor-texto) !important;
 }
 
@@ -7744,6 +7852,78 @@ body.tema-escuro .pv-heart-fill-red {
 
 body.tema-escuro .pv-heart-fill-blue {
   fill: #6ea8ff !important;
+}
+
+body.tema-escuro .box-combate {
+  background: var(--cor-painel) !important;
+  border-color: var(--cor-borda-suave) !important;
+  color: var(--cor-texto) !important;
+}
+
+body.tema-escuro .d20 {
+  background: transparent !important;
+  border: none !important;
+}
+
+body.tema-escuro .d20 svg polygon {
+  fill: var(--cor-campo) !important;
+  stroke: var(--cor-borda) !important;
+}
+
+body.tema-escuro .d20 input {
+  color: var(--cor-texto) !important;
+  background: transparent !important;
+}
+
+body.tema-escuro
+  :where(
+    .xp-input-column,
+    .xp-summary-column,
+    .xp-current-row,
+    .xp-preview-row,
+    .xp-current-value,
+    .xp-preview-value,
+    .xp-input-title,
+    .xp-current-label,
+    .xp-preview-label,
+    .talento-modal-bloco,
+    .talento-modal-formulario,
+    .talento-modal-bloco-titulo,
+    .ataque-modal-topo,
+    .ataque-modal-rodada,
+    .magia-formulario-campo.concentracao-inline label,
+    .arma-propriedades label,
+    .arma-card label,
+    .armadura-card label,
+    .item-card label
+  ) {
+  background: var(--cor-painel) !important;
+  background-image: none !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda-suave) !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+body.tema-escuro
+  :where(
+    .xp-input-column input,
+    .xp-summary-column input,
+    .xp-current-value,
+    .xp-preview-value,
+    .talento-modal-formulario input,
+    .talento-modal-formulario textarea,
+    .ataque-modal-topo,
+    .magia-formulario-campo.concentracao-inline label,
+    .arma-propriedades label,
+    .arma-card label,
+    .armadura-card label,
+    .item-card label
+  ) {
+  background: var(--cor-campo) !important;
+  background-image: none !important;
+  color: var(--cor-texto) !important;
+  border-color: var(--cor-borda) !important;
 }
 
 /* Cobertura das abas fora de magia no tema escuro */

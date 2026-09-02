@@ -611,6 +611,67 @@
     </div>
 
     <div
+      id="modalVidaAtualizarOverlay"
+      class="modal-overlay-base"
+      aria-hidden="true"
+      style="display: none;"
+    >
+      <div
+        class="modal-base"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalVidaTitulo"
+        style="max-width: 420px; width: min(96vw, 420px);"
+      >
+        <div class="modal-header-base modal-vida-header">
+          <div class="modal-vida-header-texto">
+            <div id="modalVidaTitulo" class="config-modal-titulo modal-vida-titulo">
+              Tomar dano
+            </div>
+            <div id="modalVidaSubtitulo" class="modal-subtitulo modal-vida-subtitulo">
+              Informe a quantidade de dano sofrida.
+            </div>
+          </div>
+          <button
+            type="button"
+            class="modal-close-base modal-vida-fechar"
+            aria-label="Fechar modal de vida"
+            onclick="fecharModalVida()"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="modal-body-base modal-vida-body">
+          <label for="modalVidaInput" class="dado-modal-campo-rotulo modal-vida-label">
+            Quantidade
+          </label>
+          <input
+            id="modalVidaInput"
+            class="modal-valor-input"
+            type="number"
+            min="0"
+            step="1"
+            inputmode="numeric"
+            placeholder="Ex: 8"
+          />
+
+          <div class="modal-vida-acoes">
+            <button
+              type="button"
+              class="ataque-botao modal-vida-confirmar"
+              id="modalVidaConfirmar"
+              data-tipo="dano"
+              onclick="confirmarModalVida()"
+            >
+              Aplicar dano
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
       id="configModalOverlay"
       class="config-modal-overlay modal-overlay-base"
       aria-hidden="true"
@@ -2513,14 +2574,14 @@
                     <button
                       type="button"
                       class="ataque-botao"
-                      onclick="aplicarDanoNoPV()"
+                      onclick="abrirModalVida('dano')"
                     >
                       Tomar<br />Dano
                     </button>
                     <button
                       type="button"
                       class="ataque-botao"
-                      onclick="curarPV()"
+                      onclick="abrirModalVida('cura')"
                     >
                       Curar<br />Dano
                     </button>
