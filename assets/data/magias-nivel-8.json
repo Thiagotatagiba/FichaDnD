@@ -1,5 +1,28 @@
 [
-  {"nome":"Dominar Monstro","nivel":8,"classes":["bardo","bruxo","mago"],"escola":"Encantamento","duracao":"Concentração, até 1 hora","propriedades":{"concentracao":true},"descricao":"Você tenta controlar uma criatura que falhar no teste de resistência."},
-  {"nome":"Explosão Solar","nivel":8,"classes":["druida","mago","feiticeiro"],"escola":"Evocação","duracao":"Instantânea","propriedades":{"dano":true},"descricao":"Uma luz solar intensa causa dano e pode cegar criaturas na área."},
-  {"nome":"Mente em Branco","nivel":8,"classes":["bardo","mago"],"escola":"Abjuração","duracao":"24 horas","descricao":"Uma criatura tocada fica protegida contra efeitos mentais e mágicos."}
+  {
+    "nome": "Dominar Monstro",
+    "nivel": 8,
+    "classes": ["bardo", "bruxo", "mago"],
+    "escola": "Encantamento",
+    "duracao": "Concentração, até 1 hora",
+    "propriedades": { "concentracao": true },
+    "descricao": "Você tenta controlar uma criatura que falhar no teste de resistência."
+  },
+  {
+    "nome": "Explosão Solar",
+    "nivel": 8,
+    "classes": ["druida", "mago", "feiticeiro"],
+    "escola": "Evocação",
+    "duracao": "Instantânea",
+    "propriedades": { "dano": true },
+    "descricao": "Uma luz solar intensa causa dano e pode cegar criaturas na área."
+  },
+  {
+    "nome": "Mente em Branco",
+    "nivel": 8,
+    "classes": ["bardo", "mago"],
+    "escola": "Abjuração",
+    "duracao": "24 horas",
+    "descricao": "Uma criatura tocada fica protegida contra efeitos mentais e mágicos."
+  }
 ]

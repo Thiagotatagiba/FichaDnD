@@ -1,5 +1,27 @@
 [
-  {"nome":"Desejo","nivel":9,"classes":["mago","feiticeiro"],"escola":"Conjuração","duracao":"Instantânea","descricao":"Você altera a realidade dentro dos limites do poder da magia."},
-  {"nome":"Chuva de Meteoros","nivel":9,"classes":["mago","feiticeiro"],"escola":"Evocação","duracao":"Instantânea","propriedades":{"dano":true},"descricao":"Meteoros incandescentes atingem uma grande área e causam dano devastador."},
-  {"nome":"Prisão","nivel":9,"classes":["bruxo","mago"],"escola":"Abjuração","duracao":"Até ser dissipada","descricao":"Você aprisiona uma criatura em uma forma mágica difícil de escapar."}
+  {
+    "nome": "Desejo",
+    "nivel": 9,
+    "classes": ["mago", "feiticeiro"],
+    "escola": "Conjuração",
+    "duracao": "Instantânea",
+    "descricao": "Você altera a realidade dentro dos limites do poder da magia."
+  },
+  {
+    "nome": "Chuva de Meteoros",
+    "nivel": 9,
+    "classes": ["mago", "feiticeiro"],
+    "escola": "Evocação",
+    "duracao": "Instantânea",
+    "propriedades": { "dano": true },
+    "descricao": "Meteoros incandescentes atingem uma grande área e causam dano devastador."
+  },
+  {
+    "nome": "Prisão",
+    "nivel": 9,
+    "classes": ["bruxo", "mago"],
+    "escola": "Abjuração",
+    "duracao": "Até ser dissipada",
+    "descricao": "Você aprisiona uma criatura em uma forma mágica difícil de escapar."
+  }
 ]

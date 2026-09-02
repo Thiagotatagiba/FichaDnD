@@ -1,5 +1,40 @@
 [
-  {"nome":"Bola de Fogo","nivel":3,"classes":["feiticeiro","mago"],"escola":"Evocação","tempo_conjuracao":"1 ação","alcance":"45 metros","duracao":"Instantânea","propriedades":{"dano":true},"componentes":{"verbal":true,"somatico":true},"resolucao":"Teste de Resistência","teste_resistencia":"DES","efeitos":[{"tipo":"dano","formula":"8d6","dano_tipo":"Fogo"}],"descricao":"Uma explosão de fogo atinge criaturas em uma esfera de 6 metros."},
-  {"nome":"Dissipar Magia","nivel":3,"classes":["bardo","bruxo","clerigo","druida","mago","feiticeiro"],"escola":"Abjuração","tempo_conjuracao":"1 ação","alcance":"36 metros","duracao":"Instantânea","componentes":{"verbal":true,"somatico":true},"descricao":"Escolha uma criatura, objeto ou efeito mágico dentro do alcance para encerrar suas magias."},
-  {"nome":"Voo","nivel":3,"classes":["bruxo","feiticeiro","mago"],"escola":"Transmutação","tempo_conjuracao":"1 ação","alcance":"Toque","duracao":"Concentração, até 10 minutos","propriedades":{"concentracao":true},"componentes":{"verbal":true,"somatico":true,"material":true},"descricao":"Você toca uma criatura voluntária e concede a ela deslocamento de voo."}
+  {
+    "nome": "Bola de Fogo",
+    "nivel": 3,
+    "classes": ["feiticeiro", "mago"],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "45 metros",
+    "duracao": "Instantânea",
+    "propriedades": { "dano": true },
+    "componentes": { "verbal": true, "somatico": true },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [{ "tipo": "dano", "formula": "8d6", "dano_tipo": "Fogo" }],
+    "descricao": "Uma explosão de fogo atinge criaturas em uma esfera de 6 metros."
+  },
+  {
+    "nome": "Dissipar Magia",
+    "nivel": 3,
+    "classes": ["bardo", "bruxo", "clerigo", "druida", "mago", "feiticeiro"],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 metros",
+    "duracao": "Instantânea",
+    "componentes": { "verbal": true, "somatico": true },
+    "descricao": "Escolha uma criatura, objeto ou efeito mágico dentro do alcance para encerrar suas magias."
+  },
+  {
+    "nome": "Voo",
+    "nivel": 3,
+    "classes": ["bruxo", "feiticeiro", "mago"],
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "Concentração, até 10 minutos",
+    "propriedades": { "concentracao": true },
+    "componentes": { "verbal": true, "somatico": true, "material": true },
+    "descricao": "Você toca uma criatura voluntária e concede a ela deslocamento de voo."
+  }
 ]

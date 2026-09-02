@@ -1431,14 +1431,17 @@ function obterMagiasCatalogoFiltradas() {
   const classe = estadoModalSelecaoMagia.classeSelecionada;
   return estadoModalSelecaoMagia.magias
     .filter((magia) => {
-    if (Number(magia.nivel) !== Number(estadoModalSelecaoMagia.nivel))
-      return false;
-    if (classe === "todas") return true;
-    const classes = obterClassesMagia(magia);
-    return !classes.length || classes.includes(classe);
+      if (Number(magia.nivel) !== Number(estadoModalSelecaoMagia.nivel))
+        return false;
+      if (classe === "todas") return true;
+      const classes = obterClassesMagia(magia);
+      return !classes.length || classes.includes(classe);
     })
     .sort((primeira, segunda) =>
-      String(primeira.nome || "").localeCompare(String(segunda.nome || ""), "pt-BR"),
+      String(primeira.nome || "").localeCompare(
+        String(segunda.nome || ""),
+        "pt-BR",
+      ),
     );
 }
 
@@ -1508,7 +1511,10 @@ async function carregarCatalogoMagias() {
       normalizarCatalogoMagias(dados, indice),
     );
   } catch (erro) {
-    console.error("Não foi possível carregar os catálogos de magias por nível.", erro);
+    console.error(
+      "Não foi possível carregar os catálogos de magias por nível.",
+      erro,
+    );
   }
   renderizarCatalogoMagias();
 }
@@ -1547,7 +1553,8 @@ function abrirModalSelecaoMagia(nivel) {
   const titulo = document.getElementById("magiaSelecaoModalTitulo");
   const selectClasse = document.getElementById("magiaSelecaoModalClasse");
   estadoModalSelecaoMagia.classeSelecionada = obterClasseFiltroInicial();
-  if (selectClasse) selectClasse.value = estadoModalSelecaoMagia.classeSelecionada;
+  if (selectClasse)
+    selectClasse.value = estadoModalSelecaoMagia.classeSelecionada;
   estadoModalSelecaoMagia.magiaSelecionada =
     obterMagiasCatalogoFiltradas()[0] || null;
   if (titulo) titulo.textContent = obterTituloAdicaoMagia(nivel);

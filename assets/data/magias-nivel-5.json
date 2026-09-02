@@ -1,5 +1,31 @@
 [
-  {"nome":"Cone de Frio","nivel":5,"classes":["mago","feiticeiro"],"escola":"Evocação","duracao":"Instantânea","propriedades":{"dano":true},"resolucao":"Teste de Resistência","teste_resistencia":"CON","efeitos":[{"tipo":"dano","formula":"8d8","dano_tipo":"Frio"}],"descricao":"Uma onda de ar gélido causa dano às criaturas em um cone."},
-  {"nome":"Imobilizar Monstro","nivel":5,"classes":["bardo","bruxo","mago","feiticeiro"],"escola":"Encantamento","duracao":"Concentração, até 1 minuto","propriedades":{"concentracao":true},"descricao":"Você paralisa uma criatura escolhida que falhar no teste de resistência."},
-  {"nome":"Restauração Maior","nivel":5,"classes":["bardo","clerigo","druida"],"escola":"Abjuração","duracao":"Instantânea","descricao":"Você remove uma condição debilitante ou reduz um efeito mágico sobre uma criatura."}
+  {
+    "nome": "Cone de Frio",
+    "nivel": 5,
+    "classes": ["mago", "feiticeiro"],
+    "escola": "Evocação",
+    "duracao": "Instantânea",
+    "propriedades": { "dano": true },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "CON",
+    "efeitos": [{ "tipo": "dano", "formula": "8d8", "dano_tipo": "Frio" }],
+    "descricao": "Uma onda de ar gélido causa dano às criaturas em um cone."
+  },
+  {
+    "nome": "Imobilizar Monstro",
+    "nivel": 5,
+    "classes": ["bardo", "bruxo", "mago", "feiticeiro"],
+    "escola": "Encantamento",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": { "concentracao": true },
+    "descricao": "Você paralisa uma criatura escolhida que falhar no teste de resistência."
+  },
+  {
+    "nome": "Restauração Maior",
+    "nivel": 5,
+    "classes": ["bardo", "clerigo", "druida"],
+    "escola": "Abjuração",
+    "duracao": "Instantânea",
+    "descricao": "Você remove uma condição debilitante ou reduz um efeito mágico sobre uma criatura."
+  }
 ]

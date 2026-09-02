@@ -1,5 +1,27 @@
 [
-  {"nome":"Teletransporte","nivel":7,"classes":["bardo","mago","feiticeiro"],"escola":"Conjuração","duracao":"Instantânea","descricao":"Você e criaturas voluntárias viajam instantaneamente para um destino escolhido."},
-  {"nome":"Rajada Prismática","nivel":7,"classes":["mago","feiticeiro"],"escola":"Evocação","duracao":"Instantânea","propriedades":{"dano":true},"descricao":"Raios coloridos atingem criaturas e produzem efeitos mágicos variados."},
-  {"nome":"Ressurreição","nivel":7,"classes":["bardo","clerigo"],"escola":"Necromancia","duracao":"Instantânea","descricao":"Você devolve a vida a uma criatura morta recentemente."}
+  {
+    "nome": "Teletransporte",
+    "nivel": 7,
+    "classes": ["bardo", "mago", "feiticeiro"],
+    "escola": "Conjuração",
+    "duracao": "Instantânea",
+    "descricao": "Você e criaturas voluntárias viajam instantaneamente para um destino escolhido."
+  },
+  {
+    "nome": "Rajada Prismática",
+    "nivel": 7,
+    "classes": ["mago", "feiticeiro"],
+    "escola": "Evocação",
+    "duracao": "Instantânea",
+    "propriedades": { "dano": true },
+    "descricao": "Raios coloridos atingem criaturas e produzem efeitos mágicos variados."
+  },
+  {
+    "nome": "Ressurreição",
+    "nivel": 7,
+    "classes": ["bardo", "clerigo"],
+    "escola": "Necromancia",
+    "duracao": "Instantânea",
+    "descricao": "Você devolve a vida a uma criatura morta recentemente."
+  }
 ]

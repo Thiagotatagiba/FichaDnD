@@ -1,5 +1,43 @@
 [
-  {"nome":"Mãos Flamejantes","nivel":1,"classes":["bruxo","feiticeiro","mago"],"escola":"Evocação","tempo_conjuracao":"1 ação","alcance":"Você (cone de 4,5 m)","duracao":"Instantânea","propriedades":{"dano":true},"componentes":{"verbal":true,"somatico":true},"resolucao":"Teste de Resistência","teste_resistencia":"DES","efeitos":[{"tipo":"dano","formula":"3d6","dano_tipo":"Fogo"}],"descricao":"Cada criatura em um cone de 4,5 metros deve realizar um teste de resistência de Destreza."},
-  {"nome":"Curar Ferimentos","nivel":1,"classes":["bardo","clerigo","druida","paladino","patrulheiro"],"escola":"Evocação","tempo_conjuracao":"1 ação","alcance":"Toque","duracao":"Instantânea","propriedades":{"cura":true},"componentes":{"verbal":true,"somatico":true},"efeitos":[{"tipo":"cura","regra":"1d8 + modificador de conjuração"}],"descricao":"Uma criatura que você tocar recupera pontos de vida."},
-  {"nome":"Mísseis Mágicos","nivel":1,"classes":["bruxo","feiticeiro","mago"],"escola":"Evocação","tempo_conjuracao":"1 ação","alcance":"36 metros","duracao":"Instantânea","propriedades":{"dano":true},"componentes":{"verbal":true,"somatico":true},"efeitos":[{"tipo":"dano","formula":"3d4 + 3","dano_tipo":"Força"}],"descricao":"Você cria três dardos brilhantes de força mágica que atingem criaturas escolhidas."}
+  {
+    "nome": "Mãos Flamejantes",
+    "nivel": 1,
+    "classes": ["bruxo", "feiticeiro", "mago"],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Você (cone de 4,5 m)",
+    "duracao": "Instantânea",
+    "propriedades": { "dano": true },
+    "componentes": { "verbal": true, "somatico": true },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [{ "tipo": "dano", "formula": "3d6", "dano_tipo": "Fogo" }],
+    "descricao": "Cada criatura em um cone de 4,5 metros deve realizar um teste de resistência de Destreza."
+  },
+  {
+    "nome": "Curar Ferimentos",
+    "nivel": 1,
+    "classes": ["bardo", "clerigo", "druida", "paladino", "patrulheiro"],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "Instantânea",
+    "propriedades": { "cura": true },
+    "componentes": { "verbal": true, "somatico": true },
+    "efeitos": [{ "tipo": "cura", "regra": "1d8 + modificador de conjuração" }],
+    "descricao": "Uma criatura que você tocar recupera pontos de vida."
+  },
+  {
+    "nome": "Mísseis Mágicos",
+    "nivel": 1,
+    "classes": ["bruxo", "feiticeiro", "mago"],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 metros",
+    "duracao": "Instantânea",
+    "propriedades": { "dano": true },
+    "componentes": { "verbal": true, "somatico": true },
+    "efeitos": [{ "tipo": "dano", "formula": "3d4 + 3", "dano_tipo": "Força" }],
+    "descricao": "Você cria três dardos brilhantes de força mágica que atingem criaturas escolhidas."
+  }
 ]

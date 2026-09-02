@@ -1,5 +1,23 @@
 [
-  {"nome":"Luz","nivel":0,"classes":["bardo","bruxo","mago","feiticeiro"],"escola":"Evocação","descricao":"Você toca um objeto que passa a emitir luz plena em um raio de 6 metros."},
-  {"nome":"Mãos Mágicas","nivel":0,"classes":["bardo","bruxo","mago","feiticeiro"],"escola":"Conjuração","descricao":"Uma mão espectral surge em um ponto escolhido e pode manipular objetos leves."},
-  {"nome":"Prestidigitação","nivel":0,"classes":["bardo","bruxo","mago","feiticeiro"],"escola":"Transmutação","descricao":"Você produz pequenos efeitos mágicos e sensoriais inofensivos."}
+  {
+    "nome": "Luz",
+    "nivel": 0,
+    "classes": ["bardo", "bruxo", "mago", "feiticeiro"],
+    "escola": "Evocação",
+    "descricao": "Você toca um objeto que passa a emitir luz plena em um raio de 6 metros."
+  },
+  {
+    "nome": "Mãos Mágicas",
+    "nivel": 0,
+    "classes": ["bardo", "bruxo", "mago", "feiticeiro"],
+    "escola": "Conjuração",
+    "descricao": "Uma mão espectral surge em um ponto escolhido e pode manipular objetos leves."
+  },
+  {
+    "nome": "Prestidigitação",
+    "nivel": 0,
+    "classes": ["bardo", "bruxo", "mago", "feiticeiro"],
+    "escola": "Transmutação",
+    "descricao": "Você produz pequenos efeitos mágicos e sensoriais inofensivos."
+  }
 ]
