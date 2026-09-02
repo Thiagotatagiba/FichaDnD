@@ -1,0 +1,5 @@
+[
+  {"nome":"Invisibilidade","nivel":2,"classes":["bardo","bruxo","mago","feiticeiro"],"escola":"Ilusão","tempo_conjuracao":"1 ação","alcance":"Toque","duracao":"Concentração, até 1 hora","propriedades":{"concentracao":true},"componentes":{"verbal":true,"somatico":true},"descricao":"Uma criatura que você tocar fica invisível até a magia terminar."},
+  {"nome":"Passo Nebuloso","nivel":2,"classes":["bruxo","feiticeiro","mago"],"escola":"Conjuração","tempo_conjuracao":"1 ação bônus","alcance":"Você","duracao":"Instantânea","componentes":{"verbal":true},"descricao":"Você se teletransporta para um espaço desocupado que possa ver."},
+  {"nome":"Raio Ardente","nivel":2,"classes":["feiticeiro","mago"],"escola":"Evocação","tempo_conjuracao":"1 ação","alcance":"36 metros","duracao":"Instantânea","propriedades":{"dano":true},"componentes":{"verbal":true,"somatico":true},"efeitos":[{"tipo":"dano","formula":"2d6","dano_tipo":"Fogo"}],"descricao":"Você cria três raios de fogo e pode lançá-los contra alvos escolhidos."}
+]

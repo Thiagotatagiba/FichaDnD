@@ -1,0 +1,5 @@
+[
+  {"nome":"Corrente de Raios","nivel":6,"classes":["mago","feiticeiro"],"escola":"Evocação","duracao":"Instantânea","propriedades":{"dano":true},"resolucao":"Teste de Resistência","teste_resistencia":"DES","descricao":"Um raio salta de um alvo para outras criaturas próximas."},
+  {"nome":"Desintegrar","nivel":6,"classes":["mago","feiticeiro"],"escola":"Transmutação","duracao":"Instantânea","propriedades":{"dano":true},"resolucao":"Teste de Resistência","teste_resistencia":"DES","descricao":"Um fino raio verde causa grande dano a uma criatura ou objeto."},
+  {"nome":"Cura Completa","nivel":6,"classes":["clerigo","druida"],"escola":"Evocação","duracao":"Instantânea","propriedades":{"cura":true},"descricao":"Uma criatura tocada recupera uma grande quantidade de pontos de vida."}
+]

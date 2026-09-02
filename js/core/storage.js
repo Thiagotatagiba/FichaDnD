@@ -43,6 +43,19 @@
           }
         });
 
+        const magiasPorNivel = dados.magiasPorNivel || dados.magias;
+        if (magiasPorNivel && typeof magiasPorNivel === "object") {
+          Object.entries(magiasPorNivel).forEach(([nivel, magias]) => {
+            const nivelNumerico = parseInt(String(nivel).replace(/\D/g, ""), 10);
+            if (!Number.isInteger(nivelNumerico) || !Array.isArray(magias)) return;
+
+            const campoId = `magia${nivelNumerico}Texto`;
+            if (dados[campoId] === undefined) {
+              dados[campoId] = JSON.stringify(magias);
+            }
+          });
+        }
+
         ["bonusProf", "bonusProficiencia"].forEach((chave) => {
           if (
             dados[chave] !== undefined &&

@@ -133,6 +133,21 @@ const OPCOES_TESTE_RESISTENCIA_MAGIA = [
   "SAB",
   "CAR",
 ];
+const OPCOES_CLASSES_MAGIA = [
+  { valor: "artifice", rotulo: "Artífice" },
+  { valor: "barbaro", rotulo: "Bárbaro" },
+  { valor: "bardo", rotulo: "Bardo" },
+  { valor: "bruxo", rotulo: "Bruxo" },
+  { valor: "clerigo", rotulo: "Clérigo" },
+  { valor: "druida", rotulo: "Druida" },
+  { valor: "feiticeiro", rotulo: "Feiticeiro" },
+  { valor: "guerreiro", rotulo: "Guerreiro" },
+  { valor: "ladino", rotulo: "Ladino" },
+  { valor: "mago", rotulo: "Mago" },
+  { valor: "monge", rotulo: "Monge" },
+  { valor: "paladino", rotulo: "Paladino" },
+  { valor: "patrulheiro", rotulo: "Patrulheiro" },
+];
 const PREFIXO_SLOT_ESCUDO = "__escudo__";
 const estadoModalMagia = {
   nivel: 0,
@@ -145,6 +160,13 @@ const estadoModalUsoMagia = {
   nivelMinimo: 1,
   ultimoFoco: null,
   origemCombate: false,
+};
+const estadoModalSelecaoMagia = {
+  nivel: 0,
+  magias: [],
+  magiaSelecionada: null,
+  classeSelecionada: "todas",
+  ultimoFoco: null,
 };
 let concentracaoAtiva = null;
 let ultimoResultadoConcentracao = null;
@@ -1029,7 +1051,11 @@ function formatarTagsMagia(tags) {
   return (tags || []).map((tag) => String(tag || "").trim()).filter(Boolean);
 }
 
-function renderizarCardDetalheMagia(magia) {
+function renderizarCardDetalheMagia(
+  magia,
+  mostrarAcao = true,
+  acaoAdicionar = null,
+) {
   const container = document.createElement("div");
   container.className = "magia-card-detalhe";
 
@@ -1041,6 +1067,15 @@ function renderizarCardDetalheMagia(magia) {
   nome.textContent = magia.nome || "";
 
   header.appendChild(nome);
+
+  if (acaoAdicionar) {
+    const botaoAdicionar = document.createElement("button");
+    botaoAdicionar.type = "button";
+    botaoAdicionar.className = "magia-card-detalhe-adicionar";
+    botaoAdicionar.textContent = "Adicionar à Magia";
+    botaoAdicionar.addEventListener("click", acaoAdicionar);
+    header.appendChild(botaoAdicionar);
+  }
 
   const info = document.createElement("div");
   info.className = "magia-card-detalhe-info";
@@ -1115,6 +1150,17 @@ function renderizarCardDetalheMagia(magia) {
   ]
     .filter(Boolean)
     .join("\n\n");
+
+  if (!mostrarAcao) {
+    container.appendChild(header);
+    container.appendChild(info);
+    if (propriedades.childNodes.length) {
+      container.appendChild(propriedades);
+    }
+    container.appendChild(efeitos);
+    container.appendChild(descricao);
+    return container;
+  }
 
   const botaoUso = document.createElement("button");
   botaoUso.type = "button";
@@ -1282,6 +1328,253 @@ function montarModalMagia() {
             `;
 
   document.body.appendChild(overlay);
+}
+
+function obterModalSelecaoMagiaOverlay() {
+  return document.getElementById("magiaSelecaoModalOverlay");
+}
+
+function montarModalSelecaoMagia() {
+  if (obterModalSelecaoMagiaOverlay()) return;
+
+  const overlay = document.createElement("div");
+  overlay.id = "magiaSelecaoModalOverlay";
+  overlay.className = "magia-slot-modal-overlay oculto";
+  overlay.setAttribute("aria-hidden", "true");
+  overlay.innerHTML = `
+    <div class="magia-slot-modal magia-selecao-modal" role="dialog" aria-modal="true" aria-labelledby="magiaSelecaoModalTitulo">
+      <div class="magia-selecao-cabecalho">
+        <button type="button" class="magia-selecao-criar" id="magiaSelecaoModalCriar">Criar magia</button>
+        <div id="magiaSelecaoModalTitulo" class="magia-slot-modal-titulo">Adicionar magia</div>
+        <button type="button" class="magia-selecao-fechar" id="magiaSelecaoModalFechar" aria-label="Fechar janela" title="Fechar">×</button>
+      </div>
+      <div id="magiaSelecaoModalTexto" class="magia-slot-modal-texto"></div>
+      <label class="magia-selecao-classe" for="magiaSelecaoModalClasse">Classe das magias</label>
+      <select id="magiaSelecaoModalClasse" class="magia-selecao-classe-select"></select>
+      <div class="magia-selecao-conteudo">
+        <div id="magiaSelecaoModalLista" class="magia-selecao-lista"></div>
+        <div id="magiaSelecaoModalDetalhes" class="magia-selecao-detalhes"></div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  overlay.addEventListener("click", (evento) => {
+    if (evento.target === overlay) fecharModalSelecaoMagia();
+  });
+  document
+    .getElementById("magiaSelecaoModalFechar")
+    ?.addEventListener("click", fecharModalSelecaoMagia);
+  document
+    .getElementById("magiaSelecaoModalCriar")
+    ?.addEventListener("click", () => {
+      const nivel = estadoModalSelecaoMagia.nivel;
+      fecharModalSelecaoMagia();
+      adicionarMagiaManual(nivel);
+    });
+  document
+    .getElementById("magiaSelecaoModalClasse")
+    ?.addEventListener("change", (evento) => {
+      estadoModalSelecaoMagia.classeSelecionada = evento.target.value;
+      estadoModalSelecaoMagia.magiaSelecionada =
+        obterMagiasCatalogoFiltradas()[0] || null;
+      renderizarCatalogoMagias();
+    });
+}
+
+function preencherFiltroClassesMagia() {
+  const select = document.getElementById("magiaSelecaoModalClasse");
+  if (!select) return;
+
+  select.replaceChildren();
+  const todas = document.createElement("option");
+  todas.value = "todas";
+  todas.textContent = "Todas as classes";
+  select.appendChild(todas);
+  OPCOES_CLASSES_MAGIA.forEach(({ valor, rotulo }) => {
+    const opcao = document.createElement("option");
+    opcao.value = valor;
+    opcao.textContent = rotulo;
+    select.appendChild(opcao);
+  });
+}
+
+function obterClassePersonagem() {
+  return normalizarTextoComparacao(
+    document.getElementById("classeNomeID")?.value || "",
+  );
+}
+
+function obterTituloAdicaoMagia(nivel) {
+  return nivel === 0
+    ? "Adicionar novo Truque"
+    : `Adicionar nova Magia Nível ${nivel}`;
+}
+
+function obterClasseFiltroInicial() {
+  const classePersonagem = obterClassePersonagem();
+  return OPCOES_CLASSES_MAGIA.some(({ valor }) => valor === classePersonagem)
+    ? classePersonagem
+    : "todas";
+}
+
+function obterClassesMagia(magia) {
+  const classes = magia?.classes ?? magia?.classe;
+  if (Array.isArray(classes)) return classes.map(normalizarTextoComparacao);
+  if (typeof classes === "string") {
+    return classes.split(",").map(normalizarTextoComparacao).filter(Boolean);
+  }
+  return [];
+}
+
+function obterMagiasCatalogoFiltradas() {
+  const classe = estadoModalSelecaoMagia.classeSelecionada;
+  return estadoModalSelecaoMagia.magias
+    .filter((magia) => {
+    if (Number(magia.nivel) !== Number(estadoModalSelecaoMagia.nivel))
+      return false;
+    if (classe === "todas") return true;
+    const classes = obterClassesMagia(magia);
+    return !classes.length || classes.includes(classe);
+    })
+    .sort((primeira, segunda) =>
+      String(primeira.nome || "").localeCompare(String(segunda.nome || ""), "pt-BR"),
+    );
+}
+
+function renderizarCatalogoMagias() {
+  const lista = document.getElementById("magiaSelecaoModalLista");
+  const detalhes = document.getElementById("magiaSelecaoModalDetalhes");
+  if (!lista || !detalhes) return;
+
+  lista.replaceChildren();
+  detalhes.replaceChildren();
+  const magiasFiltradas = obterMagiasCatalogoFiltradas();
+  if (!magiasFiltradas.includes(estadoModalSelecaoMagia.magiaSelecionada)) {
+    estadoModalSelecaoMagia.magiaSelecionada = magiasFiltradas[0] || null;
+  }
+  if (!magiasFiltradas.length) {
+    const vazio = document.createElement("div");
+    vazio.className = "magia-vazia";
+    vazio.textContent = "Nenhuma magia encontrada para este nível e classe.";
+    lista.appendChild(vazio);
+    return;
+  }
+
+  magiasFiltradas.forEach((magia) => {
+    const botao = document.createElement("button");
+    botao.type = "button";
+    botao.className = "magia-selecao-item";
+    botao.classList.toggle(
+      "selecionado",
+      magia === estadoModalSelecaoMagia.magiaSelecionada,
+    );
+    botao.innerHTML = `<strong>${escaparHtmlMagia(magia.nome)}</strong><span>${escaparHtmlMagia(obterRotuloNivelMagia(magia.nivel))}${magia.escola ? ` · ${escaparHtmlMagia(magia.escola)}` : ""}</span>`;
+    botao.addEventListener("click", () => {
+      estadoModalSelecaoMagia.magiaSelecionada = magia;
+      renderizarCatalogoMagias();
+    });
+    lista.appendChild(botao);
+  });
+
+  if (estadoModalSelecaoMagia.magiaSelecionada) {
+    detalhes.appendChild(
+      renderizarCardDetalheMagia(
+        estadoModalSelecaoMagia.magiaSelecionada,
+        false,
+        () =>
+          adicionarMagiaDoCatalogo(estadoModalSelecaoMagia.magiaSelecionada),
+      ),
+    );
+  }
+}
+
+async function carregarCatalogoMagias() {
+  estadoModalSelecaoMagia.magias = [];
+  try {
+    const respostas = await Promise.all(
+      NIVEIS_MAGIA.map((nivel) =>
+        fetch(`../assets/data/magias-nivel-${nivel}.json`),
+      ),
+    );
+    if (!respostas.every((resposta) => resposta.ok)) {
+      throw new Error("Um ou mais catálogos de nível não foram encontrados.");
+    }
+
+    const dadosPorNivel = await Promise.all(
+      respostas.map((resposta) => resposta.json()),
+    );
+    estadoModalSelecaoMagia.magias = dadosPorNivel.flatMap((dados, indice) =>
+      normalizarCatalogoMagias(dados, indice),
+    );
+  } catch (erro) {
+    console.error("Não foi possível carregar os catálogos de magias por nível.", erro);
+  }
+  renderizarCatalogoMagias();
+}
+
+function normalizarCatalogoMagias(dados, nivelPadrao = null) {
+  if (Array.isArray(dados)) {
+    return dados.map((magia) => ({
+      ...magia,
+      nivel:
+        magia.nivel !== undefined && magia.nivel !== null
+          ? Number(magia.nivel)
+          : nivelPadrao,
+    }));
+  }
+
+  if (!dados || typeof dados !== "object") return [];
+  if (Array.isArray(dados.magias)) {
+    return normalizarCatalogoMagias(dados.magias, dados.nivel ?? nivelPadrao);
+  }
+
+  return Object.entries(dados).flatMap(([nivel, magias]) =>
+    normalizarCatalogoMagias(magias, Number(nivel)),
+  );
+}
+
+function abrirModalSelecaoMagia(nivel) {
+  const overlay = obterModalSelecaoMagiaOverlay();
+  if (!overlay) return;
+
+  estadoModalSelecaoMagia.nivel = nivel;
+  estadoModalSelecaoMagia.ultimoFoco =
+    document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+  const texto = document.getElementById("magiaSelecaoModalTexto");
+  const titulo = document.getElementById("magiaSelecaoModalTitulo");
+  const selectClasse = document.getElementById("magiaSelecaoModalClasse");
+  estadoModalSelecaoMagia.classeSelecionada = obterClasseFiltroInicial();
+  if (selectClasse) selectClasse.value = estadoModalSelecaoMagia.classeSelecionada;
+  estadoModalSelecaoMagia.magiaSelecionada =
+    obterMagiasCatalogoFiltradas()[0] || null;
+  if (titulo) titulo.textContent = obterTituloAdicaoMagia(nivel);
+  if (texto)
+    texto.textContent = `Escolha uma magia para adicionar em ${obterRotuloNivelMagia(nivel)}.`;
+  renderizarCatalogoMagias();
+  overlay.classList.add("ativo");
+  overlay.classList.remove("oculto");
+  overlay.setAttribute("aria-hidden", "false");
+  document.getElementById("magiaSelecaoModalFechar")?.focus();
+}
+
+function fecharModalSelecaoMagia() {
+  const overlay = obterModalSelecaoMagiaOverlay();
+  if (!overlay) return;
+
+  overlay.classList.remove("ativo");
+  overlay.classList.add("oculto");
+  overlay.setAttribute("aria-hidden", "true");
+  if (
+    estadoModalSelecaoMagia.ultimoFoco instanceof HTMLElement &&
+    document.contains(estadoModalSelecaoMagia.ultimoFoco)
+  ) {
+    estadoModalSelecaoMagia.ultimoFoco.focus();
+  }
+  estadoModalSelecaoMagia.ultimoFoco = null;
+  estadoModalSelecaoMagia.magiaSelecionada = null;
 }
 
 function obterModalUsoMagiaOverlay() {
@@ -1455,20 +1748,23 @@ function prepararInterfaceNivelMagia(nivel) {
   const botao = document.createElement("button");
   botao.type = "button";
   botao.className = "magia-botao-add";
-  botao.textContent = "Nova Magia";
-  botao.addEventListener("click", () => adicionarNovaMagia(nivel));
+  botao.textContent = nivel === 0 ? "Novo Truque" : `Nova Magia NV${nivel}`;
+  botao.addEventListener("click", () => abrirModalSelecaoMagia(nivel));
 
   const cabecalho = campo
     .closest(".magia-card")
     ?.querySelector(
       nivel === 0 ? ".magia-cabecalho-truques" : ".magia-cabecalho",
     );
-  cabecalho?.appendChild(botao);
+  cabecalho?.insertBefore(botao, cabecalho.children[1] || null);
 }
 
 function inicializarGerenciadorMagias() {
   montarModalMagia();
+  montarModalSelecaoMagia();
+  preencherFiltroClassesMagia();
   montarModalUsoMagia();
+  carregarCatalogoMagias();
   preencherSelectMagia("magiaModalEscola", OPCOES_ESCOLA_MAGIA);
   preencherSelectMagia("magiaModalDanoTipo", OPCOES_TIPO_DANO_MAGIA);
   preencherSelectMagia("magiaModalResolucao", OPCOES_RESOLUCAO_MAGIA);
@@ -2378,12 +2674,26 @@ function excluirMagiaAtual() {
 }
 
 function adicionarNovaMagia(nivel) {
+  adicionarMagiaManual(nivel);
+}
+
+function adicionarMagiaManual(nivel) {
   const magias = lerMagiasNivel(nivel);
   magias.push(criarMagiaPadrao(nivel));
   salvarMagiasNivel(nivel, magias);
   renderizarListaMagiasNivel(nivel);
   atualizarSubAbaMagiasCombate();
   abrirModalMagia(nivel, magias.length - 1, "editar");
+}
+
+function adicionarMagiaDoCatalogo(magiaCatalogo) {
+  const nivel = estadoModalSelecaoMagia.nivel;
+  const magias = lerMagiasNivel(nivel);
+  magias.push(normalizarMagiaRegistro(magiaCatalogo, nivel));
+  salvarMagiasNivel(nivel, magias);
+  renderizarListaMagiasNivel(nivel);
+  atualizarSubAbaMagiasCombate();
+  fecharModalSelecaoMagia();
 }
 
 function atualizarMagias() {

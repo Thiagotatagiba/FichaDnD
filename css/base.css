@@ -3078,9 +3078,8 @@ body {
 }
 
 .magia-cabecalho {
-  display: grid;
-  grid-template-columns: auto repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  display: flex;
+  gap: 6px;
   align-items: end;
   margin-bottom: 12px;
 }
@@ -3120,25 +3119,38 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  width: 100px;
+  align-items: flex-end;
+}
+
+.magia-cabecalho > .magia-espaco:nth-child(3) {
+  margin-left: auto;
+}
+
+.magia-cabecalho .magia-botao-add,
+.magia-cabecalho-truques .magia-botao-add {
+  margin-left: 0;
 }
 
 .magia-espaco label {
   font-size: 12px;
   font-weight: bold;
   color: #6f3610;
-  text-align: center;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .magia-espaco input {
   width: 100%;
-  min-height: 38px;
+  min-height: 32px;
+  align-self: flex-end;
   border: 2px solid #8b4513;
   border-radius: 10px;
-  padding: 6px 8px;
+  padding: 4px 6px;
   background: #fffaf2;
   box-sizing: border-box;
   font-family: "MedievalSharp";
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
   outline: none;
 }
@@ -3626,6 +3638,151 @@ body {
   box-sizing: border-box;
 }
 
+.magia-selecao-modal {
+  width: min(900px, 100%);
+  max-height: min(92vh, 980px);
+  overflow: auto;
+}
+
+.magia-selecao-conteudo {
+  display: grid;
+  grid-template-columns: minmax(190px, 0.75fr) minmax(0, 1.25fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.magia-selecao-cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: -18px -18px 14px;
+  padding: 12px 14px;
+  border-bottom: var(--modal-header-border);
+}
+
+.magia-selecao-cabecalho .magia-slot-modal-titulo {
+  flex: 1;
+  margin: 0;
+}
+
+.magia-selecao-criar {
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid #8b4513;
+  border-radius: 8px;
+  background: #8b4513;
+  color: #fffaf2;
+  font-family: "MedievalSharp";
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.magia-selecao-criar:hover,
+.magia-selecao-criar:focus-visible {
+  background: #6f3610;
+  outline: none;
+}
+
+.magia-selecao-fechar {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: transparent;
+  color: #6f3610;
+  font-family: Arial, sans-serif;
+  font-size: 27px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.magia-selecao-fechar:hover,
+.magia-selecao-fechar:focus-visible {
+  border-color: #c7a97b;
+  background: #efe1c0;
+  outline: none;
+}
+
+.magia-selecao-classe {
+  display: block;
+  margin-bottom: 5px;
+  color: #5f2d0c;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.magia-selecao-classe-select {
+  width: min(280px, 100%);
+  min-height: 36px;
+  margin-bottom: 14px;
+  padding: 6px 8px;
+  border: 2px solid #8b4513;
+  border-radius: 8px;
+  background: #fffaf2;
+  color: #5f2d0c;
+  font-family: "MedievalSharp";
+  font-size: 13px;
+}
+
+.magia-selecao-lista {
+  display: grid;
+  gap: 8px;
+  max-height: min(60vh, 560px);
+  margin: 0;
+  overflow-y: auto;
+}
+
+.magia-selecao-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #d5b993;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.58);
+  color: #5f2d0c;
+  font-family: "MedievalSharp";
+  text-align: left;
+  cursor: pointer;
+}
+
+.magia-selecao-item:hover,
+.magia-selecao-item:focus-visible {
+  border-color: #8b4513;
+  background: #efe1c0;
+  outline: none;
+}
+
+.magia-selecao-item.selecionado {
+  border-color: #8b4513;
+  background: #efe1c0;
+  box-shadow: inset 4px 0 #8b4513;
+}
+
+.magia-selecao-item strong {
+  font-size: 15px;
+}
+
+.magia-selecao-item span {
+  color: #7b5739;
+  font-size: 12px;
+  text-align: right;
+}
+
+.magia-selecao-detalhes {
+  min-width: 0;
+}
+
+.magia-selecao-detalhes .magia-card-detalhe {
+  margin: 0;
+}
+
 .magia-slot-modal-titulo {
   font-family: "Metamorphous", serif;
   font-size: 20px;
@@ -3675,6 +3832,26 @@ body {
   gap: 10px;
   padding-bottom: 10px;
   border-bottom: 1px solid rgba(139, 69, 19, 0.18);
+}
+
+.magia-card-detalhe-adicionar {
+  flex: 0 0 auto;
+  margin-left: auto;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid #8b4513;
+  border-radius: 8px;
+  background: #8b4513;
+  color: #fffaf2;
+  font-family: "MedievalSharp";
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.magia-card-detalhe-adicionar:hover,
+.magia-card-detalhe-adicionar:focus-visible {
+  background: #6f3610;
+  outline: none;
 }
 
 .magia-card-detalhe-nome {
@@ -5234,11 +5411,16 @@ body {
   }
 
   .magia-cabecalho {
-    grid-template-columns: 1fr;
+    display: flex;
+    gap: 4px;
   }
 
   .magia-nivel {
-    justify-self: center;
+    justify-self: start;
+  }
+
+  .magia-espaco {
+    width: 96px;
   }
 }
 
@@ -5665,6 +5847,32 @@ body {
     width: 100%;
   }
 
+  .magia-selecao-conteudo {
+    grid-template-columns: 1fr;
+  }
+
+  .magia-selecao-cabecalho {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .magia-selecao-cabecalho .magia-slot-modal-titulo {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .magia-selecao-fechar {
+    margin-left: auto;
+  }
+
+  .magia-selecao-lista {
+    max-height: 30vh;
+  }
+
+  .magia-selecao-detalhes .magia-card-detalhe {
+    padding: 12px;
+  }
+
   .magia-modal-botao {
     flex: 1 1 calc(50% - 8px);
     justify-content: center;
@@ -5672,6 +5880,15 @@ body {
 
   .magia-card-detalhe-info {
     grid-template-columns: 1fr;
+  }
+
+  .magia-card-detalhe-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .magia-card-detalhe-adicionar {
+    margin-left: 0;
   }
 
   .magia-combate-topo {
