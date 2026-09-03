@@ -148,7 +148,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 12px;
-  margin-bottom: 42px;
+  margin-bottom: 26px;
 }
 
 .campo-titulo {
@@ -283,17 +283,20 @@ body {
 /* ===== Bloco superior, atributos e combate ===== */
 .grid-combate {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: minmax(320px, 340px) minmax(0, 1fr);
+  gap: 16px;
 }
 
 .hexagrama {
   position: relative;
   width: 100%;
   max-width: 380px;
-  aspect-ratio: 1 / 1;
+  height: auto;
+  aspect-ratio: auto;
   border: 2px solid #bda68c;
   border-radius: 8px;
   margin: 0 auto;
+  align-self: stretch;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -416,13 +419,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding-left: 16px;
 }
 
 .topo-combate {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 12px;
 }
 
 .box-combate {
@@ -526,14 +528,14 @@ body {
 
 .linha-principal {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .caixa-pv {
   border: 2px solid #333;
   border-radius: 12px;
-  padding: 16px;
+  padding: 14px;
   background: #f4efe6;
   display: flex;
   flex-direction: column;
@@ -931,7 +933,7 @@ body {
 .caixa-salvaguarda {
   border: 2px solid #333;
   border-radius: 12px;
-  padding: 16px;
+  padding: 14px;
   background: #f4efe6;
   display: flex;
   flex-direction: column;
