@@ -312,7 +312,7 @@ body {
 
 #radar {
   position: relative;
-  width: 68%;
+  width: 92%;
   aspect-ratio: 1 / 1;
 }
 
@@ -2589,6 +2589,7 @@ body {
   width: 100%;
   line-height: 1.15;
   white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .ataque-botao-resistencia {
@@ -5771,6 +5772,31 @@ body {
     padding: 10px;
   }
 
+  .ataque-mini-escudo .shield input {
+    font-size: 28px !important;
+  }
+
+  .ataque-pv-bloco {
+    margin-left: -42px;
+  }
+
+  .ataque-pv-valor {
+    gap: 8px;
+    min-height: 38px;
+    padding-left: 48px;
+    font-size: 18px;
+  }
+
+  .ataque-pv-coracoes .pv-heart {
+    width: 18px;
+    height: 18px;
+  }
+
+  .ataque-acoes .ataque-botao {
+    padding: 8px 4px;
+    font-size: 12px;
+  }
+
   .status-titulo {
     font-size: 12px;
   }
@@ -6130,7 +6156,7 @@ body {
 
   #radar {
     transform: none;
-    width: 68%;
+    width: 74%;
   }
 
   .magia-modal-botao {
