@@ -1,50 +1,41 @@
-# FichaDnD
+# Documentação do Projeto Ficha D&D
 
-Projeto de ficha de personagem para Dungeons & Dragons (estilo D&D 5e). Interface web (HTML/CSS/JS) para criar, visualizar e gerenciar personagens, rolar dados, registrar ataques e danos, gerenciar inventário e magias.
+Este diretório reúne a documentação técnica e de arquitetura do sistema de ficha de personagem para D&D.
 
-## Tecnologias
+## Visão geral
 
-- HTML5, CSS (responsivo e módulos de estilo)
-- JavaScript modular (módulos em `modules/` e scripts em `js/`)
-- Dados em JSON/JS (arquivos em `data/` e personagens em `ficha/`)
+O projeto é uma aplicação front-end estática, pensada para apoiar a criação, edição e gestão de fichas de personagem em ambiente web. Ele reúne interface, regras de jogo, persistência em JSON e interação com elementos GUI diretamente no navegador.
 
-## Como usar
+## Arquivos principais do repositório
 
-- Uso rápido (sem servidor): abra `index.html` ou `ficha/Ficha_DnD_-_Tatagiba_1.0.html` num navegador moderno.
-- Uso com servidor local (opcional):
+- [../README.md](../README.md) — visão geral do projeto e instruções de uso
+- [../ROADMAP.md](../ROADMAP.md) — evolução planejada do software
+- [../DECISOES_DE_ARQUITETURA.md](../DECISOES_DE_ARQUITETURA.md) — decisões técnicas e de arquitetura
+- [ARQUITETURA_SISTEMA.md](ARQUITETURA_SISTEMA.md) — descrição da arquitetura atual
+- [CONTRIBUICAO.md](CONTRIBUICAO.md) — regras e boas práticas para colaboração
+- [analise-arquitetura.md](analise-arquitetura.md) — análise inicial da arquitetura e módulos
+- [BUG_REPORT.md](BUG_REPORT.md) — relatórios e correções observadas
+- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) — plano de implementação
+- [TODO.md](TODO.md) — backlog e pendências
+- [TODO_MAGIA.md](TODO_MAGIA.md) — pendências e melhorias da área de magia
+- [TODO_progress.md](TODO_progress.md) — acompanhamento do progresso
 
-```bash
-python -m http.server 8000
-# então abra http://localhost:8000/index.html
-```
+## Estrutura de funcionamento
 
-## Estrutura principal
+- HTML e CSS definem a camada de interface
+- JavaScript implementa regras de negócio e renderização
+- Dados em JSON e arquivos JavaScript alimentam conteúdo de classes, raças e magias
+- A ficha pode ser exportada/importada em JSON para persistência e reaproveitamento
 
-- `index.html` — página inicial/landing.
-- `ficha/Ficha_DnD_-_Tatagiba_1.0.html` — ficha principal com modais e UI de jogo.
-- `js/` — inicialização e integração; `main.js` integra carregamento de personagem.
-- `modules/` — lógica do jogo (combate, inventário, magias, import/export, etc.).
-- `data/` — listas de classes, magias, raças e equipamentos.
-- `ficha/Personagens Ficha/` — exemplos de personagens salvos em JSON.
-- `css/` — estilos (base, layout, componentes, responsivo, modal, abas).
+## Observações importantes
 
-## Funcionalidades principais
+O projeto está em evolução e ainda mantém forte acoplamento entre interface e lógica de negócio. A documentação foi criada para registrar o estado atual, mapear decisões e orientar a modularização progressiva do sistema.
 
-- Rolagens de dados e botões para rolar automaticamente.
-- Modal de ataque/dano com histórico e opções de ação/ação-bônus/reação.
-- Importação/exportação e persistência de personagem (JSON).
-- Gestão de inventário, magias e atributos com suporte a classes e raças carregadas dos arquivos de dados.
-- Tema visual pergaminho/medieval e layout em abas/modais.
+## Próximos passos sugeridos
 
-## Desenvolvimento
+- separar regras de negócio da camada visual
+- reduzir uso de estado global e funções globais
+- criar validação de estruturas JSON de ficha
+- melhorar a cobertura de testes e regressão
+- documentar novos módulos conforme a arquitetura for evoluindo
 
-- Para inspecionar funcionalidade, abra a ficha no navegador e use o console devtools para logs.
-- Arquivos de dados em `data/` e módulos em `modules/` são os melhores pontos para adicionar regras ou corrigir lógica.
-
-## Contribuição
-
-- Abra uma issue explicando a sugestão ou correção. Pull requests são bem-vindos.
-
-## Autor
-
-Thiago Tatagiba — projeto pessoal.

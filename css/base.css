@@ -4610,10 +4610,21 @@ body {
 }
 
 .salva-guarda-modal-rodada {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   width: 100%;
+  padding-right: 30px;
+  text-align: center;
+}
+
+.salva-guarda-modal-rodada .modal-close-base {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
 }
 
 .ataque-modal-rodada strong {
@@ -4623,6 +4634,9 @@ body {
 }
 
 .ataque-modal-corpo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   padding: 18px;
 }
 
@@ -4649,6 +4663,7 @@ body {
 .dado-modal {
   display: grid;
   gap: 10px;
+  width: min(100%, 330px);
   margin: 0 auto 14px;
   padding: 12px;
   border: 1px solid rgba(139, 69, 19, 0.22);
@@ -4685,29 +4700,46 @@ body {
 .dado-modal-calculo {
   display: grid;
   grid-template-columns: minmax(112px, auto) minmax(120px, auto);
-  column-gap: 0;
+  column-gap: 12px;
   align-items: center;
   justify-content: center;
+  justify-items: center;
+}
+
+.dado-modal-calculo:has(.dado-modal-bonus-bloco[style*="display: none"]) {
+  grid-template-columns: 1fr;
+}
+
+.dado-modal-calculo:has(.dado-modal-bonus-bloco[style*="display: none"])
+  .dado-modal-coluna {
+  width: 100%;
 }
 
 .dado-modal-grupo-dado {
   display: grid;
-  grid-template-columns: 32px minmax(70px, 1fr);
-  gap: 8px;
-  align-items: start;
+  grid-template-columns: 32px 84px;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
   min-width: 0;
+  margin-inline: auto;
 }
 
 .dado-modal-botao-coluna {
   display: grid;
   gap: 4px;
   justify-items: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .dado-modal-coluna {
   display: grid;
   gap: 4px;
   justify-items: center;
+  align-items: center;
+  justify-content: center;
   min-width: 0;
 }
 
@@ -4766,12 +4798,14 @@ body {
 
 .dado-modal-campo-com-dado {
   gap: 8px;
+  align-items: center;
 }
 
 .dado-modal-campo-rotulo {
   position: absolute;
   top: 6px;
-  left: 48px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 9px;
   line-height: 1;
   color: #8b5a2b;
@@ -4861,6 +4895,10 @@ body {
 .dado-modal-total {
   grid-column: 1 / -1;
   justify-self: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
   font-size: 12px;
   color: #5c4832;
   text-align: center;
