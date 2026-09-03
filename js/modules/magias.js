@@ -1670,6 +1670,7 @@ function abrirModalUsarMagia(magia, opcoes = {}) {
 
   overlay.classList.add("ativo");
   overlay.classList.remove("oculto");
+  overlay.style.zIndex = "11000";
   overlay.setAttribute("aria-hidden", "false");
 
   const primeiroSlot = overlay.querySelector('input[name="magiaSlotNivel"]');
@@ -1745,6 +1746,29 @@ function prepararInterfaceNivelMagia(nivel) {
   if (!campo) return;
 
   campo.classList.add("magia-storage");
+  const campoTotal = document.getElementById(`magia${nivel}Total`);
+  const campoRest = document.getElementById(`magia${nivel}Rest`);
+  if (campoTotal && campoRest) {
+    campoTotal.dataset.valorAnterior = campoTotal.value || "0";
+    const atualizarEspacosMagia = () => {
+      const totalAnterior = parseInt(campoTotal.dataset.valorAnterior, 10) || 0;
+      const total = Math.max(0, parseInt(campoTotal.value, 10) || 0);
+      const restante = Math.max(0, parseInt(campoRest.value, 10) || 0);
+
+      if (totalAnterior === 0 && restante === 0 && total > 0) {
+        campoRest.value = String(total);
+      } else if (restante > total) {
+        campoRest.value = String(total);
+      }
+
+      campoTotal.dataset.valorAnterior = String(total);
+      atualizarSubAbaMagiasCombate();
+    };
+    campoTotal.addEventListener("input", atualizarEspacosMagia);
+    campoTotal.addEventListener("change", atualizarEspacosMagia);
+    campoRest.addEventListener("input", atualizarEspacosMagia);
+    campoRest.addEventListener("change", atualizarEspacosMagia);
+  }
   if (document.getElementById(`magia${nivel}Lista`)) return;
 
   const lista = document.createElement("div");

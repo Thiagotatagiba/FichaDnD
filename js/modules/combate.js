@@ -1,4 +1,111 @@
 // ===== Classe de armadura e resumo de combate =====
+const CONDICOES_DND = [
+  "Amedrontado",
+  "Agarrado",
+  "Atordoado",
+  "Caído",
+  "Cego",
+  "Contido",
+  "Encantado",
+  "Ensurdecido",
+  "Envenenado",
+  "Exausto",
+  "Imobilizado",
+  "Incapacitado",
+  "Invisível",
+  "Paralisado",
+  "Petrificado",
+];
+
+function inicializarSeletorCondicoes() {
+  const campo = document.getElementById("ataqueCondicao");
+  const overlay = document.getElementById("condicoesModalOverlay");
+  const checklist = document.getElementById("condicoesChecklist");
+  const personalizada = document.getElementById("condicaoPersonalizada");
+  if (!campo || !overlay || !checklist || !personalizada) return;
+
+  checklist.innerHTML = CONDICOES_DND.map(
+    (condicao) => `
+      <label class="condicao-checkitem">
+        <input type="checkbox" value="${condicao}" />
+        <span>${condicao}</span>
+      </label>`,
+  ).join("");
+
+  const ajustarAlturaCampo = () => {
+    campo.style.height = "20px";
+    campo.style.height = `${Math.min(campo.scrollHeight, 120)}px`;
+  };
+
+  const atualizarCampo = () => {
+    const selecionadas = Array.from(
+      checklist.querySelectorAll("input:checked"),
+    ).map((input) => input.value);
+    const customizada = personalizada.value.trim();
+    if (customizada) selecionadas.push(customizada);
+    campo.value = selecionadas.join(", ");
+    ajustarAlturaCampo();
+  };
+
+  const abrir = () => {
+    const atuais = campo.value
+      .split(",")
+      .map((valor) => valor.trim())
+      .filter(Boolean);
+    checklist.querySelectorAll("input").forEach((input) => {
+      input.checked = atuais.includes(input.value);
+    });
+    personalizada.value = atuais
+      .filter((valor) => !CONDICOES_DND.includes(valor))
+      .join(", ");
+    ajustarAlturaCampo();
+    overlay.style.display = "flex";
+    overlay.setAttribute("aria-hidden", "false");
+    personalizada.focus();
+  };
+
+  const fechar = () => {
+    atualizarCampo();
+    overlay.style.display = "none";
+    overlay.setAttribute("aria-hidden", "true");
+    campo.focus();
+  };
+
+  campo.addEventListener("click", abrir);
+  campo.addEventListener("keydown", (evento) => {
+    if (evento.key === "Enter" || evento.key === " ") {
+      evento.preventDefault();
+      abrir();
+    }
+  });
+  checklist.addEventListener("change", atualizarCampo);
+  personalizada.addEventListener("input", atualizarCampo);
+  document
+    .getElementById("condicoesModalFechar")
+    ?.addEventListener("click", fechar);
+  document
+    .getElementById("condicoesModalConcluir")
+    ?.addEventListener("click", fechar);
+  document
+    .getElementById("condicoesLimparTodas")
+    ?.addEventListener("click", () => {
+      checklist
+        .querySelectorAll("input")
+        .forEach((input) => (input.checked = false));
+      personalizada.value = "";
+      atualizarCampo();
+    });
+  overlay.addEventListener("click", (evento) => {
+    if (evento.target === overlay) fechar();
+  });
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key === "Escape" && overlay.style.display === "flex") fechar();
+  });
+  ajustarAlturaCampo();
+}
+
+document.addEventListener("DOMContentLoaded", inicializarSeletorCondicoes);
+
 function atualizarClasseArmaduraEquipada() {
   const armaduraCA =
     parseInt(document.getElementById("armaduraCA")?.value) || 0;
@@ -47,7 +154,11 @@ function atualizarResumoAtaquesConjuracao() {
   if (campoAtaqueEscudo) campoAtaqueEscudo.value = formatarCA(caEscudo);
   if (emojiAtaqueEscudo)
     emojiAtaqueEscudo.classList.toggle("ativo", caEscudo > 0);
-  if (campoAtaquePV) campoAtaquePV.textContent = "PV " + pvAtual;
+  if (campoAtaquePV) {
+    const textoPV = campoAtaquePV.querySelector("span");
+    if (textoPV) textoPV.textContent = "PV " + pvAtual;
+    else campoAtaquePV.textContent = "PV " + pvAtual;
+  }
 }
 
 const estadoAtaqueArma = {
@@ -1820,6 +1931,85 @@ function verificarStatusMorte() {
     limparContraMorte();
   }
 }
+
+function inicializarModalSalvaguardaMorte() {
+  const abrirBotao = document.getElementById("abrirSalvaGuardaModal");
+  const overlay = document.getElementById("modalIniciativaOverlay");
+  const campoDado = document.getElementById("modalIniciativaDado");
+  const titulo = document.getElementById("modalIniciativaTitulo");
+  const subtitulo = document.getElementById("modalIniciativaSubtitulo");
+  const formula = document.getElementById("modalIniciativaFormula");
+  const cabecalho = document.querySelector(
+    "#modalIniciativaOverlay .dado-modal-titulo",
+  );
+  const bonus = document.getElementById("modalIniciativaBonus")?.parentElement;
+  const posicao = document.querySelector(".modal-iniciativa-posicao");
+  const confirmar = document.getElementById("modalIniciativaConfirmar");
+  const cancelar = document.getElementById("modalIniciativaCancelar");
+  const rolar = document.getElementById("modalIniciativaRolarDado");
+  if (!abrirBotao || !overlay || !campoDado || !titulo || !subtitulo) return;
+
+  const fechar = () => {
+    fecharModalIniciativa();
+    delete overlay.dataset.salvaguarda;
+    titulo.textContent = "Rolar Iniciativa";
+    subtitulo.textContent = "1d20 + 0";
+    if (cabecalho) cabecalho.textContent = "Rolagem de iniciativa";
+    if (confirmar) confirmar.textContent = "Confirmar";
+    if (cancelar) cancelar.textContent = "Cancelar";
+    if (bonus) bonus.style.display = "";
+    if (posicao) posicao.style.display = "";
+  };
+
+  abrirBotao.addEventListener("click", () => {
+    abrirModalIniciativa();
+    titulo.textContent = "Rolar Salvaguarda Contra Morte";
+    subtitulo.textContent = "1d20";
+    if (cabecalho) cabecalho.textContent = "Rolagem de salvaguarda";
+    if (formula) formula.textContent = "1d20";
+    if (bonus) bonus.style.display = "none";
+    if (posicao) posicao.style.display = "none";
+    if (confirmar) confirmar.textContent = "Sucesso";
+    if (cancelar) cancelar.textContent = "Fracasso";
+  });
+
+  document
+    .getElementById("modalIniciativaFechar")
+    ?.addEventListener("click", fechar);
+  rolar?.addEventListener("click", (evento) => {
+    if (overlay.dataset.salvaguarda !== "true") return;
+    evento.stopImmediatePropagation();
+    rolar.classList.add("rolando");
+    animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then(() => {
+      rolar.classList.remove("rolando");
+    });
+  });
+  confirmar?.addEventListener("click", (evento) => {
+    if (overlay.dataset.salvaguarda !== "true") return;
+    evento.stopImmediatePropagation();
+    adicionarSucesso();
+    fechar();
+  });
+  cancelar?.addEventListener("click", (evento) => {
+    if (overlay.dataset.salvaguarda !== "true") return;
+    evento.stopImmediatePropagation();
+    adicionarFracasso();
+    fechar();
+  });
+  abrirBotao.addEventListener("click", () => {
+    overlay.dataset.salvaguarda = "true";
+  });
+  overlay.addEventListener("click", (evento) => {
+    if (evento.target === overlay && overlay.dataset.salvaguarda === "true")
+      fechar();
+  });
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key === "Escape" && overlay.dataset.salvaguarda === "true")
+      fechar();
+  });
+}
+
+document.addEventListener("DOMContentLoaded", inicializarModalSalvaguardaMorte);
 
 function adicionarSucesso() {
   for (let i = 1; i <= 3; i++) {

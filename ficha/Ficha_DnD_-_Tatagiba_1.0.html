@@ -22,6 +22,66 @@
 
   <body class="tema-padrao">
     <div
+      id="condicoesModalOverlay"
+      class="condicoes-modal-overlay modal-overlay-base"
+      aria-hidden="true"
+    >
+      <div
+        class="condicoes-modal modal-base"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="condicoesModalTitulo"
+      >
+        <div class="modal-header-base">
+          <div>
+            <h2 id="condicoesModalTitulo" class="condicoes-modal-titulo">
+              Condições
+            </h2>
+            <div class="condicoes-modal-subtitulo">
+              Selecione as condições atuais do personagem.
+            </div>
+          </div>
+          <button
+            type="button"
+            class="modal-close-base"
+            id="condicoesModalFechar"
+            aria-label="Fechar condições"
+          >
+            ✕
+          </button>
+        </div>
+        <div class="modal-body-base">
+          <div id="condicoesChecklist" class="condicoes-checklist"></div>
+          <label class="condicao-personalizada" for="condicaoPersonalizada">
+            Outra condição
+            <input
+              id="condicaoPersonalizada"
+              type="text"
+              placeholder="Digite uma condição"
+              autocomplete="off"
+            />
+          </label>
+          <div class="condicoes-modal-acoes">
+            <button
+              type="button"
+              class="modal-close-base condicoes-limpar"
+              id="condicoesLimparTodas"
+            >
+              Limpar todas as condições
+            </button>
+            <button
+              type="button"
+              class="modal-close-base"
+              id="condicoesModalConcluir"
+            >
+              Concluir
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
       id="modalAtaqueOverlay"
       class="ataque-modal-overlay modal-overlay-base oculto"
       aria-hidden="true"
@@ -44,12 +104,6 @@
           <div id="modalAtaqueSubtitulo" class="ataque-modal-subtitulo">
             Digite o dado tirado.
           </div>
-
-          <div id="modalAtaqueEtapaDado">
-            <div class="dado-modal">
-              <div class="dado-modal-cabecalho">
-                <span class="dado-modal-titulo">Rolagem de ataque</span>
-              </div>
               <label for="modalAtaqueDado" class="oculto-acessivel">Dado</label>
               <div class="dado-modal-rolagem dado-modal-calculo">
                 <div class="dado-modal-coluna">
@@ -385,7 +439,17 @@
         aria-labelledby="modalIniciativaTitulo"
       >
         <div class="ataque-modal-topo">
-          <div class="ataque-modal-rodada">Combate</div>
+          <div class="ataque-modal-rodada salva-guarda-modal-rodada">
+            Combate
+            <button
+              type="button"
+              class="modal-close-base"
+              id="modalIniciativaFechar"
+              aria-label="Fechar rolagem"
+            >
+              ✕
+            </button>
+          </div>
         </div>
         <div class="ataque-modal-corpo">
           <div id="modalIniciativaTitulo" class="ataque-modal-titulo">
@@ -1153,7 +1217,7 @@
                 <svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
                   <polygon
                     points="50,8 92,32 76,92 24,92 8,32"
-                    fill="white"
+                    fill="transparent"
                     stroke="black"
                     stroke-width="5"
                   />
@@ -2461,11 +2525,14 @@
 
                     <div class="ataque-status-caixa combate-condicao-caixa">
                       <label for="ataqueCondicao">Condição:</label>
-                      <input
+                      <textarea
                         id="ataqueCondicao"
-                        value="Normal"
+                        readonly
+                        role="button"
+                        tabindex="0"
                         aria-label="Condição de combate"
-                      />
+                        placeholder="Nenhuma"
+                      ></textarea>
                     </div>
                   </div>
 
@@ -2496,7 +2563,29 @@
                     </div>
 
                     <div class="ataque-pv-bloco">
-                      <div class="ataque-pv-valor" id="ataquePvAtual">PV 0</div>
+                      <div class="ataque-pv-valor" id="ataquePvAtual">
+                        <span>PV 0</span>
+                        <div class="pv-hearts ataque-pv-coracoes" id="ataquePvHearts" aria-label="Corações de vida">
+                        <div class="pv-heart">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pv-heart-bg" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/><path class="pv-heart-fill-red" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/></svg>
+                        </div>
+                        <div class="pv-heart">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pv-heart-bg" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/><path class="pv-heart-fill-red" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/></svg>
+                        </div>
+                        <div class="pv-heart">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pv-heart-bg" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/><path class="pv-heart-fill-red" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/></svg>
+                        </div>
+                        <div class="pv-heart">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pv-heart-bg" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/><path class="pv-heart-fill-red" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/></svg>
+                        </div>
+                        <div class="pv-heart">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pv-heart-bg" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/><path class="pv-heart-fill-red" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/></svg>
+                        </div>
+                        <div class="pv-heart pv-heart-hidden" id="ataquePvTempHeart">
+                          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pv-heart-bg" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/><path class="pv-heart-fill-blue" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/></svg>
+                        </div>
+                        </div>
+                      </div>
 
                       <div
                         class="ataque-contra-morte oculto"
@@ -2546,16 +2635,9 @@
                           <button
                             type="button"
                             class="ataque-botao"
-                            onclick="adicionarSucesso()"
+                            id="abrirSalvaGuardaModal"
                           >
-                            + Sucesso
-                          </button>
-                          <button
-                            type="button"
-                            class="ataque-botao"
-                            onclick="adicionarFracasso()"
-                          >
-                            + Fracasso
+                            🎲 Rolar Salvaguarda Contra Morte
                           </button>
                         </div>
                       </div>

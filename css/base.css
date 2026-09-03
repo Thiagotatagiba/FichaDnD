@@ -2160,32 +2160,27 @@ body {
 .ataque-topo {
   display: grid;
   grid-template-rows: auto auto auto;
-  gap: 8px;
-}
-
-.linha-status {
-  display: grid;
-  grid-template-columns: auto auto 1fr;
-  gap: 8px;
+  gap: 10px;
 }
 
 .linha-pv-alinhada {
   display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 12px;
+  grid-template-columns: 74px minmax(0, 1fr);
+  gap: 0;
   align-items: center;
 }
 
 .linha-acoes {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
 }
 
 .ataque-mini-escudo {
   position: relative;
   width: 74px;
   margin: 0 auto;
+  z-index: 1;
 }
 
 .ataque-mini-escudo .shield {
@@ -2202,17 +2197,19 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-left: -42px;
+  min-width: 0;
 }
 
 .ataque-status-linha {
   display: grid;
-  grid-template-columns: auto minmax(160px, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr);
   align-items: center;
   gap: 6px;
 }
 
 .ataque-status-linha.combate-ativo {
-  grid-template-columns: 82px 108px minmax(150px, 1fr);
+  grid-template-columns: 82px 108px minmax(0, 1fr);
   align-items: stretch;
 }
 
@@ -2228,6 +2225,7 @@ body {
   align-items: center;
   gap: 1px;
   justify-content: center;
+  width: 100%;
 }
 
 .ataque-status-caixa label {
@@ -2360,9 +2358,102 @@ body {
 .combate-condicao-caixa {
   grid-column: 2;
   width: 100%;
+  min-height: 43px;
   flex-direction: row;
   justify-content: flex-start;
   gap: 6px;
+}
+
+.combate-condicao-caixa textarea[readonly] {
+  cursor: pointer;
+  min-width: 0;
+  min-height: 20px;
+  flex: 1;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  max-height: 120px;
+  resize: none;
+  overflow-y: hidden;
+  line-height: 1.25;
+  text-align: left;
+  white-space: pre-wrap;
+}
+
+.condicoes-modal-overlay {
+  z-index: 1000;
+}
+
+.condicoes-modal {
+  width: min(560px, 100%);
+}
+
+.condicoes-modal-titulo {
+  margin: 0;
+  color: var(--modal-title);
+  font-size: 1.35rem;
+}
+
+.condicoes-modal-subtitulo {
+  margin-top: 4px;
+  color: var(--modal-subtitle);
+  font-size: 0.9rem;
+}
+
+.condicoes-checklist {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.condicao-checkitem,
+.condicao-personalizada {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid rgba(139, 69, 19, 0.35);
+  border-radius: 7px;
+  background: rgba(255, 250, 242, 0.75);
+  color: var(--modal-text);
+}
+
+.condicao-checkitem input {
+  width: 17px;
+  height: 17px;
+  accent-color: #8b0000;
+}
+
+.condicao-personalizada {
+  align-items: stretch;
+  flex-direction: column;
+  margin-top: 14px;
+  font-weight: bold;
+}
+
+.condicao-personalizada input {
+  width: 100%;
+  border: 1px solid var(--cor-borda);
+  padding: 8px;
+  background: #fff;
+  font: inherit;
+}
+
+.condicoes-modal-acoes {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.condicoes-limpar {
+  color: #8b0000;
 }
 
 .ataque-status-linha.combate-ativo .combate-condicao-caixa {
@@ -2370,7 +2461,7 @@ body {
   grid-row: 2;
 }
 
-.combate-condicao-caixa input {
+.combate-condicao-caixa textarea {
   text-align: left;
   max-width: none;
 }
@@ -2384,7 +2475,9 @@ body {
 .ataque-pv-valor {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  gap: 12px;
+  padding-left: 48px;
   min-height: 42px;
   border: 2px solid #8b4513;
   border-radius: 10px;
@@ -2393,7 +2486,22 @@ body {
   font-weight: bold;
 }
 
+.ataque-pv-coracoes {
+  gap: 4px;
+  min-height: 16px;
+  width: auto;
+}
+
+.ataque-pv-coracoes .pv-heart {
+  width: 24px;
+  height: 24px;
+}
+
 .ataque-contra-morte {
+  position: relative;
+  z-index: 2;
+  width: calc(100% + 32px);
+  margin-left: -32px;
   border: 2px solid #8b4513;
   border-radius: 10px;
   background: #fff5e6;
@@ -2463,22 +2571,26 @@ body {
   gap: 8px;
 }
 
+.contra-morte-botoes .ataque-botao {
+  grid-column: 1 / -1;
+}
+
 .ataque-acoes {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   align-items: stretch;
-  justify-content: flex-end;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .ataque-acoes .ataque-botao {
-  min-width: 104px;
+  min-width: 0;
+  width: 100%;
   line-height: 1.15;
   white-space: normal;
 }
 
 .ataque-botao-resistencia {
-  margin-right: 12px;
+  margin-right: 0;
 }
 
 .ataque-botao {
@@ -3620,7 +3732,7 @@ body {
   justify-content: center;
   padding: 24px;
   background: rgba(33, 19, 10, 0.38);
-  z-index: 2200;
+  z-index: 11000;
 }
 
 .magia-slot-modal-overlay.ativo {
@@ -4495,6 +4607,13 @@ body {
   color: #6f3610;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+}
+
+.salva-guarda-modal-rodada {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .ataque-modal-rodada strong {
@@ -5536,7 +5655,7 @@ body {
     font-size: 12px;
   }
 
-  .combate-condicao-caixa input {
+  .combate-condicao-caixa textarea {
     max-width: none;
   }
 }
@@ -5810,7 +5929,7 @@ body {
     width: 100%;
   }
 
-  .combate-condicao-caixa input {
+  .combate-condicao-caixa textarea {
     max-width: none;
   }
 
@@ -7222,6 +7341,45 @@ body.tema-escuro
 
 body.tema-classico
   :where(
+    .ficha,
+    .campo,
+    .box-combate,
+    .caixa-pv,
+    .caixa-salvaguarda,
+    .caixa-pericias,
+    .caixa-passivas,
+    .config-modal,
+    .config-bloco,
+    .modal-base,
+    .ataque-modal,
+    .magia-modal,
+    .talento-modal,
+    .item-card,
+    .arma-card,
+    .armadura-card,
+    .consulta-caracteristica-modal,
+    #cardClasseContainer,
+    #cardClasseContainer .container,
+    .expiracao-modal,
+    .item-tipo-emoji,
+    .item-linha-inferior,
+    .talento-item,
+    .bonus-orbe,
+    .bonus-orbe-container,
+    .item-campo-icone,
+    .campo-com-sufixo,
+    .inventario-card,
+    .inventario-coluna,
+    .item-card.fechado,
+    .status-coluna-card,
+    .status-bloco
+  ) {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+body.tema-classico
+  :where(
     .config-modal,
     .modal-base,
     .ataque-modal,
@@ -7298,10 +7456,53 @@ body.tema-classico
     td,
     .config-tab,
     .tema-opcao,
-    .botao-dado
+    .botao-dado,
+    .bonus-orbe,
+    .bonus-orbe-container,
+    .talento-item,
+    .item-tipo-emoji,
+    .item-linha-inferior,
+    .item-campo-icone,
+    .campo-com-sufixo,
+    .item-preco-peso,
+    .item-descricao,
+    .item-emoji,
+    .item-proficiencia,
+    .item-campo input
   ) {
-  background: #ffffff !important;
+  background: transparent !important;
+  background-color: transparent !important;
   border-color: #000000 !important;
+  color: #000000 !important;
+}
+
+body.tema-classico .bonus-orbe,
+body.tema-classico .bonus-orbe input,
+body.tema-classico .bonus-orbe-container,
+body.tema-classico .talento-item,
+body.tema-classico .talento-botao-add,
+body.tema-classico .item-emoji,
+body.tema-classico .item-campo-icone,
+body.tema-classico .campo-com-sufixo,
+body.tema-classico .item-preco-peso,
+body.tema-classico .item-descricao,
+body.tema-classico .item-quantidade,
+body.tema-classico .item-campo input {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+body.tema-classico .bonus-orbe,
+body.tema-classico .bonus-orbe-container,
+body.tema-classico .talento-item,
+body.tema-classico .talento-botao-add,
+body.tema-classico .item-emoji,
+body.tema-classico .item-campo-icone,
+body.tema-classico .campo-com-sufixo,
+body.tema-classico .item-preco-peso,
+body.tema-classico .item-descricao,
+body.tema-classico .item-quantidade,
+body.tema-classico .item-campo input {
   color: #000000 !important;
 }
 
@@ -7481,17 +7682,6 @@ body.tema-classico :where(.tema-opcoes) {
   gap: 10px;
 }
 
-body.tema-classico :where(*, *::before, *::after) {
-  color: #000000 !important;
-  border-color: #000000 !important;
-  background: #ffffff !important;
-  background-color: #ffffff !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-  background-image: none !important;
-  accent-color: #000000 !important;
-}
-
 body.tema-classico .pv-heart-bg {
   fill: #ffffff !important;
   stroke: #000000 !important;
@@ -7549,19 +7739,13 @@ body.tema-classico
     .caixa-salvaguarda,
     .caixa-pericias,
     .caixa-passivas,
-    .config-modal,
     .config-bloco,
-    .modal-base,
-    .ataque-modal,
-    .magia-modal,
-    .talento-modal,
     .item-card,
     .arma-card,
     .armadura-card,
     .consulta-caracteristica-modal,
     #cardClasseContainer,
     #cardClasseContainer .container,
-    .expiracao-modal,
     .magia-card,
     .magia-topo,
     .magia-campo,
@@ -7574,7 +7758,6 @@ body.tema-classico
     .magia-concentracao-botao,
     .magia-vazia,
     .magia-item,
-    .magia-modal,
     .magia-slot-modal,
     .magia-card-detalhe,
     .magia-card-detalhe-header,
@@ -7586,11 +7769,52 @@ body.tema-classico
     .magia-grupo-slots,
     .magia-grupo-seta,
     .magia-grupo-header::before,
-    .magia-grupo-header::after
+    .magia-grupo-header::after,
+    .status-bloco,
+    .status-coluna-card,
+    .talentos-card,
+    .talento-secao,
+    .talento-lista,
+    .inventario-card,
+    .inventario-coluna,
+    .item-card.fechado,
+    .item-tipo-emoji,
+    .item-linha-inferior,
+    .item-campo-icone,
+    .campo-com-sufixo,
+    .bonus-orbe,
+    .bonus-orbe-container
   ) {
-  background: #ffffff !important;
+  background: transparent !important;
+  background-color: transparent !important;
   border-color: #000000 !important;
   color: #000000 !important;
+}
+
+body.tema-classico .box-combate,
+body.tema-classico .box-combate .shield,
+body.tema-classico .box-combate .d20,
+body.tema-classico .box-combate .d20 svg,
+body.tema-classico .box-combate .d20 input,
+body.tema-classico .box-combate .shield input,
+body.tema-classico .box-combate .d20 svg polygon,
+body.tema-classico .box-combate .campo-titulo {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+body.tema-classico .box-combate .d20 svg polygon {
+  fill: transparent !important;
+  stroke: #000000 !important;
+}
+
+body.tema-classico .shield {
+  background: transparent !important;
+}
+
+body.tema-classico .box-combate {
+  background: transparent !important;
+  border-color: #000000 !important;
 }
 
 body.tema-classico
@@ -8228,7 +8452,7 @@ body.tema-escuro
     .historia-diario-campo input,
     .historia-diario-campo textarea,
     .ataque-status-caixa input,
-    .combate-condicao-caixa input,
+    .combate-condicao-caixa textarea,
     .ataque-pv-valor,
     .contra-morte-dot,
     .equipados-grid input,
