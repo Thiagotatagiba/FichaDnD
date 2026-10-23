@@ -680,6 +680,60 @@
     </div>
 
     <div
+      id="importacaoModalOverlay"
+      class="xp-modal-overlay modal-overlay-base importacao-modal-overlay"
+      aria-hidden="true"
+      style="display: none;"
+    >
+      <div
+        class="xp-modal modal-base importacao-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="importacaoModalTitulo"
+        aria-describedby="importacaoModalMensagem"
+      >
+        <div class="modal-header-base">
+          <span class="importacao-modal-icone" aria-hidden="true">📜</span>
+          <h2 id="importacaoModalTitulo" class="config-modal-titulo" tabindex="-1">
+            Importação de ficha
+          </h2>
+        </div>
+        <div class="modal-body-base">
+          <p
+            id="importacaoModalMensagem"
+            class="importacao-modal-mensagem"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            Importando ficha...
+          </p>
+          <div
+            id="importacaoModalProgresso"
+            class="importacao-progresso"
+            role="progressbar"
+            aria-label="Progresso da importação"
+            aria-valuetext="Indeterminado"
+          >
+            <div class="importacao-progresso-trilho" aria-hidden="true">
+              <div class="importacao-progresso-animacao"></div>
+            </div>
+          </div>
+          <div class="ataque-modal-acoes importacao-modal-acoes">
+            <button
+              type="button"
+              class="ataque-botao"
+              id="importacaoModalContinuar"
+              hidden
+            >
+              Continuar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
       id="modalVidaAtualizarOverlay"
       class="modal-overlay-base"
       aria-hidden="true"
@@ -965,7 +1019,7 @@
       <!-- BOTÕES -->
       <div class="acoes">
         <button type="button" onclick="salvarFicha()">💾 Salvar</button>
-        <button type="button" onclick="importarFicha()">📤 Importar</button>
+        <button id="btnImportarFicha" type="button" onclick="importarFicha()">📤 Importar</button>
         <button id="configBtn" type="button">⚙️</button>
         <input type="file" id="fileInput" hidden />
       </div>
@@ -4106,16 +4160,17 @@
         if (!textoImportado) return;
 
         try {
-          const dados = JSON.parse(textoImportado);
-
-          if (typeof aplicarDadosFicha === "function") {
-            aplicarDadosFicha(dados);
-            localStorage.removeItem(CHAVE_IMPORTACAO_PENDENTE);
+          if (typeof importarFicha === "function") {
+            importarFicha(textoImportado, {
+              ignorarConfirmacao: true,
+              aoFinalizar: () =>
+                localStorage.removeItem(CHAVE_IMPORTACAO_PENDENTE),
+            });
             return;
           }
 
           console.warn(
-            "aplicarDadosFicha ainda não disponível ao processar importação pendente.",
+            "importarFicha ainda não disponível ao processar importação pendente.",
           );
         } catch (erro) {
           console.error("Erro ao aplicar ficha importada pendente:", erro);

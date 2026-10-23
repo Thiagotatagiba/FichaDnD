@@ -299,8 +299,6 @@ function importarJSONNoCard(conteudoJSON, origem = "JSON", classe = "") {
   document.getElementById("tituloClasse").textContent =
     data.nome || classe || "Classe";
   document.getElementById("nomeSubclasse").textContent = "";
-  const selectSubclasse = document.getElementById("selectSubclasse");
-  if (selectSubclasse) selectSubclasse.value = "";
   montarTabela();
   carregarSubclasses();
 
@@ -449,10 +447,15 @@ function carregarSubclasses() {
   const select = document.getElementById("selectSubclasse");
   if (!select || !dadosClasse) return;
 
+  const subclasseSelecionada = select.value;
   select.innerHTML = `<option value="">Subclasse</option>`;
 
   for (let nome in dadosClasse.subclasses || {}) {
     select.innerHTML += `<option value="${nome}">${nome}</option>`;
+  }
+
+  if ([...select.options].some((opcao) => opcao.value === subclasseSelecionada)) {
+    select.value = subclasseSelecionada;
   }
 }
 

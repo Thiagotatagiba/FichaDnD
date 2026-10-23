@@ -264,6 +264,97 @@ function marcarFichaComoSalva() {
   ultimoEstadoSalvo = JSON.stringify(coletarDadosFicha());
 }
 
+function atualizarCampoAutomaticoFicha(id, valor) {
+  const campo = document.getElementById(id);
+  if (!campo || typeof ultimoEstadoSalvo !== "string") return;
+
+  let estadoSalvo;
+  try {
+    estadoSalvo = JSON.parse(ultimoEstadoSalvo);
+  } catch (erro) {
+    return;
+  }
+
+  const estadoAntes = coletarDadosFicha();
+  if (
+    Object.prototype.hasOwnProperty.call(estadoSalvo, id) &&
+    JSON.stringify(estadoAntes[id]) !== JSON.stringify(estadoSalvo[id])
+  ) {
+    return;
+  }
+
+  campo.value = valor;
+  const estadoDepois = coletarDadosFicha();
+  const camposRelacionados = {
+    caracteristicaClasseSubclasse: ["caracteristicaClasseSubdominio"],
+    selectSubclasse: [
+      "caracteristicaClasseSubclasse",
+      "caracteristicaClasseSubdominio",
+    ],
+  };
+  const camposAtualizados = new Set([
+    id,
+    ...(camposRelacionados[id] || []),
+  ]);
+  let referenciaAtualizada = false;
+
+  Object.keys(estadoDepois).forEach((chave) => {
+    if (
+      camposAtualizados.has(chave) &&
+      Object.prototype.hasOwnProperty.call(estadoSalvo, chave) &&
+      JSON.stringify(estadoAntes[chave]) === JSON.stringify(estadoSalvo[chave]) &&
+      JSON.stringify(estadoAntes[chave]) !== JSON.stringify(estadoDepois[chave])
+    ) {
+      estadoSalvo[chave] = estadoDepois[chave];
+      referenciaAtualizada = true;
+    }
+  });
+
+  if (referenciaAtualizada) ultimoEstadoSalvo = JSON.stringify(estadoSalvo);
+}
+window.atualizarCampoAutomaticoFicha = atualizarCampoAutomaticoFicha;
+
+let houveInteracaoDuranteInicializacaoFicha = false;
+const registrarInteracaoDuranteInicializacaoFicha = () => {
+  houveInteracaoDuranteInicializacaoFicha = true;
+};
+["input", "change", "click"].forEach((tipoEvento) =>
+  document.addEventListener(
+    tipoEvento,
+    registrarInteracaoDuranteInicializacaoFicha,
+    true,
+  ),
+);
+
+function finalizarInicializacaoEstadoFicha() {
+  const atualizarReferenciaInicial = () => {
+    if (!houveInteracaoDuranteInicializacaoFicha) marcarFichaComoSalva();
+    ["input", "change", "click"].forEach((tipoEvento) =>
+      document.removeEventListener(
+        tipoEvento,
+        registrarInteracaoDuranteInicializacaoFicha,
+        true,
+      ),
+    );
+  };
+
+  if (typeof requestAnimationFrame === "function") {
+    requestAnimationFrame(atualizarReferenciaInicial);
+  } else {
+    setTimeout(atualizarReferenciaInicial, 0);
+  }
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    finalizarInicializacaoEstadoFicha,
+    { once: true },
+  );
+} else {
+  finalizarInicializacaoEstadoFicha();
+}
+
 function fichaFoiAlterada() {
   return JSON.stringify(coletarDadosFicha()) !== ultimoEstadoSalvo;
 }
@@ -314,6 +405,253 @@ function salvarFicha() {
 
 /* IMPORTAR Ficha*/
 
+let estadoModalImportacao = "fechado";
+let focoAnteriorModalImportacao = null;
+let fichaInerteAnteriorModalImportacao = false;
+let valorAriaBusyAnteriorModalImportacao = null;
+let inicioModalImportacao = 0;
+const TEMPO_MINIMO_VISIVEL_MODAL_IMPORTACAO_MS = 350;
+
+function obterElementosModalImportacao() {
+  return {
+    overlay: document.getElementById("importacaoModalOverlay"),
+    titulo: document.getElementById("importacaoModalTitulo"),
+    mensagem: document.getElementById("importacaoModalMensagem"),
+    progresso: document.getElementById("importacaoModalProgresso"),
+    botao: document.getElementById("importacaoModalContinuar"),
+  };
+}
+
+function abrirModalImportacao() {
+  const { overlay, titulo, mensagem, progresso, botao } =
+    obterElementosModalImportacao();
+  if (!overlay || !titulo || !mensagem || !progresso || !botao) {
+    throw new Error("A interface do modal de importação não está disponível.");
+  }
+
+  focoAnteriorModalImportacao = document.activeElement;
+  const areaFicha = document.querySelector(".ficha");
+  fichaInerteAnteriorModalImportacao = areaFicha?.inert ?? false;
+  valorAriaBusyAnteriorModalImportacao = areaFicha?.getAttribute("aria-busy");
+  if (areaFicha) {
+    areaFicha.inert = true;
+    areaFicha.setAttribute("aria-busy", "true");
+  }
+
+  estadoModalImportacao = "processando";
+  inicioModalImportacao = Date.now();
+  mensagem.textContent = "Importando ficha...";
+  mensagem.setAttribute("role", "status");
+  mensagem.setAttribute("aria-live", "polite");
+  progresso.hidden = false;
+  botao.hidden = true;
+  botao.textContent = "Continuar";
+  overlay.dataset.estado = estadoModalImportacao;
+  overlay.style.display = "flex";
+  overlay.classList.add("ativo");
+  overlay.setAttribute("aria-hidden", "false");
+  botao.addEventListener("click", fecharModalImportacao);
+  titulo.focus();
+  document.addEventListener("keydown", tratarTeclasModalImportacao);
+}
+
+function tratarTeclasModalImportacao(evento) {
+  if (estadoModalImportacao === "fechado") return;
+  evento.stopImmediatePropagation();
+
+  if (evento.key === "Escape") {
+    evento.preventDefault();
+    if (estadoModalImportacao !== "processando") fecharModalImportacao();
+    return;
+  }
+
+  if (evento.key !== "Tab") return;
+  const { overlay, titulo, botao } = obterElementosModalImportacao();
+  if (!overlay) return;
+
+  evento.preventDefault();
+  if (estadoModalImportacao === "processando" || botao?.hidden) {
+    titulo?.focus();
+  } else {
+    botao.focus();
+  }
+}
+
+function mostrarResultadoImportacao(tipo, mensagemTexto) {
+  const { overlay, mensagem, progresso, botao } =
+    obterElementosModalImportacao();
+  if (!overlay || !mensagem || !progresso || !botao) return;
+
+  estadoModalImportacao = tipo;
+  overlay.dataset.estado = tipo;
+  mensagem.textContent = mensagemTexto;
+  mensagem.setAttribute("role", tipo === "erro" ? "alert" : "status");
+  mensagem.setAttribute("aria-live", tipo === "erro" ? "assertive" : "polite");
+  progresso.hidden = true;
+  botao.textContent = tipo === "sucesso" ? "Continuar" : "Fechar";
+  botao.hidden = false;
+  botao.focus();
+}
+
+function fecharModalImportacao() {
+  if (estadoModalImportacao === "processando") return;
+
+  const { overlay } = obterElementosModalImportacao();
+  if (!overlay) return;
+
+  overlay.classList.remove("ativo");
+  overlay.style.display = "none";
+  overlay.setAttribute("aria-hidden", "true");
+  delete overlay.dataset.estado;
+  document.removeEventListener("keydown", tratarTeclasModalImportacao);
+  obterElementosModalImportacao().botao?.removeEventListener(
+    "click",
+    fecharModalImportacao,
+  );
+
+  const areaFicha = document.querySelector(".ficha");
+  if (areaFicha) {
+    areaFicha.inert = fichaInerteAnteriorModalImportacao;
+    if (valorAriaBusyAnteriorModalImportacao === null) {
+      areaFicha.removeAttribute("aria-busy");
+    } else {
+      areaFicha.setAttribute("aria-busy", valorAriaBusyAnteriorModalImportacao);
+    }
+  }
+
+  estadoModalImportacao = "fechado";
+  const botaoImportar = document.getElementById("btnImportarFicha");
+  if (botaoImportar?.isConnected && !botaoImportar.disabled) {
+    botaoImportar.focus();
+  } else if (focoAnteriorModalImportacao?.isConnected) {
+    focoAnteriorModalImportacao.focus();
+  }
+  focoAnteriorModalImportacao = null;
+}
+
+function aguardarRenderizacaoModalImportacao() {
+  return new Promise((resolver) => {
+    if (typeof requestAnimationFrame !== "function") {
+      setTimeout(resolver, 0);
+      return;
+    }
+
+    requestAnimationFrame(() => requestAnimationFrame(resolver));
+  });
+}
+
+function aguardarTempoMinimoModalImportacao() {
+  const tempoDecorrido = Date.now() - inicioModalImportacao;
+  const tempoRestante = Math.max(
+    0,
+    TEMPO_MINIMO_VISIVEL_MODAL_IMPORTACAO_MS - tempoDecorrido,
+  );
+  if (tempoRestante === 0) return Promise.resolve();
+  return new Promise((resolver) => setTimeout(resolver, tempoRestante));
+}
+
+function validarEstruturaImportacao(dados) {
+  // A importação mapeia propriedades de um objeto JSON para campos da ficha.
+  if (
+    !dados ||
+    typeof dados !== "object" ||
+    Array.isArray(dados)
+  ) {
+    const erro = new Error(
+      "O JSON selecionado não contém um objeto de ficha no nível principal.",
+    );
+    erro.code = "INVALID_CHARACTER_SHEET_ROOT";
+    throw erro;
+  }
+
+  // As coleções são opcionais em fichas antigas; quando presentes, o importador
+  // remove os cards atuais e acessa propriedades de cada item antes de recriá-los.
+  ["armas", "armaduras", "escudos", "outros"].forEach((campo) => {
+    if (
+      Object.prototype.hasOwnProperty.call(dados, campo) &&
+      !Array.isArray(dados[campo])
+    ) {
+      const erro = new Error(
+        `O campo "${campo}" é incompatível: era esperada uma lista de equipamentos.`,
+      );
+      erro.code = "INVALID_CHARACTER_SHEET_COLLECTION";
+      throw erro;
+    }
+
+    if (Array.isArray(dados[campo])) {
+      const indiceInvalido = dados[campo].findIndex(
+        (item) => !item || typeof item !== "object" || Array.isArray(item),
+      );
+      if (indiceInvalido !== -1) {
+        const erro = new Error(
+          `O item ${indiceInvalido + 1} do campo "${campo}" não é um objeto de equipamento válido.`,
+        );
+        erro.code = "INVALID_CHARACTER_SHEET_COLLECTION_ITEM";
+        throw erro;
+      }
+    }
+  });
+}
+
+async function processarImportacao(conteudo, aoFinalizar) {
+  let resultado;
+  try {
+    await aguardarRenderizacaoModalImportacao();
+
+    let dados;
+    try {
+      dados = typeof conteudo === "string" ? JSON.parse(conteudo) : conteudo;
+    } catch (erro) {
+      const erroJson = new Error(
+        "O arquivo selecionado não contém JSON válido. Confira o arquivo e tente novamente.",
+      );
+      erroJson.code = "INVALID_CHARACTER_SHEET_JSON";
+      throw erroJson;
+    }
+
+    validarEstruturaImportacao(dados);
+    if (typeof aplicarDadosFicha !== "function") {
+      const erro = new Error("A função de aplicação da ficha não está disponível.");
+      erro.code = "CHARACTER_SHEET_APPLIER_UNAVAILABLE";
+      throw erro;
+    }
+
+    // aplicarDadosFicha normaliza e valida slots legados antes de tocar no estado/UI.
+    aplicarDadosFicha(dados);
+    resultado = {
+      tipo: "sucesso",
+      mensagem: "Ficha importada com sucesso!",
+    };
+  } catch (erro) {
+    console.error("Erro durante a importação da ficha:", erro);
+    let mensagem = erro?.message || "Ocorreu um erro ao importar a ficha.";
+    if (
+      erro?.code === "INVALID_LEGACY_MAGIC_SLOTS" ||
+      erro?.code === "INVALID_CHARACTER_SHEET_ROOT" ||
+      erro?.code === "INVALID_CHARACTER_SHEET_COLLECTION" ||
+      erro?.code === "INVALID_CHARACTER_SHEET_COLLECTION_ITEM" ||
+      erro?.code === "INVALID_CHARACTER_SHEET_JSON" ||
+      erro?.code === "CHARACTER_SHEET_APPLIER_UNAVAILABLE"
+    ) {
+      // Essas rejeições ocorrem antes de a ficha ser aplicada.
+    } else {
+      mensagem =
+        "Ocorreu uma falha durante a aplicação da ficha. A atualização pode ter sido parcial; confira os dados antes de continuar.";
+    }
+    resultado = { tipo: "erro", mensagem };
+  } finally {
+    await aguardarTempoMinimoModalImportacao();
+    if (resultado) mostrarResultadoImportacao(resultado.tipo, resultado.mensagem);
+    if (typeof aoFinalizar === "function") {
+      try {
+        aoFinalizar();
+      } catch (erro) {
+        console.error("Erro ao finalizar importação pendente:", erro);
+      }
+    }
+  }
+}
+
 function confirmarAlteracoesAntesDeImportar() {
   if (!fichaFoiAlterada()) return true;
 
@@ -322,29 +660,23 @@ function confirmarAlteracoesAntesDeImportar() {
   );
 }
 
-function importarFicha(json) {
+function importarFicha(json, opcoes = {}) {
   window.importarFicha = importarFicha;
 
-  if (!confirmarAlteracoesAntesDeImportar()) return;
+  if (!opcoes.ignorarConfirmacao && !confirmarAlteracoesAntesDeImportar()) {
+    return false;
+  }
 
-  // Se recebeu JSON diretamente, aplica imediatamente
+  // Se recebeu JSON diretamente, usa o mesmo fluxo visual e de validação.
   if (json !== undefined && json !== null) {
     try {
-      const dados = typeof json === "string" ? JSON.parse(json) : json;
-      if (typeof aplicarDadosFicha === "function") {
-        aplicarDadosFicha(dados);
-      } else {
-        console.warn("aplicarDadosFicha não encontrada; dados lidos:", dados);
-      }
+      abrirModalImportacao();
+      processarImportacao(json, opcoes.aoFinalizar);
     } catch (err) {
-      console.error("importarFicha: JSON inválido", err);
-      alert(
-        err?.code === "INVALID_LEGACY_MAGIC_SLOTS"
-          ? `Erro ao importar: ${err.message}`
-          : "Erro: JSON inválido.",
-      );
+      console.error("Não foi possível abrir o modal de importação:", err);
+      alert("Não foi possível iniciar a importação da ficha.");
     }
-    return;
+    return true;
   }
 
   // Cria input e label ocultos se não existirem
@@ -369,39 +701,38 @@ function importarFicha(json) {
     fileInput.addEventListener("change", function (evt) {
       const file = evt.target.files && evt.target.files[0];
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        try {
-          const dados = JSON.parse(e.target.result);
-          if (typeof aplicarDadosFicha === "function") {
-            aplicarDadosFicha(dados);
-          } else {
-            console.warn(
-              "aplicarDadosFicha não definida; arquivo lido:",
-              dados,
-            );
-          }
-        } catch (err) {
-          console.error("importarFicha: erro ao parsear JSON do arquivo", err);
-          alert(
-            err?.code === "INVALID_LEGACY_MAGIC_SLOTS"
-              ? `Erro ao importar: ${err.message}`
-              : "Erro ao importar: arquivo inválido. Selecione um arquivo .json exportado pela ficha.",
-          );
-        } finally {
-          try {
+      try {
+        abrirModalImportacao();
+        const reader = new FileReader();
+        reader.onload = function (evento) {
+          processarImportacao(evento.target.result, () => {
             fileInput.value = "";
-          } catch (ignore) {}
-        }
-      };
-      reader.onerror = function (e) {
-        console.error("importarFicha: FileReader error", e);
-        alert("Erro ao ler o arquivo.");
-        try {
+          });
+        };
+        reader.onerror = function () {
+          aguardarTempoMinimoModalImportacao().then(() =>
+            mostrarResultadoImportacao(
+              "erro",
+              "Não foi possível ler o arquivo selecionado. Tente escolher o arquivo novamente.",
+            ),
+          );
           fileInput.value = "";
-        } catch (ignore) {}
-      };
-      reader.readAsText(file, "utf-8");
+          if (typeof opcoes.aoFinalizar === "function") opcoes.aoFinalizar();
+        };
+        reader.readAsText(file, "utf-8");
+      } catch (err) {
+        console.error("Não foi possível ler o arquivo de ficha:", err);
+        mostrarResultadoImportacao(
+          "erro",
+          "Não foi possível iniciar a leitura do arquivo selecionado.",
+        );
+        fileInput.value = "";
+        if (typeof opcoes.aoFinalizar === "function") opcoes.aoFinalizar();
+      }
+    });
+
+    fileInput.addEventListener("cancel", () => {
+      fileInput.value = "";
     });
   }
 
@@ -412,5 +743,6 @@ function importarFicha(json) {
   } else {
     fileInput.click();
   }
+  return true;
 }
 window.importarFicha = importarFicha;

@@ -387,7 +387,6 @@ function aplicarDadosFicha(dados) {
   normalizarPontosDeVida();
   normalizarDadosVida();
   atualizarPesoAtualInventario();
-  marcarFichaComoSalva();
   atualizarDadosVidaTotal();
   atualizarDadoVida();
 
@@ -401,4 +400,5 @@ function aplicarDadosFicha(dados) {
   });
 
   atualizarFicha();
+  marcarFichaComoSalva();
 }

@@ -117,9 +117,9 @@
           campoClasse.value,
         );
         if (arquivoClasse && (forcar || !select.value)) {
-          select.value = arquivoClasse;
+          definirCampoCaracteristicaAutomatico(select.id, arquivoClasse);
         } else if (forcar && !arquivoClasse) {
-          select.value = "";
+          definirCampoCaracteristicaAutomatico(select.id, "");
         }
 
         return select.value || arquivoClasse || "";
@@ -145,16 +145,26 @@
       function definirSubclasseCaracteristica(valor) {
         const subclasse = String(valor || "");
         const campo = document.getElementById("caracteristicaClasseSubclasse");
-        if (campo) campo.value = subclasse;
+        if (campo) definirCampoCaracteristicaAutomatico(campo.id, subclasse);
 
         const select = document.getElementById("selectSubclasse");
         if (select && subclasse) {
-          select.value = subclasse;
+          definirCampoCaracteristicaAutomatico(select.id, subclasse);
         }
 
         if (typeof subclasseAtual !== "undefined") {
           subclasseAtual = subclasse;
         }
+      }
+
+      function definirCampoCaracteristicaAutomatico(id, valor) {
+        if (typeof window.atualizarCampoAutomaticoFicha === "function") {
+          window.atualizarCampoAutomaticoFicha(id, valor);
+          return;
+        }
+
+        const campo = document.getElementById(id);
+        if (campo) campo.value = valor;
       }
 
       function nivelCaracteristicaValor(valor) {
@@ -449,8 +459,8 @@
 
         if (!classe) {
           console.log("[CardLoad] Classe vazia, limpando");
-          document.getElementById("classeData").value = "";
-          document.getElementById("subclasseData").value = "";
+          definirCampoCaracteristicaAutomatico("classeData", "");
+          definirCampoCaracteristicaAutomatico("subclasseData", "");
           definirSubclasseCaracteristica("");
           dadosClasse = null;
           atualizarAtalhoConsultaCaracteristicaClasse();
@@ -481,11 +491,16 @@
             "caracteristicaClasseArquivo",
           );
           if (selectArquivo && arquivoSelecionado) {
-            selectArquivo.value = arquivoSelecionado;
+            definirCampoCaracteristicaAutomatico(
+              selectArquivo.id,
+              arquivoSelecionado,
+            );
           }
 
-          document.getElementById("classeData").value =
-            JSON.stringify(classeData);
+          definirCampoCaracteristicaAutomatico(
+            "classeData",
+            JSON.stringify(classeData),
+          );
           enviarClasseParaCard(classeReferencia || classe, classeData);
 
           avisarCaracteristicaClasse(
@@ -523,10 +538,12 @@
             nivel,
           );
           if (subclasseEncontrada && featuresSub.length) {
-            document.getElementById("subclasseData").value =
-              JSON.stringify(featuresSub);
+            definirCampoCaracteristicaAutomatico(
+              "subclasseData",
+              JSON.stringify(featuresSub),
+            );
           } else {
-            document.getElementById("subclasseData").value = "";
+            definirCampoCaracteristicaAutomatico("subclasseData", "");
           }
         } catch (error) {
           console.error("[CardError] Erro carregando características:", error);
@@ -535,8 +552,8 @@
             `Não encontrei característica para "${classe}". ${mensagemImportacaoManualCaracteristica()}`,
             "erro",
           );
-          document.getElementById("classeData").value = "";
-          document.getElementById("subclasseData").value = "";
+          definirCampoCaracteristicaAutomatico("classeData", "");
+          definirCampoCaracteristicaAutomatico("subclasseData", "");
           definirSubclasseCaracteristica("");
           dadosClasse = null;
           atualizarAtalhoConsultaCaracteristicaClasse();
