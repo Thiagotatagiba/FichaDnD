@@ -29,6 +29,25 @@ Resumo: levantamento inicial de problemas detectados por busca de marcadores (`T
 
 **Limitação:** os cenários funcionais foram executados manualmente no navegador; não foi executada uma suíte automatizada geral. O roadmap centraliza estado e próximas ações em [`../ROADMAP.md`](../ROADMAP.md).
 
+## Transição das etapas do modal de ataque — correção aplicada
+
+**Data:** 2026-10-23
+**Estado:** Investigado — Concluído; Implementado — Concluído; Validado — estrutura inicial e transição visual confirmadas pelo usuário no Chrome; regressões adicionais pendentes.
+
+### Diagnóstico e correção
+
+- `alternarEtapaModalAtaque()` procura `modalAtaqueEtapaDado` e `modalAtaqueEtapaDano`; a primeira etapa não tinha contêiner com o ID esperado no HTML.
+- A primeira alteração estrutural deixou fechamentos `div` na posição incorreta: a etapa de dano ficou fora de `.ataque-modal-corpo` e do contêiner visual `.ataque-modal`.
+- Em `ficha/Ficha_DnD_-_Tatagiba_1.0.html`, a correção final mantém `modalAtaqueEtapaDado` em torno dos campos, opções, botões e histórico, e mantém as duas etapas dentro de `.ataque-modal-corpo`. O corpo, o modal e o overlay fecham após a etapa de dano.
+- Não houve alteração em JavaScript, CSS, IDs internos, atributos `data-*`, handlers ou regras de combate.
+
+### Validação registrada
+
+- **Chrome — confirmação manual do usuário:** a transição está funcionando visualmente após a correção final.
+- **DOM no estado inicial:** uma ocorrência de `modalAtaqueEtapaDado` dentro de `.ataque-modal-corpo`, visível; uma ocorrência de `modalAtaqueEtapaDano` dentro de `.ataque-modal-corpo`, oculta; uma ocorrência de `modalAtaqueOverlay`; um `.ataque-modal` dentro do overlay; e um `.ataque-modal-corpo` dentro do overlay.
+- **Verificação estática anterior:** IDs únicos, aninhamento válido e `git diff --check` aprovado.
+- **Ainda não confirmados individualmente:** fluxos de Fracasso, Cancelar ataque, Registrar dano e abrir um segundo ataque. Esta validação não cobre toda a matriz de compatibilidade da timeline.
+
 ## Importação/exportação JSON — round-trip executado
 
 **Data:** 2026-10-22
@@ -46,6 +65,23 @@ Resumo: levantamento inicial de problemas detectados por busca de marcadores (`T
 
 - **Thrain — Reprovado parcialmente:** importação, exportação do Blob e reimportação executadas. Identidade, classe guerreiro, nível 6, subclasse, XP, atributos, PV, magias em texto, talentos estruturados e coleções de equipamentos foram preservados; contagens: 8 armas, 5 armaduras, 3 escudos e 5 outros. Os campos originais `equipamentoArmas`, `equipamentoArmadura` e `equipamentoOutros` não aparecem no JSON exportado. Os arrays estruturados de equipamentos foram mantidos, mas não está confirmado se substituem semanticamente esses textos narrativos. Campos `classeData`/`subclasseData` vazios foram preenchidos a partir dos dados de classe durante o carregamento; diferença derivada observada, não classificada como perda.
 - **Waldo — Reprovado:** identidade, classe clérigo, nível 1, subclasse, XP, atributos, PV, dados de vida, atributo de conjuração, textos JSON das magias, talentos/configuração e coleções de equipamentos foram preservados; contagens: 2 armas, 1 armadura, 1 escudo e 7 outros. Divergência funcional: o original registra `magia1Total=2` e `magia1Usado=0`, equivalentes a 2 espaços restantes; após importar, exportar e reimportar, `magia1Rest=0`. Os níveis 2–9 tinham total 0 e permaneceram em 0. A validação do recurso de magia nível 1 falhou.
+
+### Comparação posterior dos campos narrativos de Thrain — 2026-10-23
+
+Esta comparação complementa o resultado anterior e não o substitui: o round-trip de 2026-10-22 registrou que os três campos não apareciam no export daquele teste.
+
+- **Arquivos comparados:** original `Thrain_Martelferro_Tatagiba_20260424.json`; cópia `%TEMP%\Thrain_validacao.json`; export `Thrain_Martelferro_Tatagiba_20261023 (2).json` encontrado em Downloads.
+- **Integridade da cópia:** SHA-256 do original e da cópia coincidem: `76C98818E181D2D67B1C57330EAE0B514C0DBD475A3E177A120B393B2899A40A`.
+- **Metadados observados:** a cópia foi criada em 2026-10-23 às 15:56:53 e o export em 2026-10-23 às 15:58:50. A sequência é compatível com o teste informado, mas não identifica qual arquivo foi selecionado no diálogo de importação.
+- **Método informado:** comparação textual ordinal (`StringComparison.Ordinal`). Os três campos estão presentes e cada valor no export é exatamente igual ao valor do original e da cópia.
+
+| Campo | Valor comparado | Original = cópia = export |
+|---|---|---|
+| `equipamentoArmas` | Possui arsenal variado: espada longa e maça de guerra para combate corpo a corpo, arco longo e besta leve para distância, alabarda para alcance, espada curta para dupla empunhadura, adaga e lança para arremesso. | Sim |
+| `equipamentoArmadura` | Coleciona armaduras de todos os tipos: couro e couro batido para mobilidade, cota de escamas e meia-armadura para proteção balanceada, e armadura de placas para confrontos diretos. | Sim |
+| `equipamentoOutros` | Leva poções de cura, munições para armas de projétil, rações de viagem e kit de escalada. | Sim |
+
+**Conclusão:** comparação dos campos aprovada. A cópia foi confirmada como idêntica ao original pelo hash. Os arquivos disponíveis e seus horários são compatíveis com a sequência de cópia e exportação, mas não registram qual arquivo foi selecionado na interface; portanto, não comprovam por si só que o export resulte da importação controlada de `%TEMP%\Thrain_validacao.json`. O round-trip completo permanece pendente até esse vínculo ser confirmado. Nenhum JSON foi alterado durante a comparação.
 
 ### Campos e normalizações comparados
 
