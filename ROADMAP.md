@@ -98,3 +98,84 @@ js/
 ## Observações
 
 Este roadmap considera o projeto como uma aplicação estática em evolução, com foco na clareza de arquitetura e na melhoria incremental. A refatoração deve priorizar compatibilidade e risco baixo antes de introduzir novos frameworks ou estruturas complexas.
+
+## Acompanhamento operacional
+
+Este acompanhamento complementa as fases de longo prazo acima; não substitui nem declara concluída nenhuma fase ou entregável. O `ROADMAP.md` é a referência geral de estado. Diagnósticos detalhados de bugs ficam em `docs/BUG_REPORT.md`, e regras de trabalho ficam em `docs/CONTRIBUICAO.md`.
+
+### Estados
+
+- **Pendente:** ainda não iniciado.
+- **Em análise:** investigação em andamento ou evidências insuficientes.
+- **Em andamento:** implementação iniciada, mas ainda não concluída e validada.
+- **Concluído:** implementação e critérios de validação registrados como atendidos.
+- **Bloqueado:** impedimento conhecido que exige resolução antes de continuar.
+
+Diagnóstico, implementação e validação são etapas distintas. Um diagnóstico ou uma alteração de código, isoladamente, não conclui uma tarefa.
+
+### Estado atual do projeto
+
+- **Documentação e arquitetura:** existem documentos de arquitetura, decisões, contribuição, bugs/correções e listas de tarefas. O escopo e a atualidade de todos os itens desses documentos ainda não foram auditados em conjunto.
+- **Código e funcionalidades:** a aplicação estática e seus módulos existentes permanecem como base do projeto. Não foi feita nesta atualização uma auditoria geral das funcionalidades nem das cinco fases.
+- **Testes:** além dos cenários de XP/Level Up, o round-trip de Thrain e Waldo foi executado e a conversão de espaços legados foi corrigida e validada em 2026-10-23. A perda de campos narrativos em Thrain e o download nativo ainda não foram resolvidos/validados; detalhes em `docs/BUG_REPORT.md`. Não foi executada uma suíte automatizada geral.
+- **Fases do roadmap:** nenhuma fase ou entregável é declarado concluído por este acompanhamento. A tarefa atual está relacionada à Fase 3 — Qualidade e confiabilidade, sem implicar que a fase esteja concluída.
+
+### Tarefa concluída — fluxo dos modais de XP e Level Up
+
+**Estado geral:** Concluído para o escopo pontual abaixo. A Fase 3 continua em andamento como direção de longo prazo; esta tarefa não conclui a fase.
+
+- **Objetivo:** corrigir o cancelamento da rolagem de PV e a semântica/estado de acessibilidade dos modais, preservando foco e animação existentes.
+- **Investigado — Concluído:** identificados o caminho de animação de XP, a chamada de `processarLevelUp()`, o cancelamento por Escape e os mecanismos de foco. O diagnóstico detalhado está em `docs/BUG_REPORT.md`.
+- **Implementado — Concluído:** Escape agora é representado por `null` e interrompe o processamento sem alterar PV; `xpAddModal` atualiza `aria-hidden` na abertura/fechamento; o diálogo de Level Up tem `role`, `aria-modal` e `aria-labelledby`. A mitigação global de `aria-hidden` foi preservada por ainda ser usada em outros componentes.
+- **Arquivos de código alterados:** `js/data/racas-subclasses.js` e `ficha/Ficha_DnD_-_Tatagiba_1.0.html`. Os arquivos `css/xp-modal.css` e `css/base.css` foram pontos de partida, mas não precisaram de alteração.
+- **Validado — Concluído para os cenários listados:** adição de 50 XP sem subir de nível; adição de 250 XP seguida de rolagem 4 (PV 8 → 12, modificador +0); adição de 600 XP seguida de Escape (PV permaneceu 12); estado ARIA, foco inicial/restaurado e contenção de Tab nos modais. Não houve erros JavaScript nem mensagens relacionadas a `aria-hidden` nos cenários observados.
+- **Limite da validação:** os fluxos foram testados manualmente no navegador; não foi executada uma suíte automatizada geral. A ausência de aviso nos cenários testados não comprova sua ausência em todos os contextos.
+
+#### Critérios de conclusão e validação
+
+1. **Correção — Concluído:** Escape cancela sem aplicar modificador de Constituição ou alterar PV; rolagem numérica permanece normal. Verificado no navegador.
+2. **Acessibilidade — Concluído para os cenários testados:** atributos e estado de `aria-hidden`, foco inicial/restaurado e contenção de Tab conferidos. Nenhum aviso `aria-hidden` observado durante esses testes.
+3. **Regressão de XP — Concluído para os cenários testados:** ganho sem e com mudança de nível, animação da barra e atualização de XP/nível/PV conferidos.
+4. **Registro — Concluído:** arquivos, verificações e limites da validação registrados aqui e em `docs/BUG_REPORT.md`.
+
+#### Próximas tarefas priorizadas
+
+1. **Pendente — Decidir preservação de campos narrativos legados:** os campos `equipamentoArmas`, `equipamentoArmadura` e `equipamentoOutros` de Thrain não têm controles com esses IDs e não aparecem no export. Confirmar se são dados que devem ser mantidos ou conteúdo legado descartável antes de propor correção.
+2. **Pendente — Testar download nativo do navegador:** o botão Salvar gerou o Blob, mas o navegador de teste abriu um diálogo de arquivo em vez de disponibilizar o evento de download; a entrega nativa do arquivo não foi validada.
+
+### Tarefa de validação — round-trip de fichas (Fase 3)
+
+**Estado:** Investigado — Concluído; Implementado — Não aplicável (validação apenas); Validado — Executado, com reprovações registradas. Nenhum arquivo de código ou ficha original foi alterado nesta tarefa.
+
+- **Thrain:** campos centrais e coleções estruturadas passaram; três campos narrativos de equipamento presentes no original não apareceram no export. Preservação semântica desses textos precisa ser decidida.
+- **Waldo:** campos centrais, magias serializadas e coleções passaram; a conversão do espaço de magia nível 1 falhou (`total=2`, `usado=0`, `restante exportado/reimportado=0`, esperado `2`).
+- **Execução:** ambos os arquivos foram importados pelo fluxo da interface; o botão Salvar gerou o Blob e os exports temporários foram reimportados pela interface. Nenhum erro ou warning de aplicação foi observado nos fluxos finais.
+- **Limitação:** o download nativo não foi validado; o harness salvou o Blob em `%TEMP%`. Cópias e exports ficaram fora do repositório; hashes confirmam originais inalterados.
+- **Estado posterior:** a conversão de slots legados foi corrigida e validada na seção seguinte. Permanecem como pendências separadas a decisão sobre os campos narrativos de Thrain e o teste do download nativo. Detalhes em `docs/BUG_REPORT.md`.
+
+### Correção de espaços de magia legados (Fase 3)
+
+**Estado:** Investigado — Concluído; Implementado — Concluído; Validado — Concluído para os cenários descritos.
+
+- **Diagnóstico:** o importador preenchia a ficha com `magiaNRest=0` do HTML e ignorava `magiaNUsado`, pois o campo legado não tinha ID na UI. O módulo de magias prioriza `Rest` quando esse campo existe, de modo que o fallback de cálculo legado não era utilizado.
+- **Implementação:** `js/core/storage.js` converte níveis 1–9 somente quando `Rest` está ausente e o par legado `Total`/`Usado` contém inteiros decimais não negativos, seguros e consistentes. Espaços externos são aceitos; vazio, notação exponencial, frações e caracteres inesperados são inválidos. `Rest` atual tem precedência. Par parcial/inválido cancela a importação antes de alterar a ficha e apresenta erro; `js/modules/importacao.js` normaliza antes de ativar o bloqueio de Level Up.
+- **Validação:** Waldo legado resultou em 2 restantes para 2 totais e 0 usados; usos 0/1/2 em todos os nove níveis produziram 2/1/0; formato atual `Rest` foi preservado; exportação/reimportação conservou 2; entradas inválidas e pares incompletos cancelaram sem alterar a ficha; Thrain permaneceu com zero nos níveis 1–9.
+- **Arquivos alterados nesta correção:** `js/core/storage.js` e `js/modules/importacao.js`; os resultados detalhados estão em `docs/BUG_REPORT.md`.
+- **Limitações/pendências:** testes manuais no navegador; nenhuma suíte automatizada geral. A entrega de download nativo não foi testada. A preservação dos campos narrativos de equipamento de Thrain segue fora do escopo.
+
+### Histórico recente
+
+- **2026-10-22 — Registro do diagnóstico inicial:** localizado o roadmap oficial e os registros existentes; naquele momento, a investigação não modificou código nem executou testes, e a implementação/validação permaneciam pendentes. O estado posterior está registrado na entrada seguinte.
+- **2026-10-22 — Correção de XP/Level Up implementada e validada:** alterados `js/data/racas-subclasses.js` e `ficha/Ficha_DnD_-_Tatagiba_1.0.html`; cenários manuais no navegador passaram. Sem suíte automatizada geral. Detalhes e resultados em `docs/BUG_REPORT.md`.
+- **2026-10-22 — Round-trip de importação/exportação executado (Fase 3):** Thrain preservou os campos centrais e coleções estruturadas, mas três campos narrativos de equipamento não foram exportados. Waldo preservou os campos centrais, magias e equipamentos, mas seu espaço de magia nível 1 exportado/reimportado ficou em 0 apesar de 2 espaços totais e 0 usados. Validação geral reprovada; nenhuma correção de código feita. Originais preservados por hash; detalhes em `docs/BUG_REPORT.md`.
+- **2026-10-23 — Conversão de espaços legados corrigida e validada:** `js/core/storage.js` converte `magiaNUsado` em `magiaNRest` com validação e preserva formato atual. Casos de níveis 1–9, inválidos, Waldo round-trip e Thrain passaram conforme registrados em `docs/BUG_REPORT.md`.
+
+### Decisões e restrições de acompanhamento
+
+- Preservar as cinco fases, seus objetivos, entregáveis, estrutura-alvo, critérios de sucesso e observações; não inferir conclusão sem evidência.
+- Manter este arquivo como acompanhamento geral e usar os documentos existentes para seus escopos específicos, sem criar arquivos paralelos de tarefas.
+- Tratar os arquivos de código listados como pontos de partida, não como uma lista obrigatória de arquivos a modificar.
+- Preservar regras de D&D, estruturas de dados, IDs, atributos HTML e compatibilidade com fichas existentes, salvo evidência que justifique uma mudança.
+- Commits são manuais e ficam a cargo do responsável pelo projeto.
+
+**Última atualização:** 2026-10-23 — validação decimal estrita e cancelamento seguro de importação implementados e verificados; Fase 3 permanece em andamento.

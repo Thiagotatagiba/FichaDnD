@@ -543,7 +543,12 @@
     </div>
 
     <div id="levelUpModal" class="levelup-overlay modal-overlay-base">
-      <div class="levelup-box modal-base">
+      <div
+        class="levelup-box modal-base"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="levelUpTitulo"
+      >
         <h2 id="levelUpTitulo">🎉 LEVEL UP!</h2>
 
         <p id="levelUpFrase" class="frase-levelup"></p>

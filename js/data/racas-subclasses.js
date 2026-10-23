@@ -880,6 +880,7 @@ function abrirModalAdicionarXP() {
       btnCancel.removeAttribute("disabled");
       btnClose.disabled = false;
       btnClose.removeAttribute("disabled");
+      modal.setAttribute("aria-hidden", "false");
       modal.style.display = "flex";
       // small delay to ensure display applied before focusing
       setTimeout(() => {
@@ -936,6 +937,7 @@ function abrirModalAdicionarXP() {
     fecharModal = () => {
       limpar();
       modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
       resolve(null);
     };
 
@@ -969,6 +971,7 @@ function abrirModalAdicionarXP() {
           // mantém o glow por pouco tempo e fecha o modal
           setTimeout(() => progressFill.classList.remove("xp-glow"), 600);
           modal.style.display = "none";
+          modal.setAttribute("aria-hidden", "true");
           resolve(valor);
         }, 850);
       } else {
@@ -979,6 +982,7 @@ function abrirModalAdicionarXP() {
         setTimeout(() => {
           limpar();
           modal.style.display = "none";
+          modal.setAttribute("aria-hidden", "true");
           resolve(valor);
         }, 650);
       }
@@ -1042,10 +1046,10 @@ Bônus de Proficiência: +${bonusProf}
         return;
       if (e.key === "Escape") {
         e.preventDefault();
-        // try to close by disabling modal and resolving with default value 0
+        // Cancelar a rolagem não equivale a um resultado numérico.
         limparLevelUp();
         modal.style.display = "none";
-        resolve(0);
+        resolve(null);
         return;
       }
 
@@ -1255,6 +1259,8 @@ async function processarLevelUp(nivelAntigo, nivelNovo) {
       bonusProf,
       dadoVida: document.getElementById("dadosVidaTipo")?.value,
     });
+
+    if (ganhoHP === null) break;
 
     const hpMaxInput = document.getElementById("pvTotal");
     let hpAtual = Number(hpMaxInput.value) || 0;

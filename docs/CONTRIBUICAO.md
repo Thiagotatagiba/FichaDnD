@@ -6,11 +6,29 @@ Contribuições são bem-vindas para melhorias de regra, correções de bug, org
 
 ## Fluxo recomendado
 
-1. Crie uma branch para a alteração
-2. Faça a mudança com foco em uma funcionalidade ou correção
-3. Valide no navegador e confirme que não houve regressão
-4. Atualize ou crie documentação quando necessário
-5. Envie a alteração por pull request com descrição clara
+### Início da tarefa
+
+1. Consulte `ROADMAP.md` e os registros específicos pertinentes (por exemplo, `docs/BUG_REPORT.md` ou listas de tarefas) antes de propor alterações.
+2. Confira o estado real do repositório e investigue o código existente, identificando o menor escopo necessário. Não confie exclusivamente em anotações antigas.
+
+### Implementação e validação
+
+1. Trabalhe em etapas pequenas e verificáveis; evite refatorações amplas quando uma correção localizada for suficiente.
+2. Preserve regras de D&D, estruturas de dados, IDs, atributos HTML e compatibilidade com fichas existentes, salvo necessidade demonstrada.
+3. Diferencie **Investigado**, **Implementado** e **Validado**. Código escrito não significa validação concluída.
+4. Execute as verificações pertinentes e disponíveis. Registre apenas testes realmente executados, seus resultados e limitações; se não puder testar, explique o motivo e o próximo passo recomendado.
+
+### Encerramento obrigatório
+
+1. Revise as alterações e execute as verificações pertinentes antes de encerrar.
+2. Atualize `ROADMAP.md` após cada tarefa significativa: estado atual, fase relacionada, estado da tarefa, resumo das mudanças, próximas ações e pendências/critérios ainda não atendidos. Não marque uma fase inteira como concluída por causa de uma tarefa isolada.
+3. Atualize os documentos específicos existentes quando necessário, sem duplicar relatórios: `docs/BUG_REPORT.md` para diagnóstico/correção/validação de bugs; este guia somente quando as regras permanentes mudarem; documentos técnicos quando decisões ou arquitetura forem afetadas.
+4. Confira se a documentação corresponde ao código, revise o diff documental e verifique formatação. Se a tarefa ficar parcial ou bloqueada, registre o progresso, motivo e próximo passo.
+5. Informe os arquivos de código e documentação alterados, testes executados e resultados, limitações e pendências. Não realize commits automaticamente; os commits são manuais pelo responsável pelo projeto.
+
+## Trabalho em sessões assistidas por IA
+
+- Prefira soluções econômicas em tempo e uso de ferramentas de IA, mantendo o escopo da tarefa solicitado.
 
 ## Boas práticas
 

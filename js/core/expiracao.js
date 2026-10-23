@@ -1,5 +1,5 @@
 // ===== SISTEMA DE EXPIRAÇÃO =====
-const DATA_EXPIRACAO = new Date("2026-09-04T12:00:00");
+const DATA_EXPIRACAO = new Date("2026-12-04T12:00:00");
 console.log(
   "[Debug] Data de expiração:",
   DATA_EXPIRACAO.toLocaleString("pt-BR"),

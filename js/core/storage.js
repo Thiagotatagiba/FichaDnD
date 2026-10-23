@@ -42,6 +42,53 @@ function normalizarDadosImportacao(dadosOriginais) {
     }
   });
 
+  const parseContadorEspacoMagia = (valor) => {
+    if (typeof valor === "number") {
+      return Number.isSafeInteger(valor) && valor >= 0 ? valor : null;
+    }
+    if (typeof valor !== "string") return null;
+
+    const decimal = valor.trim();
+    if (!/^\d+$/.test(decimal)) return null;
+
+    const numero = Number(decimal);
+    return Number.isSafeInteger(numero) ? numero : null;
+  };
+
+  for (let nivel = 1; nivel <= 9; nivel++) {
+    const campoRest = `magia${nivel}Rest`;
+    const campoTotal = `magia${nivel}Total`;
+    const campoUsado = `magia${nivel}Usado`;
+    const possuiRest = Object.prototype.hasOwnProperty.call(dados, campoRest);
+    const possuiTotal = Object.prototype.hasOwnProperty.call(dados, campoTotal);
+    const possuiUsado = Object.prototype.hasOwnProperty.call(dados, campoUsado);
+
+    if (possuiRest || (!possuiTotal && !possuiUsado)) continue;
+
+    const total = parseContadorEspacoMagia(dados[campoTotal]);
+    const usado = parseContadorEspacoMagia(dados[campoUsado]);
+    let motivoInvalido = "";
+
+    if (!possuiTotal || !possuiUsado) {
+      motivoInvalido = "os campos Total e Usado precisam estar presentes";
+    } else if (total === null || usado === null) {
+      motivoInvalido =
+        "os contadores devem ser inteiros decimais não negativos";
+    } else if (usado > total) {
+      motivoInvalido = "Usado não pode exceder Total";
+    }
+
+    if (motivoInvalido) {
+      const erro = new Error(
+        `Espaços de magia do nível ${nivel} inválidos: ${motivoInvalido}. A importação foi cancelada.`,
+      );
+      erro.code = "INVALID_LEGACY_MAGIC_SLOTS";
+      throw erro;
+    }
+
+    dados[campoRest] = String(total - usado);
+  }
+
   const magiasPorNivel = dados.magiasPorNivel || dados.magias;
   if (magiasPorNivel && typeof magiasPorNivel === "object") {
     Object.entries(magiasPorNivel).forEach(([nivel, magias]) => {
@@ -283,7 +330,11 @@ function importarFicha(json) {
       }
     } catch (err) {
       console.error("importarFicha: JSON inválido", err);
-      alert("Erro: JSON inválido.");
+      alert(
+        err?.code === "INVALID_LEGACY_MAGIC_SLOTS"
+          ? `Erro ao importar: ${err.message}`
+          : "Erro: JSON inválido.",
+      );
     }
     return;
   }
@@ -325,7 +376,9 @@ function importarFicha(json) {
         } catch (err) {
           console.error("importarFicha: erro ao parsear JSON do arquivo", err);
           alert(
-            "Erro ao importar: arquivo inválido. Selecione um arquivo .json exportado pela ficha.",
+            err?.code === "INVALID_LEGACY_MAGIC_SLOTS"
+              ? `Erro ao importar: ${err.message}`
+              : "Erro ao importar: arquivo inválido. Selecione um arquivo .json exportado pela ficha.",
           );
         } finally {
           try {
