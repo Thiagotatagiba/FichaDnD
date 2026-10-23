@@ -222,6 +222,14 @@ function coletarDadosFicha() {
     dados[campo.id] = campo.type === "checkbox" ? campo.checked : campo.value;
   });
 
+  ["equipamentoArmas", "equipamentoArmadura", "equipamentoOutros"].forEach(
+    (campo) => {
+      if (Object.prototype.hasOwnProperty.call(personagem, campo)) {
+        dados[campo] = personagem[campo];
+      }
+    },
+  );
+
   const arma1Equipada = obterSelecaoArmaEquipada(1);
   const arma2Equipada = obterSelecaoArmaEquipada(2);
   dados.arma1Nome = arma1Equipada.nome;
