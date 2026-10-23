@@ -15,10 +15,10 @@ O projeto é uma aplicação front-end estática, pensada para apoiar a criaçã
 - [CONTRIBUICAO.md](CONTRIBUICAO.md) — regras e boas práticas para colaboração
 - [analise-arquitetura.md](analise-arquitetura.md) — análise inicial da arquitetura e módulos
 - [BUG_REPORT.md](BUG_REPORT.md) — relatórios e correções observadas
-- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) — plano de implementação
-- [TODO.md](TODO.md) — backlog e pendências
-- [TODO_MAGIA.md](TODO_MAGIA.md) — pendências e melhorias da área de magia
-- [TODO_progress.md](TODO_progress.md) — acompanhamento do progresso
+- [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md) — plano histórico de correções; não é uma fila ativa
+- [TODO.md](TODO.md) — banco de ideias ainda não aprovadas
+- [TODO_MAGIA.md](TODO_MAGIA.md) — resumo histórico de ideias antigas da área de magia
+- [TODO_progress.md](TODO_progress.md) — resumo histórico do plano de timeline de combate
 
 ## Estrutura de funcionamento
 
@@ -31,11 +31,12 @@ O projeto é uma aplicação front-end estática, pensada para apoiar a criaçã
 
 O projeto está em evolução e ainda mantém forte acoplamento entre interface e lógica de negócio. A documentação foi criada para registrar o estado atual, mapear decisões e orientar a modularização progressiva do sistema.
 
-## Próximos passos sugeridos
+## Temas gerais de evolução
+
+Os itens abaixo são direções gerais de evolução, não tarefas aprovadas nem compromissos de execução. Consulte o [`../ROADMAP.md`](../ROADMAP.md) para as tarefas oficialmente aprovadas.
 
 - separar regras de negócio da camada visual
 - reduzir uso de estado global e funções globais
 - criar validação de estruturas JSON de ficha
 - melhorar a cobertura de testes e regressão
 - documentar novos módulos conforme a arquitetura for evoluindo
-

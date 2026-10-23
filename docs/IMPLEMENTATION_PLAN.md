@@ -1,5 +1,7 @@
 # Plano Detalhado de Correções — FichaDnD
 
+> **Registro histórico, não ativo:** este plano conserva uma proposta antiga de correções e suas prioridades não são uma fila de execução atual. Consulte `../ROADMAP.md` para tarefas aprovadas, `BUG_REPORT.md` para bugs e `TODO.md` para ideias não aprovadas.
+
 ## Objetivo
 
 Criar um plano de trabalho detalhado para corrigir os principais bugs identificados em `BUG_REPORT.md`, melhorar a robustez do projeto e garantir validação funcional adequada.

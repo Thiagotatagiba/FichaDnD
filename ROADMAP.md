@@ -101,7 +101,7 @@ Este roadmap considera o projeto como uma aplicação estática em evolução, c
 
 ## Acompanhamento operacional
 
-Este acompanhamento complementa as fases de longo prazo acima; não substitui nem declara concluída nenhuma fase ou entregável. O `ROADMAP.md` é a referência geral de estado. Diagnósticos detalhados de bugs ficam em `docs/BUG_REPORT.md`, e regras de trabalho ficam em `docs/CONTRIBUICAO.md`.
+Este acompanhamento complementa as fases de longo prazo acima; não substitui nem declara concluída nenhuma fase ou entregável. O `ROADMAP.md` é a única fonte oficial de tarefas aprovadas, em execução ou pendentes. `docs/TODO.md` é exclusivamente um banco de ideias ainda não aprovadas. Diagnósticos e validações de bugs ficam em `docs/BUG_REPORT.md`; regras de trabalho ficam em `docs/CONTRIBUICAO.md`.
 
 ### Estados
 
@@ -115,7 +115,7 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 
 ### Estado atual do projeto
 
-- **Documentação e arquitetura:** existem documentos de arquitetura, decisões, contribuição, bugs/correções e listas de tarefas. O escopo e a atualidade de todos os itens desses documentos ainda não foram auditados em conjunto.
+- **Documentação e arquitetura:** ideias não aprovadas ficam em `docs/TODO.md`, tarefas aprovadas ficam apenas neste Roadmap, e `docs/BUG_REPORT.md` registra bugs com evidência. `docs/IMPLEMENTATION_PLAN.md` e os arquivos TODO antigos estão identificados como históricos, não como filas ativas. Outros documentos ainda não foram auditados em conjunto.
 - **Código e funcionalidades:** a aplicação estática e seus módulos existentes permanecem como base do projeto. Não foi feita nesta atualização uma auditoria geral das funcionalidades nem das cinco fases.
 - **Testes:** além dos cenários de XP/Level Up, o round-trip de Thrain e Waldo foi executado e a conversão de espaços legados foi corrigida e validada em 2026-10-23. A perda de campos narrativos em Thrain e o download nativo ainda não foram resolvidos/validados; detalhes em `docs/BUG_REPORT.md`. Não foi executada uma suíte automatizada geral.
 - **Fases do roadmap:** nenhuma fase ou entregável é declarado concluído por este acompanhamento. A tarefa atual está relacionada à Fase 3 — Qualidade e confiabilidade, sem implicar que a fase esteja concluída.
@@ -142,6 +142,7 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 
 1. **Pendente — Decidir preservação de campos narrativos legados:** os campos `equipamentoArmas`, `equipamentoArmadura` e `equipamentoOutros` de Thrain não têm controles com esses IDs e não aparecem no export. Confirmar se são dados que devem ser mantidos ou conteúdo legado descartável antes de propor correção.
 2. **Pendente — Testar download nativo do navegador:** o botão Salvar gerou o Blob, mas o navegador de teste abriu um diálogo de arquivo em vez de disponibilizar o evento de download; a entrega nativa do arquivo não foi validada.
+3. **Pendente — Validar compatibilidade do timeline de combate:** conferir na interface ataques com arma, Cura e Dano, incluindo registros simples/legados e os campos estruturados de ataque. O código atual já renderiza ataque, rolagem, dano e tipo de dano em timeline; a tarefa é somente validação até que um problema seja reproduzido. Registrar os resultados por tipo de evento e só abrir correção se houver regressão comprovada.
 
 ### Tarefa de validação — round-trip de fichas (Fase 3)
 
@@ -169,13 +170,14 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - **2026-10-22 — Correção de XP/Level Up implementada e validada:** alterados `js/data/racas-subclasses.js` e `ficha/Ficha_DnD_-_Tatagiba_1.0.html`; cenários manuais no navegador passaram. Sem suíte automatizada geral. Detalhes e resultados em `docs/BUG_REPORT.md`.
 - **2026-10-22 — Round-trip de importação/exportação executado (Fase 3):** Thrain preservou os campos centrais e coleções estruturadas, mas três campos narrativos de equipamento não foram exportados. Waldo preservou os campos centrais, magias e equipamentos, mas seu espaço de magia nível 1 exportado/reimportado ficou em 0 apesar de 2 espaços totais e 0 usados. Validação geral reprovada; nenhuma correção de código feita. Originais preservados por hash; detalhes em `docs/BUG_REPORT.md`.
 - **2026-10-23 — Conversão de espaços legados corrigida e validada:** `js/core/storage.js` converte `magiaNUsado` em `magiaNRest` com validação e preserva formato atual. Casos de níveis 1–9, inválidos, Waldo round-trip e Thrain passaram conforme registrados em `docs/BUG_REPORT.md`.
+- **2026-10-23 — Triagem das listas antigas:** propostas ainda não aprovadas da área de magias foram consolidadas em `docs/TODO.md`; a timeline de combate existente foi conferida, e a validação de compatibilidade restante foi registrada nas próximas tarefas. Os documentos antigos permanecem como resumos históricos, não filas ativas.
 
 ### Decisões e restrições de acompanhamento
 
 - Preservar as cinco fases, seus objetivos, entregáveis, estrutura-alvo, critérios de sucesso e observações; não inferir conclusão sem evidência.
-- Manter este arquivo como acompanhamento geral e usar os documentos existentes para seus escopos específicos, sem criar arquivos paralelos de tarefas.
+- Manter este arquivo como única fila oficial de tarefas aprovadas; `docs/TODO.md` pode conter apenas ideias não aprovadas e nunca deve duplicar tarefas ativas.
 - Tratar os arquivos de código listados como pontos de partida, não como uma lista obrigatória de arquivos a modificar.
 - Preservar regras de D&D, estruturas de dados, IDs, atributos HTML e compatibilidade com fichas existentes, salvo evidência que justifique uma mudança.
 - Commits são manuais e ficam a cargo do responsável pelo projeto.
 
-**Última atualização:** 2026-10-23 — validação decimal estrita e cancelamento seguro de importação implementados e verificados; Fase 3 permanece em andamento.
+**Última atualização:** 2026-10-23 — documentos de ideias e tarefas triados; Fase 3 permanece em andamento.

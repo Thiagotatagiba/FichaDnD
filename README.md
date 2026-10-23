@@ -63,7 +63,7 @@ O projeto está em uma arquitetura web estática, com forte acoplamento ao DOM e
 
 - [docs/README.md](docs/README.md) — visão geral da documentação
 - [docs/ARQUITETURA_SISTEMA.md](docs/ARQUITETURA_SISTEMA.md) — arquitetura do sistema
-- [docs/DECISOES_DE_ARQUITETURA.md](docs/DECISOES_DE_ARQUITETURA.md) — decisões tomadas no projeto
+- [DECISOES_DE_ARQUITETURA.md](DECISOES_DE_ARQUITETURA.md) — decisões tomadas no projeto
 - [ROADMAP.md](ROADMAP.md) — evolução planejada do sistema
 - [docs/CONTRIBUICAO.md](docs/CONTRIBUICAO.md) — guia de contribuição
 

@@ -110,11 +110,11 @@ Foram comparados nome do personagem/jogador, classe/subclasse/nível, XP, seis a
   - Recomendação: apresentar detalhes reduzidos no console e mensagens de erro mais específicas na UI; validar estrutura antes de JSON.parse e mostrar campo problemático.
   - Status: Corrigido
 
-- **Falha ao preparar interface de talentos** — [ficha_modal.html](ficha_modal.html#L986)
-  - Sintoma: `console.error("Falha ao preparar interface de talentos:", erro)` num `try/catch` ao inicializar módulos de magias/talentos.
+- **Registro histórico: falha ao preparar interface de talentos** (referência original: `ficha_modal.html`, arquivo não presente no repositório atual)
+  - Sintoma registrado: `console.error("Falha ao preparar interface de talentos:", erro)` num `try/catch` ao inicializar módulos de magias/talentos.
   - Risco: falha em um módulo pode deixar modais inacessíveis; falta de fallback para desabilitar parcialmente a UI.
-  - Recomendação: capturar causas específicas e aplicar fallback (desabilitar apenas a aba de talentos/magias), registrar informações do erro para diagnóstico.
-  - Status: Corrigido
+  - Recomendação registrada à época: capturar causas específicas e aplicar fallback (desabilitar apenas a aba de talentos/magias), registrando informações para diagnóstico.
+  - Status registrado à época: Corrigido. A reprodução atual não pode ser feita pelo caminho citado porque o arquivo não existe.
 
 ## Warnings e problemas de robustez
 
@@ -135,22 +135,26 @@ Foram comparados nome do personagem/jogador, classe/subclasse/nível, XP, seis a
 
 ## Marcadores `TODO` / `FIXME` relevantes
 
-- `docs/TODO_MAGIA.md` — refatoração da aba de magias recomendada.
-- Várias ocorrências de `TODO`/`FIXME` em arquivos de documentação e código indicando refatorações pendentes; priorizar funcionalidades de combate e import/export.
+- Ideias ainda não aprovadas ficam em `docs/TODO.md` e não são, por si só, bugs.
+- `docs/TODO_MAGIA.md` e `docs/TODO_progress.md` são resumos históricos, não filas ativas. Tarefas aprovadas ficam no `ROADMAP.md`.
 
 ## Como reproduzir (passo-a-passo rápidos)
 
 1. Abrir `index.html` no navegador e tentar importar um JSON corrompido (editar e inserir vírgula extra) → ver `Erro ao importar personagem` no console.
-2. Abrir a `ficha` e navegar até a aba de talentos/magias — observar logs no console para o erro em `ficha_modal.html` quando inicialização falhar.
+2. Referência histórica: um roteiro antigo citava a inicialização em `ficha_modal.html`; esse arquivo não está presente na árvore atual, portanto este não é um passo de reprodução atual.
 3. Simular DOM alterado para `.ataque-topo` (remover elementos via DevTools) e recarregar a página para ver os `console.warn` de `refatorar_ataque.js`.
 
-## Prioridade sugerida
+## Prioridade do levantamento inicial — referência histórica, não aprovada
+
+As prioridades abaixo pertencem ao levantamento inicial e não são uma fila atual de execução. Verifique o estado de cada bug nas seções acima; tarefas aprovadas ficam somente no `../ROADMAP.md`.
 
 - P1: Erro de importação (UX e perda de dados). P1: Falhas de inicialização de módulos (magias/talentos) que bloqueiam uso.
 - P2: Robustez do DOM em `refatorar_ataque.js` e validações em `CharacteristicStorage`.
 - P3: Melhorias de mensagens e instrumentação (erros com mais contexto, métricas locais).
 
-## Recomendações gerais
+## Recomendações gerais do levantamento — não aprovadas
+
+As propostas abaixo vieram do levantamento inicial. Não são tarefas ativas; avalie-as contra o código atual e registre no Roadmap somente se forem aprovadas.
 
 - Adicionar validação de esquema (JSON Schema) para importação/exportação de personagem.
 - Padronizar erros: lançar `CustomError` com `code`/`meta` em vez de mensagens livres.

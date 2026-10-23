@@ -1,203 +1,228 @@
-# 🔧 Correções Aplicadas - Card de Classe
+# 🔧 Correções Aplicadas — Card de Classe
 
-## 📅 Data: 21 de Maio de 2026
+**Data do registro:** 21 de maio de 2026
+
+> **Nota histórica:** este documento registra correções e testes documentados em maio de 2026. Os resultados refletem o estado registrado à época; os caminhos e procedimentos devem ser conferidos na estrutura atual antes de serem reutilizados.
 
 ---
 
 ## ✅ Bugs Corrigidos
 
-### 1️⃣ **CORS Error ao Carregar JSON**
-**Problema Original:**
-```
+### 1. CORS Error ao Carregar JSON
+
+**Problema original**
+
+```text
 Access to fetch at 'file:///...' has been blocked by CORS policy
-onerror acionado - XHR bloqueado pelo protocolo file://
+onerror acionado — XHR bloqueado pelo protocolo file://
 ```
 
-**Solução Implementada:**
-- ✅ Sistema de **fallback multi-método** para carregamento
-  1. Tenta dados embutidos em `CLASSES_EMBUTIDAS`
-  2. Tenta `Fetch` API (melhor compatibilidade com file://)
-  3. Tenta `XMLHttpRequest` (rede/fallback)
-  4. Mensagem de erro com soluções
-- ✅ Tratamento robusto de exceções
-- ✅ Logging detalhado de cada tentativa
+**Solução implementada**
 
-**Resultado:** Classe carrega mesmo com restrições de protocolo file://
+- Sistema de fallback com múltiplos métodos de carregamento:
+  1. Tenta obter os dados de `CLASSES_EMBUTIDAS`.
+  2. Tenta a API `Fetch`.
+  3. Tenta `XMLHttpRequest` como alternativa.
+  4. Exibe uma mensagem de erro com possíveis soluções quando os métodos falham.
+- Tratamento de exceções.
+- Registro detalhado das tentativas no console.
 
----
+**Resultado registrado:** o sistema passou a priorizar os dados embutidos e a utilizar métodos alternativos de carregamento quando disponíveis.
 
-### 2️⃣ **Card Não Carrega ao Importar Ficha**
-**Problema Original:**
-- Características só carregavam ao selecionar classe no dropdown
-- Não havia trigger ao importar ficha JSON
+### 2. Card Não Carrega ao Importar Ficha
 
-**Solução Implementada:**
-- ✅ Wrapper `carregarFicha` aprimorado
-- ✅ Agora dispara `handleClasseChange()` após 150ms da importação
-- ✅ Usa função `carregarJSONClasse()` com fallbacks
-- ✅ Logging detalhado para rastrear execução
+**Problema original**
 
-**Resultado:** Card agora carrega tanto ao selecionar manualmente quanto ao importar
+- As características da classe só eram carregadas ao selecionar uma classe no menu suspenso.
+- A importação de uma ficha JSON não acionava o carregamento do card.
 
----
+**Solução implementada**
 
-### 3️⃣ **Texto Descritivo Não Desaparecia**
-**Problema Original:**
-```
-"Selecione sua classe na ficha principal para carregar automaticamente..."
-```
-Mensagem continuava visível mesmo após carregar classe
+- Aprimoramento do wrapper da função `carregarFicha`.
+- Acionamento de `handleClasseChange()` após um intervalo de 150 ms da importação.
+- Utilização da função `carregarJSONClasse()` com métodos alternativos de carregamento.
+- Adição de logs para rastrear a execução.
 
-**Solução Implementada:**
-- ✅ Adicionada lógica em `enviarClasseParaCard()`
-- ✅ Elemento é ocultado com `display: 'none'` quando classe carrega
-- ✅ Selector CSS refinado para evitar falsos positivos
+**Resultado registrado:** o card passou a ter um fluxo de carregamento após a seleção manual da classe e após a importação da ficha.
 
-**Resultado:** Texto descritivo desaparece assim que classe é carregada
+### 3. Texto Descritivo Não Desaparecia
+
+**Problema original**
+
+A mensagem abaixo permanecia visível mesmo depois do carregamento da classe:
+
+> Selecione sua classe na ficha principal para carregar automaticamente...
+
+**Solução implementada**
+
+- Adição de lógica em `enviarClasseParaCard()`.
+- Ocultação do elemento com `display: none` quando a classe é carregada.
+- Refinamento do seletor CSS para evitar correspondências indevidas.
+
+**Resultado registrado:** o texto descritivo passou a ser ocultado após o carregamento da classe.
 
 ---
 
 ## 🔄 Sistema de Fallback Implementado
 
-### Função: `carregarJSONClasse(caminho, classe)`
+### Função `carregarJSONClasse(caminho, classe)`
 
-**Ordem de tentativa:**
+O fluxo documentado segue esta ordem de tentativa:
 
-```javascript
-1. CLASSES_EMBUTIDAS[classe]
-   └─ Se disponível, retorna imediatamente (mais rápido)
+1. **`CLASSES_EMBUTIDAS[classe]`**
+   - Utiliza os dados embutidos, quando disponíveis, evitando uma requisição adicional.
 
-2. fetch(caminho)
-   └─ Melhor compatibilidade com file://
-   └─ Melhor tratamento de erro
+2. **`fetch(caminho)`**
+   - Tenta carregar o arquivo por meio da API Fetch.
 
-3. XMLHttpRequest(caminho)
-   └─ Fallback para navegadores antigos
-   └─ Tratamento de status 0 (file://)
+3. **`XMLHttpRequest(caminho)`**
+   - Tenta um método alternativo de carregamento.
+   - O comportamento depende do navegador e do protocolo utilizado.
 
-4. Erro detalhado com soluções
-   └─ Sugestões: servidor HTTP, Electron, verificar arquivo
-```
+4. **Tratamento de erro**
+   - Exibe informações sobre a falha.
+   - Orienta a verificar o arquivo e considerar o uso de um servidor HTTP local ou de um ambiente compatível.
 
 ---
 
 ## 🔍 Melhorias de Diagnóstico
 
-Adicionado logging detalhado em múltiplos pontos:
+Foi documentada a inclusão de logs em diferentes pontos do fluxo.
 
-### Console Logs Adicionados:
-```
-[CardLoad] - Rastreamento de carregamento
-[CardError] - Erros específicos com stack trace
-[Ficha] - Comunicação entre ficha e card
-[Tentando Fetch] - Tentativa de uso de Fetch
-[Fetch falhou] - Motivo da falha, irá tentar XHR
-```
+### Logs de console
 
-### Mensagens de Erro Melhoradas:
-- ✅ Mostra arquivo específico que falhou
-- ✅ Inclui sugestões de soluções
-- ✅ Stack trace completo para debug
+| Identificador | Finalidade registrada |
+|---|---|
+| `[CardLoad]` | Rastreamento do carregamento do card. |
+| `[CardError]` | Registro de erros, incluindo informações de depuração. |
+| `[Ficha]` | Rastreamento da comunicação entre a ficha e o card. |
+| `[Tentando Fetch]` | Indicação de uma tentativa de carregamento por Fetch. |
+| `[Fetch falhou]` | Registro de falha no Fetch antes de uma possível tentativa por XHR. |
 
----
+### Mensagens de erro
 
-## 📝 Commits Realizados
+As melhorias documentadas incluem:
 
-```
-Commit 1 (9cb85e7): Fix CORS + XMLHttpRequest + Hide text
-Commit 2 (10ca8bc): Improve logging + error handling
-Commit 3 (eb5e27b): Add documentation + test file
-Commit 4 (2296f62): Add robust multi-method fallback
-```
+- Identificação do arquivo que apresentou falha.
+- Sugestões de possíveis soluções.
+- Informações adicionais para facilitar a depuração.
 
 ---
 
-## 🧪 Como Testar Agora
+## 📝 Commits Registrados
 
-### Teste 1: Selecionar Classe Manualmente
-1. Abra `ficha/Ficha DnD - Tatagiba 1.0.html` em servidor HTTP ou Electron
-2. Selecione uma classe no dropdown principal
-3. ✅ Card deve carregar características automaticamente
-4. ✅ Texto "Selecione sua classe..." deve desaparecer
+Os seguintes commits foram associados às correções documentadas:
 
-**Se abrir como file://**
-- ✅ Ainda deve funcionar com dados embutidos de `CLASSES_EMBUTIDAS`
-- ✅ Ou Fetch/XHR se os arquivos forem acessíveis
+```text
+9cb85e7 — Fix CORS + XMLHttpRequest + Hide text
+10ca8bc — Improve logging + error handling
+eb5e27b — Add documentation + test file
+2296f62 — Add robust multi-method fallback
+```
 
-### Teste 2: Importar Ficha Salva
-1. Abra `ficha/Ficha DnD - Tatagiba 1.0.html`
-2. Importe um arquivo JSON com classe pré-selecionada
-3. ✅ Card deve carregar automaticamente após 150ms
-4. ✅ Texto descritivo deve estar oculto
+Esses identificadores são mantidos como registro histórico; sua presença neste documento não confirma, por si só, que os commits estejam disponíveis no histórico Git atual.
 
-### Teste 3: Diagnóstico Técnico
-1. Abra `teste_xhr.html` como arquivo ou em servidor
-2. Clique em "Testar: Carregar Bardo"
-3. Veja os logs da tentativa:
-   - `[Tentando Fetch]` - Tenta primeiro
-   - Se falhar: `[Fetch falhou]` + tenta `[XHR]`
-4. ✅ Um dos métodos deve funcionar
+---
 
-### Teste 4: Abrir em Servidor HTTP (Recomendado)
+## 🧪 Roteiros de Teste Registrados
+
+Os procedimentos abaixo descrevem como as correções foram documentadas. Antes de utilizá-los, confirme se o comportamento esperado continua válido na versão atual da ficha.
+
+### Teste 1 — Selecionar uma classe manualmente
+
+1. Abra a [ficha principal](../ficha/Ficha_DnD_-_Tatagiba_1.0.html) em um servidor HTTP ou ambiente compatível.
+2. Selecione uma classe no menu suspenso principal.
+3. Verifique se o card carrega as características da classe.
+4. Verifique se o texto descritivo desaparece após o carregamento.
+
+**Observação:** o resultado precisa ser confirmado na versão atual do sistema.
+
+### Teste 2 — Importar uma ficha salva
+
+1. Abra a [ficha principal](../ficha/Ficha_DnD_-_Tatagiba_1.0.html).
+2. Importe um arquivo JSON que contenha uma classe previamente selecionada.
+3. Verifique se o card carrega automaticamente.
+4. Verifique se o texto descritivo é ocultado.
+
+O intervalo de 150 ms faz parte da implementação descrita no registro histórico; não deve ser considerado uma garantia de tempo de carregamento.
+
+### Teste 3 — Diagnóstico técnico histórico
+
+O roteiro original referenciava `teste_xhr.html`, mas esse arquivo não está presente na estrutura atual do repositório. Portanto, o teste abaixo é apenas um registro histórico, não um procedimento executável na versão atual.
+
+1. Abrir `teste_xhr.html` como arquivo local ou por meio de um servidor.
+2. Clicar em **Testar: Carregar Bardo**.
+3. Observar o log `[Tentando Fetch]` e, caso ocorra uma falha, verificar se aparecem mensagens relacionadas à tentativa por XHR.
+
+Para repetir esse teste, será necessário localizar uma versão histórica do arquivo ou recriar um teste equivalente.
+
+### Teste 4 — Abrir em servidor HTTP
+
+Na raiz do repositório, execute:
+
 ```bash
-# Na pasta do projeto:
 python -m http.server 8000
-
-# Abrir em browser:
-http://localhost:8000/ficha/Ficha%20DnD%20-%20Tatagiba%201.0.html
 ```
-✅ Todos os métodos funcionarão com servidor HTTP
+
+Em seguida, abra a ficha no navegador:
+
+[http://localhost:8000/ficha/Ficha_DnD_-_Tatagiba_1.0.html](http://localhost:8000/ficha/Ficha_DnD_-_Tatagiba_1.0.html)
+
+O servidor HTTP permite testar o carregamento dos arquivos por uma origem HTTP local. Ainda assim, o funcionamento de cada método deve ser verificado na versão atual.
 
 ---
 
-## 🛠️ Detalhes Técnicos
+## 🛠️ Detalhes Técnicos Registrados
 
-### Dados Embutidos
-- Arquivo: `./Classes/classes-embutidas.js`
-- Variável global: `window.CLASSES_EMBUTIDAS`
-- Formato: `{ bardo: {...}, guerreiro: {...}, ... }`
-- Vantagem: Carrega instantaneamente sem requisição
+### Dados embutidos
 
-### Protocolo file://
-- Bloqueios do navegador para XMLHttpRequest
-- Bloqueios do navegador para Fetch (em alguns casos)
-- Solução: Usar Electron ou servidor HTTP local
+- **Arquivo:** `../ficha/Classes/classes-embutidas.js`, caminho relativo ao diretório `docs/`.
+- **Variável global documentada:** `window.CLASSES_EMBUTIDAS`.
+- **Formato descrito:** objeto com dados organizados por classe, por exemplo, `{ bardo: {...}, guerreiro: {...} }`.
+- **Vantagem prevista:** acesso aos dados sem precisar buscar um arquivo JSON separado, desde que o script tenha sido carregado corretamente.
 
-### Electron (se aplicável)
-- Se o projeto usa Electron (preload.js existe)
-- XMLHttpRequest e Fetch funcionam normalmente
-- Todos os fallbacks estão disponíveis
+### Protocolo `file://`
 
----
+O registro original menciona restrições dos navegadores ao realizar requisições por meio de `fetch` e `XMLHttpRequest` em arquivos locais.
 
-## 📊 Status Final
+A compatibilidade depende do navegador e da implementação. Para testes reproduzíveis, recomenda-se utilizar um servidor HTTP local.
 
-| Bug | Status | Método de Carga |
-|-----|--------|-----------------|
-| CORS Error | ✅ Corrigido | Fallback multi-método |
-| Sem trigger em import | ✅ Corrigido | carregarJSONClasse + wrapper |
-| Texto persistente | ✅ Corrigido | display: 'none' |
-| Protocolo file:// | ✅ Tratado | CLASSES_EMBUTIDAS + Fetch |
-| Logging insuficiente | ✅ Melhorado | [CardLoad], [Tentando Fetch], etc |
+### Electron
+
+O registro original também menciona Electron como ambiente possível. A presença de um arquivo como `preload.js`, isoladamente, não comprova que o projeto esteja configurado para Electron nem que todas as operações de rede funcionem normalmente.
+
+A compatibilidade deve ser verificada na configuração real da aplicação.
 
 ---
 
-## 🎯 Próximos Passos
+## 📊 Status Registrado
 
-Se ainda houver problemas:
+| Item | Status documentado | Solução associada |
+|---|---|---|
+| Erro de CORS | Corrigido no registro histórico | Fallback de carregamento |
+| Ausência de acionamento na importação | Corrigido no registro histórico | Wrapper de `carregarFicha` e `handleClasseChange()` |
+| Texto descritivo persistente | Corrigido no registro histórico | Ocultação do elemento |
+| Restrições do protocolo `file://` | Tratadas parcialmente | Dados embutidos e métodos alternativos |
+| Logging insuficiente | Melhorado no registro histórico | Logs de carregamento e de erro |
 
-1. **Abra DevTools** (F12) → **Console**
-2. **Procure por mensagens:**
-   - `[CardLoad] Tentando carregar` - viu a tentativa?
-   - `[Tentando Fetch]` - viu a tentativa de Fetch?
-   - `[Fetch falhou]` ou `[XHR network error]` - qual falhou?
-3. **Screenshot dos logs**
-4. **Teste em servidor HTTP:**
-   ```bash
-   python -m http.server 8000
-   ```
+Os status acima representam o estado documentado em maio de 2026 e não substituem a validação do comportamento atual.
 
 ---
 
-**Última atualização:** 21/05/2026 - Copilot (Multi-method Fallback)
+## 🎯 Procedimento de Diagnóstico
 
+Se o problema voltar a ocorrer:
+
+1. Abra as ferramentas de desenvolvedor do navegador (`F12`).
+2. Acesse a aba **Console**.
+3. Procure pelas mensagens de diagnóstico:
+   - `[CardLoad]` — rastreamento do carregamento.
+   - `[Tentando Fetch]` — tentativa de carregamento por Fetch.
+   - `[Fetch falhou]` ou mensagens relacionadas a XHR — falhas nos métodos de carregamento.
+4. Registre a mensagem completa do erro e o contexto em que ocorreu.
+5. Repita o teste utilizando o servidor HTTP local, caso esteja trabalhando com arquivos locais.
+6. Compare os resultados e registre as evidências em `BUG_REPORT.md` se houver um problema atual confirmado.
+
+---
+
+**Última atualização do registro original:** 21/05/2026 — Copilot (Multi-method Fallback)
