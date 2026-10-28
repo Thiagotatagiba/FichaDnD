@@ -388,6 +388,7 @@
 
     <script>
       const CAMINHO_FICHA = "ficha/Ficha_DnD_-_Tatagiba_1.0.html";
+      const CAMINHO_CRIACAO = "criar-personagem.html";
       const CHAVE_IMPORTACAO_PENDENTE = "fichaImportarPendente";
 
       function abrirFicha() {
@@ -454,7 +455,9 @@
 
       document
         .getElementById("btnNovaFicha")
-        ?.addEventListener("click", abrirFicha);
+        ?.addEventListener("click", () => {
+          window.location.href = CAMINHO_CRIACAO;
+        });
 
       document
         .getElementById("btnImportarPersonagem")

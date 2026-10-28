@@ -972,7 +972,7 @@
                   botão "Importar JSON" na tabela!
                 </div>
 
-                
+
               </div>
             </div>
           </div>
@@ -1091,18 +1091,7 @@
               class="classe-nome"
             >
               <option value="">Selecione uma classe</option>
-              <option value="barbaro">Bárbaro</option>
-              <option value="bardo">Bardo</option>
-              <option value="bruxo">Bruxo</option>
-              <option value="clerigo">Clérigo</option>
-              <option value="druida">Druida</option>
-              <option value="feiticeiro">Feiticeiro</option>
-              <option value="guerreiro">Guerreiro</option>
-              <option value="ladino">Ladino</option>
-              <option value="mago">Mago</option>
-              <option value="monge">Monge</option>
-              <option value="paladino">Paladino</option>
-              <option value="patrulheiro">Patrulheiro</option>
+
             </select>
             <span class="classe-separador" title="Nível">NV</span>
             <input aria-label="Nível do personagem" id="classeNivelID"
@@ -1116,15 +1105,7 @@
           <div class="campo-titulo">Raça</div>
           <select id="racaID" aria-label="Raça">
             <option value="">Selecione uma raça</option>
-            <option value="Humano">Humano</option>
-            <option value="Elfo">Elfo</option>
-            <option value="Anão">Anão</option>
-            <option value="Halfling">Halfling</option>
-            <option value="Tiefling">Tiefling</option>
-            <option value="Draconato">Draconato</option>
-            <option value="Gnomo">Gnomo</option>
-            <option value="Meio-Orc">Meio-Orc</option>
-            <option value="Meio-Elfo">Meio-Elfo</option>
+
           </select>
           <div id="containerSubraca" class="subraca-container hidden">
             <select id="subraca" aria-label="Sub-raça">
@@ -1139,15 +1120,7 @@
         <div class="campo">
           <div class="campo-titulo">Alinhamento</div>
           <select id="alinhamentoID" aria-label="Alinhamento">
-            <option>Leal e Bom (LB)</option>
-            <option>Neutro e Bom (NB)</option>
-            <option>Caótico e Bom (CB)</option>
-            <option>Leal e Neutro (LN)</option>
-            <option selected>Neutro (N)</option>
-            <option>Caótico e Neutro (CN)</option>
-            <option>Leal e Mau (LM)</option>
-            <option>Neutro e Mau (NM)</option>
-            <option>Caótico e Mau (CM)</option>
+
           </select>
         </div>
       </div>
@@ -4099,6 +4072,7 @@
     <!-- ========================= -->
     <!-- CLASSES / LEVEL UP -->
     <!-- ========================= -->
+    <script src="../js/data/personagem-opcoes.js"></script>
     <script src="../js/data/racas-subclasses.js"></script>
 
     <!-- ========================= -->
@@ -4151,11 +4125,13 @@
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
     <!-- ========================= -->
     <script src="../js/modules/importacao.js"></script>
+    <script src="../js/modules/entrada-criacao.js"></script>
 
     <script>
       const CHAVE_IMPORTACAO_PENDENTE = "fichaImportarPendente";
 
-      function processarImportacaoPendente() {
+      async function processarImportacaoPendente() {
+        if (await processarModoEntradaCriacao()) return;
         const textoImportado = localStorage.getItem(CHAVE_IMPORTACAO_PENDENTE);
         if (!textoImportado) return;
 
@@ -4163,8 +4139,11 @@
           if (typeof importarFicha === "function") {
             importarFicha(textoImportado, {
               ignorarConfirmacao: true,
-              aoFinalizar: () =>
-                localStorage.removeItem(CHAVE_IMPORTACAO_PENDENTE),
+              aoFinalizar: (resultado) => {
+                if (resultado?.tipo === "sucesso") {
+                  localStorage.removeItem(CHAVE_IMPORTACAO_PENDENTE);
+                }
+              },
             });
             return;
           }
@@ -4174,7 +4153,6 @@
           );
         } catch (erro) {
           console.error("Erro ao aplicar ficha importada pendente:", erro);
-          localStorage.removeItem(CHAVE_IMPORTACAO_PENDENTE);
         }
       }
 

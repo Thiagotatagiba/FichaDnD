@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Criar personagem - Ficha D&amp;D</title>
+  <link href="https://fonts.googleapis.com/css2?family=Metamorphous&family=MedievalSharp&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/criar-personagem.css" />
+</head>
+<body>
+  <main class="pagina-criacao">
+    <header class="cabecalho">
+      <div class="brasao" aria-hidden="true">🐉</div>
+      <h1>Criar personagem</h1>
+      <p>Defina o que já sabe. Você pode completar o restante na ficha.</p>
+    </header>
+
+    <section class="ficha-branca" aria-labelledby="tituloFichaBranca">
+      <div><h2 id="tituloFichaBranca">Prefere começar do zero?</h2><p>Abra a ficha sem preencher o formulário.</p></div>
+      <button type="button" id="btnFichaEmBranco" class="botao botao-destaque">Iniciar ficha em branco</button>
+    </section>
+
+    <form id="formCriarPersonagem" novalidate>
+      <h2>Informações iniciais <span>(opcionais)</span></h2>
+      <div class="grade-formulario">
+        <label>Nome do personagem<input id="nomePersonagem" type="text" autocomplete="off" /></label>
+        <label>Nome do jogador<input id="jogador" type="text" autocomplete="off" /></label>
+        <label>Raça<select id="racaID"><option value="">Selecione uma raça</option></select></label>
+        <label id="grupoSubraca">Sub-raça<select id="subraca" disabled><option value="">Selecione uma sub-raça</option></select></label>
+        <label>Classe<select id="classeNomeID"><option value="">Selecione uma classe</option></select></label>
+        <label>Subclasse<select id="subclasse" disabled><option value="">Selecione uma subclasse</option></select></label>
+        <label>Antecedente<input id="antecedenteID" type="text" autocomplete="off" /></label>
+        <label>Alinhamento<select id="alinhamentoID"><option value="">Selecione um alinhamento</option></select></label>
+      </div>
+
+      <fieldset>
+        <legend>Atributos base</legend>
+        <p class="ajuda">Todos começam em 10. Escolha um valor de 3 a 20 se quiser alterá-lo.</p>
+        <div class="grade-atributos">
+          <label>Força<select id="for" aria-label="Força"></select></label>
+          <label>Destreza<select id="des" aria-label="Destreza"></select></label>
+          <label>Constituição<select id="con" aria-label="Constituição"></select></label>
+          <label>Inteligência<select id="int" aria-label="Inteligência"></select></label>
+          <label>Sabedoria<select id="sab" aria-label="Sabedoria"></select></label>
+          <label>Carisma<select id="car" aria-label="Carisma"></select></label>
+        </div>
+      </fieldset>
+      <p id="statusCriacao" class="status" role="status" aria-live="polite"></p>
+      <div class="acoes"><a class="botao botao-secundario" href="index.html">Voltar</a><button class="botao botao-principal" type="submit">Criar personagem</button></div>
+    </form>
+  </main>
+  <script src="js/data/personagem-opcoes.js"></script>
+  <script src="js/modules/criar-personagem.js"></script>
+</body>
+</html>

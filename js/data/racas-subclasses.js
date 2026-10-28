@@ -1,3 +1,15 @@
+if (!window.DND_PERSONAGEM_OPTIONS) {
+  const avisoOpcoes = document.createElement("div");
+  avisoOpcoes.id = "erroOpcoesPersonagem";
+  avisoOpcoes.setAttribute("role", "alert");
+  avisoOpcoes.style.cssText =
+    "position:fixed;z-index:20000;inset:12px 12px auto;padding:14px;border:2px solid #8b1e1e;background:#fff;color:#651010;font:16px sans-serif";
+  avisoOpcoes.textContent =
+    "Não foi possível carregar as opções de raça e classe. Recarregue a ficha; as opções compartilhadas são necessárias para inicializar esta página.";
+  document.body.prepend(avisoOpcoes);
+  throw new Error("Fonte obrigatória DND_PERSONAGEM_OPTIONS indisponível.");
+}
+
 const mapaDadoVida = {
   barbaro: "d12",
 
@@ -44,166 +56,11 @@ const mapaDadoVida = {
   };
 })();
 
-const SUBCLASSES = {
-  barbaro: [
-    "Caminho do Berserker",
-    "Caminho do Totem Guerreiro",
-    "Caminho do Arauto da Tempestade",
-    "Caminho do Zelote",
-    "Caminho do Guardião Ancestral",
-    "Caminho da Besta",
-    "Caminho da Magia Selvagem",
-  ],
-  bardo: [
-    "Colégio do Conhecimento",
-    "Colégio da Bravura",
-    "Colégio do Glamour",
-    "Colégio das Espadas",
-    "Colégio dos Sussurros",
-    "Colégio da Eloquência",
-    "Colégio da Criação",
-  ],
-  clerigo: [
-    "Domínio da Vida",
-    "Domínio da Luz",
-    "Domínio da Natureza",
-    "Domínio da Tempestade",
-    "Domínio da Guerra",
-    "Domínio do Conhecimento",
-    "Domínio da Enganação",
-    "Domínio da Forja",
-    "Domínio da Morte",
-    "Domínio da Ordem",
-    "Domínio da Paz",
-    "Domínio da Crepúsculo",
-  ],
-  druida: [
-    "Círculo da Terra",
-    "Círculo da Lua",
-    "Círculo dos Sonhos",
-    "Círculo do Pastor",
-    "Círculo dos Esporos",
-    "Círculo das Estrelas",
-    "Círculo do Fogo Selvagem",
-  ],
-  guerreiro: [
-    "Campeão",
-    "Mestre de Batalha",
-    "Cavaleiro Arcano",
-    "Cavaleiro",
-    "Samurai",
-    "Cavaleiro Rúnico",
-    "Psi Warrior",
-  ],
-  monge: [
-    "Caminho da Mão Aberta",
-    "Caminho das Sombras",
-    "Caminho dos Quatro Elementos",
-    "Caminho da Alma Solar",
-    "Caminho do Mestre Bêbado",
-    "Caminho do Kensei",
-    "Caminho da Misericórdia",
-    "Caminho do Eu Astral",
-  ],
-  paladino: [
-    "Juramento da Devoção",
-    "Juramento dos Antigos",
-    "Juramento da Vingança",
-    "Juramento da Conquista",
-    "Juramento da Redenção",
-    "Juramento da Glória",
-    "Juramento da Coroa",
-    "Juramento dos Vigias",
-  ],
-  patrulheiro: [
-    "Caçador",
-    "Mestre das Feras",
-    "Andarilho do Horizonte",
-    "Matador de Monstros",
-    "Caçador das Trevas",
-    "Guardião do Enxame",
-    "Andarilho Feérico",
-  ],
-  ladino: [
-    "Ladrão",
-    "Assassino",
-    "Trapaceiro Arcano",
-    "Inquisitivo",
-    "Mestre",
-    "Batedor",
-    "Fantasma",
-    "Espadachim",
-    "Soulknife",
-  ],
-  feiticeiro: [
-    "Linhagem Dracônica",
-    "Magia Selvagem",
-    "Alma Divina",
-    "Magia das Sombras",
-    "Mente Aberrante",
-    "Alma Mecânica",
-    "Tempestade",
-  ],
-  bruxo: [
-    "O Arquifada",
-    "O Demônio",
-    "O Grande Antigo",
-    "O Imortal",
-    "O Celestial",
-    "A Lâmina Maldita",
-    "O Gênio",
-    "O Morto-Vivo",
-    "O Indizível",
-  ],
-  mago: [
-    "Abjuração",
-    "Adivinhação",
-    "Encantamento",
-    "Evocação",
-    "Ilusão",
-    "Necromancia",
-    "Transmutação",
-    "Conjuração",
-    "Lâmina Cantante",
-    "Ordem dos Escribas",
-    "Magia de Guerra",
-    "Graviturgy",
-    "Chronurgy",
-  ],
-};
+const SUBCLASSES = window.DND_PERSONAGEM_OPTIONS.subclasses;
 
-const REGRAS_SUBCLASSE = {
-  barbaro: { nome: "Caminho Primitivo", nivel: 3 },
-  bardo: { nome: "Colégio de Bardo", nivel: 3 },
-  bruxo: { nome: "Patrono Transmundano", nivel: 1 },
-  clerigo: { nome: "Domínio Divino", nivel: 1 },
-  druida: { nome: "Círculo Druídico", nivel: 2 },
-  feiticeiro: { nome: "Origem Feiticeira", nivel: 1 },
-  guerreiro: { nome: "Arquétipo Marcial", nivel: 3 },
-  ladino: { nome: "Arquétipo Ladino", nivel: 3 },
-  mago: { nome: "Tradição Arcana", nivel: 2 },
-  monge: { nome: "Tradição Monástica", nivel: 3 },
-  paladino: { nome: "Juramento Sagrado", nivel: 3 },
-  patrulheiro: { nome: "Arquétipo de Patrulheiro", nivel: 3 },
-};
+const REGRAS_SUBCLASSE = window.DND_PERSONAGEM_OPTIONS.regrasSubclasse;
 
-const SUBRACAS = {
-  humano: null,
-  elfo: ["Alto Elfo", "Elfo da Floresta", "Drow"],
-  anao: ["Anão da Colina", "Anão da Montanha"],
-  halfling: ["Pés-Leves", "Robusto"],
-  tiefling: null,
-  draconato: [
-    "Negro (Ácido)",
-    "Azul (Elétrico)",
-    "Verde (Veneno)",
-    "Vermelho (Fogo)",
-    "Branco (Frio)",
-  ],
-  gnomo: ["Floresta", "Rochas"],
-  meio_orc: null,
-  meio_elfo: null,
-};
+const SUBRACAS = window.DND_PERSONAGEM_OPTIONS.subracas;
 
 function normalizarChaveSubclasseClasse(valor) {
   return String(valor || "")

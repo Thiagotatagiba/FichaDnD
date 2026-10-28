@@ -167,6 +167,92 @@
         if (campo) campo.value = valor;
       }
 
+      function validarDadosImportadosCaracteristica(
+        opcoes = {},
+        classeEsperada = "",
+      ) {
+        const valoresImportados = opcoes.dadosImportados;
+        if (!valoresImportados || typeof valoresImportados !== "object") {
+          return null;
+        }
+
+        const lerJSON = (valor) => {
+          if (typeof valor !== "string" || !valor.trim()) return null;
+          try {
+            return JSON.parse(valor);
+          } catch (erro) {
+            return null;
+          }
+        };
+
+        const classeOriginal =
+          typeof valoresImportados.classeData === "string"
+            ? valoresImportados.classeData
+            : "";
+        const subclasseOriginal =
+          typeof valoresImportados.subclasseData === "string"
+            ? valoresImportados.subclasseData
+            : "";
+        const classe = lerJSON(classeOriginal);
+        const subclasse = lerJSON(subclasseOriginal);
+        const niveisValidos =
+          Array.isArray(classe?.niveis) &&
+          classe.niveis.length > 0 &&
+          classe.niveis.every(
+            (nivel) =>
+              nivel &&
+              typeof nivel === "object" &&
+              !Array.isArray(nivel) &&
+              (typeof nivel.nivel === "number" ||
+                typeof nivel.nivel === "string") &&
+              typeof nivel.caracteristicas === "string",
+          );
+        const featuresValidas =
+          Array.isArray(classe?.features) &&
+          classe.features.every(
+            (feature) =>
+              feature &&
+              typeof feature === "object" &&
+              !Array.isArray(feature) &&
+              typeof feature.name === "string" &&
+              feature.name.trim(),
+          );
+        const nomeClasseImportada =
+          typeof classe?.nome === "string"
+            ? normalizarTextoClasse(classe.nome)
+            : "";
+        const nomeClasseEsperada =
+          typeof classeEsperada === "string"
+            ? normalizarTextoClasse(classeEsperada)
+            : "";
+        const classeValida =
+          classe &&
+          typeof classe === "object" &&
+          !Array.isArray(classe) &&
+          (niveisValidos || featuresValidas) &&
+          !!nomeClasseImportada &&
+          nomeClasseImportada === nomeClasseEsperada;
+        const subclasseValida =
+          Array.isArray(subclasse) &&
+          subclasse.every(
+            (feature) =>
+              feature &&
+              typeof feature === "object" &&
+              !Array.isArray(feature) &&
+              typeof feature.name === "string" &&
+              feature.name.trim(),
+          );
+
+        return {
+          classeData: classeValida ? classeOriginal : "",
+          subclasseData: subclasseValida ? subclasseOriginal : "",
+          temDadosValidos: !!(classeValida || subclasseValida),
+          temValoresImportados: !!(
+            classeOriginal.trim() || subclasseOriginal.trim()
+          ),
+        };
+      }
+
       function nivelCaracteristicaValor(valor) {
         const numero = parseInt(String(valor ?? "").replace(/[^\d-]/g, ""), 10);
         return Number.isNaN(numero) ? 1 : numero;
@@ -415,9 +501,11 @@
         }
 
         // Se tudo falhou, lança erro informativo
-        throw new Error(
+        const erroCarregamento = new Error(
           `Não foi possível carregar ${classe}. Tente: 1) Usar servidor HTTP, 2) Abrir em Electron, ou 3) Verificar arquivo ${caminho}`,
         );
+        erroCarregamento.code = "CARACTERISTICAS_CLASSE_INDISPONIVEIS";
+        throw erroCarregamento;
       }
 
       // Helper para carregar JSON via XMLHttpRequest (fallback)
@@ -451,6 +539,10 @@
         subclasse = "",
         opcoes = {},
       ) {
+        const dadosImportados = validarDadosImportadosCaracteristica(
+          opcoes,
+          classe,
+        );
         console.log("[CardLoad] carregarCaracteristicasClasse chamada com:", {
           classe,
           nivel,
@@ -481,10 +573,48 @@
             normalizarTextoClasse(classe);
           console.log("[CardLoad] Carregando JSON de:", classePath);
 
-          const classeData = await carregarJSONClasse(
-            classePath,
-            classeReferencia || classe,
-          );
+          let classeData;
+          try {
+            classeData = await carregarJSONClasse(
+              classePath,
+              classeReferencia || classe,
+            );
+          } catch (error) {
+            if (error?.code !== "CARACTERISTICAS_CLASSE_INDISPONIVEIS") {
+              throw error;
+            }
+
+            console.error("[CardError] Erro carregando características:", error);
+            const mensagemPreservacao = dadosImportados
+              ? dadosImportados.temDadosValidos
+                ? " Os dados válidos de características incluídos no JSON foram preservados; valores auxiliares inválidos foram descartados."
+                : dadosImportados.temValoresImportados
+                  ? " Os valores auxiliares inválidos incluídos no JSON foram descartados."
+                  : " Os campos auxiliares vieram vazios no JSON e permaneceram vazios."
+              : "";
+            avisarCaracteristicaClasse(
+              `Não encontrei característica para "${classe}". ${mensagemImportacaoManualCaracteristica()}${mensagemPreservacao}`,
+              "erro",
+            );
+            if (dadosImportados) {
+              const campoClasseData = document.getElementById("classeData");
+              const campoSubclasseData = document.getElementById("subclasseData");
+              if (campoClasseData) campoClasseData.value = dadosImportados.classeData;
+              if (campoSubclasseData) {
+                campoSubclasseData.value = dadosImportados.subclasseData;
+              }
+              if (!dadosImportados.temDadosValidos) {
+                definirSubclasseCaracteristica("");
+              }
+            } else {
+              definirCampoCaracteristicaAutomatico("classeData", "");
+              definirCampoCaracteristicaAutomatico("subclasseData", "");
+              definirSubclasseCaracteristica("");
+            }
+            dadosClasse = null;
+            atualizarAtalhoConsultaCaracteristicaClasse();
+            return;
+          }
           console.log("[CardLoad] JSON carregado com sucesso:", classeData);
 
           const selectArquivo = document.getElementById(
@@ -545,18 +675,6 @@
           } else {
             definirCampoCaracteristicaAutomatico("subclasseData", "");
           }
-        } catch (error) {
-          console.error("[CardError] Erro carregando características:", error);
-          console.error("[CardError] Stack:", error.stack);
-          avisarCaracteristicaClasse(
-            `Não encontrei característica para "${classe}". ${mensagemImportacaoManualCaracteristica()}`,
-            "erro",
-          );
-          definirCampoCaracteristicaAutomatico("classeData", "");
-          definirCampoCaracteristicaAutomatico("subclasseData", "");
-          definirSubclasseCaracteristica("");
-          dadosClasse = null;
-          atualizarAtalhoConsultaCaracteristicaClasse();
         } finally {
           mostrarCarregando(false);
         }
@@ -588,7 +706,7 @@
         const classeNivel = parseInt(classeNivelInput.value) || 1;
         const sub = subInput?.value || "";
         sincronizarArquivoCaracteristicaComClasse(false);
-        carregarCaracteristicasClasse(classeNome, classeNivel, sub);
+        return carregarCaracteristicasClasse(classeNome, classeNivel, sub);
       }
 
       // Adiciona event listeners (Etapa 3)
@@ -629,10 +747,9 @@
         }
       });
 
-      window.carregarFicha = function (personagem) {
-        if (originalCarregarFicha) originalCarregarFicha(personagem);
-        // Trigger reload após load
-        setTimeout(handleClasseChange, 100);
+      window.carregarFicha = async function (personagem) {
+        if (!originalCarregarFicha) return false;
+        return await originalCarregarFicha(personagem);
       };
 
       // Inicial load

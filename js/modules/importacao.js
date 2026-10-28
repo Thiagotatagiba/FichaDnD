@@ -1,8 +1,25 @@
-function aplicarDadosFicha(dados) {
-  if (!dados || typeof dados !== "object") return;
+async function aplicarDadosFicha(dados) {
+  if (!dados || typeof dados !== "object") return false;
 
   dados = normalizarDadosImportacao(dados);
+  const bloqueioAnteriorLevelUp = bloqueandoLevelUp;
   bloqueandoLevelUp = true;
+  // A aplicação atual muta DOM e estado global em etapas; em exceção, o chamador
+  // recebe a falha e o bloqueio é restaurado, mas não há rollback transacional.
+  try {
+  const tarefasAssincronasObrigatorias = [];
+  function aguardarCallbackObrigatorio(callback) {
+    return new Promise((resolver, rejeitar) => {
+      setTimeout(() => {
+        try {
+          Promise.resolve(callback()).then(resolver, rejeitar);
+        } catch (erro) {
+          rejeitar(erro);
+        }
+      }, 0);
+    });
+  }
+
   if (typeof aplicarTema === "function") {
     aplicarTema(dados.tema || "tema-padrao");
   }
@@ -190,16 +207,19 @@ function aplicarDadosFicha(dados) {
         aplicarFlagsCompartilhadasItem(novoCard, dadosArma, "arma");
         atualizarOpcoesMunicao(novoCard);
 
-        setTimeout(() => {
-          const selectMunicao = novoCard.querySelector(
-            '[data-campo="arma_municao_id"]',
-          );
+        tarefasAssincronasObrigatorias.push(
+          () =>
+            aguardarCallbackObrigatorio(() => {
+              const selectMunicao = novoCard.querySelector(
+                '[data-campo="arma_municao_id"]',
+              );
 
-          if (selectMunicao && dadosArma.arma_municao_id) {
-            selectMunicao.value = String(dadosArma.arma_municao_id);
-            selectMunicao.dispatchEvent(new Event("change"));
-          }
-        }, 0);
+              if (selectMunicao && dadosArma.arma_municao_id) {
+                selectMunicao.value = String(dadosArma.arma_municao_id);
+                selectMunicao.dispatchEvent(new Event("change"));
+              }
+            }),
+        );
 
         if (typeof dadosArma.proficiente === "boolean") {
           const indicador = novoCard.querySelector(".item-proficiencia");
@@ -349,6 +369,9 @@ function aplicarDadosFicha(dados) {
     preencherSelectArquivosCaracteristica();
   }
   if (typeof carregarCaracteristicasClasse === "function") {
+    // A carga auxilia o painel de características: falhas de rede/JSON são
+    // tratadas pela própria função e exibidas ali. Exceções que escapem dela
+    // ainda precisam impedir que a importação seja declarada concluída.
     const arquivoSalvo = document.getElementById(
       "caracteristicaClasseArquivo",
     )?.value;
@@ -369,17 +392,30 @@ function aplicarDadosFicha(dados) {
         "info",
       );
     }
-    setTimeout(() => {
-      carregarCaracteristicasClasse(
-        document.getElementById("classeNomeID")?.value ||
-          obterSlugArquivoCaracteristica(
-            document.getElementById("caracteristicaClasseArquivo")?.value,
+    tarefasAssincronasObrigatorias.push(
+      () =>
+        aguardarCallbackObrigatorio(() =>
+          carregarCaracteristicasClasse(
+            document.getElementById("classeNomeID")?.value ||
+              obterSlugArquivoCaracteristica(
+                document.getElementById("caracteristicaClasseArquivo")?.value,
+              ),
+            parseInt(document.getElementById("classeNivelID")?.value) || 1,
+            document.getElementById("subclasse")?.value || "",
+            {
+              subclasseCaracteristicaSalva,
+              dadosImportados: {
+                classeData:
+                  typeof dados.classeData === "string" ? dados.classeData : "",
+                subclasseData:
+                  typeof dados.subclasseData === "string"
+                    ? dados.subclasseData
+                    : "",
+              },
+            },
           ),
-        parseInt(document.getElementById("classeNivelID")?.value) || 1,
-        document.getElementById("subclasse")?.value || "",
-        { subclasseCaracteristicaSalva },
-      );
-    }, 0);
+        ),
+    );
   }
   sincronizarCamposMagia();
   atualizarMagias();
@@ -390,7 +426,6 @@ function aplicarDadosFicha(dados) {
   atualizarDadosVidaTotal();
   atualizarDadoVida();
 
-  bloqueandoLevelUp = false;
   window.personagem = dados;
 
   atualizarSelectNomeArmaduraEquipada(dados.armaduras, armaduraEquipadaIndice);
@@ -400,5 +435,18 @@ function aplicarDadosFicha(dados) {
   });
 
   atualizarFicha();
+  // Inicia os callbacks já existentes somente depois da etapa síncrona. Assim,
+  // uma exceção síncrona não deixa timers de importação rodando após o erro.
+  const resultadosAssincronos = await Promise.allSettled(
+    tarefasAssincronasObrigatorias.map((tarefa) => tarefa()),
+  );
+  const falhaAssincrona = resultadosAssincronos.find(
+    (resultado) => resultado.status === "rejected",
+  );
+  if (falhaAssincrona) throw falhaAssincrona.reason;
   marcarFichaComoSalva();
+  return true;
+  } finally {
+    bloqueandoLevelUp = bloqueioAnteriorLevelUp;
+  }
 }

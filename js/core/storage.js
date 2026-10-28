@@ -192,7 +192,7 @@ function obterArmaduraSeguro(indice = 0) {
 window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
 function carregarFicha(personagem) {
-  aplicarDadosFicha(personagem);
+  return aplicarDadosFicha(personagem);
 }
 
 function obterNivelSalvoFicha(dados = {}) {
@@ -617,7 +617,12 @@ async function processarImportacao(conteudo, aoFinalizar) {
     }
 
     // aplicarDadosFicha normaliza e valida slots legados antes de tocar no estado/UI.
-    aplicarDadosFicha(dados);
+    const aplicado = await aplicarDadosFicha(dados);
+    if (aplicado !== true) {
+      const erro = new Error("A ficha não foi aplicada.");
+      erro.code = "CHARACTER_SHEET_APPLY_NOT_COMPLETED";
+      throw erro;
+    }
     resultado = {
       tipo: "sucesso",
       mensagem: "Ficha importada com sucesso!",
@@ -631,7 +636,8 @@ async function processarImportacao(conteudo, aoFinalizar) {
       erro?.code === "INVALID_CHARACTER_SHEET_COLLECTION" ||
       erro?.code === "INVALID_CHARACTER_SHEET_COLLECTION_ITEM" ||
       erro?.code === "INVALID_CHARACTER_SHEET_JSON" ||
-      erro?.code === "CHARACTER_SHEET_APPLIER_UNAVAILABLE"
+      erro?.code === "CHARACTER_SHEET_APPLIER_UNAVAILABLE" ||
+      erro?.code === "CHARACTER_SHEET_APPLY_NOT_COMPLETED"
     ) {
       // Essas rejeições ocorrem antes de a ficha ser aplicada.
     } else {
@@ -644,7 +650,7 @@ async function processarImportacao(conteudo, aoFinalizar) {
     if (resultado) mostrarResultadoImportacao(resultado.tipo, resultado.mensagem);
     if (typeof aoFinalizar === "function") {
       try {
-        aoFinalizar();
+        aoFinalizar(resultado);
       } catch (erro) {
         console.error("Erro ao finalizar importação pendente:", erro);
       }
