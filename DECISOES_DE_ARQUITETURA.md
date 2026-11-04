@@ -99,3 +99,15 @@ A arquitetura alvo ideal para o projeto é:
 - persistência robusta com validação de JSON
 
 A transição pode ocorrer gradualmente sem reescrever a aplicação inteira.
+
+## 9. Regras de negócio e referência normativa
+
+A aplicação utiliza como padrão as regras oficiais de D&D 5e, tendo o Livro do Jogador disponibilizado no projeto como referência normativa. Não devem ser introduzidas adaptações próprias para atributos, proficiência, perícias, salvaguardas, pontos de vida, progressão de XP e níveis, combate, armaduras, magia, equipamentos ou outras mecânicas. Qualquer alteração futura dessas regras exige aprovação explícita e registro de decisão antes da implementação.
+
+A única personalização aprovada é o multiplicador da capacidade de carga, por convenção de unidade da aplicação:
+
+- Fórmula padrão: Força × 7,5 kg.
+- Valor inicial do multiplicador: 7,5 kg por ponto de Força.
+- Futuramente, o usuário poderá alterar o multiplicador nas configurações; essa preferência deverá ser persistida e restaurada, e a capacidade deverá ser recalculada quando a Força ou o multiplicador mudar.
+- O limite para erguer, arrastar e puxar permanece independente e segue a regra do Livro do Jogador: Força × 15 kg.
+- Alterar o multiplicador configurável afeta exclusivamente a capacidade de carga e não modifica nenhuma outra regra do jogo.

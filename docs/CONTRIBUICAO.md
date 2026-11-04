@@ -46,6 +46,7 @@ Contribuições são bem-vindas para melhorias de regra, correções de bug, org
 - Evite reescrever módulos grandes sem necessidade
 - Documente decisões de arquitetura ou regras que fogem do padrão
 - Teste os cenários principais antes de finalizar
+- Utilize as regras oficiais de D&D 5e como padrão. Não introduza adaptações de regras sem aprovação explícita e registro da decisão arquitetural. A capacidade de carga possui uma exceção aprovada: multiplicador configurável, com padrão de 7,5 kg por ponto de Força. O limite para erguer, arrastar e puxar continua seguindo a regra de Força × 15 kg; essa configuração afeta exclusivamente a capacidade de carga.
 
 ## Áreas de interesse
 
