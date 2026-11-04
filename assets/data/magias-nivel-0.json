@@ -1,23 +1,1227 @@
 [
   {
-    "nome": "Luz",
+    "id": "cantrip_001",
     "nivel": 0,
-    "classes": ["bardo", "bruxo", "mago", "feiticeiro"],
-    "escola": "Evocação",
-    "descricao": "Você toca um objeto que passa a emitir luz plena em um raio de 6 metros."
+    "preparada": true,
+    "nome": "Ataque Certeiro (True Strike)",
+    "escola": "Adivinhação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "Concentração, até 1 rodada",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você aponta o dedo para um alvo ao alcance. Sua magia concede um breve discernimento sobre as defesas da criatura. No seu próximo turno, você tem vantagem na primeira jogada de ataque contra o alvo, desde que esta magia não tenha encerrado.",
+    "proximos_niveis": ""
   },
   {
-    "nome": "Mãos Mágicas",
+    "id": "cantrip_002",
     "nivel": 0,
-    "classes": ["bardo", "bruxo", "mago", "feiticeiro"],
+    "preparada": true,
+    "nome": "Amizade (Friends)",
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Pela duração, você tem vantagem em todos os testes de Carisma dirigidos a uma criatura não hostil à sua escolha. Quando a magia acaba, a criatura percebe que você usou magia para influenciá-la e fica hostil a você.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_003",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Apostasia Sombria (Infestation)",
     "escola": "Conjuração",
-    "descricao": "Uma mão espectral surge em um ponto escolhido e pode manipular objetos leves."
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "CON",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Venenoso",
+        "regra": "Movimento aleatório de 1,5m em direção rolada no d4."
+      }
+    ],
+    "descricao": "Você invoca um enxame de ácaros, pulgas e outros parasitas para envolver uma criatura ao alcance. O alvo deve passar num teste de resistência de Constituição ou sofrerá 1d6 de dano venenoso e se moverá 1,5m em uma direção aleatória.",
+    "proximos_niveis": "O dano aumenta em 1d6 no 5º nível (2d6), 11º nível (3d6) e 17º nível (4d6)."
   },
   {
-    "nome": "Prestidigitação",
+    "id": "cantrip_004",
     "nivel": 0,
-    "classes": ["bardo", "bruxo", "mago", "feiticeiro"],
+    "preparada": true,
+    "nome": "Açoite Mental (Mind Sliver)",
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "INT",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Psíquico",
+        "regra": "Subtrai 1d4 do próximo teste de resistência que o alvo fizer até o final do seu próximo turno."
+      }
+    ],
+    "descricao": "Você envia um pico desorientador de energia psíquica na mente de uma criatura ao alcance. O alvo deve ser bem-sucedido num teste de resistência de Inteligência ou sofrerá 1d6 de dano psíquico e subtrairá 1d4 do próximo teste de resistência que fizer.",
+    "proximos_niveis": "O dano aumenta em 1d6 no 5º nível (2d6), 11º nível (3d6) e 17º nível (4d6)."
+  },
+  {
+    "id": "cantrip_005",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Bordoada (Shillelagh)",
     "escola": "Transmutação",
-    "descricao": "Você produz pequenos efeitos mágicos e sensoriais inofensivos."
+    "tempo_conjuracao": "1 ação bônus",
+    "alcance": "Toque",
+    "duracao": "1 minuto",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Ataque com Magia",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "modificador_arma",
+        "formula": "1d8",
+        "dano_tipo": "Concussão",
+        "regra": "Permite usar o modificador de habilidade de conjuração para ataques e dano."
+      }
+    ],
+    "descricao": "A madeira de um porrete ou cajado que você segura é imbuída com o poder da natureza. Pela duração, você usa sua habilidade de conjuração em vez da Força para as jogadas de ataque e dano com essa arma, e o dado de dano se torna um d8.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_006",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Chicotada Espinhosa (Thorn Whip)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Ataque CaA à Distância",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Perfuração",
+        "regra": "Se o alvo for de tamanho Grande ou menor, você o puxa até 3 metros em sua direção."
+      }
+    ],
+    "descricao": "Você cria um chicote longo de trepadeiras cobertas de espinhos que ataca uma criatura ao alcance. Faça um ataque com magia à distância. Se acertar, o alvo sofre 1d6 de dano de perfuração e é puxado 3m em sua direção.",
+    "proximos_niveis": "O dano aumenta em 1d6 no 5º nível (2d6), 11º nível (3d6) e 17º nível (4d6)."
+  },
+  {
+    "id": "cantrip_007",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Chicote Elétrico (Lightning Lure)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "4,5 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "FOR",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d8",
+        "dano_tipo": "Eletricidade",
+        "regra": "Puxa o alvo até 3m em sua direção. O dano só é aplicado se o alvo terminar a até 1,5m de você."
+      }
+    ],
+    "descricao": "Você cria um laço de eletricidade e o lança contra uma criatura ao alcance. O alvo deve passar num teste de resistência de Força ou ser puxado até 3 metros em linha reta em sua direção e sofrer 1d8 de dano elétrico.",
+    "proximos_niveis": "O dano aumenta em 1d8 no 5º nível (2d8), 11º nível (3d8) e 17º nível (4d8)."
+  },
+  {
+    "id": "cantrip_008",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Chama Sagrada (Sacred Flame)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d8",
+        "dano_tipo": "Radiante",
+        "regra": "O alvo não ganha benefício de cobertura para este teste."
+      }
+    ],
+    "descricao": "Radiação similar a uma chama desce sobre uma criatura que você possa ver dentro do alcance. O alvo deve ser bem-sucedido num teste de resistência de Destreza ou sofrerá 1d8 de dano radiante. O alvo não recebe benefício de cobertura contra esse teste.",
+    "proximos_niveis": "O dano aumenta em 1d8 no 5º nível (2d8), 11º nível (3d8) e 17º nível (4d8)."
+  },
+  {
+    "id": "cantrip_009",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Produzir Chama (Produce Flame)",
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal (9 m)",
+    "duracao": "10 minutos",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Ataque com Magia à Distância",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d8",
+        "dano_tipo": "Fogo",
+        "regra": "Produz luz ou pode ser arremessada para dar dano, encerrando a magia."
+      }
+    ],
+    "descricao": "Uma chama tremeluzente aparece em sua mão. Ela emite luz brilhante num raio de 3m. Você pode arremessar a chama como uma ação em uma criatura a até 9m, fazendo um ataque com magia à distância para causar 1d8 de dano de fogo.",
+    "proximos_niveis": "O dano aumenta em 1d8 no 5º nível (2d8), 11º nível (3d8) e 17º nível (4d8)."
+  },
+  {
+    "id": "cantrip_010",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Provocação Viciosa (Vicious Mockery)",
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "SAB",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d4",
+        "dano_tipo": "Psíquico",
+        "regra": "Desvantagem na próxima jogada de ataque que o alvo fizer até o final do próximo turno dele."
+      }
+    ],
+    "descricao": "Você profere insultos sutis embutidos com encantamentos sutis contra uma criatura. Se o alvo puder ouvir você, deve passar num teste de Sabedoria ou sofrerá 1d4 de dano psíquico e terá desvantagem no próximo ataque.",
+    "proximos_niveis": "O dano aumenta em 1d4 no 5º nível (2d4), 11º nível (3d4) e 17º nível (4d4)."
+  },
+  {
+    "id": "cantrip_011",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Consertar (Mending)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 minuto",
+    "alcance": "Toque",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Esta magia repara uma única fenda ou ruptura em um objeto que você tocar, como um elo quebrado de uma corrente, duas metades de uma chave partida ou um rasgo na capa.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_012",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Criar Chama (Create Bonfire)",
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d8",
+        "dano_tipo": "Fogo",
+        "regra": "Cria fogueira em espaço de 1,5m. Dano ao conjurar e ao entrar/terminar o turno no espaço."
+      }
+    ],
+    "descricao": "Você cria uma fogueira mágica no chão em um ponto visível. Qualquer criatura no espaço da fogueira ao conjurar, ou que entrar nela / terminar seu turno nela, deve passar num teste de Destreza ou sofrerá 1d8 de dano de fogo.",
+    "proximos_niveis": "O dano aumenta em 1d8 no 5º nível (2d8), 11º nível (3d8) e 17º nível (4d8)."
+  },
+  {
+    "id": "cantrip_013",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Controlar Chamas (Control Flames)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "Instantâneo ou 1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você escolhe um fogo não mágico que caiba num cubo de 1,5m e manipula sua forma, iluminação, cor ou expansão por até 1 hora.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_014",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Controlar Água (Shape Water)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "Instantâneo ou 1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você escolhe uma área de água que caiba num cubo de 1,5m para mover, mudar o fluxo, congelar ou alterar sua cor/opacidade por até 1 hora.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_015",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Espirro Ácido (Acid Splash)",
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Ácido",
+        "regra": "Pode afetar até 2 criaturas a até 1,5m uma da outra."
+      }
+    ],
+    "descricao": "Você lança uma bolha de ácido. Escolha uma ou duas criaturas a até 1,5m uma da outra dentro do alcance. Os alvos devem ser bem-sucedidos num teste de Destreza ou sofrerão 1d6 de dano de ácido.",
+    "proximos_niveis": "O dano aumenta em 1d6 no 5º nível (2d6), 11º nível (3d6) e 17º nível (4d6)."
+  },
+  {
+    "id": "cantrip_016",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Decomposição Primitiva (Primal Savagery)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Ataque CaA com Magia",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d10",
+        "dano_tipo": "Ácido",
+        "regra": "Seus dentes ou unhas se afiam e gotejam ácido."
+      }
+    ],
+    "descricao": "Você canaliza magia primordial para transformar seus dentes ou unhas em armas afiadas e corroídas por ácido. Faça um ataque com magia corpo a corpo contra uma criatura a até 1,5m. Se acertar, causa 1d10 de dano ácido.",
+    "proximos_niveis": "O dano aumenta em 1d10 no 5º nível (2d10), 11º nível (3d10) e 17º nível (4d10)."
+  },
+  {
+    "id": "cantrip_017",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Dardo de Fogo (Fire Bolt)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Ataque com Magia à Distância",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d10",
+        "dano_tipo": "Fogo",
+        "regra": "Incendeia objetos inflamáveis que não estejam sendo vestidos/carregados."
+      }
+    ],
+    "descricao": "Você lança um dardo de fogo em uma criatura ou objeto ao alcance. Faça um ataque com magia à distância. Se acertar, o alvo sofre 1d10 de dano de fogo.",
+    "proximos_niveis": "O dano aumenta em 1d10 no 5º nível (2d10), 11º nível (3d10) e 17º nível (4d10)."
+  },
+  {
+    "id": "cantrip_018",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Disparo Místico (Eldritch Blast)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Ataque com Magia à Distância",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d10",
+        "dano_tipo": "Força",
+        "regra": "Dispara raios adicionais em níveis superiores."
+      }
+    ],
+    "descricao": "Um feixe de energia crepitante se lança em direção a uma criatura ao alcance. Faça um ataque com magia à distância. Se acertar, o alvo sofre 1d10 de dano de força.",
+    "proximos_niveis": "Você dispara dois raios no 5º nível, três raios no 11º nível e quatro raios no 17º nível (fazendo jogadas de ataque separadas)."
+  },
+  {
+    "id": "cantrip_019",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Garras de Gelo / Toque Gélido (Frostbite)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "CON",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Frio",
+        "regra": "Desvantagem na próxima jogada de ataque com arma do alvo."
+      }
+    ],
+    "descricao": "Você causa um frio entorpecente sobre uma criatura visível. O alvo deve passar num teste de resistência de Constituição ou sofrerá 1d6 de dano de frio e terá desvantagem no seu próximo ataque com arma.",
+    "proximos_niveis": "O dano aumenta em 1d6 no 5º nível (2d6), 11º nível (3d6) e 17º nível (4d6)."
+  },
+  {
+    "id": "cantrip_020",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Golpe Verdejante (Green-Flame Blade)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "1,5 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Ataque CaA com Arma",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano_arma",
+        "formula": "Dano da Arma",
+        "dano_tipo": "Varia",
+        "regra": "Chamas saltam para 2º alvo causando dano igual ao modificador de conjuração."
+      }
+    ],
+    "descricao": "Você faz um ataque corpo a corpo com uma arma. Se acertar, o alvo sofre os efeitos normais do ataque e chamas verdes saltam dele para uma segunda criatura a até 1,5m, causando dano de fogo igual ao seu mod. de conjuração.",
+    "proximos_niveis": "No 5º nível o ataque principal causa +1d8 de fogo e o 2º alvo sofre 1d8 + mod; no 11º (+2d8 / 2d8+mod); no 17º (+3d8 / 3d8+mod)."
+  },
+  {
+    "id": "cantrip_021",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Golpe Eletrizante (Booming Blade)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "1,5 m",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Ataque CaA com Arma",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano_arma",
+        "formula": "Dano da Arma",
+        "dano_tipo": "Varia",
+        "regra": "Se o alvo se mover voluntariamente antes do final do seu próximo turno, sofre 1d8 de dano de trovão."
+      }
+    ],
+    "descricao": "Você faz um ataque com arma corpo a corpo. Se acertar, o alvo é envolvido por energia trovejante. Se ele se mover voluntariamente antes do próximo turno, sofre 1d8 de dano de trovão e a magia encerra.",
+    "proximos_niveis": "No 5º nível o ataque causa +1d8 de trovão no acerto e +2d8 se mover. 11º nível (+2d8 / +3d8), 17º nível (+3d8 / +4d8)."
+  },
+  {
+    "id": "cantrip_022",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Ilusão Menor (Minor Illusion)",
+    "escola": "Ilusão",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Teste de Investigação",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você cria um som ou uma imagem de um objeto (que caiba num cubo de 1,5m) dentro do alcance. Uma investigação (Investigação contra a CD da sua magia) revela que é uma ilusão.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_023",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Luz (Light)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": true
+    },
+    "resolucao": "Teste de Resistência (se hostil)",
+    "teste_resistencia": "DES",
+    "efeitos": [],
+    "descricao": "Você toca um objeto. Pela duração, ele emite luz brilhante num raio de 6 metros e luz penumbrosa por mais 6 metros. Tocar um objeto vestido/carregado por hostil exige teste de Destreza.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_024",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Luzes Dançantes (Dancing Lights)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 m",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você cria até quatro luzes do tamanho de tochas dentro do alcance, fazendo-as parecer com esferas luminosas ou uma forma humanoide vaga. Elas cobrem um raio de luz penumbrosa de 3m cada.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_025",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Mãos Mágicas (Mage Hand)",
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Uma mão espectral e flutuante surge num ponto escolhido. Você pode usar uma ação para controlá-la e manipular objetos, abrir portas destrancadas ou carregar até 4,5 kg. Ela não ataca nem ativa itens mágicos.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_026",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Mensagem (Message)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 m",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você aponta o dedo para uma criatura e sussurra uma mensagem. O alvo (e apenas ele) ouve a mensagem e pode responder com um sussurro que apenas você pode ouvir.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_027",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Moldar Terra (Mold Earth)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "Instantâneo ou 1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Escolha um bloco de terra ou pedra de 1,5m. Você pode escavá-lo, mudar sua cor/textura ou torná-lo terreno difícil por até 1 hora.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_028",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Névoa Venenosa (Poison Spray)",
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "3 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "CON",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d12",
+        "dano_tipo": "Venenoso",
+        "regra": ""
+      }
+    ],
+    "descricao": "Você estende a mão em direção a uma criatura visível e projeta uma baforada de gás tóxico. O alvo deve ser bem-sucedido num teste de resistência de Constituição ou sofrerá 1d12 de dano venenoso.",
+    "proximos_niveis": "O dano aumenta em 1d12 no 5º nível (2d12), 11º nível (3d12) e 17º nível (4d12)."
+  },
+  {
+    "id": "cantrip_029",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Palavra Radiante (Word of Radiance)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "1,5 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": true
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "CON",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Radiante",
+        "regra": "Afeta criaturas à sua escolha dentro do alcance."
+      }
+    ],
+    "descricao": "Você profere uma palavra divina. Cada criatura à sua escolha que você possa ver dentro do alcance deve passar num teste de resistência de Constituição ou sofrerá 1d6 de dano radiante.",
+    "proximos_niveis": "O dano aumenta em 1d6 no 5º nível (2d6), 11º nível (3d6) e 17º nível (4d6)."
+  },
+  {
+    "id": "cantrip_030",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Prestidigitação (Prestidigitation)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "3 m",
+    "duracao": "Até 1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Truque mágico simples para praticantes de magia. Cria efeitos sensoriais inofensivos, acende/apaga pequenas velas, limpa/suja objetos, esquenta/esfria comida ou cria marcas/ilusões minúsculas.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_031",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Proteção contra Lâminas (Blade Ward)",
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você estende as mãos e desenha um sinal de proteção no ar. Até o final do seu próximo turno, você tem resistência contra dano concussivo, cortante e perfurante causado por ataques de armas.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_032",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Raio de Gelo (Ray of Frost)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Ataque com Magia à Distância",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d8",
+        "dano_tipo": "Frio",
+        "regra": "O deslocamento do alvo é reduzido em 3 metros até o início do seu próximo turno."
+      }
+    ],
+    "descricao": "Um feixe de luz azul-branquecida dispara em direção a uma criatura ao alcance. Faça um ataque com magia à distância. Se acertar, causa 1d8 de dano de frio e o deslocamento do alvo é reduzido em 3m.",
+    "proximos_niveis": "O dano aumenta em 1d8 no 5º nível (2d8), 11º nível (3d8) e 17º nível (4d8)."
+  },
+  {
+    "id": "cantrip_033",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Explosão de Lâminas (Sword Burst)",
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "1,5 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Força",
+        "regra": "Afeta todas as outras criaturas no alcance de 1,5m."
+      }
+    ],
+    "descricao": "Você cria um círculo momentâneo de lâminas espectrais que varrem o espaço ao seu redor. Todas as outras criaturas a até 1,5m devem passar num teste de Destreza ou sofrerão 1d6 de dano de força.",
+    "proximos_niveis": "O dano aumenta em 1d6 no 5º nível (2d6), 11º nível (3d6) e 17º nível (4d6)."
+  },
+  {
+    "id": "cantrip_034",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Resistência (Resistance)",
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você toca uma criatura voluntária. Uma vez antes da magia acabar, o alvo pode rolar um d4 e adicionar o número rolado a um teste de resistência à sua escolha.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_035",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Ressonância Mística (Toll the Dead)",
+    "escola": "Necromancia",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "SAB",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d8",
+        "dano_tipo": "Necrótico",
+        "regra": "Se o alvo estiver machucado (abaixo do HP máximo), o dado de dano se torna 1d12."
+      }
+    ],
+    "descricao": "Você aponta para uma criatura. O som de um sino fúnebre ecoa ao redor dela. O alvo deve passar num teste de Sabedoria ou sofrerá 1d8 de dano necrótico (ou 1d12 se estiver com menos que os pontos de vida máximos).",
+    "proximos_niveis": "O dano aumenta em 1d8/1d12 no 5º nível (2d8/2d12), 11º nível (3d8/3d12) e 17º nível (4d8/4d12)."
+  },
+  {
+    "id": "cantrip_036",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Taumaturgia (Thaumaturgy)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "Até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você manifesta uma pequena maravilha divina. Pode aumentar a voz em 3x, fazer chamas tremerem, causar tremores no solo, criar sons sobrenaturais ou fazer portas/janelas se abrirem/fecharem de golpe.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_037",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Toque Chocante (Shocking Grasp)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Ataque CaA com Magia",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d8",
+        "dano_tipo": "Eletricidade",
+        "regra": "Vantagem se o alvo estiver usando armadura de metal. O alvo não pode usar reações até seu próximo turno."
+      }
+    ],
+    "descricao": "Eletricidade brota da sua mão para dar um choque numa criatura. Faça um ataque corpo a corpo com magia. Se acertar, causa 1d8 de dano elétrico e o alvo não pode realizar reações até o início do próximo turno dele.",
+    "proximos_niveis": "O dano aumenta em 1d8 no 5º nível (2d8), 11º nível (3d8) e 17º nível (4d8)."
+  },
+  {
+    "id": "cantrip_038",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Toque Gélido / Toque Macabro (Chill Touch)",
+    "escola": "Necromancia",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 m",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Ataque com Magia à Distância",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d8",
+        "dano_tipo": "Necrótico",
+        "regra": "Impede o alvo de recuperar PV até o final do seu próximo turno. Mortos-vivos atacam você com desvantagem."
+      }
+    ],
+    "descricao": "Você cria uma mão esquelética fantasmagórica. Faça um ataque com magia à distância. Se acertar, causa 1d8 de dano necrótico e a criatura não pode recuperar PVs até o final do seu próximo turno.",
+    "proximos_niveis": "O dano aumenta em 1d8 no 5º nível (2d8), 11º nível (3d8) e 17º nível (4d8)."
+  },
+  {
+    "id": "cantrip_039",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Poupá-los da Morte (Spare the Dying)",
+    "escola": "Necromancia",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Você toca uma criatura viva que esteja com 0 pontos de vida. A criatura se torna estável. Esta magia não tem efeito sobre mortos-vivos ou constructos.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_040",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Trovoada (Thunderclap)",
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "1,5 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "CON",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Trovão",
+        "regra": "O som do trovão pode ser ouvido a até 30 metros de distância."
+      }
+    ],
+    "descricao": "Você cria uma estourada de som trovejante audível a 30m. Cada criatura a até 1,5m de você (exceto você) deve passar num teste de resistência de Constituição ou sofrerá 1d6 de dano de trovão.",
+    "proximos_niveis": "O dano aumenta em 1d6 no 5º nível (2d6), 11º nível (3d6) e 17º nível (4d6)."
+  },
+  {
+    "id": "cantrip_041",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Mágica Druídica (Druidcraft)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Nenhum",
+    "teste_resistencia": "",
+    "efeitos": [],
+    "descricao": "Sussurrando aos espíritos da natureza, você cria efeitos menores: prever o tempo nas próximas 24h, fazer uma flor desabrochar instantaneamente, criar um efeito sensorial natural (vento, cheiro de chuva) ou acender/apagar uma pequena chama.",
+    "proximos_niveis": ""
+  },
+  {
+    "id": "cantrip_042",
+    "nivel": 0,
+    "preparada": true,
+    "nome": "Rajada de Vento (Gust)",
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 m",
+    "duracao": "Instantâneo",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "FOR",
+    "efeitos": [
+      {
+        "tipo": "movimento",
+        "formula": "",
+        "dano_tipo": "",
+        "regra": "Empurra criatura de tamanho Médio ou menor 1,5m para trás se falhar na resistência de Força."
+      }
+    ],
+    "descricao": "Você se apodera do ar e o impele. Pode empurrar uma criatura 1,5m em direção oposta (FOR cancela), empurrar um objeto leve 3m ou criar um efeito inofensivo de vento (ex: mover folhas, abrir janelas).",
+    "proximos_niveis": ""
   }
 ]

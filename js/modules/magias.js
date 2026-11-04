@@ -166,6 +166,7 @@ const estadoModalSelecaoMagia = {
   magias: [],
   magiaSelecionada: null,
   classeSelecionada: "todas",
+  busca: "",
   ultimoFoco: null,
 };
 let concentracaoAtiva = null;
@@ -1349,8 +1350,16 @@ function montarModalSelecaoMagia() {
         <button type="button" class="magia-selecao-fechar" id="magiaSelecaoModalFechar" aria-label="Fechar janela" title="Fechar">×</button>
       </div>
       <div id="magiaSelecaoModalTexto" class="magia-slot-modal-texto"></div>
-      <label class="magia-selecao-classe" for="magiaSelecaoModalClasse">Classe das magias</label>
-      <select id="magiaSelecaoModalClasse" class="magia-selecao-classe-select"></select>
+      <div class="magia-selecao-filtros">
+        <div>
+          <label class="magia-selecao-classe" for="magiaSelecaoModalClasse">Classe das magias</label>
+          <select id="magiaSelecaoModalClasse" class="magia-selecao-classe-select"></select>
+        </div>
+        <div>
+          <label class="magia-selecao-classe" for="magiaSelecaoModalBusca">Pesquisar magia</label>
+          <input id="magiaSelecaoModalBusca" class="magia-selecao-busca" type="search" placeholder="Digite o nome da magia" autocomplete="off">
+        </div>
+      </div>
       <div class="magia-selecao-conteudo">
         <div id="magiaSelecaoModalLista" class="magia-selecao-lista"></div>
         <div id="magiaSelecaoModalDetalhes" class="magia-selecao-detalhes"></div>
@@ -1376,6 +1385,14 @@ function montarModalSelecaoMagia() {
     .getElementById("magiaSelecaoModalClasse")
     ?.addEventListener("change", (evento) => {
       estadoModalSelecaoMagia.classeSelecionada = evento.target.value;
+      estadoModalSelecaoMagia.magiaSelecionada =
+        obterMagiasCatalogoFiltradas()[0] || null;
+      renderizarCatalogoMagias();
+    });
+  document
+    .getElementById("magiaSelecaoModalBusca")
+    ?.addEventListener("input", (evento) => {
+      estadoModalSelecaoMagia.busca = evento.target.value;
       estadoModalSelecaoMagia.magiaSelecionada =
         obterMagiasCatalogoFiltradas()[0] || null;
       renderizarCatalogoMagias();
@@ -1429,13 +1446,16 @@ function obterClassesMagia(magia) {
 
 function obterMagiasCatalogoFiltradas() {
   const classe = estadoModalSelecaoMagia.classeSelecionada;
+  const busca = normalizarTextoComparacao(estadoModalSelecaoMagia.busca);
   return estadoModalSelecaoMagia.magias
     .filter((magia) => {
       if (Number(magia.nivel) !== Number(estadoModalSelecaoMagia.nivel))
         return false;
-      if (classe === "todas") return true;
-      const classes = obterClassesMagia(magia);
-      return !classes.length || classes.includes(classe);
+      if (classe !== "todas") {
+        const classes = obterClassesMagia(magia);
+        if (classes.length && !classes.includes(classe)) return false;
+      }
+      return !busca || normalizarTextoComparacao(magia.nome).includes(busca);
     })
     .sort((primeira, segunda) =>
       String(primeira.nome || "").localeCompare(
@@ -1459,7 +1479,7 @@ function renderizarCatalogoMagias() {
   if (!magiasFiltradas.length) {
     const vazio = document.createElement("div");
     vazio.className = "magia-vazia";
-    vazio.textContent = "Nenhuma magia encontrada para este nível e classe.";
+    vazio.textContent = "Nenhuma magia encontrada com esses filtros.";
     lista.appendChild(vazio);
     return;
   }
@@ -1553,8 +1573,11 @@ function abrirModalSelecaoMagia(nivel) {
   const titulo = document.getElementById("magiaSelecaoModalTitulo");
   const selectClasse = document.getElementById("magiaSelecaoModalClasse");
   estadoModalSelecaoMagia.classeSelecionada = obterClasseFiltroInicial();
+  estadoModalSelecaoMagia.busca = "";
   if (selectClasse)
     selectClasse.value = estadoModalSelecaoMagia.classeSelecionada;
+  const campoBusca = document.getElementById("magiaSelecaoModalBusca");
+  if (campoBusca) campoBusca.value = "";
   estadoModalSelecaoMagia.magiaSelecionada =
     obterMagiasCatalogoFiltradas()[0] || null;
   if (titulo) titulo.textContent = obterTituloAdicaoMagia(nivel);
@@ -2896,7 +2919,9 @@ function calcularBonusPorEstado(bonusProf, estado) {
 }
 
 function sincronizarControlesPericia(periciaLinha, estado) {
-  const checkboxProf = periciaLinha.querySelector('.pericia-prof input[type="checkbox"]');
+  const checkboxProf = periciaLinha.querySelector(
+    '.pericia-prof input[type="checkbox"]',
+  );
   const checkboxExpertise = periciaLinha.querySelector(".pericia-expertise");
   if (checkboxProf) checkboxProf.checked = estado === 1 || estado === 3;
   if (checkboxExpertise) checkboxExpertise.checked = estado === 3;
@@ -2950,9 +2975,14 @@ function inicializarEstadosPericias() {
       label.appendChild(checkboxExpertise);
     }
     const estado = Number(periciaLinha.dataset.proficiencia);
-    const inicial = Number.isInteger(estado) && estado >= 0 && estado <= 3
-      ? estado
-      : (periciaLinha.querySelector(".pericia-expertise")?.checked ? 3 : checkboxProf?.checked ? 1 : 0);
+    const inicial =
+      Number.isInteger(estado) && estado >= 0 && estado <= 3
+        ? estado
+        : periciaLinha.querySelector(".pericia-expertise")?.checked
+          ? 3
+          : checkboxProf?.checked
+            ? 1
+            : 0;
     sincronizarControlesPericia(periciaLinha, inicial);
     if (!label.querySelector(".pericia-prof-indicador")) {
       const span = document.createElement("span");
@@ -2973,10 +3003,13 @@ function atualizarPericias() {
     const valorBase =
       parseInt(document.getElementById("atrib_" + atributo)?.value) || 0;
     const modificadorBase = Math.floor((valorBase - 10) / 2);
-    const checkboxProf = pericia.querySelector('.pericia-prof input[type="checkbox"]');
+    const checkboxProf = pericia.querySelector(
+      '.pericia-prof input[type="checkbox"]',
+    );
     const checkboxExpertise = pericia.querySelector(".pericia-expertise");
     let estado = checkboxExpertise?.checked ? 3 : checkboxProf?.checked ? 1 : 0;
-    if (Number(pericia.dataset.proficiencia) === 2 && !checkboxProf?.checked) estado = 2;
+    if (Number(pericia.dataset.proficiencia) === 2 && !checkboxProf?.checked)
+      estado = 2;
     sincronizarControlesPericia(pericia, estado);
     atualizarIndicadorEstadoProficiencia(pericia);
     const bonus = calcularBonusPorEstado(bonusProf, estado);
