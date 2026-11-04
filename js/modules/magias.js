@@ -953,7 +953,7 @@ function obterChaveAtributoConjuracao() {
   const chave = valor.slice(0, 3).toLowerCase();
   return ["for", "des", "con", "int", "sab", "car"].includes(chave)
     ? chave
-    : "int";
+    : "";
 }
 
 function obterBonusAtaqueMagicoAtual() {
@@ -2736,19 +2736,14 @@ function atualizarMagias() {
 
   if (!campoAtributo || !campoCD || !campoAtaque) return;
 
-  let chave = (campoAtributo.value || "").toLowerCase();
-
-  // extrai 'for' ou 'des' mesmo se vier "FOR (+3)"
-  if (chave.includes("des")) chave = "des";
-  else if (chave.includes("for")) chave = "for";
-  else chave = "for"; // fallback seguro
-
-  const modificadorBase = getModificadorBaseAtributo(chave);
-  if (modificadorBase === null) {
+  const chave = normalizarChaveAtributo(campoAtributo.value);
+  if (!chave) {
     campoCD.value = "";
     campoAtaque.value = "";
     return;
   }
+
+  const modificadorBase = getModificadorBaseAtributo(chave);
 
   const bonusProf = getBonusProf();
   const cd = 8 + bonusProf + modificadorBase;
