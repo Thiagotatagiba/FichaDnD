@@ -2881,9 +2881,9 @@ function sincronizarSalvaguardasComAtributosBase() {
 function getMultiplicadorProficiencia(estado) {
   switch (Number(estado)) {
     case 1:
-      return 0.5;
-    case 2:
       return 1;
+    case 2:
+      return 0.5;
     case 3:
       return 2;
     default:
@@ -2892,17 +2892,15 @@ function getMultiplicadorProficiencia(estado) {
 }
 
 function calcularBonusPorEstado(bonusProf, estado) {
-  const nivel = Number(estado);
-  if (nivel === 1) {
-    return bonusProf;
-  }
-  if (nivel === 2) {
-    return Math.floor(bonusProf / 2);
-  }
-  if (nivel === 3) {
-    return bonusProf * 2;
-  }
-  return 0;
+  return Math.floor(Number(bonusProf) * getMultiplicadorProficiencia(estado));
+}
+
+function sincronizarControlesPericia(periciaLinha, estado) {
+  const checkboxProf = periciaLinha.querySelector('.pericia-prof input[type="checkbox"]');
+  const checkboxExpertise = periciaLinha.querySelector(".pericia-expertise");
+  if (checkboxProf) checkboxProf.checked = estado === 1 || estado === 3;
+  if (checkboxExpertise) checkboxExpertise.checked = estado === 3;
+  periciaLinha.dataset.proficiencia = String(estado);
 }
 
 function atualizarIndicadorEstadoProficiencia(periciaLinha) {
@@ -2933,17 +2931,29 @@ function atualizarIndicadorEstadoProficiencia(periciaLinha) {
 function alternarEstadoProficiencia(periciaLinha) {
   const atual = Number(periciaLinha.dataset.proficiencia) || 0;
   const proximo = (atual + 1) % 4;
-  periciaLinha.dataset.proficiencia = String(proximo);
+  sincronizarControlesPericia(periciaLinha, proximo);
   atualizarIndicadorEstadoProficiencia(periciaLinha);
 }
 
 function inicializarEstadosPericias() {
   document.querySelectorAll(".pericia-linha").forEach((periciaLinha) => {
-    if (!periciaLinha.dataset.proficiencia) {
-      periciaLinha.dataset.proficiencia = "0";
-    }
     const label = periciaLinha.querySelector(".pericia-prof");
     if (!label) return;
+    const checkboxProf = label.querySelector('input[type="checkbox"]');
+    if (!periciaLinha.querySelector(".pericia-expertise")) {
+      const checkboxExpertise = document.createElement("input");
+      checkboxExpertise.type = "checkbox";
+      checkboxExpertise.id = checkboxProf?.id.replace(/Prof$/, "Expertise");
+      checkboxExpertise.className = "pericia-expertise";
+      checkboxExpertise.hidden = true;
+      checkboxExpertise.setAttribute("aria-label", "Expertise");
+      label.appendChild(checkboxExpertise);
+    }
+    const estado = Number(periciaLinha.dataset.proficiencia);
+    const inicial = Number.isInteger(estado) && estado >= 0 && estado <= 3
+      ? estado
+      : (periciaLinha.querySelector(".pericia-expertise")?.checked ? 3 : checkboxProf?.checked ? 1 : 0);
+    sincronizarControlesPericia(periciaLinha, inicial);
     if (!label.querySelector(".pericia-prof-indicador")) {
       const span = document.createElement("span");
       span.className = "pericia-prof-indicador";
@@ -2963,7 +2973,12 @@ function atualizarPericias() {
     const valorBase =
       parseInt(document.getElementById("atrib_" + atributo)?.value) || 0;
     const modificadorBase = Math.floor((valorBase - 10) / 2);
-    const estado = Number(pericia.dataset.proficiencia) || 0;
+    const checkboxProf = pericia.querySelector('.pericia-prof input[type="checkbox"]');
+    const checkboxExpertise = pericia.querySelector(".pericia-expertise");
+    let estado = checkboxExpertise?.checked ? 3 : checkboxProf?.checked ? 1 : 0;
+    if (Number(pericia.dataset.proficiencia) === 2 && !checkboxProf?.checked) estado = 2;
+    sincronizarControlesPericia(pericia, estado);
+    atualizarIndicadorEstadoProficiencia(pericia);
     const bonus = calcularBonusPorEstado(bonusProf, estado);
     const total = modificadorBase + bonus;
 

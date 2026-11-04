@@ -200,3 +200,15 @@ As propostas abaixo vieram do levantamento inicial. Não são tarefas ativas; av
 ---
 
 _Relatório gerado automaticamente — revisão manual recomendada antes de criar issues individuais._
+
+## Proficiência e Expertise das perícias — correção em validação
+
+**Data:** 2026-11-04
+**Estado:** Diagnóstico confirmado; implementação em andamento; validação funcional pendente.
+
+- Os checkboxes `pericia*Prof` eram serializados normalmente, mas o cálculo lia `data-proficiencia`, que não era atualizado pela importação. A UI podia mostrar proficiência enquanto o bônus calculado permanecia sem proficiência.
+- Expertise não tinha um campo persistido no formulário/JSON. Um novo checkbox com ID `pericia*Expertise` é criado junto à inicialização e coletado pela persistência existente.
+- A correção sincroniza os campos visuais e o estado interno, centraliza os multiplicadores e mantém os quatro estados já oferecidos pela ficha, incluindo meia proficiência.
+- JSON sem campos Expertise limpa Expertise e recompõe o estado com base em `pericia*Prof`; campos ausentes em importações parciais de Expertise não são forçados a valores padrão.
+- Verificações executadas: `node --check` nos três módulos e `git diff --check`; matriz isolada de cálculo para nenhum/proficiente/meia proficiência/Expertise com bônus +2 e +4; totais de Waldo (Enganação +3, História +2, Intuição +5, Persuasão +3, Prestidigitação +4 e Religião +2). Ainda faltam interação na ficha e round-trip real de export/import com JSON.
+- Arquivos alterados: `js/modules/magias.js`, `js/modules/habilidades.js`, `js/modules/importacao.js`. Nenhum commit foi criado.

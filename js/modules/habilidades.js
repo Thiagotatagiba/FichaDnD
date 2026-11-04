@@ -32,6 +32,22 @@ document.querySelectorAll(".pericia-prof").forEach((label) => {
     atualizarPassivas();
   });
 
+  label.querySelectorAll("input").forEach((checkbox) => {
+    checkbox.addEventListener("click", (evento) => evento.stopPropagation());
+    checkbox.addEventListener("change", () => {
+      if (checkbox.classList.contains("pericia-expertise") && checkbox.checked) {
+        const prof = label.querySelector('input[id$="Prof"]');
+        if (prof) prof.checked = true;
+      }
+      const estado = checkbox.classList.contains("pericia-expertise")
+        ? checkbox.checked ? 3 : label.querySelector('input[id$="Prof"]')?.checked ? 1 : 0
+        : checkbox.checked ? 1 : 0;
+      periciaLinha.dataset.proficiencia = String(estado);
+      atualizarPericias();
+      atualizarPassivas();
+    });
+  });
+
   label.addEventListener("keydown", (evento) => {
     if (evento.key === "Enter" || evento.key === " ") {
       evento.preventDefault();

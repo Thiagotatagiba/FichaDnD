@@ -183,3 +183,14 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - Commits são manuais e ficam a cargo do responsável pelo projeto.
 
 **Última atualização:** 2026-10-23 — correção estrutural do modal de ataque registrada com confirmação visual limitada; validação ampla da timeline e round-trip controlado dos campos narrativos de Thrain permanecem pendentes; Fase 3 permanece em andamento.
+
+### Correção de proficiência e Expertise nas perícias (Fase 3)
+
+**Estado:** Implementação em andamento; validação funcional pendente.
+
+- Corrigido o vínculo entre os checkboxes de proficiência, `data-proficiencia` e o cálculo dos bônus.
+- Adicionado campo persistido `pericia*Expertise`; o ciclo mantém os estados existentes: sem proficiência, proficiente, meia proficiência e Expertise.
+- O cálculo usa `getMultiplicadorProficiencia`; alterações de atributo e bônus continuam recalculando o resultado sem descartar o estado.
+- JSON legado sem campos de Expertise limpa esse estado ao importar e preserva a proficiência legada quando presente.
+- Arquivos de código alterados: `js/modules/magias.js`, `js/modules/habilidades.js` e `js/modules/importacao.js`.
+- Verificações estáticas (`node --check` nos três módulos e `git diff --check`) passaram. Uma matriz isolada confirmou os multiplicadores para os quatro estados com bônus +2/+4 e os seis totais esperados de Waldo. Testes de interação, alteração de atributo e round-trip de export/import ainda estão pendentes; não declarar a tarefa concluída até validá-los.

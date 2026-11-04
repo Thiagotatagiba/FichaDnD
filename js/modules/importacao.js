@@ -81,6 +81,20 @@ async function aplicarDadosFicha(dados) {
     preencherCampo(campo, dados[key]);
   }
 
+  // JSONs antigos não tinham Expertise; a ausência desses campos representa
+  // nenhum estado de Expertise, sem afetar os campos de proficiência legados.
+  const possuiExpertiseSalva = Object.keys(dados).some((chave) =>
+    /^pericia[A-Za-z]+Expertise$/.test(chave),
+  );
+  if (!possuiExpertiseSalva) {
+    document.querySelectorAll(".pericia-expertise").forEach((campo) => {
+      campo.checked = false;
+      const linha = campo.closest(".pericia-linha");
+      const checkboxProf = linha?.querySelector('.pericia-prof input[type="checkbox"]');
+      if (linha) linha.dataset.proficiencia = checkboxProf?.checked ? "1" : "0";
+    });
+  }
+
   const nivelSalvoFicha = obterNivelSalvoFicha(dados);
   if (nivelSalvoFicha) {
     const campoNivelImportado = document.getElementById("classeNivelID");
