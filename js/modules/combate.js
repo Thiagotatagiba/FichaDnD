@@ -44,11 +44,12 @@ function inicializarSeletorCondicoes() {
     const customizada = personalizada.value.trim();
     if (customizada) selecionadas.push(customizada);
     campo.value = selecionadas.join(", ");
+    sincronizarCondicaoConcentracao();
     ajustarAlturaCampo();
   };
 
   const abrir = () => {
-    const atuais = campo.value
+    const atuais = removerRotuloConcentracaoCondicoes(campo.value)
       .split(",")
       .map((valor) => valor.trim())
       .filter(Boolean);
@@ -182,6 +183,7 @@ const estadoAtaqueArma = {
   nivelSlot: null,
   danoTipo: "",
   infoCD: "",
+  aplicacaoEfeito: false,
 };
 
 const estadoCombateIniciativa = {
@@ -1044,6 +1046,8 @@ function atualizarRodadaModalAtaque() {
 }
 
 function marcarTipoAcaoModalAtaque(tipoSelecionado = "Ação") {
+  const ehMagia = estadoAtaqueArma.origem === "magia";
+  if (ehMagia) tipoSelecionado = obterTipoAcaoMagia(estadoAtaqueArma.magia, estadoAtaqueArma.aplicacaoEfeito);
   const checkboxes = document.querySelectorAll(
     "#modalAtaqueEtapaDado input[data-tipo-acao]",
   );
@@ -1052,16 +1056,20 @@ function marcarTipoAcaoModalAtaque(tipoSelecionado = "Ação") {
   checkboxes.forEach((checkbox) => {
     const ativo = checkbox.dataset.tipoAcao === tipoSelecionado;
     checkbox.checked = ativo;
+    checkbox.disabled = ehMagia;
     if (ativo) encontrou = true;
   });
 
-  if (!encontrou && checkboxes[0]) checkboxes[0].checked = true;
+  if (!encontrou && checkboxes[0] && !ehMagia) checkboxes[0].checked = true;
   estadoAtaqueArma.tipoAcao = obterTipoAcaoSelecionadoModalAtaque();
   atualizarDetalheBonusDanoModal();
   atualizarTotalModalDano();
 }
 
 function obterTipoAcaoSelecionadoModalAtaque() {
+  if (estadoAtaqueArma.origem === "magia") {
+    return obterTipoAcaoMagia(estadoAtaqueArma.magia, estadoAtaqueArma.aplicacaoEfeito);
+  }
   const selecionado = document.querySelector(
     "#modalAtaqueEtapaDado input[data-tipo-acao]:checked",
   );
@@ -1119,6 +1127,7 @@ function fecharModalAtaqueArma() {
   estadoAtaqueArma.nivelSlot = null;
   estadoAtaqueArma.danoTipo = "";
   estadoAtaqueArma.infoCD = "";
+  estadoAtaqueArma.aplicacaoEfeito = false;
 
   if (campoDado) campoDado.value = "";
   if (campoDano) campoDano.value = "";
@@ -1175,6 +1184,7 @@ function abrirModalAtaqueArma(arma) {
     : null;
   estadoAtaqueArma.danoTipo = arma?.arma_tipo_dano || "";
   estadoAtaqueArma.infoCD = "";
+  estadoAtaqueArma.aplicacaoEfeito = false;
   estadoAtaqueArma.dado = null;
   estadoAtaqueArma.totalAtaque = totalAtaque;
   estadoAtaqueArma.modBase = modBase || 0;
@@ -1325,6 +1335,7 @@ function abrirModalDanoMagia(magia, opcoes = {}) {
 
   estadoAtaqueArma.arma = arma;
   estadoAtaqueArma.origem = "magia";
+  estadoAtaqueArma.aplicacaoEfeito = !!opcoes.aplicacaoEfeito;
   estadoAtaqueArma.magia = arma.magiaOriginal || null;
   estadoAtaqueArma.nivelSlot = Number.isInteger(opcoes.nivelSlot)
     ? opcoes.nivelSlot
@@ -1592,6 +1603,10 @@ function escaparHtmlHistorico(valor) {
 
 function normalizarTipoAcaoHistorico(tipoAcao = "Ação") {
   const texto = String(tipoAcao || "Ação").toLowerCase();
+  if (texto === "efeito") return { texto: "EFEITO", classe: "efeito" };
+  if (texto === "conjuração" || texto === "conjuracao") {
+    return { texto: "CONJURAÇÃO", classe: "conjuracao" };
+  }
   if (texto.includes("reação") || texto.includes("reacao")) {
     return { texto: "REAÇÃO", classe: "reacao" };
   }
@@ -1784,6 +1799,7 @@ function registrarHistoricoAtaqueArma(sucesso, dano) {
   if (estadoAtaqueArma.origem !== "magia") consumirMunicao(1, arma);
 
   const ehMagia = estadoAtaqueArma.origem === "magia";
+  const ehEfeito = ehMagia && estadoAtaqueArma.aplicacaoEfeito;
   const nivelMagia = Number.isInteger(estadoAtaqueArma.nivelSlot)
     ? estadoAtaqueArma.nivelSlot
     : Number(estadoAtaqueArma.magia?.nivel) || 0;
@@ -1801,6 +1817,7 @@ function registrarHistoricoAtaqueArma(sucesso, dano) {
   const valor = ehMagia
     ? [
         arma.nome || "Magia",
+        ehEfeito ? "Aplicação de efeito" : "",
         dado === null ? "" : `Dado: ${dado}`,
         sucesso ? "Sucesso" : "Fracasso",
         `Dano: ${dano}`,
@@ -1824,7 +1841,7 @@ function registrarHistoricoAtaqueArma(sucesso, dano) {
     {
       timeline: {
         titulo: ehMagia
-          ? obterTituloMagiaHistorico(nivelMagia)
+          ? `${obterTituloMagiaHistorico(nivelMagia)}${ehEfeito ? " · Efeito" : ""}`
           : "Ataque com arma",
         nome: arma.nome || (ehMagia ? "Magia" : "Arma"),
         iconeNome: ehMagia ? "🪄" : "🗡️",

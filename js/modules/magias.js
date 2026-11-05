@@ -171,6 +171,7 @@ const estadoModalSelecaoMagia = {
   ultimoFoco: null,
 };
 let concentracaoAtiva = null;
+const efeitosMagicosPendentes = new Map();
 let ultimoResultadoConcentracao = null;
 let ultimoFocoModalConcentracao = null;
 const TALENTOS_CONFIG = {
@@ -681,6 +682,7 @@ function criarMagiaPadrao(nivel) {
     efeitos: [],
     descricao: "",
     proximos_niveis: "",
+    momento_dano: "imediato",
   };
 }
 
@@ -708,6 +710,7 @@ function normalizarMagiaRegistro(registro, nivel) {
   const efeitos = Array.isArray(registro?.efeitos)
     ? registro.efeitos
         .map((efeito) => ({
+          ...efeito,
           tipo: efeito?.tipo || "",
           formula: efeito?.formula || "",
           dano_tipo: efeito?.dano_tipo || "",
@@ -743,6 +746,7 @@ function normalizarMagiaRegistro(registro, nivel) {
     id: registro?.id || base.id,
     nivel,
     preparada: !!registro?.preparada,
+    momento_dano: registro?.momento_dano === "posterior" ? "posterior" : "imediato",
     propriedades,
     componentes,
     resolucao: registro?.resolucao || "",
@@ -881,6 +885,17 @@ function consumirEspacoMagia(nivelSlot) {
   return true;
 }
 
+function obterTipoAcaoMagia(magia, aplicacaoEfeito = false) {
+  if (aplicacaoEfeito) return "Efeito";
+  const tempo = String(magia?.tempo_conjuracao || "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+  if (/\breacao\b/.test(tempo)) return "Reação";
+  if (/\bbonus\b/.test(tempo)) return "Ação bônus";
+  if (/\bacao\b/.test(tempo)) return "Ação";
+  // Tempos longos ou desconhecidos não devem ser registrados como uma ação.
+  return "Conjuração";
+}
+
 function registrarHistoricoMagia(magia, nivelSlot = null) {
   const nomeMagiaOriginal = magia?.nome || "Magia";
   const nomeMagia = escaparHtmlMagia(nomeMagiaOriginal);
@@ -894,7 +909,7 @@ function registrarHistoricoMagia(magia, nivelSlot = null) {
   const valorHistorico = nomeMagia;
 
   // (tipo usa o SLOT UTILIZADO via nivelSlot; truque não consome slot)
-  adicionarRegistroHistoricoCombate(tipoHistorico, valorHistorico, "", "Ação", {
+  adicionarRegistroHistoricoCombate(tipoHistorico, valorHistorico, "", obterTipoAcaoMagia(magia), {
     timeline: {
       titulo: tipoHistorico,
       nome: nomeMagiaOriginal,
@@ -929,10 +944,11 @@ function abrirHistoricoCombateMagia() {
 
 function conjurarTruque(magia) {
   const origemCombate = estadoModalMagia.origemCombate;
-  if (!(origemCombate && magiaPossuiDano(magia))) {
+  if (!(origemCombate && magiaPossuiDano(magia) && !magiaTemDanoPosterior(magia))) {
     registrarHistoricoMagia(magia);
   }
   iniciarConcentracaoMagia(magia);
+  registrarEfeitoMagicoPendente(magia, null);
   fecharModalMagia();
   estadoModalMagia.origemCombate = origemCombate;
   resolverCombateMagia(magia, null);
@@ -942,6 +958,62 @@ function conjurarTruque(magia) {
 function magiaPossuiDano(magia) {
   if (magia?.propriedades?.dano) return true;
   return (magia?.efeitos || []).some((efeito) => efeito?.tipo === "dano");
+}
+
+function magiaTemDanoPosterior(magia) {
+  return magiaPossuiDano(magia) && magia.momento_dano === "posterior";
+}
+
+function registrarEfeitoMagicoPendente(magia, nivelSlot) {
+  if (!magiaTemDanoPosterior(magia)) return;
+  efeitosMagicosPendentes.set(magia.id || obterChaveConcentracaoMagia(magia), {
+    magia: JSON.parse(JSON.stringify(magia)), nivelSlot,
+  });
+  atualizarSubAbaMagiasCombate();
+}
+
+function removerEfeitosDaConcentracao(chave) {
+  efeitosMagicosPendentes.forEach(({ magia }, id) => {
+    if (magiaExigeConcentracao(magia) && obterChaveConcentracaoMagia(magia) === chave) {
+      efeitosMagicosPendentes.delete(id);
+    }
+  });
+}
+
+function criarListaEfeitosMagicosPendentes() {
+  const lista = document.createElement("section");
+  lista.className = "magia-card-detalhe-efeitos";
+  const titulo = document.createElement("strong");
+  titulo.textContent = "Efeitos disponíveis — aplicação manual";
+  lista.appendChild(titulo);
+  const aviso = document.createElement("small");
+  aviso.textContent = "Aplique quando o gatilho ocorrer e encerre ao gastar o efeito ou acabar sua duração. Esta lista é reiniciada ao recarregar a página.";
+  lista.appendChild(aviso);
+  efeitosMagicosPendentes.forEach(({ magia, nivelSlot }, chave) => {
+    const linha = document.createElement("div");
+    linha.className = "magia-efeito-pendente";
+    const nome = document.createElement("span");
+    nome.textContent = `${magia.nome} · ${nivelSlot === null ? "Truque" : `Espaço NV ${nivelSlot}`}`;
+    const aplicar = document.createElement("button");
+    aplicar.type = "button";
+    aplicar.className = "magia-modal-botao";
+    aplicar.textContent = "Aplicar efeito";
+    aplicar.title = "Confirme o gatilho da magia. Não consome espaço; pode repetir enquanto o efeito durar.";
+    aplicar.addEventListener("click", () => abrirModalDanoMagia(magia, { mostrarCD: false, nivelSlot, aplicacaoEfeito: true }));
+    const encerrar = document.createElement("button");
+    encerrar.type = "button";
+    encerrar.className = "magia-modal-botao";
+    encerrar.textContent = "Encerrar efeito";
+    encerrar.addEventListener("click", () => {
+      efeitosMagicosPendentes.delete(chave);
+      atualizarSubAbaMagiasCombate();
+    });
+    linha.appendChild(nome);
+    linha.appendChild(aplicar);
+    linha.appendChild(encerrar);
+    lista.appendChild(linha);
+  });
+  return lista;
 }
 
 function obterEfeitoDanoMagia(magia) {
@@ -1016,7 +1088,7 @@ function criarArmaVirtualMagia(magia) {
     dano: infoDano?.formulaDado || efeitoDano?.formula || "",
     danoFormula: infoDano?.formulaDado || efeitoDano?.formula || "",
     danoTipo: efeitoDano?.dano_tipo || "",
-    danoBonusMagia: infoDano?.bonus || 0,
+    danoBonusMagia: infoDano?.bonus || (/^\d+$/.test(efeitoDano?.formula || "") ? Number(efeitoDano.formula) : 0),
     danoBonusRotuloMagia: infoDano?.rotuloBonus || "",
     magiaOriginal: { ...magia },
     proficiente: true,
@@ -1032,7 +1104,7 @@ function criarArmaVirtualMagia(magia) {
 }
 
 function resolverCombateMagia(magia, nivelSlot = null) {
-  if (!estadoModalMagia.origemCombate || !magiaPossuiDano(magia)) {
+  if (!estadoModalMagia.origemCombate || !magiaPossuiDano(magia) || magiaTemDanoPosterior(magia)) {
     abrirHistoricoCombateMagia();
     return;
   }
@@ -1303,6 +1375,13 @@ function montarModalMagia() {
                             <div class="magia-formulario-campo col-3 oculto" id="magiaModalCampoDanoFormula">
                                 <label for="magiaModalDanoFormula">Fórmula de Dano</label>
                                 <input id="magiaModalDanoFormula" type="text" placeholder="Ex: 3d6">
+                            </div>
+                            <div class="magia-formulario-campo completo oculto" id="magiaModalCampoMomentoDano">
+                                <label for="magiaModalMomentoDano">Quando o dano acontece</label>
+                                <select id="magiaModalMomentoDano">
+                                    <option value="imediato">Na conjuração</option>
+                                    <option value="posterior">Depois, ao aplicar o efeito manualmente</option>
+                                </select>
                             </div>
                             <div class="magia-formulario-campo col-3 oculto" id="magiaModalCampoDanoTipo">
                                 <label for="magiaModalDanoTipo">Tipo de Dano</label>
@@ -1763,10 +1842,11 @@ function confirmarUsoMagia() {
   }
 
   const origemCombate = estadoModalUsoMagia.origemCombate;
-  if (!(origemCombate && magiaPossuiDano(magia))) {
+  if (!(origemCombate && magiaPossuiDano(magia) && !magiaTemDanoPosterior(magia))) {
     registrarHistoricoMagia(magia, nivelSlot);
   }
   iniciarConcentracaoMagia(magia, nivelSlot);
+  registrarEfeitoMagicoPendente(magia, nivelSlot);
   atualizarMagias();
   fecharModalUsarMagia();
   fecharModalMagia();
@@ -1953,8 +2033,26 @@ function registrarHistoricoConcentracao(acao, magia, icone) {
   );
 }
 
+function removerRotuloConcentracaoCondicoes(texto) {
+  return String(texto || "")
+    .replace(/(?:^|,\s*)Concentrado\s*\[[^\]]*\]/g, "")
+    .replace(/^\s*,\s*|,\s*$/g, "").trim();
+}
+
+function sincronizarCondicaoConcentracao() {
+  const campo = document.getElementById("ataqueCondicao");
+  if (!campo) return;
+  const outras = removerRotuloConcentracaoCondicoes(campo.value);
+  const rotulo = concentracaoAtiva ? `Concentrado [${obterNomeConcentracao()}]` : "";
+  campo.value = [outras, rotulo].filter(Boolean).join(", ");
+  campo.style.height = "20px";
+  campo.style.height = `${Math.min(campo.scrollHeight, 120)}px`;
+}
+
 function iniciarConcentracaoMagia(magia, nivelSlot = null) {
   if (!magiaExigeConcentracao(magia)) return;
+
+  if (concentracaoAtiva) removerEfeitosDaConcentracao(concentracaoAtiva.chave);
 
   concentracaoAtiva = {
     magia: { ...magia },
@@ -1964,6 +2062,7 @@ function iniciarConcentracaoMagia(magia, nivelSlot = null) {
   };
   ultimoResultadoConcentracao = null;
 
+  sincronizarCondicaoConcentracao();
   atualizarSubAbaMagiasCombate();
 }
 
@@ -1971,8 +2070,10 @@ function encerrarConcentracao(motivo = "encerrada", opcoes = {}) {
   if (!concentracaoAtiva) return;
 
   const magia = concentracaoAtiva.magia;
+  removerEfeitosDaConcentracao(concentracaoAtiva.chave);
   concentracaoAtiva = null;
   ultimoResultadoConcentracao = motivo === "perdida" ? "falha" : null;
+  sincronizarCondicaoConcentracao();
 
   if (opcoes.registrarHistorico !== false) {
     registrarHistoricoConcentracao(motivo, magia, "❌");
@@ -2285,6 +2386,7 @@ function atualizarSubAbaMagiasCombate() {
   container.appendChild(criarLinhaStatusMagico());
   const hudConcentracao = criarHudConcentracao();
   if (hudConcentracao) container.appendChild(hudConcentracao);
+  if (efeitosMagicosPendentes.size) container.appendChild(criarListaEfeitosMagicosPendentes());
 
   atualizarContadorMagiasPreparadas();
 
@@ -2421,6 +2523,7 @@ function preencherFormularioMagia(magia) {
 
   document.getElementById("magiaModalDanoFormula").value =
     efeitoDano.formula || "";
+  document.getElementById("magiaModalMomentoDano").value = magia.momento_dano || "imediato";
   document.getElementById("magiaModalDanoTipo").value =
     efeitoDano.dano_tipo || "";
   document.getElementById("magiaModalCuraRegra").value =
@@ -2429,6 +2532,7 @@ function preencherFormularioMagia(magia) {
 }
 
 function lerFormularioMagia() {
+  const magiaOriginal = obterMagiaDoEstadoModal();
   const danoFormula = document
     .getElementById("magiaModalDanoFormula")
     .value.trim();
@@ -2446,29 +2550,41 @@ function lerFormularioMagia() {
     material: document.getElementById("magiaModalCompMaterial").checked,
     material_descricao: document.getElementById("magiaModalMaterialDescricao").value.trim(),
   };
-  const efeitos = [];
+  // O formulário edita apenas o primeiro dano e a primeira cura.
+  // Os demais efeitos e seus metadados devem permanecer intactos.
+  const efeitos = (magiaOriginal.efeitos || [])
+    .filter((efeito) =>
+      efeito.tipo === "dano" ? propriedades.dano :
+      efeito.tipo === "cura" ? propriedades.cura : true,
+    )
+    .map((efeito) => ({ ...efeito }));
 
   if (propriedades.dano && (danoFormula || danoTipo || resolucao)) {
-    efeitos.push({
-      tipo: "dano",
-      formula: danoFormula,
-      dano_tipo: danoTipo,
-      regra: "",
-    });
+    const efeitoDano = efeitos.find((efeito) => efeito.tipo === "dano");
+    if (efeitoDano) {
+      efeitoDano.formula = danoFormula;
+      efeitoDano.dano_tipo = danoTipo;
+    } else {
+      efeitos.push({ tipo: "dano", formula: danoFormula, dano_tipo: danoTipo, regra: "" });
+    }
   }
 
   if (propriedades.cura && curaRegra) {
-    efeitos.push({
-      tipo: "cura",
-      formula: "",
-      dano_tipo: "",
-      regra: curaRegra,
-    });
+    const efeitoCura = efeitos.find((efeito) => efeito.tipo === "cura");
+    if (efeitoCura) {
+      if (curaRegra !== (efeitoCura.regra || efeitoCura.formula || "")) {
+        // Mantém o campo de origem quando a cura foi cadastrada como fórmula.
+        if (efeitoCura.regra || !efeitoCura.formula) efeitoCura.regra = curaRegra;
+        else efeitoCura.formula = curaRegra;
+      }
+    } else {
+      efeitos.push({ tipo: "cura", formula: "", dano_tipo: "", regra: curaRegra });
+    }
   }
 
   return normalizarMagiaRegistro(
     {
-      ...obterMagiaDoEstadoModal(),
+      ...magiaOriginal,
       nome: document.getElementById("magiaModalNome").value.trim(),
       preparada: document.getElementById("magiaModalPreparada").checked,
       escola: document.getElementById("magiaModalEscola").value.trim(),
@@ -2478,6 +2594,7 @@ function lerFormularioMagia() {
       propriedades,
       componentes,
       resolucao,
+      momento_dano: document.getElementById("magiaModalMomentoDano").value,
       teste_resistencia: document.getElementById("magiaModalTesteResistencia")
         .value,
       efeitos,
@@ -2585,6 +2702,7 @@ function validarFormularioMagia() {
 }
 
 function atualizarVisibilidadeFormularioMagia() {
+  alternarCampoModalMagia("magiaModalCampoMomentoDano", !!document.getElementById("magiaModalPropDano")?.checked);
   alternarCampoModalMagia(
     "magiaModalCampoMaterial",
     !!document.getElementById("magiaModalCompMaterial")?.checked,

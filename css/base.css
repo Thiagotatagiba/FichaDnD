@@ -4061,6 +4061,8 @@ body {
   margin-top: 12px;
   font-size: 13px;
   line-height: 1.45;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   background: rgba(255, 255, 255, 0.82);
   border: 1px solid #bda68c;
   border-radius: 8px;
@@ -4304,6 +4306,17 @@ body {
 .magia-material-inline {
   flex: 1 1 180px;
   min-width: 0;
+}
+
+.magia-efeito-pendente {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.magia-efeito-pendente > span {
+  flex: 1 1 200px;
 }
 
 .magia-material-inline input {

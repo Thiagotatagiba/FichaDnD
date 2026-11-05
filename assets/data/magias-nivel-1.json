@@ -14,7 +14,7 @@
     "alcance": "Pessoal",
     "duracao": "1 rodada",
     "propriedades": {
-      "dano": false,
+      "dano": true,
       "cura": false,
       "concentracao": false
     },
@@ -24,11 +24,19 @@
       "material": false,
       "material_descricao": ""
     },
-    "efeitos": [],
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Variável",
+        "regra": "Aplicar apenas no próximo acerto corpo a corpo, antes de a magia terminar. O tipo é o do dano absorvido."
+      }
+    ],
     "descricao": "A magia captura parte da energia recebida, reduzindo seu impacto em você e canalizando-a no seu próximo ataque corpo a corpo.\n\nConcede resistência ao dano elemental sofrido e adiciona 1d6 do mesmo tipo no seu próximo ataque corpo a corpo.\n\nUse sua reação ao sofrer dano de ácido, frio, fogo, elétrico ou trovejante. A resistência dura até o início do seu próximo turno; o dano extra tem o mesmo tipo do dano que desencadeou a reação.",
-    "resolucao": "",
+    "resolucao": "Automático",
     "teste_resistencia": "",
-    "proximos_niveis": ""
+    "proximos_niveis": "",
+    "momento_dano": "posterior"
   },
   {
     "nome": "Alarme (Alarm)",
@@ -120,7 +128,8 @@
     "descricao": "Uma força mágica protetora envolve você, manifestando-se como uma geada espectral.\n\nConcede 5 PV temporários. Criaturas que atingirem você com ataque corpo a corpo enquanto tiver esses PV sofrem 5 de dano de frio.",
     "resolucao": "Automático",
     "teste_resistencia": "",
-    "proximos_niveis": ""
+    "proximos_niveis": "",
+    "momento_dano": "posterior"
   },
   {
     "nome": "Armadura Arcana (Mage Armor)",
@@ -244,7 +253,8 @@
     "descricao": "Amaldiçoe uma criatura visível no alcance. Durante a magia, cada ataque seu que acertar esse alvo causa 1d6 de dano necrótico adicional. Escolha também um atributo: o alvo tem desvantagem nos testes de habilidade feitos com ele, sem afetar seus testes de resistência.\n\nSe o alvo chegar a 0 PV, você pode gastar uma ação bônus em um turno posterior para transferir a maldição a outra criatura. O dano extra ocorre nos acertos, não na conjuração.",
     "resolucao": "Automático",
     "teste_resistencia": "",
-    "proximos_niveis": "Usando um espaço de 3º ou 4º nível, você pode manter a concentração por até 8 horas. Com um espaço de 5º nível ou superior, esse limite passa a 24 horas."
+    "proximos_niveis": "Usando um espaço de 3º ou 4º nível, você pode manter a concentração por até 8 horas. Com um espaço de 5º nível ou superior, esse limite passa a 24 horas.",
+    "momento_dano": "posterior"
   },
   {
     "nome": "Cerimônia (Ceremony)",
@@ -1467,6 +1477,7 @@
       }
     ],
     "descricao": "Seu próximo ataque corpo a corpo com arma ressoa com um trovão.\n\nSe falhar na salvaguarda de FOR, o alvo é empurrado 3m para trás e cai caído.\n\nO dano extra é aplicado ao acertar o próximo ataque corpo a corpo com arma. O teste de resistência de Força determina apenas o empurrão e a queda.",
-    "proximos_niveis": ""
+    "proximos_niveis": "",
+    "momento_dano": "posterior"
   }
 ]
