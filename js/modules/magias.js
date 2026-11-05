@@ -123,8 +123,9 @@ const OPCOES_TIPO_DANO_MAGIA = [
   "Radiante",
   "Trovejante",
   "Veneno",
+  "Variável",
 ];
-const OPCOES_RESOLUCAO_MAGIA = ["Ataque", "Teste de Resistência"];
+const OPCOES_RESOLUCAO_MAGIA = ["Ataque", "Teste de Resistência", "Automático"];
 const OPCOES_TESTE_RESISTENCIA_MAGIA = [
   "FOR",
   "DES",
@@ -673,6 +674,7 @@ function criarMagiaPadrao(nivel) {
       verbal: false,
       somatico: false,
       material: false,
+      material_descricao: "",
     },
     resolucao: "",
     teste_resistencia: "",
@@ -700,6 +702,7 @@ function normalizarMagiaRegistro(registro, nivel) {
     verbal: !!registro?.componentes?.verbal || tags.includes("verbal"),
     somatico: !!registro?.componentes?.somatico || tags.includes("somatico"),
     material: !!registro?.componentes?.material || tags.includes("material"),
+    material_descricao: String(registro?.componentes?.material_descricao || "").trim(),
   };
 
   const efeitos = Array.isArray(registro?.efeitos)
@@ -1045,6 +1048,13 @@ function resolverCombateMagia(magia, nivelSlot = null) {
     return;
   }
 
+  if (resolucao === "Automático") {
+    abrirModalDanoMagia(magia, { mostrarCD: false, nivelSlot });
+    return;
+  }
+
+  // Dano automático não abre um modal de rolagem para registrar o uso.
+  registrarHistoricoMagia(magia, nivelSlot);
   abrirHistoricoCombateMagia();
 }
 
@@ -1089,7 +1099,9 @@ function renderizarCardDetalheMagia(
                   [
                     magia?.componentes?.verbal ? "V" : "",
                     magia?.componentes?.somatico ? "S" : "",
-                    magia?.componentes?.material ? "M" : "",
+                    magia?.componentes?.material
+                      ? `M${magia.componentes.material_descricao ? ` (${escaparHtmlMagia(magia.componentes.material_descricao)})` : ""}`
+                      : "",
                   ]
                     .filter(Boolean)
                     .join(", ") || "-"
@@ -1271,6 +1283,9 @@ function montarModalMagia() {
                                     <label><input id="magiaModalCompVerbal" type="checkbox"> Verbal</label>
                                     <label><input id="magiaModalCompSomatico" type="checkbox"> Somático</label>
                                     <label><input id="magiaModalCompMaterial" type="checkbox"> Material</label>
+                                    <div class="magia-material-inline oculto" id="magiaModalCampoMaterial" hidden>
+                                        <input id="magiaModalMaterialDescricao" type="text" aria-label="Material necessário" placeholder="Material necessário">
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -2387,6 +2402,8 @@ function preencherFormularioMagia(magia) {
     !!magia?.componentes?.somatico;
   document.getElementById("magiaModalCompMaterial").checked =
     !!magia?.componentes?.material;
+  document.getElementById("magiaModalMaterialDescricao").value =
+    magia?.componentes?.material_descricao || "";
   document.getElementById("magiaModalPropDano").checked =
     !!magia?.propriedades?.dano;
   document.getElementById("magiaModalPropCura").checked =
@@ -2427,6 +2444,7 @@ function lerFormularioMagia() {
     verbal: document.getElementById("magiaModalCompVerbal").checked,
     somatico: document.getElementById("magiaModalCompSomatico").checked,
     material: document.getElementById("magiaModalCompMaterial").checked,
+    material_descricao: document.getElementById("magiaModalMaterialDescricao").value.trim(),
   };
   const efeitos = [];
 
@@ -2567,6 +2585,10 @@ function validarFormularioMagia() {
 }
 
 function atualizarVisibilidadeFormularioMagia() {
+  alternarCampoModalMagia(
+    "magiaModalCampoMaterial",
+    !!document.getElementById("magiaModalCompMaterial")?.checked,
+  );
   const habilitaDano = document.getElementById("magiaModalPropDano")?.checked;
   const habilitaCura = document.getElementById("magiaModalPropCura")?.checked;
   const resolucao = document.getElementById("magiaModalResolucao")?.value;

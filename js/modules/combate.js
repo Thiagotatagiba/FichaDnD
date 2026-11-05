@@ -1349,9 +1349,11 @@ function abrirModalDanoMagia(magia, opcoes = {}) {
     : "";
 
   titulo.innerHTML = `Dano de <span class="ataque-modal-titulo-arma">${arma.nome}</span>`;
-  subtitulo.textContent = magia?.teste_resistencia
-    ? `Teste de Resistência: ${magia.teste_resistencia}`
-    : "Teste de Resistência";
+  subtitulo.textContent = opcoes.mostrarCD
+    ? magia?.teste_resistencia
+      ? `Teste de Resistência: ${magia.teste_resistencia}`
+      : "Teste de Resistência"
+    : "Dano automático";
   if (campoDado) campoDado.value = "";
   campoDano.value = "";
 

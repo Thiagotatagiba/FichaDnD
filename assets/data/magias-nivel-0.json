@@ -16,7 +16,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -41,7 +42,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -66,7 +68,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "CON",
@@ -98,7 +101,8 @@
     "componentes": {
       "verbal": true,
       "somatico": false,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "INT",
@@ -130,7 +134,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": "visco, uma folha de trevo e uma clava ou bordão"
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -162,7 +167,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -194,7 +200,8 @@
     "componentes": {
       "verbal": true,
       "somatico": false,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "FOR",
@@ -226,7 +233,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
@@ -258,7 +266,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -283,7 +292,8 @@
     "componentes": {
       "verbal": true,
       "somatico": false,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "SAB",
@@ -315,7 +325,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": "duas magnetitas"
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -340,7 +351,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
@@ -372,7 +384,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -397,7 +410,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -422,7 +436,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
@@ -454,7 +469,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -486,7 +502,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -518,7 +535,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -550,7 +568,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "CON",
@@ -582,7 +601,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -614,7 +634,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -646,7 +667,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": "um pouco de lã"
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -671,7 +693,8 @@
     "componentes": {
       "verbal": true,
       "somatico": false,
-      "material": true
+      "material": true,
+      "material_descricao": "um vaga-lume ou musgo fosforescente"
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
@@ -696,7 +719,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": "um pouco de fósforo ou wychwood, ou um pirilampo"
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -721,7 +745,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -746,7 +771,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": "um pedaço curto de fio de cobre"
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -771,7 +797,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -796,7 +823,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "CON",
@@ -828,7 +856,8 @@
     "componentes": {
       "verbal": true,
       "somatico": false,
-      "material": true
+      "material": true,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "CON",
@@ -860,7 +889,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -885,7 +915,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -910,7 +941,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -942,7 +974,8 @@
     "componentes": {
       "verbal": true,
       "somatico": false,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
@@ -974,7 +1007,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": true
+      "material": true,
+      "material_descricao": "uma capa em miniatura"
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -999,7 +1033,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "SAB",
@@ -1031,7 +1066,8 @@
     "componentes": {
       "verbal": true,
       "somatico": false,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -1056,7 +1092,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -1088,7 +1125,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Ataque",
     "teste_resistencia": "",
@@ -1120,7 +1158,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -1145,7 +1184,8 @@
     "componentes": {
       "verbal": false,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "CON",
@@ -1177,7 +1217,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "",
     "teste_resistencia": "",
@@ -1202,7 +1243,8 @@
     "componentes": {
       "verbal": true,
       "somatico": true,
-      "material": false
+      "material": false,
+      "material_descricao": ""
     },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "FOR",

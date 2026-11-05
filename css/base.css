@@ -4283,6 +4283,7 @@ body {
 
 .magia-componentes-checks {
   display: flex;
+  align-items: center;
   gap: 12px;
   flex-wrap: wrap;
   margin-top: 4px;
@@ -4298,6 +4299,16 @@ body {
 
 .magia-componentes-checks input {
   width: auto;
+}
+
+.magia-material-inline {
+  flex: 1 1 180px;
+  min-width: 0;
+}
+
+.magia-material-inline input {
+  width: 100%;
+  min-width: 0;
 }
 
 @media (max-width: 720px) {

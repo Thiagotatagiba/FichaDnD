@@ -293,6 +293,7 @@ document
   ?.addEventListener("click", fecharModalTalento);
 [
   "magiaModalPropDano",
+  "magiaModalCompMaterial",
   "magiaModalPropCura",
   "magiaModalPropConcentracao",
   "magiaModalResolucao",

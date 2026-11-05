@@ -8,7 +8,7 @@
     "alcance": "45 metros",
     "duracao": "Instantânea",
     "propriedades": { "dano": true },
-    "componentes": { "verbal": true, "somatico": true },
+    "componentes": { "verbal": true, "somatico": true, "material_descricao": "" },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
     "efeitos": [{ "tipo": "dano", "formula": "8d6", "dano_tipo": "Fogo" }],
@@ -22,7 +22,7 @@
     "tempo_conjuracao": "1 ação",
     "alcance": "36 metros",
     "duracao": "Instantânea",
-    "componentes": { "verbal": true, "somatico": true },
+    "componentes": { "verbal": true, "somatico": true, "material_descricao": "" },
     "descricao": "Escolha uma criatura, objeto ou efeito mágico dentro do alcance para encerrar suas magias."
   },
   {
@@ -34,7 +34,7 @@
     "alcance": "Toque",
     "duracao": "Concentração, até 10 minutos",
     "propriedades": { "concentracao": true },
-    "componentes": { "verbal": true, "somatico": true, "material": true },
+    "componentes": { "verbal": true, "somatico": true, "material": true, "material_descricao": "" },
     "descricao": "Você toca uma criatura voluntária e concede a ela deslocamento de voo."
   }
 ]

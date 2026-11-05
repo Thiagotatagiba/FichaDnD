@@ -9,6 +9,7 @@
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "CON",
     "efeitos": [{ "tipo": "dano", "formula": "8d8", "dano_tipo": "Frio" }],
+    "componentes": { "material_descricao": "" },
     "descricao": "Uma onda de ar gélido causa dano às criaturas em um cone."
   },
   {
@@ -18,6 +19,7 @@
     "escola": "Encantamento",
     "duracao": "Concentração, até 1 minuto",
     "propriedades": { "concentracao": true },
+    "componentes": { "material_descricao": "" },
     "descricao": "Você paralisa uma criatura escolhida que falhar no teste de resistência."
   },
   {
@@ -26,6 +28,7 @@
     "classes": ["bardo", "clerigo", "druida"],
     "escola": "Abjuração",
     "duracao": "Instantânea",
+    "componentes": { "material_descricao": "" },
     "descricao": "Você remove uma condição debilitante ou reduz um efeito mágico sobre uma criatura."
   }
 ]

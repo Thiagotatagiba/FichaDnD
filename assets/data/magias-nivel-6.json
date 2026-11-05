@@ -8,6 +8,7 @@
     "propriedades": { "dano": true },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
+    "componentes": { "material_descricao": "" },
     "descricao": "Um raio salta de um alvo para outras criaturas próximas."
   },
   {
@@ -19,6 +20,7 @@
     "propriedades": { "dano": true },
     "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
+    "componentes": { "material_descricao": "" },
     "descricao": "Um fino raio verde causa grande dano a uma criatura ou objeto."
   },
   {
@@ -28,6 +30,7 @@
     "escola": "Evocação",
     "duracao": "Instantânea",
     "propriedades": { "cura": true },
+    "componentes": { "material_descricao": "" },
     "descricao": "Uma criatura tocada recupera uma grande quantidade de pontos de vida."
   }
 ]

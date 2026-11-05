@@ -1,43 +1,1472 @@
 [
   {
-    "nome": "Mãos Flamejantes",
+    "nome": "Absorver Elementos (Absorb Elements)",
     "nivel": 1,
-    "classes": ["bruxo", "feiticeiro", "mago"],
-    "escola": "Evocação",
-    "tempo_conjuracao": "1 ação",
-    "alcance": "Você (cone de 4,5 m)",
-    "duracao": "Instantânea",
-    "propriedades": { "dano": true },
-    "componentes": { "verbal": true, "somatico": true },
-    "resolucao": "Teste de Resistência",
-    "teste_resistencia": "DES",
-    "efeitos": [{ "tipo": "dano", "formula": "3d6", "dano_tipo": "Fogo" }],
-    "descricao": "Cada criatura em um cone de 4,5 metros deve realizar um teste de resistência de Destreza."
+    "classes": [
+      "artifice",
+      "druida",
+      "patrulheiro",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 reação",
+    "alcance": "Pessoal",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "A magia captura parte da energia recebida, reduzindo seu impacto em você e canalizando-a no seu próximo ataque corpo a corpo.\n\nConcede resistência ao dano elemental sofrido e adiciona 1d6 do mesmo tipo no seu próximo ataque corpo a corpo.\n\nUse sua reação ao sofrer dano de ácido, frio, fogo, elétrico ou trovejante. A resistência dura até o início do seu próximo turno; o dano extra tem o mesmo tipo do dano que desencadeou a reação.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
   },
   {
-    "nome": "Curar Ferimentos",
+    "nome": "Alarme (Alarm)",
     "nivel": 1,
-    "classes": ["bardo", "clerigo", "druida", "paladino", "patrulheiro"],
+    "classes": [
+      "artifice",
+      "patrulheiro",
+      "mago"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 minuto",
+    "alcance": "9 metros",
+    "duracao": "8 horas",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "um minúsculo sino e um pedaço de fio fino de prata"
+    },
+    "efeitos": [],
+    "descricao": "Protege uma porta, janela ou uma área de até 6 metros de lado. Criaturas Miúdas ou maiores ativam o aviso ao tocar ou entrar no local; você pode indicar criaturas que não o acionam.\n\nEscolha um aviso mental, percebido a até 1,5 km e capaz de acordá-lo, ou um sino audível a até 18 metros que soa por 10 segundos. Pode ser conjurada como ritual, acrescentando 10 minutos ao tempo de conjuração.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Amizade Animal (Animal Friendship)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "druida",
+      "patrulheiro"
+    ],
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 metros",
+    "duracao": "24 horas",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "um bocado de comida"
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "SAB",
+    "efeitos": [],
+    "descricao": "Escolha uma besta visível que consiga ver e ouvir você. A magia falha se a Inteligência dela for 4 ou maior. Caso contrário, ela realiza um teste de resistência de Sabedoria; se falhar, fica enfeitiçada por você durante a duração. O efeito termina se você ou um de seus companheiros causar dano à besta.",
+    "proximos_niveis": "Ao usar um espaço de 2º nível ou superior, você afeta uma besta adicional por nível do espaço acima do 1º."
+  },
+  {
+    "nome": "Armadura de Agathys (Armor of Agathys)",
+    "nivel": 1,
+    "classes": [
+      "bruxo"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "1 hora",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": ""
+    },
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "5",
+        "dano_tipo": "Frio",
+        "regra": "Concede 5 PV temporários. Criaturas que atingirem você com ataque corpo a corpo enquanto tiver esses PV sofrem 5 de dano de frio."
+      }
+    ],
+    "descricao": "Uma força mágica protetora envolve você, manifestando-se como uma geada espectral.\n\nConcede 5 PV temporários. Criaturas que atingirem você com ataque corpo a corpo enquanto tiver esses PV sofrem 5 de dano de frio.",
+    "resolucao": "Automático",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Armadura Arcana (Mage Armor)",
+    "nivel": 1,
+    "classes": [
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "8 horas",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "um pedaço de couro curtido"
+    },
+    "efeitos": [],
+    "descricao": "Ao tocar uma criatura disposta sem armadura, você a envolve em proteção mágica. Sua CA base passa a ser 13 + o modificador de Destreza dela. A proteção termina se ela vestir uma armadura ou se você usar uma ação para encerrar a magia.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Ataque Constritor (Ensnaring Strike)",
+    "nivel": 1,
+    "classes": [
+      "patrulheiro"
+    ],
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação bônus",
+    "alcance": "Pessoal",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "FOR",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Perfurante",
+        "regra": "No acerto da arma, vinha aprisiona o alvo causando 1d6 de dano de perfuração no início de cada turno dele."
+      }
+    ],
+    "descricao": "O próximo acerto de um ataque com arma, antes de a magia terminar, faz vinhas prenderem o alvo. Ele realiza um teste de resistência de Força, com vantagem se for Grande ou maior. Se falhar, fica impedido; se passar, as vinhas desaparecem.\n\nEnquanto estiver preso, sofre 1d6 de dano perfurante no início de cada turno. Ele ou uma criatura que consiga alcançá-lo pode gastar uma ação para realizar um teste de Força contra sua CD de magia e libertá-lo em caso de sucesso. O dano acontece nos turnos do alvo, não ao conjurar.",
+    "proximos_niveis": "O dano aumenta em 1d6 para cada nível de espaço de magia acima de 1."
+  },
+  {
+    "nome": "Abençoar / Bênção (Bless)",
+    "nivel": 1,
+    "classes": [
+      "clerigo",
+      "paladino"
+    ],
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 metros",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "uma aspersão de água benta"
+    },
+    "efeitos": [],
+    "descricao": "Escolha até três criaturas no alcance. Enquanto a magia durar, cada alvo pode acrescentar 1d4 às próprias jogadas de ataque e aos testes de resistência. O benefício depende de você manter a concentração.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": "Quando você conjurar esta magia usando um espaço de magia de 2º nível ou superior, você pode escolher uma criatura adicional para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Bruxaria / Maldição (Hex)",
+    "nivel": 1,
+    "classes": [
+      "bruxo"
+    ],
+    "escola": "Necromancia",
+    "tempo_conjuracao": "1 ação bônus",
+    "alcance": "27 metros",
+    "duracao": "Concentração, até 1 hora",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "o olho petrificado de um tritão"
+    },
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d6",
+        "dano_tipo": "Necrótico",
+        "regra": "Causa 1d6 necrótico extra sempre que você acertar um ataque no alvo amaldiçoado."
+      }
+    ],
+    "descricao": "Amaldiçoe uma criatura visível no alcance. Durante a magia, cada ataque seu que acertar esse alvo causa 1d6 de dano necrótico adicional. Escolha também um atributo: o alvo tem desvantagem nos testes de habilidade feitos com ele, sem afetar seus testes de resistência.\n\nSe o alvo chegar a 0 PV, você pode gastar uma ação bônus em um turno posterior para transferir a maldição a outra criatura. O dano extra ocorre nos acertos, não na conjuração.",
+    "resolucao": "Automático",
+    "teste_resistencia": "",
+    "proximos_niveis": "Usando um espaço de 3º ou 4º nível, você pode manter a concentração por até 8 horas. Com um espaço de 5º nível ou superior, esse limite passa a 24 horas."
+  },
+  {
+    "nome": "Cerimônia (Ceremony)",
+    "nivel": 1,
+    "classes": [
+      "clerigo",
+      "paladino"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 hora",
+    "alcance": "Toque",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Você realiza um ritual religioso especial para conceder bênçãos (como expiação, casamento, crisma ou água benta).\n\nRitual: pode ser conjurada como ritual, acrescentando 10 minutos ao tempo de conjuração.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Compreender Idiomas (Comprehend Languages)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "bruxo",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Adivinhação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "uma pitada de fuligem e sal"
+    },
+    "efeitos": [],
+    "descricao": "Você entende o sentido literal dos idiomas falados que escuta. Também pode ler textos em qualquer idioma enquanto toca a superfície escrita, levando aproximadamente um minuto por página. A magia não revela códigos secretos nem interpreta símbolos que não pertençam a um idioma escrito.\n\nPode ser conjurada como ritual, com 10 minutos adicionais.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Comando (Command)",
+    "nivel": 1,
+    "classes": [
+      "clerigo",
+      "paladino"
+    ],
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 metros",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "SAB",
+    "efeitos": [],
+    "descricao": "Diga uma ordem de uma palavra a uma criatura visível. Se ela falhar em um teste de resistência de Sabedoria, cumpre a ordem no próximo turno. Mortos-vivos não são afetados; a ordem também falha se o alvo não entender seu idioma ou se exigir algo diretamente nocivo a ele.\n\nExemplos: aproximar-se pela rota mais direta e parar a 1,5 metro de você; largar o que segura e encerrar o turno; fugir pelo meio mais rápido; cair no chão e encerrar o turno; ou parar, sem se mover nem agir. Uma criatura voadora ordenada a parar só se move o necessário para continuar voando. Outras ordens dependem da interpretação do Mestre; se não puder cumpri-las, a magia termina.",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, você pode afetar uma criatura adicional para cada nível de espaço acima do 1º. As criaturas devem estar a até 9 m (30 ft) umas das outras quando você as alveja."
+  },
+  {
+    "nome": "Constrição (Entangle)",
+    "nivel": 1,
+    "classes": [
+      "druida"
+    ],
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "27 metros",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "FOR",
+    "efeitos": [],
+    "descricao": "Vinhas e vegetação cobrem um quadrado de 6 metros de lado, tornando o solo terreno difícil. Quem estiver na área ao conjurar realiza um teste de resistência de Força; uma falha deixa a criatura impedida pelas plantas.\n\nUma criatura presa pode gastar uma ação e passar em um teste de Força contra sua CD de magia para se libertar. Ao terminar a magia, a vegetação criada murcha.",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Curar Ferimentos (Cure Wounds)",
+    "nivel": 1,
+    "classes": [
+      "artifice",
+      "bardo",
+      "clerigo",
+      "druida",
+      "paladino",
+      "patrulheiro"
+    ],
     "escola": "Evocação",
     "tempo_conjuracao": "1 ação",
     "alcance": "Toque",
     "duracao": "Instantânea",
-    "propriedades": { "cura": true },
-    "componentes": { "verbal": true, "somatico": true },
-    "efeitos": [{ "tipo": "cura", "regra": "1d8 + modificador de conjuração" }],
-    "descricao": "Uma criatura que você tocar recupera pontos de vida."
+    "propriedades": {
+      "dano": false,
+      "cura": true,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "regra": "1d8 + modificador de conjuração",
+        "formula": "",
+        "dano_tipo": ""
+      }
+    ],
+    "descricao": "Toque uma criatura para restaurar 1d8 + seu modificador de conjuração em pontos de vida. A cura não afeta constructos nem mortos-vivos.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": "Quando você conjura essa magia usando um espaço de magia de 2º nível ou superior, a cura aumenta em 1d8 para cada nível de espaço acima do 1º."
   },
   {
-    "nome": "Mísseis Mágicos",
+    "nome": "Detectar Magia (Detect Magic)",
     "nivel": 1,
-    "classes": ["bruxo", "feiticeiro", "mago"],
+    "classes": [
+      "artifice",
+      "bardo",
+      "clerigo",
+      "druida",
+      "paladino",
+      "patrulheiro",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Adivinhação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "Concentração, até 10 minutos",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Você percebe magia a até 9 metros. Ao detectá-la, pode gastar uma ação para enxergar uma aura em criaturas ou objetos mágicos visíveis nessa área e reconhecer a escola da magia, quando houver.\n\nA detecção atravessa barreiras, exceto 30 cm de pedra, 2,5 cm de metal comum, uma lâmina fina de chumbo ou 90 cm de madeira ou terra. Pode ser conjurada como ritual, acrescentando 10 minutos.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Detectar o Bem e o Mal (Detect Evil and Good)",
+    "nivel": 1,
+    "classes": [
+      "clerigo",
+      "paladino"
+    ],
+    "escola": "Adivinhação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "Concentração, até 10 minutos",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Revela a presença e a posição de aberrações, celestiais, elementais, feéricos, ínferos e mortos-vivos a até 9 metros. Você também detecta objetos ou lugares consagrados ou profanados por magia nessa distância.\n\nO efeito é bloqueado por 30 cm de pedra, 2,5 cm de metal comum, uma lâmina fina de chumbo ou 90 cm de madeira ou terra.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Detectar Veneno e Doença (Detect Poison and Disease)",
+    "nivel": 1,
+    "classes": [
+      "clerigo",
+      "druida",
+      "paladino",
+      "patrulheiro"
+    ],
+    "escola": "Adivinhação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "Concentração, até 10 minutos",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "uma folha de teixo"
+    },
+    "efeitos": [],
+    "descricao": "Detecta a localização de venenos, criaturas venenosas e doenças a até 9 metros, identificando seu tipo. A percepção é barrada por 30 cm de pedra, 2,5 cm de metal comum, uma lâmina fina de chumbo ou 90 cm de madeira ou terra.\n\nPode ser conjurada como ritual, acrescentando 10 minutos.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Disfarçar-se (Disguise Self)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Ilusão",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Pessoal",
+    "duracao": "1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Altera visualmente sua aparência e a dos pertences que carrega ou veste. Você pode parecer até 30 cm mais alto ou mais baixo e mudar a compleição, mantendo a disposição básica dos membros. O efeito dura até terminar a magia ou até você gastar uma ação para encerrá-lo.\n\nA ilusão não muda seu corpo nem resiste ao toque: partes ilusórias podem ser atravessadas, e seu corpo real continua palpável. Uma criatura pode gastar uma ação e passar em um teste de Inteligência (Investigação) contra sua CD de magia para reconhecer o disfarce.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Disparo de Bruxa (Witch Bolt)",
+    "nivel": 1,
+    "classes": [
+      "bruxo",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 metros",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": ""
+    },
+    "resolucao": "Ataque",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d12",
+        "dano_tipo": "Elétrico",
+        "regra": "Em turnos subsequentes, pode usar sua ação para causar 1d12 de dano elétrico automaticamente."
+      }
+    ],
+    "descricao": "Um feixe de energia azul dispara em direção a uma criatura. Se acertar o ataque, cria um arco contínuo de eletricidade.\n\nEm turnos subsequentes, pode usar sua ação para causar 1d12 de dano elétrico automaticamente.",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Enfeitiçar Pessoa (Charm Person)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "bruxo",
+      "druida",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 metros",
+    "duracao": "1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "SAB",
+    "efeitos": [],
+    "descricao": "Um humanoide visível realiza um teste de resistência de Sabedoria, com vantagem se estiver em combate contra você ou seus aliados. Se falhar, fica enfeitiçado e o trata como um conhecido amigável.\n\nO efeito termina se você ou seus companheiros fizerem algo prejudicial ao alvo. Quando a magia acabar, ele saberá que você o enfeitiçou.",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, você pode mirar em uma criatura adicional para cada nível de espaço acima do 1º. As criaturas devem estar a 9 m (30 ft) umas das outras quando você as mirar."
+  },
+  {
+    "nome": "Escrita Ilusória (Illusory Script)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "bruxo",
+      "mago"
+    ],
+    "escola": "Ilusão",
+    "tempo_conjuracao": "1 minuto",
+    "alcance": "Toque",
+    "duracao": "10 dias",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "uma tinta à base de chumbo no valor de pelo menos 10 po, que a magia consome"
+    },
+    "efeitos": [],
+    "descricao": "Você inscreve uma mensagem em papel, pergaminho ou outra superfície apropriada e a oculta com uma ilusão. Você e as criaturas escolhidas na conjuração leem o texto verdadeiro; os demais veem uma escrita incompreensível ou outra mensagem, em uma caligrafia e idioma que você conheça.\n\nVisão verdadeira permite ler a mensagem escondida. Dissipar a magia apaga tanto a escrita original quanto a ilusão. Pode ser conjurada como ritual, com 10 minutos adicionais.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Escudo da Fé (Shield of Faith)",
+    "nivel": 1,
+    "classes": [
+      "clerigo",
+      "paladino"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 ação bônus",
+    "alcance": "18 metros",
+    "duracao": "Concentração, até 10 minutos",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "um pequeno pergaminho com um trecho de texto sagrado escrito nele"
+    },
+    "efeitos": [],
+    "descricao": "Um brilho protetor envolve uma criatura escolhida no alcance. Ela recebe +2 na CA enquanto a magia durar e você mantiver a concentração.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Escudo Mágico (Shield)",
+    "nivel": 1,
+    "classes": [
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 reação",
+    "alcance": "Pessoal",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Use sua reação quando um ataque acertar você ou quando for alvo de Mísseis Mágicos. Uma barreira concede +5 na CA até o início do seu próximo turno, inclusive contra o ataque que provocou a reação. Nesse intervalo, Mísseis Mágicos não causa dano a você.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Fogo das Fadas (Faerie Fire)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "druida"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 metros",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [],
+    "descricao": "Luz azul, verde ou violeta contorna os objetos em um cubo de 6 metros de lado. Criaturas na área realizam um teste de resistência de Destreza; se falharem, também ficam iluminadas. Os alvos afetados emitem luz fraca a até 3 metros.\n\nAtaques contra eles têm vantagem quando o atacante consegue vê-los, e a invisibilidade deixa de oferecer seus benefícios.",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Flecha de Gelo (Ice Knife)",
+    "nivel": 1,
+    "classes": [
+      "druida",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 metros",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": false,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "uma gota de água ou um pedaço de gelo"
+    },
+    "resolucao": "Ataque",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "1d10",
+        "dano_tipo": "Perfurante",
+        "regra": "Acerte ou erre, a estalactite explode. Criaturas a até 1,5m devem passar em salvaguarda de DES ou sofrem 2d6 de dano de Frio."
+      }
+    ],
+    "descricao": "Arremesse um fragmento de gelo com um ataque mágico à distância. Um acerto causa 1d10 de dano perfurante. Depois, acertando ou errando, ele explode: o alvo e todas as criaturas a até 1,5 metro dele realizam um teste de resistência de Destreza e sofrem 2d6 de dano de frio se falharem.\n\nO ataque inicial e a explosão são efeitos separados; um sucesso na resistência evita o dano da explosão.",
+    "teste_resistencia": "",
+    "proximos_niveis": "O dano frio aumenta em 1d6 para cada nível de espaço de magia acima do 1º."
+  },
+  {
+    "nome": "Gagueira Caústica de Tasha (Tasha's Caustic Brew)",
+    "nivel": 1,
+    "classes": [
+      "artifice",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Você (linha de 9 metros)",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "2d4",
+        "dano_tipo": "Ácido",
+        "regra": "Sofre 2d4 de ácido no início de cada turno até usar uma ação para limpar."
+      }
+    ],
+    "descricao": "Uma jorrada de ácido cobre uma linha de 9 metros por 1,5m de largura a partir de você.\n\nSofre 2d4 de ácido no início de cada turno até usar uma ação para limpar.",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Heroísmo (Heroism)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "paladino"
+    ],
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Toque uma criatura disposta para torná-la imune à condição amedrontado. No início de cada turno dela, recebe PV temporários iguais ao seu modificador de conjuração. Os PV temporários não se acumulam e os que restarem desta magia desaparecem quando ela terminar.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": "Com um espaço de 2º nível ou superior, você pode escolher uma criatura adicional por nível do espaço acima do 1º."
+  },
+  {
+    "nome": "Imagem Silenciosa (Silent Image)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Ilusão",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 metros",
+    "duracao": "Concentração, até 10 minutos",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "um pouco de lã"
+    },
+    "efeitos": [],
+    "descricao": "Cria uma imagem visual de um objeto, criatura ou fenômeno que caiba em um cubo de 4,5 metros de lado. Ela não produz som, cheiro ou sensações físicas. Você pode gastar uma ação para movê-la pelo alcance e ajustar sua aparência para simular movimento natural.\n\nO contato físico revela a ilusão, pois objetos a atravessam. Uma criatura também pode gastar uma ação e passar em um teste de Inteligência (Investigação) contra sua CD de magia para identificá-la. Quem a reconhece consegue enxergar através dela.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Infringir Ferimentos (Inflict Wounds)",
+    "nivel": 1,
+    "classes": [
+      "clerigo"
+    ],
+    "escola": "Necromancia",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Ataque",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "3d10",
+        "dano_tipo": "Necrótico",
+        "regra": ""
+      }
+    ],
+    "descricao": "Realize um ataque mágico corpo a corpo contra uma criatura ao seu alcance. Se acertar, você causa 3d10 de dano necrótico.",
+    "teste_resistencia": "",
+    "proximos_niveis": "Quando você conjura essa magia usando um espaço de magia de 2º nível ou superior, o dano aumenta em 1d10 para cada nível do espaço acima do 1º."
+  },
+  {
+    "nome": "Mãos Flamejantes (Burning Hands)",
+    "nivel": 1,
+    "classes": [
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Você (cone de 4,5 m)",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "3d6",
+        "dano_tipo": "Fogo",
+        "regra": ""
+      }
+    ],
+    "descricao": "Uma rajada de fogo cobre um cone de 4,5 metros à sua frente. Cada criatura na área realiza um teste de resistência de Destreza: uma falha causa 3d6 de dano de fogo; um sucesso reduz o dano à metade. Objetos inflamáveis na área pegam fogo se não estiverem sendo vestidos ou carregados.",
+    "proximos_niveis": "Quando você conjura essa magia usando um espaço de magia de 2º nível ou superior, o dano aumenta em 1d6 para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Mísseis Mágicos (Magic Missile)",
+    "nivel": 1,
+    "classes": [
+      "feiticeiro",
+      "mago"
+    ],
     "escola": "Evocação",
     "tempo_conjuracao": "1 ação",
     "alcance": "36 metros",
     "duracao": "Instantânea",
-    "propriedades": { "dano": true },
-    "componentes": { "verbal": true, "somatico": true },
-    "efeitos": [{ "tipo": "dano", "formula": "3d4 + 3", "dano_tipo": "Força" }],
-    "descricao": "Você cria três dardos brilhantes de força mágica que atingem criaturas escolhidas."
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "3d4 + 3",
+        "dano_tipo": "Força",
+        "regra": ""
+      }
+    ],
+    "descricao": "Três projéteis mágicos acertam automaticamente criaturas visíveis no alcance. Cada um causa 1d4 + 1 de dano de força, e todos atingem ao mesmo tempo. Você pode concentrá-los em um alvo ou dividi-los entre vários.\n\nOs três projéteis somam 3d4 + 3 de dano quando aplicados juntos. Não exigem jogada de ataque nem teste de resistência; a magia Escudo impede esse dano.",
+    "resolucao": "Automático",
+    "teste_resistencia": "",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, a magia cria um dardo adicional para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Névoa Obscurecedora (Fog Cloud)",
+    "nivel": 1,
+    "classes": [
+      "druida",
+      "patrulheiro",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Conjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 metros",
+    "duracao": "Concentração, até 1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Uma esfera de névoa com 6 metros de raio surge em um ponto do alcance, espalhando-se pelas esquinas. A área fica fortemente obscurecida. A névoa permanece enquanto durar a magia, mas um vento de pelo menos 15 km/h a dispersa.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": "Quando você conjura essa magia usando um espaço de magia de 2º nível ou superior, o raio da névoa aumenta em 6 m (20 ft) para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Onda Trovante (Thunderwave)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "druida",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Você (cubo de 4,5 m)",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "CON",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "2d8",
+        "dano_tipo": "Trovejante",
+        "regra": "Se falhar, sofre dano total e é empurrado 3 metros para longe."
+      }
+    ],
+    "descricao": "Uma onda sonora ocupa um cubo de 4,5 metros originado em você. As criaturas na área realizam um teste de resistência de Constituição. Quem falhar sofre 2d8 de dano trovejante e é empurrado 3 metros para longe; quem passar sofre metade e não é deslocado.\n\nObjetos soltos totalmente dentro da área são empurrados 3 metros automaticamente. O estrondo pode ser ouvido a até 90 metros.",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, o dano aumenta em 1d8 para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Palavra de Cura (Healing Word)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "clerigo",
+      "druida"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação bônus",
+    "alcance": "18 metros",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": false,
+      "cura": true,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "regra": "1d4 + modificador de conjuração",
+        "formula": "",
+        "dano_tipo": ""
+      }
+    ],
+    "descricao": "Uma criatura visível no alcance recupera 1d4 + seu modificador de conjuração em pontos de vida. Constructos e mortos-vivos não recebem essa cura.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, a cura aumenta em 1d4 para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Passos Longos (Longstrider)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "druida",
+      "patrulheiro",
+      "mago"
+    ],
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "1 hora",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "uma pitada de terra"
+    },
+    "efeitos": [],
+    "descricao": "Toque uma criatura para aumentar seu deslocamento em 3 metros durante a duração da magia.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, você pode escolher uma criatura adicional para cada nível do espaço acima do 1º."
+  },
+  {
+    "nome": "Perdição / Suplício (Bane)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "clerigo"
+    ],
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 metros",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "uma gota de sangue"
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "CAR",
+    "efeitos": [],
+    "descricao": "Escolha até três criaturas visíveis. Cada uma realiza um teste de resistência de Carisma. Enquanto a magia durar, quem falhar subtrai 1d4 das próprias jogadas de ataque e dos testes de resistência.",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, você pode afetar uma criatura adicional para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Proteção contra o Bem e o Mal (Protection from Evil and Good)",
+    "nivel": 1,
+    "classes": [
+      "clerigo",
+      "paladino",
+      "bruxo",
+      "mago"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "Concentração, até 10 minutos",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "água benta ou prata e ferro em pó, que a magia consome"
+    },
+    "efeitos": [],
+    "descricao": "Uma criatura disposta que você toca recebe proteção contra aberrações, celestiais, elementais, feéricos, ínferos e mortos-vivos. Esses seres têm desvantagem nos ataques contra ela e não podem enfeitiçá-la, amedrontá-la ou possuí-la.\n\nSe um desses efeitos já estiver ativo, a proteção concede vantagem em novos testes de resistência contra ele, sem encerrá-lo automaticamente.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Purificar Alimentos e Bebidas (Purify Food and Drink)",
+    "nivel": 1,
+    "classes": [
+      "clerigo",
+      "druida",
+      "paladino"
+    ],
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "3 metros",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Remove venenos e doenças de alimentos e bebidas não mágicos em uma esfera de 1,5 metro de raio, centrada em um ponto no alcance. Pode ser conjurada como ritual, acrescentando 10 minutos.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Queda Suave (Feather Fall)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 reação",
+    "alcance": "18 metros",
+    "duracao": "1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": true,
+      "material_descricao": "uma pequena pena ou um pedaço de penugem"
+    },
+    "efeitos": [],
+    "descricao": "Use sua reação para escolher até cinco criaturas em queda no alcance. A descida delas passa a ser de 18 metros por rodada. Se uma delas alcançar o chão antes do fim da magia, aterrissa sem dano de queda e pode ficar em pé; o efeito termina para essa criatura.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Raio de Doença (Ray of Sickness)",
+    "nivel": 1,
+    "classes": [
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Necromancia",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 metros",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Ataque",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "2d8",
+        "dano_tipo": "Veneno",
+        "regra": "Se acertar, o alvo faz salvaguarda de CON; se falhar, fica envenenado até o fim do seu próximo turno."
+      }
+    ],
+    "descricao": "Faça um ataque mágico à distância com um raio de energia nociva. Se acertar, o alvo sofre 2d8 de dano de veneno e realiza um teste de resistência de Constituição. Se falhar, fica envenenado até o final do seu próximo turno. O teste determina a condição, não o dano do acerto.",
+    "teste_resistencia": "",
+    "proximos_niveis": "O dano aumenta em 1d8 para cada nível de espaço de magia acima de 1."
+  },
+  {
+    "nome": "Raio de Guia (Guiding Bolt)",
+    "nivel": 1,
+    "classes": [
+      "clerigo"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "36 metros",
+    "duracao": "1 rodada",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Ataque",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "4d6",
+        "dano_tipo": "Radiante",
+        "regra": "O próximo ataque feito contra o alvo antes do final do seu próximo turno tem vantagem."
+      }
+    ],
+    "descricao": "Um ataque mágico à distância lança luz contra uma criatura. Um acerto causa 4d6 de dano radiante e deixa um brilho no alvo. A próxima jogada de ataque contra ele, antes do fim do seu próximo turno, recebe vantagem.",
+    "teste_resistencia": "",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, o dano aumenta em 1d6 para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Recuo Acelerado (Expeditious Retreat)",
+    "nivel": 1,
+    "classes": [
+      "artifice",
+      "bruxo",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação bônus",
+    "alcance": "Pessoal",
+    "duracao": "Concentração, até 10 minutos",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "efeitos": [],
+    "descricao": "Você pode realizar a ação Disparada como parte da conjuração e novamente com uma ação bônus em cada um de seus turnos enquanto a magia durar. É necessário manter a concentração.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Repreensão Infernal (Hellish Rebuke)",
+    "nivel": 1,
+    "classes": [
+      "bruxo"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 reação",
+    "alcance": "18 metros",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "DES",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "2d10",
+        "dano_tipo": "Fogo",
+        "regra": "Metade do dano num sucesso no teste de resistência."
+      }
+    ],
+    "descricao": "Use sua reação após sofrer dano de uma criatura visível a até 18 metros. Chamas a envolvem e ela realiza um teste de resistência de Destreza. Uma falha causa 2d10 de dano de fogo; um sucesso reduz esse dano à metade.",
+    "proximos_niveis": "Quando você conjura esta magia usando um espaço de magia de 2º nível ou superior, o dano aumenta em 1d10 para cada nível de espaço acima do 1º."
+  },
+  {
+    "nome": "Riso Histérico de Tasha (Tasha's Hideous Laughter)",
+    "nivel": 1,
+    "classes": [
+      "bardo",
+      "mago"
+    ],
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "9 metros",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "tortinhas minúsculas e uma pena que é agitada no ar"
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "SAB",
+    "efeitos": [],
+    "descricao": "Uma criatura no alcance sucumbe a uma crise de riso se falhar em um teste de resistência de Sabedoria. Ela fica caída e incapacitada, sem poder se levantar durante o efeito. Criaturas com Inteligência 4 ou menor são imunes.\n\nO alvo repete o teste no final de cada turno e sempre que sofrer dano, com vantagem nos testes provocados por dano. Um sucesso encerra a magia.",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Salto (Jump)",
+    "nivel": 1,
+    "classes": [
+      "artifice",
+      "druida",
+      "patrulheiro",
+      "feiticeiro",
+      "mago"
+    ],
+    "escola": "Transmutação",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "Toque",
+    "duracao": "1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "a pata traseira de um gafanhoto"
+    },
+    "efeitos": [],
+    "descricao": "A criatura tocada tem suas distâncias de salto multiplicadas por três durante a duração da magia.",
+    "resolucao": "",
+    "teste_resistencia": "",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Santuário (Sanctuary)",
+    "nivel": 1,
+    "classes": [
+      "artifice",
+      "clerigo"
+    ],
+    "escola": "Abjuração",
+    "tempo_conjuracao": "1 ação bônus",
+    "alcance": "9 metros",
+    "duracao": "1 minuto",
+    "propriedades": {
+      "dano": false,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": true,
+      "material": true,
+      "material_descricao": "um pequeno espelho de prata"
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "SAB",
+    "efeitos": [],
+    "descricao": "Protege uma criatura no alcance. Antes de atacá-la ou direcionar uma magia prejudicial a ela, o agressor precisa passar em um teste de resistência de Sabedoria. Se falhar, deve escolher outro alvo ou perder o ataque ou a magia. Efeitos de área não são impedidos.\n\nA proteção termina se o beneficiário atacar, causar dano a outra criatura ou conjurar uma magia que afete um inimigo.",
+    "proximos_niveis": ""
+  },
+  {
+    "nome": "Sussurros Dissonantes (Dissonant Whispers)",
+    "nivel": 1,
+    "classes": [
+      "bardo"
+    ],
+    "escola": "Encantamento",
+    "tempo_conjuracao": "1 ação",
+    "alcance": "18 metros",
+    "duracao": "Instantânea",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": false
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Teste de Resistência",
+    "teste_resistencia": "SAB",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "3d6",
+        "dano_tipo": "Psíquico",
+        "regra": "Se falhar, sofre dano e deve usar sua reação para se mover para longe de você."
+      }
+    ],
+    "descricao": "Uma melodia mental dolorosa atinge uma criatura no alcance. Ela realiza um teste de resistência de Sabedoria. Se falhar, sofre 3d6 de dano psíquico e usa imediatamente sua reação, se disponível, para se afastar de você o máximo possível, evitando perigos evidentes. Se passar, sofre metade do dano e não precisa se mover.",
+    "proximos_niveis": "O dano aumenta em 1d6 para cada nível de espaço de magia acima de 1."
+  },
+  {
+    "nome": "Voz Trovejante / Golpe Trovejante (Thunderous Smite)",
+    "nivel": 1,
+    "classes": [
+      "paladino"
+    ],
+    "escola": "Evocação",
+    "tempo_conjuracao": "1 ação bônus",
+    "alcance": "Pessoal",
+    "duracao": "Concentração, até 1 minuto",
+    "propriedades": {
+      "dano": true,
+      "cura": false,
+      "concentracao": true
+    },
+    "componentes": {
+      "verbal": true,
+      "somatico": false,
+      "material": false,
+      "material_descricao": ""
+    },
+    "resolucao": "Automático",
+    "teste_resistencia": "",
+    "efeitos": [
+      {
+        "tipo": "dano",
+        "formula": "2d6",
+        "dano_tipo": "Trovejante",
+        "regra": "Se falhar na salvaguarda de FOR, o alvo é empurrado 3m para trás e cai caído."
+      }
+    ],
+    "descricao": "Seu próximo ataque corpo a corpo com arma ressoa com um trovão.\n\nSe falhar na salvaguarda de FOR, o alvo é empurrado 3m para trás e cai caído.\n\nO dano extra é aplicado ao acertar o próximo ataque corpo a corpo com arma. O teste de resistência de Força determina apenas o empurrão e a queda.",
+    "proximos_niveis": ""
   }
 ]

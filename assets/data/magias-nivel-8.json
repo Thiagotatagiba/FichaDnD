@@ -6,6 +6,7 @@
     "escola": "Encantamento",
     "duracao": "Concentração, até 1 hora",
     "propriedades": { "concentracao": true },
+    "componentes": { "material_descricao": "" },
     "descricao": "Você tenta controlar uma criatura que falhar no teste de resistência."
   },
   {
@@ -15,6 +16,7 @@
     "escola": "Evocação",
     "duracao": "Instantânea",
     "propriedades": { "dano": true },
+    "componentes": { "material_descricao": "" },
     "descricao": "Uma luz solar intensa causa dano e pode cegar criaturas na área."
   },
   {
@@ -23,6 +25,7 @@
     "classes": ["bardo", "mago"],
     "escola": "Abjuração",
     "duracao": "24 horas",
+    "componentes": { "material_descricao": "" },
     "descricao": "Uma criatura tocada fica protegida contra efeitos mentais e mágicos."
   }
 ]

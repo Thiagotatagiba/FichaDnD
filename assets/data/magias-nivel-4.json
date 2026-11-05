@@ -6,6 +6,7 @@
     "escola": "Ilusão",
     "duracao": "Concentração, até 1 minuto",
     "propriedades": { "concentracao": true },
+    "componentes": { "material_descricao": "" },
     "descricao": "Você ou uma criatura tocada fica invisível enquanto a magia durar."
   },
   {
@@ -14,6 +15,7 @@
     "classes": ["bardo", "bruxo", "mago", "feiticeiro"],
     "escola": "Conjuração",
     "duracao": "Instantânea",
+    "componentes": { "material_descricao": "" },
     "descricao": "Você se teletransporta para um destino que consiga visualizar ou descrever."
   },
   {
@@ -23,6 +25,7 @@
     "escola": "Evocação",
     "duracao": "Concentração, até 1 minuto",
     "propriedades": { "dano": true, "concentracao": true },
+    "componentes": { "material_descricao": "" },
     "descricao": "Você cria uma muralha de fogo que causa dano às criaturas próximas."
   }
 ]

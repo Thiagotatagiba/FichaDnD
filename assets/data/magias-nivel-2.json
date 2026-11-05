@@ -8,7 +8,7 @@
     "alcance": "Toque",
     "duracao": "Concentração, até 1 hora",
     "propriedades": { "concentracao": true },
-    "componentes": { "verbal": true, "somatico": true },
+    "componentes": { "verbal": true, "somatico": true, "material_descricao": "" },
     "descricao": "Uma criatura que você tocar fica invisível até a magia terminar."
   },
   {
@@ -19,7 +19,7 @@
     "tempo_conjuracao": "1 ação bônus",
     "alcance": "Você",
     "duracao": "Instantânea",
-    "componentes": { "verbal": true },
+    "componentes": { "verbal": true, "material_descricao": "" },
     "descricao": "Você se teletransporta para um espaço desocupado que possa ver."
   },
   {
@@ -31,7 +31,7 @@
     "alcance": "36 metros",
     "duracao": "Instantânea",
     "propriedades": { "dano": true },
-    "componentes": { "verbal": true, "somatico": true },
+    "componentes": { "verbal": true, "somatico": true, "material_descricao": "" },
     "efeitos": [{ "tipo": "dano", "formula": "2d6", "dano_tipo": "Fogo" }],
     "descricao": "Você cria três raios de fogo e pode lançá-los contra alvos escolhidos."
   }
