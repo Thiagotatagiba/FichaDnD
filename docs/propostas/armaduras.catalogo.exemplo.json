@@ -1,0 +1,270 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "proposta",
+  "fonte": {
+    "nome": "Roll20 — Armor (regras básicas 2014)",
+    "url": "https://roll20.net/compendium/dnd5e/Armor"
+  },
+  "unidadePeso": "kg",
+  "convencaoPeso": {
+    "metodo": "adaptacao-metrica-de-mesa",
+    "kgPorLibra": 0.5,
+    "status": "proposta; confirmar com a tabela em português antes da implementação"
+  },
+  "itens": [
+    {
+      "id": "armadura-acolchoada",
+      "tipo": "armadura",
+      "nome": "Acolchoada",
+      "nomeOriginal": "Padded",
+      "categoria": "leve",
+      "custo": {
+        "valor": 5,
+        "moeda": "po"
+      },
+      "pesoKg": 4,
+      "ca": {
+        "base": 11,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": null
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 1,
+      "retirarMinutos": 1
+    },
+    {
+      "id": "armadura-couro",
+      "tipo": "armadura",
+      "nome": "Couro",
+      "nomeOriginal": "Leather",
+      "categoria": "leve",
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 5,
+      "ca": {
+        "base": 11,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": null
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 1,
+      "retirarMinutos": 1
+    },
+    {
+      "id": "armadura-couro-batido",
+      "tipo": "armadura",
+      "nome": "Couro batido",
+      "nomeOriginal": "Studded Leather",
+      "categoria": "leve",
+      "custo": {
+        "valor": 45,
+        "moeda": "po"
+      },
+      "pesoKg": 6.5,
+      "ca": {
+        "base": 12,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": null
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 1,
+      "retirarMinutos": 1
+    },
+    {
+      "id": "armadura-gibao-de-peles",
+      "tipo": "armadura",
+      "nome": "Gibão de peles",
+      "nomeOriginal": "Hide",
+      "categoria": "media",
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 6,
+      "ca": {
+        "base": 12,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1
+    },
+    {
+      "id": "armadura-camisao-de-malha",
+      "tipo": "armadura",
+      "nome": "Camisão de malha",
+      "nomeOriginal": "Chain Shirt",
+      "categoria": "media",
+      "custo": {
+        "valor": 50,
+        "moeda": "po"
+      },
+      "pesoKg": 10,
+      "ca": {
+        "base": 13,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1
+    },
+    {
+      "id": "armadura-brunea",
+      "tipo": "armadura",
+      "nome": "Brunea",
+      "nomeOriginal": "Scale Mail",
+      "categoria": "media",
+      "custo": {
+        "valor": 50,
+        "moeda": "po"
+      },
+      "pesoKg": 22.5,
+      "ca": {
+        "base": 14,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1
+    },
+    {
+      "id": "armadura-peitoral",
+      "tipo": "armadura",
+      "nome": "Peitoral",
+      "nomeOriginal": "Breastplate",
+      "categoria": "media",
+      "custo": {
+        "valor": 400,
+        "moeda": "po"
+      },
+      "pesoKg": 10,
+      "ca": {
+        "base": 14,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1
+    },
+    {
+      "id": "armadura-meia-armadura",
+      "tipo": "armadura",
+      "nome": "Meia armadura",
+      "nomeOriginal": "Half Plate",
+      "categoria": "media",
+      "custo": {
+        "valor": 750,
+        "moeda": "po"
+      },
+      "pesoKg": 20,
+      "ca": {
+        "base": 15,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1
+    },
+    {
+      "id": "armadura-cota-de-aneis",
+      "tipo": "armadura",
+      "nome": "Cota de anéis",
+      "nomeOriginal": "Ring Mail",
+      "categoria": "pesada",
+      "custo": {
+        "valor": 30,
+        "moeda": "po"
+      },
+      "pesoKg": 20,
+      "ca": {
+        "base": 14,
+        "adicionaDestreza": false,
+        "limiteBonusDestreza": 0
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 10,
+      "retirarMinutos": 5
+    },
+    {
+      "id": "armadura-cota-de-malha",
+      "tipo": "armadura",
+      "nome": "Cota de malha",
+      "nomeOriginal": "Chain Mail",
+      "categoria": "pesada",
+      "custo": {
+        "valor": 75,
+        "moeda": "po"
+      },
+      "pesoKg": 27.5,
+      "ca": {
+        "base": 16,
+        "adicionaDestreza": false,
+        "limiteBonusDestreza": 0
+      },
+      "forcaMinima": 13,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 10,
+      "retirarMinutos": 5
+    },
+    {
+      "id": "armadura-cota-de-talas",
+      "tipo": "armadura",
+      "nome": "Cota de talas",
+      "nomeOriginal": "Splint",
+      "categoria": "pesada",
+      "custo": {
+        "valor": 200,
+        "moeda": "po"
+      },
+      "pesoKg": 30,
+      "ca": {
+        "base": 17,
+        "adicionaDestreza": false,
+        "limiteBonusDestreza": 0
+      },
+      "forcaMinima": 15,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 10,
+      "retirarMinutos": 5
+    },
+    {
+      "id": "armadura-placas",
+      "tipo": "armadura",
+      "nome": "Placas",
+      "nomeOriginal": "Plate",
+      "categoria": "pesada",
+      "custo": {
+        "valor": 1500,
+        "moeda": "po"
+      },
+      "pesoKg": 32.5,
+      "ca": {
+        "base": 18,
+        "adicionaDestreza": false,
+        "limiteBonusDestreza": 0
+      },
+      "forcaMinima": 15,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 10,
+      "retirarMinutos": 5
+    }
+  ]
+}

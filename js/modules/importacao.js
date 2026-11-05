@@ -309,9 +309,25 @@ async function aplicarDadosFicha(dados) {
       );
       atuais.forEach((a) => a.remove());
 
+      const identidadesArmaduras = new Set();
       dados.armaduras.forEach((dadosArmadura) => {
         const novoCard = adicionarNovaArmadura();
         if (!novoCard) return;
+        if (typeof dadosArmadura.instanciaId === "string" && dadosArmadura.instanciaId &&
+            !identidadesArmaduras.has(dadosArmadura.instanciaId)) {
+          novoCard.dataset.instanciaId = dadosArmadura.instanciaId;
+        }
+        identidadesArmaduras.add(novoCard.dataset.instanciaId);
+        if (typeof dadosArmadura.catalogoId === "string" && dadosArmadura.catalogoId) {
+          novoCard.dataset.catalogoId = dadosArmadura.catalogoId;
+          novoCard.dataset.catalogoVersao = String(
+            Number.isInteger(dadosArmadura.catalogoVersao) && dadosArmadura.catalogoVersao > 0
+              ? dadosArmadura.catalogoVersao : 1);
+        }
+        ["vestirMinutos", "retirarMinutos"].forEach(campo => {
+          const minutos = dadosArmadura[campo];
+          if (Number.isFinite(minutos) && minutos > 0) novoCard.dataset[campo] = String(minutos);
+        });
 
         novoCard.querySelectorAll("[data-campo]").forEach((campo) => {
           const valor = dadosArmadura[campo.dataset.campo];

@@ -230,6 +230,7 @@ function coletarDadosFicha() {
 
   document.querySelectorAll("input, select, textarea").forEach((campo) => {
     if (!campo.id) return;
+    if (campo.closest("#armaduraSelecaoOverlay, #armaduraModalOverlay")) return;
     if (campo.type === "file") return;
     if (campo.id === "importarFichaInput") return;
     if (["modalIniciativaDado", "modalPosicaoIniciativa"].includes(campo.id))

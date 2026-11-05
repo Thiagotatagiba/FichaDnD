@@ -126,6 +126,15 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - **Testes:** além dos cenários registrados de XP/Level Up e da correção de espaços de magia legados, a persistência dos quatro estados recebeu verificações estáticas e testes isolados; o usuário também reportou um round-trip manual da ficha de Waldo com os quatro estados preservados. Recálculos pela interface, round-trip consecutivo, JSON legado e importação parcial continuam pendentes. O round-trip controlado dos campos narrativos de Thrain e a validação ampla da timeline também permanecem pendentes; o download nativo tem validação manual registrada em 2026-10-23. Não foi executada uma suíte automatizada geral.
 - **Fases do roadmap:** nenhuma fase ou entregável é declarado concluído por este acompanhamento. A tarefa atual está relacionada à Fase 3 — Qualidade e confiabilidade, sem implicar que a fase esteja concluída.
 
+### Catálogo de armaduras — implementado e validado nos cenários definidos (Fase 4)
+
+- **Autorização:** usuário aprovou a execução da proposta em 2026-11-05.
+- **Resultado:** catálogo estático com 12 armaduras em kg; busca e filtros no padrão das magias; criação manual, resumo, edição, equipar/desequipar e restauração do padrão. Os exemplares mantêm valores próprios e metadados opcionais, preservando o formato legado de ficha.
+- **Validação:** 18 testes Node passaram; seleção, cópias independentes, exclusões, exportação/importação real por Blob, dados legados, navegação por teclado, viewport de 390 × 844 e recuperação de falha de fetch foram exercitados no navegador. Registro completo em [proposta e resultado](docs/propostas/CATALOGO_ITENS_ARMADURAS.md).
+- **Limites:** Força/proficiência/tempos são informativos; conferência com livro físico em português, aparelho móvel físico, leitor de tela e novo download nativo não foram executados. A conclusão desta tarefa não conclui a Fase 4 nem altera as pendências da Fase 3.
+- **Continuidade:** avaliar armas, escudos e demais itens em propostas próprias; não há expansão adicional aprovada nesta tarefa.
+- **Revisão visual aprovada em 2026-11-05:** cartões compactos no estilo das magias abrem modal de visualização/edição; equipamento, restauração e exclusão ficam no modal. Catálogo com propriedades em grade, botão de adicionar junto ao título e 12 descrições resumidas das regras básicas oficiais de 2014. Novos exemplares persistem a descrição; personalizações são preservadas. Os 18 testes passaram novamente; capturas em desktop e largura de 390 px, salvar/cancelar, equipamento, criação manual, exclusão, teclado e round-trip foram verificados no navegador em área isolada.
+
 ### Tarefa concluída — fluxo dos modais de XP e Level Up
 
 **Estado geral:** Concluído para o escopo pontual abaixo. A Fase 3 continua em andamento como direção de longo prazo; esta tarefa não conclui a fase.
@@ -189,6 +198,12 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 
 ### Histórico recente
 
+- **2026-11-05 — Armaduras com apresentação e modais no padrão de magias:** revisão visual implementada a pedido do usuário; descrições pesquisadas no D&D Beyond 2014, catálogo versão 2, ação de adicionar no cabeçalho, propriedades organizadas em grade e edição com descarte seguro. Validações e limites em [proposta e resultado](docs/propostas/CATALOGO_ITENS_ARMADURAS.md).
+
+- **2026-11-05 — Catálogo de armaduras aprovado e implementado (Fase 4):** 12 armaduras em JSON com kg, seletor com busca/filtros/detalhes, criação manual, resumos editáveis e equipamento por cartão. Identidade/referência e tempos persistidos com compatibilidade legada; exclusão ajusta o índice equipado. Suíte de 18 testes passou e fluxos de seleção, cópias, remoção, teclado, falha de carregamento e salvar/importar foram exercitados no navegador. Detalhes e limites em `docs/propostas/CATALOGO_ITENS_ARMADURAS.md`. Não há automação nova de penalidades ou expansão dos demais itens; nenhuma fase inteira é declarada concluída.
+
+- **2026-11-05 — Proposta de catálogo de armaduras preparada (Fase 4):** investigação do cadastro atual e do seletor de magias, proposta em `docs/propostas/CATALOGO_ITENS_ARMADURAS.md` e JSON de exemplo com 12 armaduras. Pesos em kg com convenção métrica explicitada; conferência com o livro em português e implementação pendentes. Registrada no banco de ideias; não constitui tarefa de implementação aprovada nem conclusão da fase.
+
 - **2026-10-22 — Registro do diagnóstico inicial:** localizado o roadmap oficial e os registros existentes; naquele momento, a investigação não modificou código nem executou testes, e a implementação/validação permaneciam pendentes. O estado posterior está registrado na entrada seguinte.
 - **2026-10-22 — Correção de XP/Level Up implementada e validada:** alterados `js/data/racas-subclasses.js` e `ficha/Ficha_DnD_-_Tatagiba_1.0.html`; cenários manuais no navegador passaram. Sem suíte automatizada geral. Detalhes e resultados em `docs/BUG_REPORT.md`.
 - **2026-10-22 — Round-trip de importação/exportação executado (Fase 3):** Thrain preservou os campos centrais e coleções estruturadas, mas três campos narrativos de equipamento não foram exportados. Waldo preservou os campos centrais, magias e equipamentos, mas seu espaço de magia nível 1 exportado/reimportado ficou em 0 apesar de 2 espaços totais e 0 usados. Validação geral reprovada; nenhuma correção de código feita. Originais preservados por hash; detalhes em `docs/BUG_REPORT.md`.
@@ -210,4 +225,4 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - Preservar regras de D&D, estruturas de dados, IDs, atributos HTML e compatibilidade com fichas existentes, salvo evidência que justifique uma mudança.
 - Commits são manuais e ficam a cargo do responsável pelo projeto.
 
-**Última atualização:** 2026-11-05 — validação manual principal dos quatro estados em Waldo reportada pelo usuário; testes complementares pela interface continuam pendentes. A aplicação parcial de importação continua como risco sem caracterização controlada; validação da timeline e round-trip narrativo de Thrain também permanecem pendentes. Fase 3 continua em andamento.
+**Última atualização:** 2026-11-05 — armaduras com cartões compactos, visualização/edição em modal, 12 descrições pesquisadas, ação de adicionar junto ao título e propriedades em grade. Os 18 testes passaram; inspeção visual e fluxos do novo modal foram verificados. As pendências anteriores de perícias, aplicação parcial de importação, timeline e round-trip narrativo de Thrain permanecem; Fase 3 continua em andamento e nenhuma fase inteira foi concluída.

@@ -1,0 +1,94 @@
+/* Armaduras usam a linguagem visual das listas e modais de magia. */
+#listaArmaduras { display: grid; gap: 8px; }
+#listaArmaduras:empty::before {
+  content: "Nenhuma armadura adicionada. Escolha uma opção do catálogo ou crie a sua.";
+  display: block; padding: 12px; font-size: 13px; line-height: 1.5;
+  border: 1px dashed #bda68c; border-radius: 10px;
+}
+#listaArmaduras > .item-card[data-tipo="armadura"] {
+  margin: 0; padding: 0; min-height: 0; width: 100%;
+  border: 0; border-radius: 0; box-shadow: none; background: transparent;
+  overflow: visible; box-sizing: border-box;
+}
+#listaArmaduras > .item-card::before,
+#listaArmaduras > .item-card::after { display: none; }
+#listaArmaduras > .item-card > :not(.armadura-resumo) { display: none !important; }
+.armadura-resumo { width: 100%; }
+.armadura-abrir.magia-item {
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%; margin: 0; box-sizing: border-box; text-align: left;
+  font-family: inherit; color: inherit; cursor: pointer;
+  background: linear-gradient(145deg, #f4ecd8, #e8dcc2);
+  border: 1px solid #3b2f1b;
+  box-shadow: inset 0 0 8px rgba(0, 0, 0, .12), 0 2px 5px rgba(59, 47, 27, .12);
+}
+.armadura-cartao-info { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 5px 8px; min-width: 0; }
+.armadura-cartao-info .magia-item-nome { font-size: 15px; overflow-wrap: anywhere; }
+.armadura-cartao-info .magia-item-nome { grid-column: 1 / -1; }
+.armadura-cartao-categoria { justify-self: start; border: 1px solid rgba(59, 47, 27, .28); border-radius: 20px; padding: 2px 8px; font-size: 10px; line-height: 1.35; }
+.armadura-cartao-ca { font-size: 17px; font-weight: 800; line-height: 1.2; }
+.armadura-cartao-meta { grid-column: 1 / -1; font-size: 11px; line-height: 1.4; }
+.armadura-cartao-proficiencia { grid-column: 1 / -1; color: #9b2c19; font-size: 11px; font-weight: 700; }
+.armadura-cartao-proficiencia[hidden] { display: none; }
+.armadura-sem-proficiencia.magia-item { border-color: #a3432b; }
+.armadura-cartao-estado { font-size: 20px; opacity: .7; }
+.armadura-equipada .armadura-cartao-estado {
+  font-size: 10px; padding: 4px 6px; border: 1px solid currentColor;
+  border-radius: 20px; opacity: 1;
+}
+body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abrir.magia-item {
+  background: linear-gradient(145deg, #f4ecd8, #e8dcc2) !important;
+  border-color: #3b2f1b !important;
+  color: #3b2f1b !important;
+}
+.armadura-filtro-proficiencia { margin-bottom: 4px; font-size: 13px; }
+#armaduraSelecaoStatus { margin: 8px 0 12px; font-size: 12px; opacity: .8; }
+.armadura-selecao-modal .magia-selecao-detalhes { padding: 0 2px 4px; }
+.armadura-detalhe { margin: 0; }
+.armadura-detalhe .magia-card-detalhe-header { align-items: flex-start; flex-wrap: wrap; }
+.armadura-detalhe .magia-card-detalhe-header > div { flex: 1 1 130px; min-width: 0; }
+.armadura-detalhe h3 { margin: 0; line-height: 1.3; }
+.armadura-detalhe .magia-card-detalhe-adicionar { margin-left: auto; max-width: 100%; }
+.armadura-nome-original { margin-top: 5px; font-size: 11px; opacity: .65; }
+.armadura-propriedades {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px; margin: 16px 0 0;
+}
+.armadura-propriedades > div { padding: 10px 0; border-bottom: 1px solid rgba(139, 69, 19, .15); min-width: 0; }
+.armadura-propriedades dt { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; opacity: .7; }
+.armadura-propriedades dd { margin: 5px 0 0; font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }
+.armadura-propriedade-destaque dd { font-weight: bold; font-size: 22px; }
+.armadura-descricao { margin-top: 18px; }
+.armadura-descricao h4 { font-size: 12px; margin: 0 0 8px; }
+.armadura-descricao p { font-size: 14px; line-height: 1.65; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.armadura-regras { margin-top: 18px; font-size: 12px; line-height: 1.5; }
+.armadura-regras summary { cursor: pointer; padding: 8px 0; }
+.armadura-regras p { margin: 8px 0; }
+.armadura-modal { width: min(800px, 94vw); }
+.armadura-modal .magia-modal-titulo { margin: 0; }
+.armadura-modal .magia-modal-nivel { margin-top: 5px; }
+.armadura-modal .armadura-detalhe { border: 0; box-shadow: none; border-radius: 0; background: transparent; padding: 4px; }
+.armadura-modal .armadura-detalhe > header { display: none; }
+.armadura-editor-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.armadura-editor-campos label { display: flex; flex-direction: column; gap: 6px; font-size: 12px; min-width: 0; }
+.armadura-editor-completo { grid-column: 1 / -1; }
+.armadura-editor input:not([type="checkbox"]), .armadura-editor select, .armadura-editor textarea {
+  width: 100%; min-height: 38px; box-sizing: border-box; border: 1px solid #bda68c;
+  border-radius: 7px; padding: 9px; background: var(--modal-bg); color: inherit; font: inherit;
+}
+.armadura-editor textarea { min-height: 120px; resize: vertical; }
+.armadura-editor-flags { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 18px; font-size: 12px; }
+.armadura-editor-flags label { display: flex; align-items: center; gap: 5px; }
+.armadura-editor-acoes { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 22px; }
+#armaduraModalOverlay [hidden] { display: none !important; }
+.armadura-abrir:focus-visible,
+.armadura-detalhe button:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+@media (max-width: 640px) {
+  .armadura-selecao-modal .magia-selecao-cabecalho { flex-wrap: wrap; }
+  .armadura-selecao-modal .magia-selecao-filtros { grid-template-columns: 1fr; gap: 8px; }
+  .armadura-selecao-modal .magia-selecao-conteudo { display: flex; flex-direction: column; overflow-y: auto; }
+  .armadura-selecao-modal .magia-selecao-lista { flex: 0 0 160px; overflow-y: auto; }
+  .armadura-selecao-modal .magia-selecao-detalhes { flex: 0 0 auto; overflow: visible; }
+  .armadura-modal .magia-modal-topo { gap: 12px; }
+  .armadura-editor-campos { gap: 12px; }
+}

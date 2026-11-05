@@ -18,6 +18,7 @@
     <link rel="stylesheet" href="../css/modal.css" />
     <link rel="stylesheet" href="../css/responsivo.css" />
     <link rel="stylesheet" href="../css/xp-modal.css" />
+    <link rel="stylesheet" href="../css/armaduras.css" />
   </head>
 
   <body class="tema-padrao">
@@ -3492,7 +3493,7 @@
                     <button
                       type="button"
                       class="inventario-botao-add"
-                      onclick="adicionarNovaArmadura()"
+                      onclick="abrirModalSelecaoArmadura()"
                       title="Adicionar nova armadura"
                       aria-label="Adicionar nova armadura"
                     >
@@ -3577,10 +3578,10 @@
                           />
                         </div>
                         <div>
-                          <label>Bônus</label>
+                          <label>Destreza na CA</label>
                           <select
                             data-campo="armadura_bonus"
-                            aria-label="Bônus da armadura"
+                            aria-label="Contribuição de Destreza na classe de armadura"
                           >
                             <option value="0" selected>0</option>
                             <option value="DES">DES</option>
@@ -3664,7 +3665,7 @@
                   <button
                     type="button"
                     class="inventario-botao-add inventario-botao-add-inferior"
-                    onclick="adicionarNovaArmadura()"
+                    onclick="abrirModalSelecaoArmadura()"
                   >
                     + nova armadura
                   </button>
@@ -4085,6 +4086,7 @@
     <!-- INVENTÁRIO / EQUIPAMENTOS -->
     <!-- ========================= -->
     <script src="../js/modules/equipamentos.js"></script>
+    <script src="../js/modules/armaduras-catalogo.js"></script>
 
     <!-- ========================= -->
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->

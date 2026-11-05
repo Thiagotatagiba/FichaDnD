@@ -1,0 +1,287 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 2,
+  "sistema": "dnd5e-2014",
+  "status": "ativo",
+  "fonte": {
+    "nome": "Roll20 — Armor (regras básicas 2014)",
+    "url": "https://roll20.net/compendium/dnd5e/Armor",
+    "descricoes": {
+      "nome": "D&D Beyond — Basic Rules 2014, Equipment",
+      "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#ArmorandShields",
+      "tratamento": "Resumos em português"
+    }
+  },
+  "unidadePeso": "kg",
+  "convencaoPeso": {
+    "metodo": "adaptacao-metrica-de-mesa",
+    "kgPorLibra": 0.5,
+    "status": "Convenção de mesa aprovada com a proposta em 2026-11-05"
+  },
+  "itens": [
+    {
+      "id": "armadura-acolchoada",
+      "tipo": "armadura",
+      "nome": "Acolchoada",
+      "nomeOriginal": "Padded",
+      "categoria": "leve",
+      "custo": {
+        "valor": 5,
+        "moeda": "po"
+      },
+      "pesoKg": 4,
+      "ca": {
+        "base": 11,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": null
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 1,
+      "retirarMinutos": 1,
+      "descricao": "Camadas acolchoadas de tecido e enchimento formam esta proteção simples."
+    },
+    {
+      "id": "armadura-couro",
+      "tipo": "armadura",
+      "nome": "Couro",
+      "nomeOriginal": "Leather",
+      "categoria": "leve",
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 5,
+      "ca": {
+        "base": 11,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": null
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 1,
+      "retirarMinutos": 1,
+      "descricao": "Peito e ombros de couro endurecido, combinados com partes mais flexíveis."
+    },
+    {
+      "id": "armadura-couro-batido",
+      "tipo": "armadura",
+      "nome": "Couro batido",
+      "nomeOriginal": "Studded Leather",
+      "categoria": "leve",
+      "custo": {
+        "valor": 45,
+        "moeda": "po"
+      },
+      "pesoKg": 6.5,
+      "ca": {
+        "base": 12,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": null
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 1,
+      "retirarMinutos": 1,
+      "descricao": "Couro flexível e resistente, reforçado por rebites ou pequenas pontas metálicas."
+    },
+    {
+      "id": "armadura-gibao-de-peles",
+      "tipo": "armadura",
+      "nome": "Gibão de peles",
+      "nomeOriginal": "Hide",
+      "categoria": "media",
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 6,
+      "ca": {
+        "base": 12,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1,
+      "descricao": "Peles espessas sobrepostas compõem esta armadura de construção rústica."
+    },
+    {
+      "id": "armadura-camisao-de-malha",
+      "tipo": "armadura",
+      "nome": "Camisão de malha",
+      "nomeOriginal": "Chain Shirt",
+      "categoria": "media",
+      "custo": {
+        "valor": 50,
+        "moeda": "po"
+      },
+      "pesoKg": 10,
+      "ca": {
+        "base": 13,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1,
+      "descricao": "Anéis metálicos entre roupas protegem o tronco e ajudam a abafar o ruído."
+    },
+    {
+      "id": "armadura-brunea",
+      "tipo": "armadura",
+      "nome": "Brunea",
+      "nomeOriginal": "Scale Mail",
+      "categoria": "media",
+      "custo": {
+        "valor": 50,
+        "moeda": "po"
+      },
+      "pesoKg": 22.5,
+      "ca": {
+        "base": 14,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1,
+      "descricao": "Escamas metálicas sobrepostas recobrem uma base de couro; o conjunto inclui manoplas."
+    },
+    {
+      "id": "armadura-peitoral",
+      "tipo": "armadura",
+      "nome": "Peitoral",
+      "nomeOriginal": "Breastplate",
+      "categoria": "media",
+      "custo": {
+        "valor": 400,
+        "moeda": "po"
+      },
+      "pesoKg": 10,
+      "ca": {
+        "base": 14,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1,
+      "descricao": "Uma peça metálica ajustada protege o peito, deixando braços e pernas mais livres."
+    },
+    {
+      "id": "armadura-meia-armadura",
+      "tipo": "armadura",
+      "nome": "Meia armadura",
+      "nomeOriginal": "Half Plate",
+      "categoria": "media",
+      "custo": {
+        "valor": 750,
+        "moeda": "po"
+      },
+      "pesoKg": 20,
+      "ca": {
+        "base": 15,
+        "adicionaDestreza": true,
+        "limiteBonusDestreza": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 5,
+      "retirarMinutos": 1,
+      "descricao": "Placas moldadas cobrem grande parte do corpo; grevas simples protegem as pernas."
+    },
+    {
+      "id": "armadura-cota-de-aneis",
+      "tipo": "armadura",
+      "nome": "Cota de anéis",
+      "nomeOriginal": "Ring Mail",
+      "categoria": "pesada",
+      "custo": {
+        "valor": 30,
+        "moeda": "po"
+      },
+      "pesoKg": 20,
+      "ca": {
+        "base": 14,
+        "adicionaDestreza": false,
+        "limiteBonusDestreza": 0
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 10,
+      "retirarMinutos": 5,
+      "descricao": "Anéis pesados costurados ao couro reforçam a proteção desta armadura."
+    },
+    {
+      "id": "armadura-cota-de-malha",
+      "tipo": "armadura",
+      "nome": "Cota de malha",
+      "nomeOriginal": "Chain Mail",
+      "categoria": "pesada",
+      "custo": {
+        "valor": 75,
+        "moeda": "po"
+      },
+      "pesoKg": 27.5,
+      "ca": {
+        "base": 16,
+        "adicionaDestreza": false,
+        "limiteBonusDestreza": 0
+      },
+      "forcaMinima": 13,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 10,
+      "retirarMinutos": 5,
+      "descricao": "Malha de anéis com forro acolchoado para amortecer golpes; inclui manoplas."
+    },
+    {
+      "id": "armadura-cota-de-talas",
+      "tipo": "armadura",
+      "nome": "Cota de talas",
+      "nomeOriginal": "Splint",
+      "categoria": "pesada",
+      "custo": {
+        "valor": 200,
+        "moeda": "po"
+      },
+      "pesoKg": 30,
+      "ca": {
+        "base": 17,
+        "adicionaDestreza": false,
+        "limiteBonusDestreza": 0
+      },
+      "forcaMinima": 15,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 10,
+      "retirarMinutos": 5,
+      "descricao": "Tiras metálicas verticais sobre couro e acolchoamento; malha flexível protege as articulações."
+    },
+    {
+      "id": "armadura-placas",
+      "tipo": "armadura",
+      "nome": "Placas",
+      "nomeOriginal": "Plate",
+      "categoria": "pesada",
+      "custo": {
+        "valor": 1500,
+        "moeda": "po"
+      },
+      "pesoKg": 32.5,
+      "ca": {
+        "base": 18,
+        "adicionaDestreza": false,
+        "limiteBonusDestreza": 0
+      },
+      "forcaMinima": 15,
+      "desvantagemFurtividade": true,
+      "vestirMinutos": 10,
+      "retirarMinutos": 5,
+      "descricao": "Placas articuladas cobrem o corpo, com elmo, manoplas, botas e acolchoamento."
+    }
+  ]
+}

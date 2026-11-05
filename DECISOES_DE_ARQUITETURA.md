@@ -102,6 +102,12 @@ A transição pode ocorrer gradualmente sem reescrever a aplicação inteira.
 
 ## 9. Regras de negócio e referência normativa
 
+### Complemento aprovado — catálogo de armaduras (2026-11-05)
+
+A execução da [proposta de armaduras](docs/propostas/CATALOGO_ITENS_ARMADURAS.md) foi autorizada pelo usuário. O catálogo usa D&D 5e 2014 e a convenção métrica de mesa de 0,5 kg por libra da tabela de origem, sem conversão física exata. Essa convenção prepara somente os pesos do catálogo; não modifica pesos salvos nem fórmulas de carga.
+
+O [catálogo JSON](assets/data/itens/armaduras.json) é estático. Cada exemplar guarda valores efetivos, identidade própria e referência opcional ao catálogo; mudanças na base não substituem itens salvos. O índice de equipamento legado continua sendo utilizado, com ajuste ao excluir itens. O [módulo de armaduras](js/modules/armaduras-catalogo.js) separa seleção e carregamento da criação programática usada na importação. Falhas de carregamento permitem cadastro manual. Requisitos de Força, proficiência e tempos permanecem informativos nesta etapa.
+
 A aplicação utiliza como padrão as regras oficiais de D&D 5e, tendo o Livro do Jogador disponibilizado no projeto como referência normativa. Não devem ser introduzidas adaptações próprias para atributos, proficiência, perícias, salvaguardas, pontos de vida, progressão de XP e níveis, combate, armaduras, magia, equipamentos ou outras mecânicas. Qualquer alteração futura dessas regras exige aprovação explícita e registro de decisão antes da implementação.
 
 A única personalização aprovada é o multiplicador da capacidade de carga, por convenção de unidade da aplicação:

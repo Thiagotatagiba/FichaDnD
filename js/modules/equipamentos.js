@@ -805,6 +805,7 @@
       }
 
       function renderizarArmadurasEquipamento(listaArmaduras) {
+        atualizarResumosArmaduras(listaArmaduras);
         const desValor =
           Number(
             document.getElementById("atrib_des")?.value ??
@@ -2477,15 +2478,26 @@
       }
 
       function inicializarEventosArmadura(card) {
+        if (!card.dataset.instanciaId) card.dataset.instanciaId = globalThis.crypto?.randomUUID?.() || gerarId();
+        inicializarResumoArmadura(card);
         inicializarCamposCompartilhadosItem(card, "armadura");
         const btnRemover = card.querySelector(".btn-remover-item");
         if (btnRemover) {
           btnRemover.addEventListener("click", function (e) {
             e.stopPropagation();
             if (confirm("Deseja remover esta armadura?")) {
+              const cards = [...document.querySelectorAll('#listaArmaduras .item-card[data-tipo="armadura"]')];
+              const indiceRemovido = cards.indexOf(card);
+              const equipada = normalizarIndiceEquipamento(armaduraEquipadaIndice);
+              if (equipada !== null) {
+                armaduraEquipadaIndice = equipada === indiceRemovido ? null :
+                  equipada > indiceRemovido ? equipada - 1 : equipada;
+              }
               card.remove();
               atualizarPesoAtualInventario();
               atualizarListaArmasEquipamento();
+              equiparArmadura(armaduraEquipadaIndice);
+              atualizarResumosArmaduras();
             }
           });
         }
@@ -2549,6 +2561,15 @@
 
         lista.forEach((card) => {
           const armadura = {};
+          armadura.instanciaId = card.dataset.instanciaId;
+          if (card.dataset.catalogoId) {
+            armadura.catalogoId = card.dataset.catalogoId;
+            armadura.catalogoVersao = Number(card.dataset.catalogoVersao) || 1;
+          }
+          ["vestirMinutos", "retirarMinutos"].forEach(campo => {
+            const minutos = Number(card.dataset[campo]);
+            if (Number.isFinite(minutos) && minutos > 0) armadura[campo] = minutos;
+          });
           const indicadorProficiencia =
             card.querySelector(".item-proficiencia");
 

@@ -586,6 +586,7 @@ function equiparArmadura(indice, opcoes = {}) {
 
   marcarArmaduraEquipadaNoInventario(indiceFinal);
   atualizarCamposArmaduraSelecionada(armaduraSelecionada);
+  if (typeof atualizarResumosArmaduras === "function") atualizarResumosArmaduras(armaduras);
 
   return armaduraSelecionada;
 }
@@ -1224,10 +1225,9 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 window.addEventListener("DOMContentLoaded", () => {
   const armaInicial = adicionarNovaArma();
-  const armaduraInicial = adicionarNovaArmadura();
   const escudoInicial = adicionarNovoEscudo();
   const outroInicial = adicionarNovoOutro();
-  [armaInicial, armaduraInicial, escudoInicial, outroInicial].forEach(
+  [armaInicial, escudoInicial, outroInicial].forEach(
     fecharItemCard,
   );
 });

@@ -8,6 +8,8 @@ O projeto é uma aplicação front-end estática, pensada para apoiar a criaçã
 
 ## Arquivos principais do repositório
 
+- [propostas/CATALOGO_ITENS_ARMADURAS.md](propostas/CATALOGO_ITENS_ARMADURAS.md) — proposta aprovada de catálogo JSON de armaduras, com registro da implementação, validações e limites.
+
 - [../README.md](../README.md) — visão geral do projeto e instruções de uso
 - [../ROADMAP.md](../ROADMAP.md) — evolução planejada do software
 - [../DECISOES_DE_ARQUITETURA.md](../DECISOES_DE_ARQUITETURA.md) — decisões técnicas e de arquitetura
