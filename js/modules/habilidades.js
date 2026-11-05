@@ -35,14 +35,23 @@ document.querySelectorAll(".pericia-prof").forEach((label) => {
   label.querySelectorAll("input").forEach((checkbox) => {
     checkbox.addEventListener("click", (evento) => evento.stopPropagation());
     checkbox.addEventListener("change", () => {
-      if (checkbox.classList.contains("pericia-expertise") && checkbox.checked) {
-        const prof = label.querySelector('input[id$="Prof"]');
-        if (prof) prof.checked = true;
+      const checkboxProf = label.querySelector('input[id$="Prof"]');
+      const checkboxExpertise = label.querySelector(".pericia-expertise");
+      if (checkbox === checkboxExpertise) {
+        if (checkbox.checked && checkboxProf) checkboxProf.checked = true;
+      } else if (!checkbox.checked && checkboxExpertise) {
+        checkboxExpertise.checked = false;
       }
-      const estado = checkbox.classList.contains("pericia-expertise")
-        ? checkbox.checked ? 3 : label.querySelector('input[id$="Prof"]')?.checked ? 1 : 0
-        : checkbox.checked ? 1 : 0;
-      periciaLinha.dataset.proficiencia = String(estado);
+      const estado = checkboxExpertise?.checked
+        ? 3
+        : checkboxProf?.checked
+          ? 1
+          : 0;
+      if (typeof sincronizarControlesPericia === "function") {
+        sincronizarControlesPericia(periciaLinha, estado);
+      } else {
+        periciaLinha.dataset.proficiencia = String(estado);
+      }
       atualizarPericias();
       atualizarPassivas();
     });

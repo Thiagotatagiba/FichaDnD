@@ -18,7 +18,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você aponta o dedo para um alvo ao alcance. Sua magia concede um breve discernimento sobre as defesas da criatura. No seu próximo turno, você tem vantagem na primeira jogada de ataque contra o alvo, desde que esta magia não tenha encerrado.",
@@ -43,7 +43,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Pela duração, você tem vantagem em todos os testes de Carisma dirigidos a uma criatura não hostil à sua escolha. Quando a magia acaba, a criatura percebe que você usou magia para influenciá-la e fica hostil a você.",
@@ -74,7 +74,7 @@
       {
         "tipo": "dano",
         "formula": "1d6",
-        "dano_tipo": "Venenoso",
+        "dano_tipo": "Veneno",
         "regra": "Movimento aleatório de 1,5m em direção rolada no d4."
       }
     ],
@@ -123,7 +123,7 @@
     "alcance": "Toque",
     "duracao": "1 minuto",
     "propriedades": {
-      "dano": true,
+      "dano": false,
       "cura": false,
       "concentracao": false
     },
@@ -132,7 +132,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Ataque com Magia",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [
       {
@@ -164,13 +164,13 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Ataque CaA à Distância",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
         "tipo": "dano",
         "formula": "1d6",
-        "dano_tipo": "Perfuração",
+        "dano_tipo": "Perfurante",
         "regra": "Se o alvo for de tamanho Grande ou menor, você o puxa até 3 metros em sua direção."
       }
     ],
@@ -202,7 +202,7 @@
       {
         "tipo": "dano",
         "formula": "1d8",
-        "dano_tipo": "Eletricidade",
+        "dano_tipo": "Elétrico",
         "regra": "Puxa o alvo até 3m em sua direção. O dano só é aplicado se o alvo terminar a até 1,5m de você."
       }
     ],
@@ -251,7 +251,7 @@
     "alcance": "Pessoal (9 m)",
     "duracao": "10 minutos",
     "propriedades": {
-      "dano": true,
+      "dano": false,
       "cura": false,
       "concentracao": false
     },
@@ -260,17 +260,10 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Ataque com Magia à Distância",
+    "resolucao": "",
     "teste_resistencia": "",
-    "efeitos": [
-      {
-        "tipo": "dano",
-        "formula": "1d8",
-        "dano_tipo": "Fogo",
-        "regra": "Produz luz ou pode ser arremessada para dar dano, encerrando a magia."
-      }
-    ],
-    "descricao": "Uma chama tremeluzente aparece em sua mão. Ela emite luz brilhante num raio de 3m. Você pode arremessar a chama como uma ação em uma criatura a até 9m, fazendo um ataque com magia à distância para causar 1d8 de dano de fogo.",
+    "efeitos": [],
+    "descricao": "Uma chama tremeluzente aparece em sua mão. Ela emite luz brilhante num raio de 3m. Você pode arremessar a chama como uma ação em uma criatura a até 9m, fazendo um ataque com magia à distância para causar 1d8 de dano de fogo. Arremessar a chama encerra a magia.",
     "proximos_niveis": "O dano aumenta em 1d8 no 5º nível (2d8), 11º nível (3d8) e 17º nível (4d8)."
   },
   {
@@ -324,7 +317,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Esta magia repara uma única fenda ou ruptura em um objeto que você tocar, como um elo quebrado de uma corrente, duas metades de uma chave partida ou um rasgo na capa.",
@@ -381,7 +374,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você escolhe um fogo não mágico que caiba num cubo de 1,5m e manipula sua forma, iluminação, cor ou expansão por até 1 hora.",
@@ -406,7 +399,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você escolhe uma área de água que caiba num cubo de 1,5m para mover, mudar o fluxo, congelar ou alterar sua cor/opacidade por até 1 hora.",
@@ -463,7 +456,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Ataque CaA com Magia",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
@@ -495,7 +488,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Ataque com Magia à Distância",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
@@ -527,7 +520,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Ataque com Magia à Distância",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
@@ -591,7 +584,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Ataque CaA com Arma",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
@@ -623,7 +616,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Ataque CaA com Arma",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
@@ -655,7 +648,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Teste de Investigação",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você cria um som ou uma imagem de um objeto (que caiba num cubo de 1,5m) dentro do alcance. Uma investigação (Investigação contra a CD da sua magia) revela que é uma ilusão.",
@@ -680,7 +673,7 @@
       "somatico": false,
       "material": true
     },
-    "resolucao": "Teste de Resistência (se hostil)",
+    "resolucao": "Teste de Resistência",
     "teste_resistencia": "DES",
     "efeitos": [],
     "descricao": "Você toca um objeto. Pela duração, ele emite luz brilhante num raio de 6 metros e luz penumbrosa por mais 6 metros. Tocar um objeto vestido/carregado por hostil exige teste de Destreza.",
@@ -705,7 +698,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você cria até quatro luzes do tamanho de tochas dentro do alcance, fazendo-as parecer com esferas luminosas ou uma forma humanoide vaga. Elas cobrem um raio de luz penumbrosa de 3m cada.",
@@ -730,7 +723,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Uma mão espectral e flutuante surge num ponto escolhido. Você pode usar uma ação para controlá-la e manipular objetos, abrir portas destrancadas ou carregar até 4,5 kg. Ela não ataca nem ativa itens mágicos.",
@@ -755,7 +748,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você aponta o dedo para uma criatura e sussurra uma mensagem. O alvo (e apenas ele) ouve a mensagem e pode responder com um sussurro que apenas você pode ouvir.",
@@ -780,7 +773,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Escolha um bloco de terra ou pedra de 1,5m. Você pode escavá-lo, mudar sua cor/textura ou torná-lo terreno difícil por até 1 hora.",
@@ -811,7 +804,7 @@
       {
         "tipo": "dano",
         "formula": "1d12",
-        "dano_tipo": "Venenoso",
+        "dano_tipo": "Veneno",
         "regra": ""
       }
     ],
@@ -869,7 +862,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Truque mágico simples para praticantes de magia. Cria efeitos sensoriais inofensivos, acende/apaga pequenas velas, limpa/suja objetos, esquenta/esfria comida ou cria marcas/ilusões minúsculas.",
@@ -894,7 +887,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você estende as mãos e desenha um sinal de proteção no ar. Até o final do seu próximo turno, você tem resistência contra dano concussivo, cortante e perfurante causado por ataques de armas.",
@@ -919,7 +912,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Ataque com Magia à Distância",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
@@ -983,7 +976,7 @@
       "somatico": true,
       "material": true
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você toca uma criatura voluntária. Uma vez antes da magia acabar, o alvo pode rolar um d4 e adicionar o número rolado a um teste de resistência à sua escolha.",
@@ -1040,7 +1033,7 @@
       "somatico": false,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você manifesta uma pequena maravilha divina. Pode aumentar a voz em 3x, fazer chamas tremerem, causar tremores no solo, criar sons sobrenaturais ou fazer portas/janelas se abrirem/fecharem de golpe.",
@@ -1065,13 +1058,13 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Ataque CaA com Magia",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
         "tipo": "dano",
         "formula": "1d8",
-        "dano_tipo": "Eletricidade",
+        "dano_tipo": "Elétrico",
         "regra": "Vantagem se o alvo estiver usando armadura de metal. O alvo não pode usar reações até seu próximo turno."
       }
     ],
@@ -1097,7 +1090,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Ataque com Magia à Distância",
+    "resolucao": "Ataque",
     "teste_resistencia": "",
     "efeitos": [
       {
@@ -1129,7 +1122,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Você toca uma criatura viva que esteja com 0 pontos de vida. A criatura se torna estável. Esta magia não tem efeito sobre mortos-vivos ou constructos.",
@@ -1160,7 +1153,7 @@
       {
         "tipo": "dano",
         "formula": "1d6",
-        "dano_tipo": "Trovão",
+        "dano_tipo": "Trovejante",
         "regra": "O som do trovão pode ser ouvido a até 30 metros de distância."
       }
     ],
@@ -1186,7 +1179,7 @@
       "somatico": true,
       "material": false
     },
-    "resolucao": "Nenhum",
+    "resolucao": "",
     "teste_resistencia": "",
     "efeitos": [],
     "descricao": "Sussurrando aos espíritos da natureza, você cria efeitos menores: prever o tempo nas próximas 24h, fazer uma flor desabrochar instantaneamente, criar um efeito sensorial natural (vento, cheiro de chuva) ou acender/apagar uma pequena chama.",

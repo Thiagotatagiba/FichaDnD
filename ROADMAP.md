@@ -122,8 +122,8 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 ### Estado atual do projeto
 
 - **Documentação e arquitetura:** ideias não aprovadas ficam em `docs/TODO.md`, tarefas aprovadas ficam apenas neste Roadmap, e `docs/BUG_REPORT.md` registra bugs com evidência. `docs/IMPLEMENTATION_PLAN.md` e os arquivos TODO antigos estão identificados como históricos, não como filas ativas. Outros documentos ainda não foram auditados em conjunto.
-- **Código e funcionalidades:** a aplicação estática e seus módulos existentes permanecem como base do projeto. Não foi feita nesta atualização uma auditoria geral das funcionalidades nem das cinco fases.
-- **Testes:** além dos cenários de XP/Level Up, o round-trip de Thrain e Waldo foi executado e a conversão de espaços legados foi corrigida e validada em 2026-10-23. Uma comparação posterior encontrou igualdade textual exata dos três campos narrativos de Thrain entre original, cópia temporária e export; como a origem do export não pôde ser confirmada como resultado da importação da cópia pela interface, o round-trip controlado desses campos segue pendente. O download nativo foi validado manualmente em 2026-10-23, com conclusão do download, gravação do arquivo JSON e conferência de seu conteúdo. Não foi executada uma suíte automatizada geral.
+- **Código e funcionalidades:** desde `b52a330`, a aplicação recebeu correções de cálculo/perícias e suporte ao catálogo de truques e à busca de magias (`b5d446a`). O acompanhamento desta atualização é pontual e não representa auditoria geral das funcionalidades ou das cinco fases.
+- **Testes:** além dos cenários registrados de XP/Level Up e da correção de espaços de magia legados, a persistência dos quatro estados recebeu verificações estáticas e testes isolados; o usuário também reportou um round-trip manual da ficha de Waldo com os quatro estados preservados. Recálculos pela interface, round-trip consecutivo, JSON legado e importação parcial continuam pendentes. O round-trip controlado dos campos narrativos de Thrain e a validação ampla da timeline também permanecem pendentes; o download nativo tem validação manual registrada em 2026-10-23. Não foi executada uma suíte automatizada geral.
 - **Fases do roadmap:** nenhuma fase ou entregável é declarado concluído por este acompanhamento. A tarefa atual está relacionada à Fase 3 — Qualidade e confiabilidade, sem implicar que a fase esteja concluída.
 
 ### Tarefa concluída — fluxo dos modais de XP e Level Up
@@ -170,6 +170,23 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - **Arquivos alterados nesta correção:** `js/core/storage.js` e `js/modules/importacao.js`; os resultados detalhados estão em `docs/BUG_REPORT.md`.
 - **Limitações/pendências:** testes manuais no navegador; nenhuma suíte automatizada geral. A entrega de download nativo não foi testada. A preservação dos campos narrativos de equipamento de Thrain segue fora do escopo.
 
+### Correção de proficiência e Expertise nas perícias (Fase 3)
+
+**Estado geral:** Investigado — Concluído; Implementado — Concluído no código local; Validado — Parcialmente. O usuário confirmou manualmente a preservação dos quatro estados na interface e em exportação/importação de Waldo; os testes complementares de cálculo, round-trip consecutivo, legado e importação parcial permanecem pendentes. A tarefa não está concluída.
+
+- **Diagnóstico confirmado:** os quatro estados eram mantidos em `data-proficiencia`, enquanto `coletarDadosFicha()` serializa campos com ID. Em meia proficiência, os checkboxes de proficiência e Expertise ficam desmarcados, então esse estado não podia ser reconstruído por exportação/importação em uma página nova.
+- **Implementação:** cada perícia agora recebe um campo oculto `pericia*Estado` com valor `0` a `3`. Esse campo é a representação persistida do estado e é sincronizado com `data-proficiencia` e os checkboxes existentes. Os campos booleanos antigos de proficiência e Expertise continuam no JSON para compatibilidade com versões anteriores.
+- **Compatibilidade:** a normalização valida valores explícitos de estado e rejeita valores fora de `0` a `3` antes de aplicar os campos. Quando o estado não existe, a importação reconstrói proficiência/Expertise pelos checkboxes disponíveis; JSON legado completo sem Expertise limpa Expertise. Campos ausentes em importação parcial deixam o estado correspondente preservado.
+- **Arquivos alterados:** `js/modules/magias.js`, `js/modules/habilidades.js`, `js/modules/importacao.js` e `js/core/storage.js`.
+- **Verificações executadas:** `node --check` nos quatro arquivos e `git diff --check`; harness isolado verificou os quatro estados, os cálculos com bônus +2 e +4 e a alteração do atributo relacionado sem perder o estado. Também foram exercitadas a coleta dos campos, restauração do formato novo, compatibilidade legada e preservação de campos ausentes em importação parcial. A fixture `Waldo_Malaphael_Tatagiba_20261104.json` foi lida sem alteração e suas 18 perícias foram mapeadas pelo código de restauração.
+- **Validação manual relatada pelo usuário:** exportação/importação da ficha de Waldo seguida de conferência visual e comparação com o JSON exportado preservou Enganação (estado 0, +1), Acrobacia (estado 1, +4), Arcanismo (estado 2, +1) e Atletismo (estado 3, +3). O usuário também confirmou os indicadores visuais de círculo vazio, preenchido, meio círculo e estrela. Este cenário principal está aprovado e não precisa ser repetido sem motivo; não foi observado independentemente nesta sessão.
+- **Limites da validação:** os harnesses anteriores usam DOM simulado e não substituem teste de interface. Nesta sessão, a automação não conseguiu acessar as abas do navegador; não foram executados recálculos pela interface, importações consecutivas, compatibilidade legada ou importação parcial.
+- **Próximos critérios:** com cópia de teste, verificar recálculo após mudança do atributo e do bônus de proficiência, inclusive arredondamento para baixo da meia proficiência com bônus ímpar; fazer duas exportações/importações em páginas novas e comparar estados, checkboxes e bônus; importar JSON legado sem `pericia*Estado`/Expertise; e testar importação parcial preservando os estados de campos ausentes. Não repetir o teste principal já aprovado nem declarar a tarefa concluída antes dos critérios complementares.
+
+### Risco pendente — aplicação parcial durante importação
+
+`aplicarDadosFicha()` ainda altera DOM e estado global em etapas e não tem rollback transacional. Uma exceção depois de mutações pode deixar a ficha parcialmente aplicada. A caracterização controlada desse comportamento ainda não foi executada; confirmar o estado antes/depois em ambiente isolado continua pendente.
+
 ### Histórico recente
 
 - **2026-10-22 — Registro do diagnóstico inicial:** localizado o roadmap oficial e os registros existentes; naquele momento, a investigação não modificou código nem executou testes, e a implementação/validação permaneciam pendentes. O estado posterior está registrado na entrada seguinte.
@@ -179,6 +196,11 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - **2026-10-23 — Comparação posterior dos campos narrativos de Thrain:** os três campos foram comparados com igualdade textual ordinal entre original, cópia temporária e export informado. A origem do export pela importação da cópia não foi comprovada; comparação aprovada, round-trip controlado pendente. O diagnóstico anterior permanece preservado em `docs/BUG_REPORT.md`.
 - **2026-10-23 — Modal de ataque, transição entre etapas:** corrigida a hierarquia HTML de `modalAtaqueEtapaDado` e `modalAtaqueEtapaDano`; o usuário confirmou a transição visual e a estrutura inicial do DOM no Chrome. Testes de regressão de botões, registro de dano e novo ataque seguem pendentes; detalhes em `docs/BUG_REPORT.md`.
 - **2026-10-23 — Triagem das listas antigas:** propostas ainda não aprovadas da área de magias foram consolidadas em `docs/TODO.md`; a timeline de combate existente foi conferida, e a validação de compatibilidade restante foi registrada nas próximas tarefas. Os documentos antigos permanecem como resumos históricos, não filas ativas.
+- **2026-11-04 — Regras de D&D 5e e capacidade de carga formalizadas:** diretriz registrada em `ROADMAP.md` e `DECISOES_DE_ARQUITETURA.md`; a personalização aprovada limita-se ao multiplicador de capacidade de carga.
+- **2026-11-04 — Proficiência e Expertise em validação:** diagnóstico e implementação inicial registrados em `docs/BUG_REPORT.md`; testes de cálculo e verificações estáticas passaram conforme os registros, enquanto interação e round-trip continuaram pendentes.
+- **2026-11-04 — Truques e busca no catálogo de magias (`b5d446a`):** catálogo de nível 0 e busca adicionados; validação funcional específica ainda não registrada.
+- **2026-11-05 — Persistência dos quatro estados de proficiência:** adicionados campos `pericia*Estado` e restauração compatível; testes isolados passaram, mas a validação pela interface e o round-trip real permanecem pendentes.
+- **2026-11-05 — Validação manual principal de Proficiência e Expertise reportada pelo usuário:** exportação/importação de Waldo, quatro estados, bônus e indicadores visuais conferidos pelo usuário. Recálculos após mudanças, round-trip consecutivo, JSON legado e importação parcial ainda pendentes.
 
 ### Decisões e restrições de acompanhamento
 
@@ -188,15 +210,4 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - Preservar regras de D&D, estruturas de dados, IDs, atributos HTML e compatibilidade com fichas existentes, salvo evidência que justifique uma mudança.
 - Commits são manuais e ficam a cargo do responsável pelo projeto.
 
-**Última atualização:** 2026-10-23 — correção estrutural do modal de ataque registrada com confirmação visual limitada; validação ampla da timeline e round-trip controlado dos campos narrativos de Thrain permanecem pendentes; Fase 3 permanece em andamento.
-
-### Correção de proficiência e Expertise nas perícias (Fase 3)
-
-**Estado:** Implementação em andamento; validação funcional pendente.
-
-- Corrigido o vínculo entre os checkboxes de proficiência, `data-proficiencia` e o cálculo dos bônus.
-- Adicionado campo persistido `pericia*Expertise`; o ciclo mantém os estados existentes: sem proficiência, proficiente, meia proficiência e Expertise.
-- O cálculo usa `getMultiplicadorProficiencia`; alterações de atributo e bônus continuam recalculando o resultado sem descartar o estado.
-- JSON legado sem campos de Expertise limpa esse estado ao importar e preserva a proficiência legada quando presente.
-- Arquivos de código alterados: `js/modules/magias.js`, `js/modules/habilidades.js` e `js/modules/importacao.js`.
-- Verificações estáticas (`node --check` nos três módulos e `git diff --check`) passaram. Uma matriz isolada confirmou os multiplicadores para os quatro estados com bônus +2/+4 e os seis totais esperados de Waldo. Testes de interação, alteração de atributo e round-trip de export/import ainda estão pendentes; não declarar a tarefa concluída até validá-los.
+**Última atualização:** 2026-11-05 — validação manual principal dos quatro estados em Waldo reportada pelo usuário; testes complementares pela interface continuam pendentes. A aplicação parcial de importação continua como risco sem caracterização controlada; validação da timeline e round-trip narrativo de Thrain também permanecem pendentes. Fase 3 continua em andamento.

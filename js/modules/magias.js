@@ -2923,9 +2923,11 @@ function sincronizarControlesPericia(periciaLinha, estado) {
     '.pericia-prof input[type="checkbox"]',
   );
   const checkboxExpertise = periciaLinha.querySelector(".pericia-expertise");
+  const campoEstado = periciaLinha.querySelector(".pericia-estado");
   if (checkboxProf) checkboxProf.checked = estado === 1 || estado === 3;
   if (checkboxExpertise) checkboxExpertise.checked = estado === 3;
   periciaLinha.dataset.proficiencia = String(estado);
+  if (campoEstado) campoEstado.value = String(estado);
 }
 
 function atualizarIndicadorEstadoProficiencia(periciaLinha) {
@@ -2974,10 +2976,24 @@ function inicializarEstadosPericias() {
       checkboxExpertise.setAttribute("aria-label", "Expertise");
       label.appendChild(checkboxExpertise);
     }
-    const estado = Number(periciaLinha.dataset.proficiencia);
+    let campoEstado = periciaLinha.querySelector(".pericia-estado");
+    if (!campoEstado) {
+      campoEstado = document.createElement("input");
+      campoEstado.type = "hidden";
+      campoEstado.id = checkboxProf?.id.replace(/Prof$/, "Estado");
+      campoEstado.className = "pericia-estado";
+      periciaLinha.appendChild(campoEstado);
+    }
+    const estadoSalvo = Number(campoEstado.value);
+    const estadoDOM = Number(periciaLinha.dataset.proficiencia);
     const inicial =
-      Number.isInteger(estado) && estado >= 0 && estado <= 3
-        ? estado
+      campoEstado.value !== "" &&
+      Number.isInteger(estadoSalvo) &&
+      estadoSalvo >= 0 &&
+      estadoSalvo <= 3
+        ? estadoSalvo
+        : Number.isInteger(estadoDOM) && estadoDOM >= 0 && estadoDOM <= 3
+          ? estadoDOM
         : periciaLinha.querySelector(".pericia-expertise")?.checked
           ? 3
           : checkboxProf?.checked
@@ -3003,13 +3019,23 @@ function atualizarPericias() {
     const valorBase =
       parseInt(document.getElementById("atrib_" + atributo)?.value) || 0;
     const modificadorBase = Math.floor((valorBase - 10) / 2);
-    const checkboxProf = pericia.querySelector(
-      '.pericia-prof input[type="checkbox"]',
-    );
-    const checkboxExpertise = pericia.querySelector(".pericia-expertise");
-    let estado = checkboxExpertise?.checked ? 3 : checkboxProf?.checked ? 1 : 0;
-    if (Number(pericia.dataset.proficiencia) === 2 && !checkboxProf?.checked)
-      estado = 2;
+    const campoEstado = pericia.querySelector(".pericia-estado");
+    const estadoSalvo = Number(campoEstado?.value);
+    const estadoDOM = Number(pericia.dataset.proficiencia);
+    const estado =
+      campoEstado?.value !== "" &&
+      Number.isInteger(estadoSalvo) &&
+      estadoSalvo >= 0 &&
+      estadoSalvo <= 3
+        ? estadoSalvo
+        : Number.isInteger(estadoDOM) && estadoDOM >= 0 && estadoDOM <= 3
+          ? estadoDOM
+          : pericia.querySelector(".pericia-expertise")?.checked
+            ? 3
+            : pericia.querySelector('.pericia-prof input[type="checkbox"]')
+                  ?.checked
+              ? 1
+              : 0;
     sincronizarControlesPericia(pericia, estado);
     atualizarIndicadorEstadoProficiencia(pericia);
     const bonus = calcularBonusPorEstado(bonusProf, estado);

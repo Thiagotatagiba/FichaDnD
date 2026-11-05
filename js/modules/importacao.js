@@ -1,3 +1,66 @@
+function restaurarEstadosPericiaImportados(dados) {
+  const linhas = [...document.querySelectorAll(".pericia-linha")];
+  const possuiExpertiseSalva = Object.keys(dados).some((chave) =>
+    /^pericia[A-Za-z]+Expertise$/.test(chave),
+  );
+  const proficienciasLegadasCompletas =
+    linhas.length > 0 &&
+    linhas.every((linha) => {
+      const checkboxProf = linha.querySelector(
+        '.pericia-prof input[type="checkbox"]',
+      );
+      return checkboxProf?.id &&
+        Object.prototype.hasOwnProperty.call(dados, checkboxProf.id);
+    });
+
+  linhas.forEach((linha) => {
+    const checkboxProf = linha.querySelector(
+      '.pericia-prof input[type="checkbox"]',
+    );
+    const checkboxExpertise = linha.querySelector(".pericia-expertise");
+    const campoEstado = linha.querySelector(".pericia-estado");
+    if (!checkboxProf || !checkboxExpertise || !campoEstado) return;
+
+    const possuiEstado = Object.prototype.hasOwnProperty.call(
+      dados,
+      campoEstado.id,
+    );
+    const possuiProf = Object.prototype.hasOwnProperty.call(
+      dados,
+      checkboxProf.id,
+    );
+    const possuiExpertise = Object.prototype.hasOwnProperty.call(
+      dados,
+      checkboxExpertise.id,
+    );
+
+    if (possuiEstado) {
+      sincronizarControlesPericia(linha, Number(dados[campoEstado.id]));
+      return;
+    }
+
+    if (
+      !possuiProf &&
+      !possuiExpertise &&
+      !(proficienciasLegadasCompletas && !possuiExpertiseSalva)
+    ) {
+      return;
+    }
+
+    // Um JSON legado completo tem todos os campos Prof, mas não Expertise.
+    // Nesse caso, limpar Expertise preserva a interpretação histórica.
+    if (proficienciasLegadasCompletas && !possuiExpertiseSalva) {
+      checkboxExpertise.checked = false;
+    }
+    const estado = checkboxExpertise.checked
+      ? 3
+      : checkboxProf.checked
+        ? 1
+        : 0;
+    sincronizarControlesPericia(linha, estado);
+  });
+}
+
 async function aplicarDadosFicha(dados) {
   if (!dados || typeof dados !== "object") return false;
 
@@ -81,19 +144,7 @@ async function aplicarDadosFicha(dados) {
     preencherCampo(campo, dados[key]);
   }
 
-  // JSONs antigos não tinham Expertise; a ausência desses campos representa
-  // nenhum estado de Expertise, sem afetar os campos de proficiência legados.
-  const possuiExpertiseSalva = Object.keys(dados).some((chave) =>
-    /^pericia[A-Za-z]+Expertise$/.test(chave),
-  );
-  if (!possuiExpertiseSalva) {
-    document.querySelectorAll(".pericia-expertise").forEach((campo) => {
-      campo.checked = false;
-      const linha = campo.closest(".pericia-linha");
-      const checkboxProf = linha?.querySelector('.pericia-prof input[type="checkbox"]');
-      if (linha) linha.dataset.proficiencia = checkboxProf?.checked ? "1" : "0";
-    });
-  }
+  restaurarEstadosPericiaImportados(dados);
 
   const nivelSalvoFicha = obterNivelSalvoFicha(dados);
   if (nivelSalvoFicha) {

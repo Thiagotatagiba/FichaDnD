@@ -42,6 +42,21 @@ function normalizarDadosImportacao(dadosOriginais) {
     }
   });
 
+  Object.keys(dados)
+    .filter((chave) => /^pericia[A-Za-z]+Estado$/.test(chave))
+    .forEach((chave) => {
+      const valor = dados[chave];
+      const texto = typeof valor === "string" ? valor.trim() : String(valor);
+      if (!/^[0-3]$/.test(texto)) {
+        const erro = new Error(
+          `O campo "${chave}" deve ser um estado inteiro entre 0 e 3.`,
+        );
+        erro.code = "INVALID_SKILL_PROFICIENCY_STATE";
+        throw erro;
+      }
+      dados[chave] = Number(texto);
+    });
+
   const parseContadorEspacoMagia = (valor) => {
     if (typeof valor === "number") {
       return Number.isSafeInteger(valor) && valor >= 0 ? valor : null;

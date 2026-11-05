@@ -201,14 +201,37 @@ As propostas abaixo vieram do levantamento inicial. Não são tarefas ativas; av
 
 _Relatório gerado automaticamente — revisão manual recomendada antes de criar issues individuais._
 
-## Proficiência e Expertise das perícias — correção em validação
+## Proficiência e Expertise das perícias — correção implementada, validação complementar pendente
 
-**Data:** 2026-11-04
-**Estado:** Diagnóstico confirmado; implementação em andamento; validação funcional pendente.
+**Data:** 2026-11-04 a 2026-11-05
+**Estado:** Investigado — Concluído; Implementado — Concluído no código local; Validado — Parcialmente. O teste manual principal foi reportado como aprovado pelo usuário; os cenários complementares pela interface continuam pendentes.
 
-- Os checkboxes `pericia*Prof` eram serializados normalmente, mas o cálculo lia `data-proficiencia`, que não era atualizado pela importação. A UI podia mostrar proficiência enquanto o bônus calculado permanecia sem proficiência.
-- Expertise não tinha um campo persistido no formulário/JSON. Um novo checkbox com ID `pericia*Expertise` é criado junto à inicialização e coletado pela persistência existente.
-- A correção sincroniza os campos visuais e o estado interno, centraliza os multiplicadores e mantém os quatro estados já oferecidos pela ficha, incluindo meia proficiência.
-- JSON sem campos Expertise limpa Expertise e recompõe o estado com base em `pericia*Prof`; campos ausentes em importações parciais de Expertise não são forçados a valores padrão.
-- Verificações executadas: `node --check` nos três módulos e `git diff --check`; matriz isolada de cálculo para nenhum/proficiente/meia proficiência/Expertise com bônus +2 e +4; totais de Waldo (Enganação +3, História +2, Intuição +5, Persuasão +3, Prestidigitação +4 e Religião +2). Ainda faltam interação na ficha e round-trip real de export/import com JSON.
-- Arquivos alterados: `js/modules/magias.js`, `js/modules/habilidades.js`, `js/modules/importacao.js`. Nenhum commit foi criado.
+### Diagnóstico confirmado
+
+Os quatro estados eram mantidos em `data-proficiencia`, mas `coletarDadosFicha()` só serializa valores de campos com ID. Em meia proficiência, os checkboxes de `pericia*Prof` e `pericia*Expertise` ficam desmarcados, então o estado não podia ser recuperado por uma importação em página nova. A falha foi confirmada por inspeção do código e pelo comportamento de coleta/restauração exercitado em harness isolado; não foi feito round-trip na interface.
+
+### Implementação
+
+- Cada perícia recebe o campo oculto `pericia*Estado`, com valores inteiros `0` (nenhuma), `1` (proficiência), `2` (meia proficiência) e `3` (Expertise). O campo é coletado pelo mecanismo existente e sincronizado com `data-proficiencia` e os checkboxes visuais existentes.
+- A importação dá precedência ao estado explícito. A normalização aceita somente `0` a `3` e rejeita valores inválidos antes de iniciar as mutações da ficha.
+- Para JSONs anteriores sem o campo novo, o estado é reconstruído pelos checkboxes salvos. JSON legado completo sem Expertise limpa Expertise e deriva o estado de `pericia*Prof`; campos ausentes numa importação parcial não redefinem o estado da perícia correspondente.
+- Os campos booleanos `pericia*Prof` e `pericia*Expertise` permanecem no JSON para compatibilidade com versões anteriores.
+
+### Verificações executadas
+
+- `node --check` em `js/modules/magias.js`, `js/modules/habilidades.js`, `js/modules/importacao.js` e `js/core/storage.js`; `git diff --check` sem apontamentos.
+- Harness Node isolado com funções reais extraídas dos módulos e DOM simulado: estados `0` a `3`, representação sincronizada dos checkboxes, cálculos com bônus de proficiência `+2` e `+4`, recálculo após mudar o atributo sem perder o estado, coleta do campo persistido, restauração de payload no formato novo, JSON legado completo de proficiência e preservação de estado em importação parcial sem campos de perícia.
+- Normalização isolada aceitou `0`–`3` e rejeitou `4`, `-1`, `1.5`, texto e `null`.
+- A fixture `ficha/Personagens Ficha/Waldo_Malaphael_Tatagiba_20261104.json` foi lida sem alteração; o restaurador mapeou 18 perícias e seis proficiências do formato anterior.
+
+### Validação manual reportada pelo usuário
+
+O usuário exportou e importou a ficha de Waldo, conferiu visualmente o resultado e comparou com o JSON exportado. Relatou preservação de Enganação (estado 0, bônus +1), Acrobacia (estado 1, +4), Arcanismo (estado 2, +1) e Atletismo (estado 3, +3), além dos indicadores de círculo vazio, círculo preenchido, meio círculo e estrela. Esse teste principal está aprovado conforme relato do usuário e não foi repetido nesta sessão.
+
+### Limitações e pendências
+
+- O browser host de teste não estava disponível nesta sessão; a janela do Chrome foi listada, mas a automação bloqueou acesso ao conteúdo. A captura da janela do VS Code também falhou. Portanto, não foram executados recálculos pela interface, round-trip consecutivo, importação legada nem importação parcial nesta sessão.
+- Permanecem pendentes a mudança do atributo relacionado, alteração do bônus de proficiência (incluindo arredondamento para baixo com bônus ímpar), comparação de duas exportações/importações consecutivas, JSON legado sem `pericia*Estado` e campos de Expertise, e importação parcial com preservação dos estados ausentes.
+- A fixture de Waldo não foi modificada. O teste principal descrito acima é evidência manual relatada pelo usuário; os harnesses isolados anteriores não comprovam os cenários complementares pela interface. A validação funcional permanece aberta.
+
+**Arquivos de código alterados nesta correção:** `js/modules/magias.js`, `js/modules/habilidades.js`, `js/modules/importacao.js` e `js/core/storage.js`. Nenhum JSON original foi modificado. Nenhum commit ou push foi feito.
