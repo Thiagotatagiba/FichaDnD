@@ -1224,11 +1224,8 @@ document.addEventListener("DOMContentLoaded", () => {
   atualizarXPENivel();
 });
 window.addEventListener("DOMContentLoaded", () => {
-  const armaInicial = adicionarNovaArma();
   const outroInicial = adicionarNovoOutro();
-  [armaInicial, outroInicial].forEach(
-    fecharItemCard,
-  );
+  fecharItemCard(outroInicial);
 });
 window.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.item-card[data-tipo="arma"]').forEach((card) => {

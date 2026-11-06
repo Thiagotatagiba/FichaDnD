@@ -409,7 +409,7 @@
       "arma_peso": "2.5",
       "nome": "Besta Leve",
       "arma_dano": "1d8",
-      "arma_tipo_dano": "Concussão",
+      "arma_tipo_dano": "Perfurante",
       "arma_tipo": "Simples",
       "arma_dist_curto": "24",
       "arma_dist_longo": "96",

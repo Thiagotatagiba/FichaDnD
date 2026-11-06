@@ -197,3 +197,97 @@ body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abr
   .armadura-modal-equipar { margin-left: auto; }
   .armadura-editor-campos { gap: 12px; }
 }
+
+/* Armas: catálogo, resumo compacto e ficha de detalhes. */
+#listaArmas:empty::before {
+  content: "Nenhuma arma adicionada. Escolha uma opção do catálogo ou crie a sua.";
+  display: block; padding: 12px; font-size: 13px; line-height: 1.5;
+  border: 1px dashed #bda68c; border-radius: 10px;
+}
+#listaArmas { display: flex; flex-direction: column; gap: 9px; }
+#listaArmas > .item-card[data-tipo="arma"] {
+  width: 100%; min-width: 0; min-height: 0; margin: 0; padding: 0;
+  border: 0; border-radius: 0; background: transparent; box-shadow: none;
+  overflow: visible; box-sizing: border-box;
+}
+#listaArmas > .item-card::before,
+#listaArmas > .item-card::after { display: none; }
+#listaArmas > .item-card > :not(.arma-resumo) { display: none !important; }
+.arma-resumo { width: 100%; min-width: 0; }
+.arma-resumo {
+  box-sizing: border-box; padding: 9px 11px; border: 2px solid #3b2f1b;
+  border-radius: 11px; background: linear-gradient(145deg,#f4ecd8,#e8dcc2);
+  box-shadow: inset 0 0 8px rgba(0,0,0,.1), 0 2px 5px rgba(59,47,27,.12);
+}
+.arma-abrir.magia-item {
+  display: block; width: 100%; min-width: 0; box-sizing: border-box; margin: 0;
+  padding: 0; text-align: left; color: inherit; font-family: inherit; cursor: pointer;
+  background: transparent; border: 0; border-radius: 0; box-shadow: none;
+}
+.arma-cartao-info { display: grid; gap: 6px; min-width: 0; }
+.arma-cartao-topo, .arma-cartao-dados, .arma-cartao-rodape { display: flex; align-items: center; min-width: 0; }
+.arma-cartao-topo { justify-content: space-between; gap: 8px; padding-bottom: 5px; border-bottom: 1px solid rgba(111,54,16,.24); }
+.arma-cartao-topo .magia-item-nome { min-width: 0; overflow-wrap: anywhere; font-size: 15px; }
+.arma-cartao-dados { display: grid; grid-template-columns: minmax(0,1fr); justify-items: start; gap: 5px; }
+.arma-cartao-dano-linha { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; min-width: 0; }
+.arma-cartao-dano { font-size: 16px; font-weight: 800; }
+.arma-cartao-categoria { font-size: 10px; opacity: .78; }
+.arma-cartao-tags { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.arma-cartao-tag { padding: 2px 6px; border: 1px solid rgba(111,54,16,.22); border-radius: 999px; font-size: 9px; line-height: 1.2; }
+.arma-cartao-rodape { justify-content: space-between; gap: 8px; }
+.arma-cartao-meta { margin-left: auto; font-size: 11px; white-space: nowrap; text-shadow: 0 1px 2px rgba(255,255,255,.95); }
+.arma-resumo.armadura-sem-proficiencia { border-color: #a3432b; }
+.arma-resumo.armadura-equipada { border-width: 3px; }
+.arma-abrir .armadura-cartao-estado { flex: 0 0 auto; font-size: 0; }
+.arma-resumo.armadura-equipada .armadura-cartao-estado { padding: 4px 8px; border-radius: 20px; background: #526d39; color: #fff9e9; font-size: 10px; font-weight: 700; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.arma-resumo.armadura-equipada .armadura-cartao-estado::after { content: none; }
+.arma-cartao-proficiencia { color: #9b2c19; font-size: 11px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.arma-cartao-proficiencia[hidden] { display: none; }
+.arma-cartao-municao { display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: 8px; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(111,54,16,.2); font-size: 10px; font-weight: 700; }
+.arma-cartao-municao[hidden] { display: none !important; }
+.arma-cartao-municao-select { width: 100%; min-width: 0; height: 29px; box-sizing: border-box; padding: 3px 7px; border: 1px solid rgba(111,54,16,.38); border-radius: 6px; background: rgba(255,250,242,.8); color: inherit; font: inherit; font-weight: 500; cursor: pointer; }
+.arma-cartao-municao-select:focus-visible { outline: 2px solid #8b4513; outline-offset: 1px; }
+body.tema-classico #listaArmas > .item-card > .arma-resumo { background: linear-gradient(145deg,#f4ecd8,#e8dcc2) !important; border-color: #3b2f1b; color: #3b2f1b !important; }
+.arma-selecao-modal .magia-selecao-filtros { grid-template-columns: minmax(120px,.7fr) minmax(140px,.8fr) minmax(180px,1.5fr); }
+#armaSelecaoStatus { margin: 8px 0 12px; font-size: 12px; opacity: .8; }
+.arma-selecao-modal .magia-selecao-conteudo { min-height: 280px; }
+.arma-selecao-modal .magia-selecao-lista { min-width: 230px; }
+.arma-selecao-modal .magia-selecao-detalhes { min-width: 0; }
+.arma-detalhe { min-width: 0; }
+.arma-detalhe .magia-card-detalhe-header { align-items: flex-start; flex-wrap: wrap; }
+.arma-detalhe-header > .armadura-detalhe-titulo { flex: 1 1 150px; min-width: 0; }
+.arma-detalhe-resumo { display: grid; grid-template-columns: minmax(100px,.7fr) minmax(0,1.3fr); align-items: start; gap: 12px; margin: 12px 0; }
+.arma-detalhe-destaque { display: flex; flex-direction: column; gap: 4px; min-width: 0; padding: 8px 10px; border-bottom: 1px solid rgba(139,69,19,.2); }
+.arma-detalhe-dano { font-size: 21px; line-height: 1.2; overflow-wrap: anywhere; }
+.arma-detalhe-valores { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; min-width: 0; }
+.arma-detalhe-valor { display: flex; flex: 0 1 82px; flex-direction: column; gap: 3px; min-width: 0; padding: 5px 7px; border: 1px solid rgba(139,69,19,.16); border-radius: 7px; background: rgba(255,250,242,.4); }
+.arma-detalhe-valor span { color: #756b60; font-size: 9px; line-height: 1.15; }
+.arma-detalhe-valor strong { font-size: 12px; overflow-wrap: anywhere; }
+.arma-detalhe-propriedades:empty { display: none; }
+.arma-detalhe-especial { margin: 12px 0; padding: 10px 12px; border-left: 3px solid #9a6737; background: rgba(139,69,19,.06); }
+.arma-detalhe-especial h4 { margin: 0 0 5px; font-size: 12px; }
+.arma-detalhe-especial p { margin: 0; line-height: 1.5; }
+.arma-detalhe-municao { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 12px 0 0; font-size: 12px; }
+.arma-detalhe-municao.aviso { color: #8a4513; }
+.arma-detalhe-municao-select { min-width: 180px; max-width: 100%; padding: 6px 9px; border: 1px solid rgba(111,54,16,.38); border-radius: 7px; background: rgba(255,250,242,.9); color: inherit; font: inherit; }
+.arma-detalhe-municao-select:disabled { opacity: .75; }
+.arma-editor-campos { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.arma-editor-campos label { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; }
+.arma-editor-campos .armadura-editor-completo { grid-column: 1 / -1; }
+.arma-editor-propriedades { min-width: 0; margin: 16px 0 0; padding: 10px; border: 1px solid rgba(139,69,19,.25); border-radius: 8px; }
+.arma-editor-propriedades legend { padding: 0 5px; font-size: 12px; font-weight: 700; }
+.arma-editor-propriedades-lista { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
+.arma-editor-propriedades-lista label { display: flex; align-items: center; gap: 5px; min-width: 0; font-size: 11px; }
+.arma-editor-propriedades-lista input { flex: 0 0 auto; }
+.arma-editor-municao select { min-height: 38px; padding: 8px; border: 1px solid #bda68c; border-radius: 7px; background: var(--modal-bg); color: inherit; font: inherit; }
+.arma-modal .magia-modal-titulo { overflow-wrap: anywhere; }
+@media (max-width: 640px) {
+  .arma-selecao-modal .magia-selecao-filtros { grid-template-columns: 1fr; }
+  .arma-selecao-modal .magia-selecao-conteudo { display: flex; flex-direction: column; overflow-y: auto; }
+  .arma-selecao-modal .magia-selecao-lista { flex: 0 0 150px; min-width: 0; overflow-y: auto; }
+  .arma-selecao-modal .magia-selecao-detalhes { flex: 0 0 auto; overflow: visible; }
+  .arma-detalhe-resumo { grid-template-columns: 1fr; }
+  .arma-detalhe-valores { justify-content: flex-start; }
+  .arma-editor-campos { grid-template-columns: 1fr; }
+  .arma-editor-propriedades-lista { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}

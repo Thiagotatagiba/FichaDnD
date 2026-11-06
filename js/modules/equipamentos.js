@@ -198,7 +198,9 @@
       }
 
       function atualizarListaArmasEquipamento() {
-        renderizarArmasEquipamento(coletarArmas());
+        const armasAtuais = coletarArmas();
+        renderizarArmasEquipamento(armasAtuais);
+        if (typeof atualizarResumosArmas === "function") atualizarResumosArmas(armasAtuais);
         renderizarArmadurasEquipamento(coletarArmaduras());
         renderizarEscudosEquipamento(coletarEscudos());
         if (typeof atualizarResumosEscudos === "function") atualizarResumosEscudos(coletarEscudos());
@@ -2130,6 +2132,8 @@
         atualizarEstadoCombate(armas, escudos);
         atualizarUIEmpunhadura(armas);
         atualizarBloqueioMaosEquipamento();
+        if (typeof atualizarResumosArmas === "function") atualizarResumosArmas(armas);
+        if (typeof atualizarResumosEscudos === "function") atualizarResumosEscudos(escudos);
       }
 
       // atualiza o "P" de proficiência quando o tipo de arma muda, verificando os checkboxes de proficiência

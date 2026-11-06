@@ -3193,7 +3193,7 @@
                 <div class="inventario-coluna">
                   <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
                     <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloArmas">
-                      <button type="button" class="armadura-titulo-icone" onclick="adicionarNovaArma()" title="Adicionar nova arma" aria-label="Adicionar nova arma">
+                      <button type="button" class="armadura-titulo-icone" onclick="abrirModalSelecaoArma()" title="Adicionar nova arma" aria-label="Adicionar nova arma">
                         <span class="armadura-titulo-emoji" aria-hidden="true">⚔️</span>
                         <span class="armadura-titulo-mais" aria-hidden="true">+</span>
                       </button>
@@ -3270,6 +3270,9 @@
                     </div>
 
                     <div class="arma-conteudo">
+                      <input type="hidden" data-campo="arma_raridade" value="comum" />
+                      <input type="hidden" data-campo="arma_moeda" value="po" />
+                      <input type="hidden" data-campo="arma_descricao_especial" value="" />
                       <!-- LINHA 2: Dano + Tipo de Dano -->
                       <div class="item-linha item-linha-2-cols">
                         <div>
@@ -3469,7 +3472,7 @@
                   <button
                     type="button"
                     class="inventario-botao-add inventario-botao-add-inferior"
-                    onclick="adicionarNovaArma()"
+                    onclick="abrirModalSelecaoArma()"
                   >
                     + nova arma
                   </button>
@@ -4086,6 +4089,7 @@
     <!-- INVENTÁRIO / EQUIPAMENTOS -->
     <!-- ========================= -->
     <script src="../js/modules/equipamentos.js"></script>
+    <script src="../js/modules/armas-catalogo.js"></script>
     <script src="../js/modules/armaduras-catalogo.js"></script>
     <script src="../js/modules/escudos-catalogo.js"></script>
 

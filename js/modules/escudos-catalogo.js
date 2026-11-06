@@ -277,13 +277,16 @@ function dadosEscudoDoCatalogo(card) {
   const campo = nome => card.querySelector('[data-campo="escudo_' + nome + '"]')?.value || "";
   const parseBonus = texto => Math.max(0, Number(String(texto).replace(/[^\d.-]/g, "")) || 0);
   const indice = [...document.querySelectorAll('#listaEscudos .item-card[data-tipo="escudo"]')].indexOf(card);
-  const selecionado = document.querySelector('#lista-escudos-equipamento input:checked');
+  const valorSlotSecundario = document.getElementById("arma2Nome")?.value || "";
+  const indiceEscudoEquipado = typeof extrairIndiceSlotEscudo === "function"
+    ? extrairIndiceSlotEscudo(valorSlotSecundario)
+    : null;
   return {
     nome: campo("nome"), nomeOriginal: origem?.nomeOriginal, ca: { bonus: parseBonus(campo("ca")) },
     pesoKg: Number(campo("peso")), custo: { valor: Number(campo("preco")), moeda: "po" },
     descricao: campo("descricao") || origem?.descricao || "", vestirAcoes: Number(card.dataset.vestirAcoes) || 1,
     retirarAcoes: Number(card.dataset.retirarAcoes) || 1, desvantagemFurtividade: false,
-    empunhado: Number(selecionado?.dataset.index) === indice,
+    empunhado: indiceEscudoEquipado === indice,
     magico: !!card.querySelector(".item-flag-magico")?.checked,
     sintonizado: !!card.querySelector(".item-flag-sintonizado")?.checked,
   };
