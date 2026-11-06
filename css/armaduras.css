@@ -1,5 +1,19 @@
 /* Armaduras usam a linguagem visual das listas e modais de magia. */
 #listaArmaduras { display: grid; gap: 8px; }
+.armadura-subtitulo-barra { width: 100%; box-sizing: border-box; padding: 0 0 6px; }
+.armadura-titulo { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; height: 38px; min-width: 0; box-sizing: border-box; padding: 0 8px 0 0; border: 2px solid #8b4513; border-radius: 20px; background: linear-gradient(145deg, #f4ecd8, #e8dcc2); color: #6f3610; }
+.armadura-titulo-icone { position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 48px; width: 48px; height: 48px; box-sizing: border-box; margin: -7px 0 -7px -5px; padding: 0; border: 3px double #645e53; border-radius: 50%; background: radial-gradient(circle at 30% 24%, #e5e2d8 0, #b0b0a7 48%, #797c75 100%); color: #4b473e; box-shadow: inset 0 1px 3px rgba(255, 255, 245, .85), inset 0 -2px 4px rgba(61, 57, 45, .38), 0 1px 3px rgba(59, 47, 27, .28); cursor: pointer; }
+.armadura-titulo-emoji, .armadura-titulo-mais { position: absolute; transition: opacity .14s ease, transform .14s ease; }
+.armadura-titulo-emoji { font-size: 25px; line-height: 1; filter: drop-shadow(0 1px 1px rgba(73, 42, 11, .35)); }
+.armadura-titulo-mais { opacity: 0; transform: scale(.7); font-size: 27px; font-weight: 700; line-height: 1; }
+.armadura-titulo-icone:hover .armadura-titulo-emoji, .armadura-titulo-icone:focus-visible .armadura-titulo-emoji { opacity: 0; transform: scale(.7); }
+.armadura-titulo-icone:hover .armadura-titulo-mais, .armadura-titulo-icone:focus-visible .armadura-titulo-mais { opacity: 1; transform: scale(1); }
+.armadura-titulo-icone:focus-visible { outline: 2px solid #6f3610; outline-offset: 2px; }
+.armadura-titulo-nome { min-width: 0; line-height: 1.2; white-space: nowrap; }
+.armadura-titulo-contagem { display: inline-flex; align-items: center; justify-content: center; margin-left: auto; flex: 0 0 auto; min-width: 26px; height: 22px; box-sizing: border-box; padding: 0 9px; border: 1px solid rgba(111, 54, 16, .5); border-radius: 999px; background: linear-gradient(180deg, #fffaf2, #e8dcc2); color: #5a4937; font-size: 11px; font-weight: 700; line-height: 1; white-space: nowrap; box-shadow: inset 0 1px 1px rgba(255, 255, 255, .85), 0 1px 2px rgba(59, 47, 27, .16); }
+body.tema-classico .armadura-titulo { background: linear-gradient(145deg, #f4ecd8, #e8dcc2) !important; border-color: #8b4513 !important; }
+body.tema-classico .armadura-titulo-icone { background: radial-gradient(circle at 30% 24%, #e5e2d8 0, #b0b0a7 48%, #797c75 100%) !important; border-color: #645e53 !important; }
+body.tema-classico .armadura-titulo-contagem { background: linear-gradient(180deg, #fffaf2, #e8dcc2) !important; border-color: rgba(111, 54, 16, .5) !important; color: #3b2f1b !important; }
 #listaArmaduras:empty::before {
   content: "Nenhuma armadura adicionada. Escolha uma opção do catálogo ou crie a sua.";
   display: block; padding: 12px; font-size: 13px; line-height: 1.5;
@@ -22,20 +36,25 @@
   border: 1px solid #3b2f1b;
   box-shadow: inset 0 0 8px rgba(0, 0, 0, .12), 0 2px 5px rgba(59, 47, 27, .12);
 }
-.armadura-cartao-info { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 5px 8px; min-width: 0; }
-.armadura-cartao-info .magia-item-nome { font-size: 15px; overflow-wrap: anywhere; }
-.armadura-cartao-info .magia-item-nome { grid-column: 1 / -1; }
-.armadura-cartao-categoria { justify-self: start; border: 1px solid rgba(59, 47, 27, .28); border-radius: 20px; padding: 2px 8px; font-size: 10px; line-height: 1.35; }
+.armadura-cartao-info { display: grid; gap: 8px; min-width: 0; }
+.armadura-cartao-topo, .armadura-cartao-dados, .armadura-cartao-rodape { display: flex; align-items: center; min-width: 0; }
+.armadura-cartao-topo { justify-content: space-between; gap: 8px; }
+.armadura-cartao-info .magia-item-nome { min-width: 0; font-size: 15px; overflow-wrap: anywhere; }
+.armadura-cartao-dados { justify-content: flex-start; flex-wrap: wrap; gap: 6px 9px; }
+.armadura-cartao-categoria { border: 1px solid rgba(59, 47, 27, .28); border-radius: 20px; padding: 2px 8px; font-size: 10px; line-height: 1.35; }
 .armadura-cartao-ca { font-size: 17px; font-weight: 800; line-height: 1.2; }
-.armadura-cartao-meta { grid-column: 1 / -1; font-size: 11px; line-height: 1.4; }
-.armadura-cartao-proficiencia { grid-column: 1 / -1; color: #9b2c19; font-size: 11px; font-weight: 700; }
+.armadura-cartao-furtividade { font-size: 11px; font-weight: 700; color: #b42318; }
+.armadura-cartao-furtividade.armadura-furtividade-vantagem { color: #1769aa; }
+.armadura-cartao-furtividade[hidden] { display: none; }
+.armadura-cartao-rodape { justify-content: space-between; gap: 10px; }
+.armadura-cartao-meta { margin-left: auto; white-space: nowrap; font-size: 11px; line-height: 1.4; text-shadow: 0 1px 2px rgba(255, 255, 255, .95), 0 0 4px rgba(255, 255, 255, .9); }
+.armadura-cartao-proficiencia { color: #9b2c19; font-size: 11px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 .armadura-cartao-proficiencia[hidden] { display: none; }
 .armadura-sem-proficiencia.magia-item { border-color: #a3432b; }
-.armadura-cartao-estado { font-size: 20px; opacity: .7; }
-.armadura-equipada .armadura-cartao-estado {
-  font-size: 10px; padding: 4px 6px; border: 1px solid currentColor;
-  border-radius: 20px; opacity: 1;
-}
+.armadura-cartao-estado { flex: 0 0 auto; font-size: 0; }
+.armadura-equipada.magia-item { border-width: 3px; }
+.armadura-equipada .armadura-cartao-estado { background: #526d39; color: #fff9e9; border-radius: 20px; padding: 4px 8px; font-size: 10px; font-weight: 700; white-space: nowrap; box-shadow: 0 1px 3px rgba(0, 0, 0, .25); }
+.armadura-abrir:not(.armadura-equipada) .armadura-cartao-estado::after { content: "›"; font-size: 20px; opacity: .7; }
 body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abrir.magia-item {
   background: linear-gradient(145deg, #f4ecd8, #e8dcc2) !important;
   border-color: #3b2f1b !important;
@@ -47,26 +66,61 @@ body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abr
 .armadura-detalhe { margin: 0; }
 .armadura-detalhe .magia-card-detalhe-header { align-items: flex-start; flex-wrap: wrap; }
 .armadura-detalhe .magia-card-detalhe-header > div { flex: 1 1 130px; min-width: 0; }
+.armadura-previa-catalogo .armadura-detalhe-titulo { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 3px 10px; }
+.armadura-previa-catalogo .armadura-modal-icone { grid-column: 1; grid-row: 1 / span 3; }
+.armadura-previa-catalogo .armadura-detalhe-titulo > .magia-card-detalhe-nome,
+.armadura-previa-catalogo .armadura-nome-original,
+.armadura-previa-catalogo .armadura-previa-categoria { grid-column: 2; }
+.armadura-previa-catalogo .armadura-previa-categoria { justify-self: start; margin: 0; }
 .armadura-detalhe h3 { margin: 0; line-height: 1.3; }
 .armadura-detalhe .magia-card-detalhe-adicionar { margin-left: auto; max-width: 100%; }
 .armadura-nome-original { margin-top: 5px; font-size: 11px; opacity: .65; }
-.armadura-propriedades {
-  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 18px; margin: 16px 0 0;
-}
+.armadura-resumo-superior { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 14px; }
+.armadura-ca-com-tempos { display: grid; grid-template-columns: minmax(110px, 1fr) minmax(0, 1fr); align-items: center; gap: 12px; min-width: 0; }
+.armadura-ca-resumo { display: flex; flex-direction: column; align-items: flex-start; min-height: 58px; box-sizing: border-box; padding: 3px 10px 8px 0; border-bottom: 1px solid rgba(139, 69, 19, .15); }
+.armadura-resumo-rotulo { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; opacity: .7; }
+.armadura-resumo-ca { margin-top: 4px; font-size: 22px; line-height: 1.1; }
+.armadura-propriedades { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; margin: 4px 0 0; }
 .armadura-propriedades > div { padding: 10px 0; border-bottom: 1px solid rgba(139, 69, 19, .15); min-width: 0; }
-.armadura-propriedades dt { font-size: 10px; text-transform: uppercase; letter-spacing: .05em; opacity: .7; }
-.armadura-propriedades dd { margin: 5px 0 0; font-size: 14px; line-height: 1.4; overflow-wrap: anywhere; }
-.armadura-propriedade-destaque dd { font-weight: bold; font-size: 22px; }
-.armadura-descricao { margin-top: 18px; }
-.armadura-descricao h4 { font-size: 12px; margin: 0 0 8px; }
+.armadura-condicoes { display: flex; align-items: baseline; gap: 0; min-width: 0; }
+.armadura-condicao { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.armadura-condicao + .armadura-condicao { margin-left: 10px; padding-left: 10px; border-left: 1px solid rgba(139, 69, 19, .22); }
+.armadura-condicao-rotulo { color: #756b60; font-size: 10px; }
+.armadura-condicao-valor { font-size: 13px; font-weight: 500; }
+.armadura-ca-resumo .armadura-ca-calculo { display: block; margin-top: 2px; color: #756b60; font-size: 11px; font-weight: 400; line-height: 1.3; opacity: .78; }
+.armadura-valores-resumo { display: flex; justify-content: flex-end; gap: 6px; margin: 0 0 4px; }
+.armadura-valor-caixa { display: flex; flex: 0 0 78px; flex-direction: column; gap: 3px; min-width: 0; box-sizing: border-box; padding: 4px 6px; border: 1px solid rgba(139, 69, 19, .16); border-radius: 7px; background: rgba(255, 250, 242, .38); }
+.armadura-valor-rotulo { color: #756b60; font-size: 9px; line-height: 1.15; }
+.armadura-valor-numero { color: #4f3320; font-size: 12px; font-weight: 600; line-height: 1.2; overflow-wrap: anywhere; }
+.armadura-tempos-resumo { display: grid; grid-template-columns: repeat(2, 62px); align-self: start; gap: 8px; min-width: 0; }
+.armadura-tempo-caixa { position: relative; display: flex; flex-direction: column; justify-content: flex-start; gap: 0; min-width: 0; min-height: 66px; box-sizing: border-box; padding: 7px 6px 6px; border: 1px solid rgba(98, 94, 77, .48); border-bottom: 3px solid #87948a; border-radius: 6px 6px 4px 4px; background: linear-gradient(155deg, #f4f2e9, #e0e3d9); box-shadow: 0 2px 4px rgba(59, 57, 44, .14), inset 0 1px rgba(255, 255, 255, .9); }
+.armadura-tempo-rotulo { padding-bottom: 5px; border-bottom: 1px solid rgba(98, 94, 77, .35); color: #69746b; font-size: 8px; font-weight: 700; line-height: 1.1; text-align: center; text-transform: uppercase; letter-spacing: .04em; }
+.armadura-tempo-valor { display: grid; flex: 1 1 auto; place-items: center; width: 100%; color: #3f4b42; font-size: 13px; font-weight: 700; line-height: 1.2; text-align: center; }
+.armadura-descricao { position: relative; margin-top: 16px; padding: 12px 14px 13px; border: 1px solid #b99b6a; border-radius: 3px 10px 4px 9px; background: repeating-linear-gradient(0deg, transparent 0 23px, rgba(112, 73, 28, .035) 24px), linear-gradient(155deg, #f6edd9 0%, #efe1c2 56%, #f3e8d0 100%); box-shadow: inset 0 0 0 3px rgba(255, 255, 255, .25), inset 0 0 16px rgba(112, 73, 28, .09), 0 3px 7px rgba(76, 50, 21, .12); }
+.armadura-descricao h4 { width: fit-content; font-size: 12px; margin: 0 0 8px; padding-bottom: 3px; border-bottom: 1px dashed rgba(112, 73, 28, .4); color: #65421e; }
 .armadura-descricao p { font-size: 14px; line-height: 1.65; margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
 .armadura-regras { margin-top: 18px; font-size: 12px; line-height: 1.5; }
 .armadura-regras summary { cursor: pointer; padding: 8px 0; }
+.armadura-regras:not([open]) summary { font-size: 12px; }
+.armadura-regras summary:has(+ p) { color: #8a4513; font-size: 14px; font-weight: 700; }
 .armadura-regras p { margin: 8px 0; }
 .armadura-modal { width: min(800px, 94vw); }
-.armadura-modal .magia-modal-titulo { margin: 0; }
+.armadura-modal .magia-modal-titulo { margin: 0; font-size: 30px; }
 .armadura-modal .magia-modal-nivel { margin-top: 5px; }
+.armadura-modal .magia-modal-topo-info { flex: 1 1 auto; min-width: 0; }
+.armadura-modal-titulo-linha { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.armadura-modal-categorias { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.armadura-modal-categorias .magia-modal-nivel { margin-top: 0; }
+.armadura-modal-icone { display: inline-flex; align-items: center; justify-content: center; flex: 0 0 42px; width: 42px; height: 42px; box-sizing: border-box; border: 3px double #645e53; border-radius: 50%; background: radial-gradient(circle at 30% 24%, #e5e2d8 0, #b0b0a7 48%, #797c75 100%); color: #4b473e; font-size: 23px; box-shadow: inset 0 1px 3px rgba(255, 255, 245, .85), inset 0 -2px 4px rgba(61, 57, 45, .38), 0 1px 3px rgba(59, 47, 27, .28); }
+.armadura-modal-titulo-linha .magia-modal-titulo { min-width: 0; overflow-wrap: anywhere; }
+.armadura-modal-equipar { flex: 0 0 auto; margin-left: auto; }
+.armadura-modal .magia-modal-topo .magia-modal-botao { min-height: 32px; padding: 6px 10px; border: 1px solid #8b4513; border-radius: 8px; background: linear-gradient(180deg, #fffaf2, #eadcc5); color: #6f3610; font-size: 12px; font-weight: 700; box-shadow: inset 0 1px rgba(255, 255, 255, .9), 0 2px 4px rgba(59, 47, 27, .18); transition: background .16s ease, box-shadow .16s ease, transform .16s ease; }
+.armadura-modal .magia-modal-topo .magia-modal-botao:hover,
+.armadura-modal .magia-modal-topo .magia-modal-botao:focus-visible { background: linear-gradient(180deg, #f4e5c9, #dec59e); box-shadow: inset 0 1px rgba(255, 255, 255, .85), 0 3px 6px rgba(59, 47, 27, .22); transform: translateY(-1px); }
+.armadura-modal .magia-modal-topo .armadura-modal-equipar { background: linear-gradient(180deg, #96511e, #74380f); color: #fffaf2; box-shadow: inset 0 1px rgba(255, 255, 255, .2), 0 2px 4px rgba(59, 47, 27, .22); }
+.armadura-modal .magia-modal-topo .armadura-modal-equipar:hover,
+.armadura-modal .magia-modal-topo .armadura-modal-equipar:focus-visible { background: linear-gradient(180deg, #7d4014, #5f2d0c); }
+.armadura-detalhe .magia-card-detalhe-propriedades:empty { display: none; }
 .armadura-modal .armadura-detalhe { border: 0; box-shadow: none; border-radius: 0; background: transparent; padding: 4px; }
 .armadura-modal .armadura-detalhe > header { display: none; }
 .armadura-editor-campos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
@@ -90,5 +144,7 @@ body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abr
   .armadura-selecao-modal .magia-selecao-lista { flex: 0 0 160px; overflow-y: auto; }
   .armadura-selecao-modal .magia-selecao-detalhes { flex: 0 0 auto; overflow: visible; }
   .armadura-modal .magia-modal-topo { gap: 12px; }
+  .armadura-modal-titulo-linha { flex-wrap: wrap; }
+  .armadura-modal-equipar { margin-left: auto; }
   .armadura-editor-campos { gap: 12px; }
 }

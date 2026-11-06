@@ -3191,22 +3191,15 @@
               <div class="status-titulo">Inventário</div>
               <div class="inventario-colunas">
                 <div class="inventario-coluna">
-                  <div class="inventario-subtitulo-barra">
-                    <div
-                      class="inventario-subtitulo"
-                      id="inventarioTituloArmas"
-                    >
-                      ⚔️ Armas 0
+                  <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
+                    <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloArmas">
+                      <button type="button" class="armadura-titulo-icone" onclick="adicionarNovaArma()" title="Adicionar nova arma" aria-label="Adicionar nova arma">
+                        <span class="armadura-titulo-emoji" aria-hidden="true">⚔️</span>
+                        <span class="armadura-titulo-mais" aria-hidden="true">+</span>
+                      </button>
+                      <span class="armadura-titulo-nome">Armas</span>
+                      <span class="armadura-titulo-contagem" id="inventarioContagemArmas" title="Quantidade de armas" aria-label="Quantidade de armas: 0">0</span>
                     </div>
-                    <button
-                      type="button"
-                      class="inventario-botao-add"
-                      onclick="adicionarNovaArma()"
-                      title="Adicionar nova arma"
-                      aria-label="Adicionar nova arma"
-                    >
-                      +
-                    </button>
                   </div>
 
                   <!-- CARD DE ARMAS CADASTRO -->
@@ -3483,22 +3476,15 @@
                 </div>
 
                 <div class="inventario-coluna">
-                  <div class="inventario-subtitulo-barra">
-                    <div
-                      class="inventario-subtitulo"
-                      id="inventarioTituloArmaduras"
-                    >
-                      👕 Armaduras 0
+                  <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
+                    <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloArmaduras">
+                      <button type="button" class="armadura-titulo-icone" onclick="abrirModalSelecaoArmadura()" title="Adicionar nova armadura" aria-label="Adicionar nova armadura">
+                        <span class="armadura-titulo-emoji" aria-hidden="true">👕</span>
+                        <span class="armadura-titulo-mais" aria-hidden="true">+</span>
+                      </button>
+                      <span class="armadura-titulo-nome">Armaduras</span>
+                      <span class="armadura-titulo-contagem" id="inventarioContagemArmaduras" title="Quantidade de armaduras" aria-label="Quantidade de armaduras: 0">0</span>
                     </div>
-                    <button
-                      type="button"
-                      class="inventario-botao-add"
-                      onclick="abrirModalSelecaoArmadura()"
-                      title="Adicionar nova armadura"
-                      aria-label="Adicionar nova armadura"
-                    >
-                      +
-                    </button>
                   </div>
 
                   <div
@@ -3670,22 +3656,15 @@
                     + nova armadura
                   </button>
 
-                  <div class="inventario-subtitulo-barra">
-                    <div
-                      class="inventario-subtitulo"
-                      id="inventarioTituloEscudos"
-                    >
-                      🛡️ Escudos e Vestimentos 0
+                  <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
+                    <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloEscudos">
+                      <button type="button" class="armadura-titulo-icone" onclick="adicionarNovoEscudo()" title="Adicionar novo escudo ou vestimento" aria-label="Adicionar novo escudo ou vestimento">
+                        <span class="armadura-titulo-emoji" aria-hidden="true">🛡️</span>
+                        <span class="armadura-titulo-mais" aria-hidden="true">+</span>
+                      </button>
+                      <span class="armadura-titulo-nome">Escudos e Vestimentos</span>
+                      <span class="armadura-titulo-contagem" id="inventarioContagemEscudos" title="Quantidade de escudos e vestimentos" aria-label="Quantidade de escudos e vestimentos: 0">0</span>
                     </div>
-                    <button
-                      type="button"
-                      class="inventario-botao-add"
-                      onclick="adicionarNovoEscudo()"
-                      title="Adicionar novo escudo ou vestimento"
-                      aria-label="Adicionar novo escudo ou vestimento"
-                    >
-                      +
-                    </button>
                   </div>
 
                   <div
@@ -3820,22 +3799,15 @@
                 </div>
 
                 <div class="inventario-coluna">
-                  <div class="inventario-subtitulo-barra">
-                    <div
-                      class="inventario-subtitulo"
-                      id="inventarioTituloOutros"
-                    >
-                      📦 Outros 0
+                  <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
+                    <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloOutros">
+                      <button type="button" class="armadura-titulo-icone" onclick="adicionarNovoOutro()" title="Adicionar novo item em outros" aria-label="Adicionar novo item em outros">
+                        <span class="armadura-titulo-emoji" aria-hidden="true">📦</span>
+                        <span class="armadura-titulo-mais" aria-hidden="true">+</span>
+                      </button>
+                      <span class="armadura-titulo-nome">Outros</span>
+                      <span class="armadura-titulo-contagem" id="inventarioContagemOutros" title="Quantidade de outros itens" aria-label="Quantidade de outros itens: 0">0</span>
                     </div>
-                    <button
-                      type="button"
-                      class="inventario-botao-add"
-                      onclick="adicionarNovoOutro()"
-                      title="Adicionar novo item em outros"
-                      aria-label="Adicionar novo item em outros"
-                    >
-                      +
-                    </button>
                   </div>
 
                   <div

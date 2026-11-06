@@ -245,11 +245,16 @@ function renderizarCatalogoArmaduras() {
 
 
 function renderizarDetalhesArmadura(item, aoAdicionar = null, proficiente = null) {
-  const container = criarElementoArmadura("article", undefined, "magia-card-detalhe armadura-detalhe");
+  const container = criarElementoArmadura("article", undefined, "magia-card-detalhe armadura-detalhe" + (aoAdicionar ? " armadura-previa-catalogo" : ""));
   const header = criarElementoArmadura("header", undefined, "magia-card-detalhe-header");
-  const titulo = criarElementoArmadura("div");
+  const titulo = criarElementoArmadura("div", undefined, "armadura-detalhe-titulo");
+  if (aoAdicionar) titulo.append(criarElementoArmadura("span", "👕", "armadura-modal-icone"));
   titulo.append(criarElementoArmadura("h3", item.nome || "Nova armadura", "magia-card-detalhe-nome"));
   if (item.nomeOriginal) titulo.append(criarElementoArmadura("div", item.nomeOriginal, "armadura-nome-original"));
+  if (aoAdicionar) {
+    const categoriaTitulo = criarElementoArmadura("span", TIPOS_ARMADURA_CATALOGO[item.categoria]?.replace("Media", "Média") || item.tipoExibicao || "Categoria não definida", "magia-modal-nivel armadura-previa-categoria");
+    titulo.append(categoriaTitulo);
+  }
   header.append(titulo);
   if (aoAdicionar) {
     const adicionar = criarElementoArmadura("button", "Adicionar ao inventário", "magia-card-detalhe-adicionar");
@@ -258,36 +263,59 @@ function renderizarDetalhesArmadura(item, aoAdicionar = null, proficiente = null
     header.append(adicionar);
   }
   const tags = criarElementoArmadura("div", undefined, "magia-card-detalhe-propriedades");
-  const categoria = TIPOS_ARMADURA_CATALOGO[item.categoria]?.replace("Media", "Média") || item.tipoExibicao || "Categoria não definida";
-  tags.append(criarElementoArmadura("span", categoria, "magia-card-detalhe-tag"));
-  if (item.equipada) tags.append(criarElementoArmadura("span", "Equipada", "magia-card-detalhe-tag"));
+  if (item.equipada && aoAdicionar) tags.append(criarElementoArmadura("span", "Equipada", "magia-card-detalhe-tag"));
   if (item.magico) tags.append(criarElementoArmadura("span", "Item mágico", "magia-card-detalhe-tag"));
   if (item.sintonizado) tags.append(criarElementoArmadura("span", "Sintonizada", "magia-card-detalhe-tag"));
   const base = Number(item.ca.base) || 0;
   const mod = obterModDestrezaArmaduras();
   const total = base + (item.ca.adicionaDestreza ? item.ca.limiteBonusDestreza === 2 ? Math.min(mod, 2) : mod : 0);
-  const grade = criarElementoArmadura("dl", undefined, "armadura-propriedades");
-  const propriedade = (rotulo, valor, destaque = false) => {
-    const grupo = criarElementoArmadura("div", undefined, destaque ? "armadura-propriedade-destaque" : "");
-    grupo.append(criarElementoArmadura("dt", rotulo), criarElementoArmadura("dd", valor));
-    grade.append(grupo);
-  };
-  propriedade("Classe de armadura", String(total) + " CA", true);
-  propriedade("Cálculo", formulaCAArmadura(item));
-  propriedade("Peso", formatarKgArmadura(item.pesoKg));
-  propriedade("Valor", Number(item.custo.valor || 0).toLocaleString("pt-BR") + " po");
-  propriedade("Força mínima", item.forcaMinima || "Nenhuma");
-  propriedade("Furtividade", item.furtividade || (item.desvantagemFurtividade ? "Desvantagem" : "Normal"));
-  if (item.vestirMinutos) propriedade("Vestir", item.vestirMinutos + " min");
-  if (item.retirarMinutos) propriedade("Retirar", item.retirarMinutos + " min");
+  const grade = criarElementoArmadura("div", undefined, "armadura-propriedades");
+  const resumoSuperior = criarElementoArmadura("div", undefined, "armadura-resumo-superior");
+  const resumoCA = criarElementoArmadura("div", undefined, "armadura-propriedade-destaque armadura-ca-resumo");
+  resumoCA.append(criarElementoArmadura("span", "Classe de armadura", "armadura-resumo-rotulo"),
+    criarElementoArmadura("strong", String(total) + " CA", "armadura-resumo-ca"),
+    criarElementoArmadura("small", formulaCAArmadura(item), "armadura-ca-calculo"));
+  const tempos = criarElementoArmadura("div", undefined, "armadura-tempos-resumo");
+  [["Vestir", item.vestirMinutos], ["Retirar", item.retirarMinutos]]
+    .filter(([, minutos]) => Number(minutos) > 0)
+    .forEach(([rotulo, minutos]) => {
+      const caixa = criarElementoArmadura("div", undefined, "armadura-tempo-caixa");
+      caixa.append(criarElementoArmadura("span", rotulo, "armadura-tempo-rotulo"),
+        criarElementoArmadura("strong", minutos + " min", "armadura-tempo-valor"));
+      tempos.append(caixa);
+    });
+  const caTempos = criarElementoArmadura("div", undefined, "armadura-ca-com-tempos");
+  caTempos.append(resumoCA);
+  if (tempos.childElementCount) caTempos.append(tempos);
+  resumoSuperior.append(caTempos);
+  const resumoValores = criarElementoArmadura("div", undefined, "armadura-valores-resumo");
+  [["🪙 Peso", formatarKgArmadura(item.pesoKg)], ["⚖️ Valor", Number(item.custo.valor || 0).toLocaleString("pt-BR") + " po"]]
+    .forEach(([rotulo, valor]) => {
+      const caixa = criarElementoArmadura("div", undefined, "armadura-valor-caixa");
+      caixa.append(criarElementoArmadura("span", rotulo, "armadura-valor-rotulo"),
+        criarElementoArmadura("strong", valor, "armadura-valor-numero"));
+      resumoValores.append(caixa);
+    });
+  resumoSuperior.append(resumoValores);
+  const condicoes = criarElementoArmadura("div", undefined, "armadura-condicoes");
+  [["Força mínima", item.forcaMinima || "Nenhuma"],
+    ["Furtividade", item.furtividade || (item.desvantagemFurtividade ? "Desvantagem" : "Normal")]]
+    .forEach(([rotulo, valor]) => {
+      const condicao = criarElementoArmadura("div", undefined, "armadura-condicao");
+      condicao.append(criarElementoArmadura("span", rotulo, "armadura-condicao-rotulo"),
+        criarElementoArmadura("strong", valor, "armadura-condicao-valor"));
+      condicoes.append(condicao);
+    });
+  grade.append(condicoes);
   const descricao = criarElementoArmadura("section", undefined, "armadura-descricao");
   descricao.append(criarElementoArmadura("h4", "Descrição"),
     criarElementoArmadura("p", item.descricao || "Nenhuma descrição cadastrada."));
-  container.append(header, tags, grade, descricao);
+  container.append(header, resumoSuperior, tags, grade, descricao);
   const temProficiencia = proficiente ?? getTemProficienciaArmadura(TIPOS_ARMADURA_CATALOGO[item.categoria]);
   if (!temProficiencia || item.forcaMinima) {
     const regras = criarElementoArmadura("details", undefined, "armadura-regras");
-    regras.append(criarElementoArmadura("summary", !temProficiencia ? "Atenção: uso sem proficiência" : "Requisito de Força"));
+    if (!temProficiencia) regras.open = true;
+    regras.append(criarElementoArmadura("summary", !temProficiencia ? "⚠️ Atenção: uso sem proficiência" : "Requisito de Força"));
     if (!temProficiencia) regras.append(criarElementoArmadura("p",
       "Enquanto vestir sem proficiência, você tem desvantagem em testes, salvaguardas e ataques que envolvam Força ou Destreza e não pode conjurar magias."));
     if (item.forcaMinima) regras.append(criarElementoArmadura("p",
@@ -321,12 +349,18 @@ function inicializarResumoArmadura(card) {
   const abrir = criarElementoArmadura("button", undefined, "magia-item armadura-abrir");
   abrir.type = "button";
   const info = criarElementoArmadura("span", undefined, "armadura-cartao-info");
-  info.append(criarElementoArmadura("strong", "", "magia-item-nome"),
+  const topo = criarElementoArmadura("span", undefined, "armadura-cartao-topo");
+  topo.append(criarElementoArmadura("strong", "", "magia-item-nome"),
+    criarElementoArmadura("span", "", "armadura-cartao-estado"));
+  const linhaDados = criarElementoArmadura("span", undefined, "armadura-cartao-dados");
+  linhaDados.append(criarElementoArmadura("span", "", "armadura-cartao-ca"),
     criarElementoArmadura("span", "", "armadura-cartao-categoria"),
-    criarElementoArmadura("span", "", "armadura-cartao-ca"),
-    criarElementoArmadura("span", "", "armadura-cartao-meta"),
-    criarElementoArmadura("span", "", "armadura-cartao-proficiencia"));
-  abrir.append(info, criarElementoArmadura("span", "", "armadura-cartao-estado"));
+    criarElementoArmadura("span", "", "armadura-cartao-furtividade"));
+  const rodape = criarElementoArmadura("span", undefined, "armadura-cartao-rodape");
+  rodape.append(criarElementoArmadura("span", "", "armadura-cartao-proficiencia"),
+    criarElementoArmadura("span", "", "armadura-cartao-meta"));
+  info.append(topo, linhaDados, rodape);
+  abrir.append(info);
   abrir.onclick = evento => { evento.stopPropagation(); abrirModalArmadura(card); };
   resumo.append(abrir);
   card.querySelector(".item-header").after(resumo);
@@ -345,14 +379,22 @@ function atualizarResumosArmaduras(armaduras = null) {
     abrir.querySelector(".magia-item-nome").textContent = item.armadura_nome?.trim() || "Nova armadura";
     abrir.querySelector(".armadura-cartao-categoria").textContent = (item.armadura_tipo || "Sem categoria").replace("Media", "Média");
     abrir.querySelector(".armadura-cartao-ca").textContent = "CA " + ca;
+    const furtividade = abrir.querySelector(".armadura-cartao-furtividade");
+    const efeitoFurtividade = item.armadura_furtividade || "Normal";
+    furtividade.textContent = efeitoFurtividade === "Desvantagem" ? "↓ Furtividade" : efeitoFurtividade === "Vantagem" ? "↑ Furtividade" : "";
+    furtividade.hidden = efeitoFurtividade !== "Desvantagem" && efeitoFurtividade !== "Vantagem";
+    furtividade.title = efeitoFurtividade === "Desvantagem" ? "⚠️ Desvantagem em Furtividade" : efeitoFurtividade === "Vantagem" ? "✅ Vantagem em Furtividade" : "";
+    furtividade.setAttribute("aria-label", furtividade.title);
+    furtividade.classList.toggle("armadura-furtividade-vantagem", efeitoFurtividade === "Vantagem");
     abrir.querySelector(".armadura-cartao-meta").textContent =
       "🪙 " + (Number(item.armadura_preco) || 0) + " PO   ⚖️ " + formatarKgArmadura(item.armadura_peso);
     const proficiencia = abrir.querySelector(".armadura-cartao-proficiencia");
     const proficiente = item.proficiente !== false;
     proficiencia.textContent = proficiente ? "" : "⚠️ Sem proficiência";
     proficiencia.hidden = proficiente;
+    proficiencia.title = proficiente ? "" : "⚠️ Sem proficiência";
     abrir.classList.toggle("armadura-sem-proficiencia", !proficiente);
-    abrir.querySelector(".armadura-cartao-estado").textContent = equipada ? "Equipada" : "›";
+    abrir.querySelector(".armadura-cartao-estado").textContent = equipada ? "Equipada" : "";
     abrir.classList.toggle("armadura-equipada", equipada);
     abrir.setAttribute("aria-label", (item.armadura_nome?.trim() || "Nova armadura") + ", CA " + ca + (proficiente ? "" : ", sem proficiência") + (equipada ? ", equipada" : "") + ". Abrir detalhes");
   });
@@ -380,9 +422,15 @@ function montarModalArmadura() {
   overlay.innerHTML = `
     <div class="magia-modal modal-base armadura-modal" role="dialog" aria-modal="true" aria-labelledby="armaduraModalTitulo">
       <div class="magia-modal-topo modal-header-base">
-        <div class="magia-modal-topo-info"><h2 id="armaduraModalTitulo" class="magia-modal-titulo">Armadura</h2><div id="armaduraModalCategoria" class="magia-modal-nivel"></div></div>
+      <div class="magia-modal-topo-info">
+        <div class="armadura-modal-titulo-linha">
+          <span class="armadura-modal-icone" aria-hidden="true">👕</span>
+          <h2 id="armaduraModalTitulo" class="magia-modal-titulo">Armadura</h2>
+          <button type="button" class="magia-modal-botao armadura-modal-equipar" data-acao="equipar">Equipar</button>
+        </div>
+        <div id="armaduraModalCategoria" class="armadura-modal-categorias"></div>
+      </div>
         <div class="magia-modal-acoes">
-          <button type="button" class="magia-modal-botao modal-close-base" data-acao="equipar">Equipar</button>
           <button type="button" class="magia-modal-botao modal-close-base" data-acao="editar">Editar</button>
           <button type="button" class="magia-modal-botao modal-close-base" data-acao="fechar">Fechar</button>
         </div>
@@ -470,7 +518,9 @@ function renderizarModalArmadura() {
   estadoModalArmadura.editando = false;
   const dados = lerDetalhesCardArmadura(card);
   document.getElementById("armaduraModalTitulo").textContent = dados.nome || "Nova armadura";
-  document.getElementById("armaduraModalCategoria").textContent = (dados.tipoExibicao || "Armadura").replace("Media", "Média");
+  const categorias = document.getElementById("armaduraModalCategoria");
+  categorias.replaceChildren(criarElementoArmadura("span", (dados.tipoExibicao || "Armadura").replace("Media", "Média"), "magia-modal-nivel"));
+  if (dados.equipada) categorias.append(criarElementoArmadura("span", "Equipada", "magia-modal-nivel"));
   const visualizacao = document.getElementById("armaduraModalVisualizacao");
   visualizacao.replaceChildren(renderizarDetalhesArmadura(dados, null, !card.querySelector(".item-proficiencia").classList.contains("nao")));
   visualizacao.hidden = false;

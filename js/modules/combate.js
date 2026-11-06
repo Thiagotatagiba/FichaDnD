@@ -499,7 +499,15 @@ function atualizarTitulosInventario() {
 
   Object.entries(contagens).forEach(([id, info]) => {
     const titulo = document.getElementById(id);
-    if (titulo) titulo.textContent = `${info.emoji} ${info.nome} ${info.total}`;
+    if (!titulo) return;
+    const nome = titulo.querySelector(".armadura-titulo-nome");
+    const contador = titulo.querySelector(".armadura-titulo-contagem");
+    if (nome && contador) {
+      contador.textContent = String(info.total);
+      contador.setAttribute("aria-label", `Quantidade de ${info.nome.toLowerCase()}: ${info.total}`);
+      return;
+    }
+    titulo.textContent = `${info.emoji} ${info.nome} ${info.total}`;
   });
 }
 
