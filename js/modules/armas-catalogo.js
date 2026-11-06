@@ -64,6 +64,7 @@ function validarCatalogoArmas(dados) {
         !Number.isFinite(item.pesoKg) || item.pesoKg < 0 ||
         !Number.isFinite(item.custo?.valor) || item.custo.valor < 0 || !["pc", "pp", "po"].includes(item.custo.moeda) ||
         typeof item.dano?.base !== "string" || typeof item.dano?.tipo !== "string" ||
+        (item.alcancePropriedadeM !== undefined && (!Number.isFinite(item.alcancePropriedadeM) || item.alcancePropriedadeM <= 0)) ||
         !Array.isArray(item.propriedades) || item.propriedades.some(p => !PROPRIEDADES_ARMA_CATALOGO.has(p)) ||
         item.propriedades.includes("versatil") !== Boolean(item.dano.versatil) ||
         (item.propriedades.includes("municao") !== Boolean(item.municao)) ||
@@ -123,6 +124,7 @@ function camposArmaDoCatalogo(item) {
     arma_tipo:item.categoriaProficiencia === "simples" ? "Simples" : "Marcial",
     arma_dist_curto:item.alcance ? String(item.alcance.normalM) : "",
     arma_dist_longo:item.alcance ? String(item.alcance.longoM) : "",
+    arma_alcance_m:item.alcancePropriedadeM ? String(item.alcancePropriedadeM) : "",
     arma_municao_id:"", arma_descricao:item.descricao, arma_descricao_especial:item.descricaoEspecial || "",
   };
 }
@@ -271,8 +273,9 @@ function renderizarCatalogoArmas() {
 
 function nomePropriedadeArma(item, prop) {
   const alcance = item.alcance ? ` (${item.alcance.normalM}/${item.alcance.longoM} m)` : "";
+  const alcanceCorpoACorpo = prop === "alcance" && item.alcancePropriedadeM ? ` (${item.alcancePropriedadeM} m)` : "";
   const versatil = prop === "versatil" && item.dano.versatil ? ` (${item.dano.versatil})` : "";
-  return ROTULOS_PROPRIEDADE_ARMA[prop] + (prop === "arremesso" ? alcance : "") + versatil;
+  return ROTULOS_PROPRIEDADE_ARMA[prop] + (prop === "arremesso" ? alcance : alcanceCorpoACorpo) + versatil;
 }
 
 function renderizarDetalhesArma(item, aoAdicionar = null, card = null) {
@@ -291,9 +294,15 @@ function renderizarDetalhesArma(item, aoAdicionar = null, card = null) {
   dano.append(criarElementoArma("span", "Dano", "armadura-resumo-rotulo"), criarElementoArma("strong", (item.dano.base || "Sem dano") + (item.dano.versatil ? " / " + item.dano.versatil : "") + (item.dano.tipo ? " " + TIPOS_DANO_ARMA[item.dano.tipo] : ""), "arma-detalhe-dano"));
   resumo.append(dano);
   const valores = criarElementoArma("div", undefined, "arma-detalhe-valores");
-  [["🪙 Valor", formatarValorArma(item.custo.valor, item.custo.moeda)], ["⚖️ Peso", formatarKgArma(item.pesoKg)], [item.propriedades.includes("arremesso") ? "Arremesso" : "Alcance", item.alcance ? item.alcance.normalM + "/" + item.alcance.longoM + " m" : "—"]].forEach(([label, val]) => {
+  const mostraDistancia = Boolean(item.alcance && (item.propriedades.includes("municao") || item.propriedades.includes("arremesso")));
+  const mostraAlcanceCorpoACorpo = item.propriedades.includes("alcance") && item.alcancePropriedadeM;
+  const campoAlcance = mostraDistancia
+    ? [item.propriedades.includes("arremesso") && !item.propriedades.includes("municao") ? "Arremesso" : "Distância", item.alcance.normalM + "/" + item.alcance.longoM + " m"]
+    : mostraAlcanceCorpoACorpo ? ["Alcance", item.alcancePropriedadeM + " m"] : null;
+  [["🪙 Valor", formatarValorArma(item.custo.valor, item.custo.moeda)], ["⚖️ Peso", formatarKgArma(item.pesoKg)], ...(campoAlcance ? [campoAlcance] : [])].forEach(([label, val]) => {
     const box = criarElementoArma("div", undefined, "arma-detalhe-valor");
-    if (label === "Alcance" || label === "Arremesso") adicionarDicaArma(box, dicaAlcanceArma(item));
+    if (label === "Alcance") adicionarDicaArma(box, dicaCaracteristicaArma("alcance"));
+    if (label === "Distância" || label === "Arremesso") adicionarDicaArma(box, dicaAlcanceArma(item));
     box.append(criarElementoArma("span", label), criarElementoArma("strong", val)); valores.append(box);
   });
   resumo.append(valores);
@@ -370,6 +379,7 @@ function dadosArmaDoCard(card) {
     custo:{ valor:Number(valor("arma_preco")) || 0, moeda:valor("arma_moeda") || "po" }, pesoKg:Number(valor("arma_peso")) || 0,
     dano:{ base:um || valor("arma_dano") || "", tipo:Object.keys(TIPOS_DANO_ARMA).find(k => TIPOS_DANO_ARMA[k] === valor("arma_tipo_dano")) || valor("arma_tipo_dano"), versatil:dois || origem?.dano?.versatil },
     alcance:valor("arma_dist_curto") || valor("arma_dist_longo") ? {normalM:Number(valor("arma_dist_curto")) || 0,longoM:Number(valor("arma_dist_longo")) || 0} : origem?.alcance,
+    alcancePropriedadeM:Number(valor("arma_alcance_m")) || origem?.alcancePropriedadeM || null,
     municao:origem?.municao || null, municaoLigada:ammoName,
     propriedades:Object.keys(props).filter(p => props[p]), descricao:valor("arma_descricao") || origem?.descricao || "",
     descricaoEspecial:valor("arma_descricao_especial") || origem?.descricaoEspecial || "",
@@ -468,7 +478,7 @@ function itemParaModalArma(card) {
 function montarModalArma() {
   if (document.getElementById("armaModalOverlay")) return;
   const overlay=criarElementoArma("div",undefined,"magia-modal-overlay modal-overlay-base oculto"); overlay.id="armaModalOverlay"; overlay.setAttribute("aria-hidden","true");
-  overlay.innerHTML=`<div class="magia-modal modal-base armadura-modal arma-modal" role="dialog" aria-modal="true" aria-labelledby="armaModalTitulo"><div class="magia-modal-topo modal-header-base"><div class="magia-modal-topo-info"><div class="armadura-modal-titulo-linha"><span class="armadura-modal-icone" aria-hidden="true">⚔️</span><h2 id="armaModalTitulo" class="magia-modal-titulo">Arma</h2><button type="button" class="magia-modal-botao armadura-modal-equipar" data-acao="equipar">Equipar</button></div><div id="armaModalTags" class="armadura-modal-categorias"></div></div><div class="magia-modal-acoes"><button type="button" class="magia-modal-botao" data-acao="editar">Editar</button><button type="button" class="magia-modal-botao" data-acao="fechar">Fechar</button></div></div><div id="armaModalVisualizacao"></div><form id="armaModalFormulario" class="armadura-editor" hidden style="display:none"><div class="arma-editor-campos"></div><fieldset class="arma-editor-propriedades"><legend>Propriedades da arma</legend><div class="arma-editor-propriedades-lista"></div></fieldset><div class="armadura-editor-flags"></div><div class="armadura-editor-acoes"><button type="button" class="magia-modal-botao perigo" data-acao="excluir">Excluir arma</button><button type="button" class="magia-modal-botao" data-acao="cancelar">Cancelar</button><button type="submit" class="magia-modal-botao primario">Salvar</button></div></form></div>`;
+  overlay.innerHTML=`<div class="magia-modal modal-base armadura-modal arma-modal" role="dialog" aria-modal="true" aria-labelledby="armaModalTitulo"><div class="magia-modal-topo modal-header-base"><div class="magia-modal-topo-info"><div class="armadura-modal-titulo-linha"><span class="armadura-modal-icone" aria-hidden="true">⚔️</span><h2 id="armaModalTitulo" class="magia-modal-titulo">Arma</h2><button type="button" class="magia-modal-botao armadura-modal-equipar" data-acao="equipar">Equipar</button></div><div id="armaModalTags" class="armadura-modal-categorias"></div></div><div class="magia-modal-acoes"><button type="button" class="magia-modal-botao" data-acao="editar">Editar</button><button type="button" class="magia-modal-botao" data-acao="fechar">Fechar</button></div></div><div id="armaModalVisualizacao"></div><form id="armaModalFormulario" class="armadura-editor" hidden style="display:none"><div class="arma-editor-identificacao"></div><fieldset class="arma-editor-propriedades"><legend>Propriedades da arma</legend><div class="arma-editor-propriedades-lista"></div></fieldset><div class="arma-editor-campos"></div><div class="armadura-editor-flags"></div><div class="armadura-editor-acoes"><button type="button" class="magia-modal-botao perigo" data-acao="excluir">Excluir arma</button><button type="button" class="magia-modal-botao" data-acao="cancelar">Cancelar</button><button type="submit" class="magia-modal-botao primario">Salvar</button></div></form></div>`;
   document.body.append(overlay);
   overlay.querySelector('[data-acao="fechar"]').onclick=fecharModalArma;
   overlay.querySelector('[data-acao="editar"]').onclick=editarModalArma;
@@ -494,8 +504,11 @@ function renderizarModalArma() {
     tags.append(adicionarDicaArma(criarElementoArma("span",texto,"magia-modal-nivel"),dicaCaracteristicaArma(tipo,valor)));
   });
   document.getElementById("armaModalVisualizacao").replaceChildren(renderizarDetalhesArma(item,null,card));
-  const form=document.getElementById("armaModalFormulario");form.hidden=true;form.style.display="none";document.getElementById("armaModalVisualizacao").hidden=false;
-  const acao=document.querySelector('#armaModalOverlay [data-acao="equipar"]');acao.textContent=item.equipada?"Desequipar":"Equipar";acao.hidden=false;document.querySelector('#armaModalOverlay [data-acao="editar"]').hidden=false;
+  const form=document.getElementById("armaModalFormulario");
+  const flags=document.querySelector("#armaModalOverlay .armadura-editor-flags");
+  if(flags&&flags.parentElement!==form)form.append(flags);
+  form.hidden=true;form.style.display="none";document.getElementById("armaModalVisualizacao").hidden=false;
+  const acao=document.querySelector('#armaModalOverlay [data-acao="equipar"]');acao.textContent=item.equipada?"Desequipar":"Equipar";acao.hidden=false;document.querySelector('#armaModalOverlay [data-acao="editar"]').hidden=false;document.querySelector('#armaModalOverlay [data-acao="fechar"]').hidden=false;
 }
 
 function alternarEquipamentoArmaModal() {
@@ -514,48 +527,108 @@ function criarCampoEditorArma(parent,nome,rotulo,tag="input",tipo="text",complet
 
 function editarModalArma() {
   const card=estadoModalArma.card,form=document.getElementById("armaModalFormulario");if(!card)return;
-  const campos=form.querySelector(".arma-editor-campos");campos.replaceChildren();
-  const defs=[["nome","Nome","text"],["arma_raridade","Raridade","select"],["arma_tipo","Categoria de proficiência","select"],["arma_dano","Dano base","text"],["arma_dano_tipo","Tipo de dano","select"],["arma_preco","Valor","number"],["arma_moeda","Moeda","select"],["arma_peso","Peso (kg)","number"],["arma_dist_curto","Alcance normal (m)","number"],["arma_dist_longo","Alcance longo (m)","number"],["arma_descricao","Descrição","textarea"],["arma_descricao_especial","Regra especial","textarea"]];
-  for(const [nome,rotulo,tipo] of defs){const select=tipo==="select";const c=criarCampoEditorArma(campos,nome,rotulo,select?"select":tipo==="textarea"?"textarea":"input",tipo==="number"?"number":"text",tipo==="textarea");
+  const identificacao=form.querySelector(".arma-editor-identificacao"),campos=form.querySelector(".arma-editor-campos");identificacao.replaceChildren();campos.replaceChildren();
+  const defs=[["nome","Nome","text"],["arma_raridade","Raridade","select"],["arma_tipo","Categoria de proficiência","select"],["arma_dano","Dano base","text"],["arma_dano_tipo","Tipo de dano","select"],["arma_preco","Valor","number"],["arma_moeda","Moeda","select"],["arma_peso","Peso (kg)","number"],["arma_dist_curto","Distância Normal (m)","number"],["arma_dist_longo","Distância Longa (m)","number"],["arma_alcance_m","Alcance (m)","number"],["arma_descricao","Descrição","textarea"],["arma_descricao_especial","Regra especial","textarea"]];
+  const grupoDano=criarElementoArma("div",undefined,"arma-editor-dano-grupo");
+  for(const [nome,rotulo,tipo] of defs){
+    if(nome==="arma_preco"){
+      const grupo=criarElementoArma("div",undefined,"arma-editor-valor");grupo.append(criarElementoArma("span","🪙 Valor"));
+      const controles=criarElementoArma("div",undefined,"arma-editor-valor-controles");
+      const preco=criarElementoArma("input");preco.type="number";preco.min="0";preco.step="0.1";preco.dataset.editorCampo="arma_preco";preco.setAttribute("aria-label","Valor");preco.value=card.querySelector('[data-campo="arma_preco"]')?.value||"0";
+      const moeda=criarElementoArma("select");moeda.dataset.editorCampo="arma_moeda";moeda.setAttribute("aria-label","Moeda");moeda.title="Moeda do valor";[["po","PO"],["pp","PP"],["pc","PC"]].forEach(([v,t])=>{const o=criarElementoArma("option",t);o.value=v;moeda.append(o);});moeda.value=card.querySelector('[data-campo="arma_moeda"]')?.value||"po";
+      controles.append(preco,moeda);grupo.append(controles);campos.append(grupo);continue;
+    }
+    if(nome==="arma_moeda")continue;
+    const select=tipo==="select",destino=(nome==="nome"||nome==="arma_raridade")?identificacao:nome==="arma_dano"?grupoDano:campos;
+    if(nome==="arma_dano")campos.append(grupoDano);
+    const c=criarCampoEditorArma(destino,nome,nome==="arma_peso"?"⚖️ Peso (kg)":rotulo,select?"select":tipo==="textarea"?"textarea":"input",tipo==="number"?"number":"text",tipo==="textarea");
     if(nome==="arma_raridade")[["comum","Comum"],["incomum","Incomum"],["raro","Raro"],["muito raro","Muito raro"],["lendário","Lendário"],["artefato","Artefato"]].forEach(([v,t])=>{const o=criarElementoArma("option",t);o.value=v;c.append(o);});
     if(nome==="arma_tipo")[["Simples","Simples"],["Marcial","Marcial"]].forEach(([v,t])=>{const o=criarElementoArma("option",t);o.value=v;c.append(o);});
     if(nome==="arma_dano_tipo")Object.entries(TIPOS_DANO_ARMA).forEach(([v,t])=>{const o=criarElementoArma("option",t);o.value=t;c.append(o);});
     if(nome==="arma_moeda")[["po","PO"],["pp","PP"],["pc","PC"]].forEach(([v,t])=>{const o=criarElementoArma("option",t);o.value=v;c.append(o);});
     if(tipo==="number"){c.min="0";c.step=nome==="arma_peso"?"0.001":"0.1";}
+    if(nome==="arma_dist_curto"||nome==="arma_dist_longo")c.closest("label").classList.add("arma-editor-distancia");
+    if(nome==="arma_alcance_m")c.closest("label").classList.add("arma-editor-alcance-propriedade");
+    if(nome==="arma_descricao_especial")c.closest("label").classList.add("arma-editor-especial");
+    if(nome==="arma_dano")c.placeholder="Ex: 1d6";
     const valor=nome==="arma_dano"?(card.querySelector('[data-campo="dano_1"]')?.value||card.querySelector('[data-campo="arma_dano"]')?.value||""):card.querySelector('[data-campo="'+(nome==="arma_dano_tipo"?"arma_tipo_dano":nome)+'"]')?.value||"";
     c.value=nome==="arma_raridade"?(valor||"comum"):valor;
   }
   const props=form.querySelector(".arma-editor-propriedades-lista");props.replaceChildren();
-  Object.entries(ROTULOS_PROPRIEDADE_ARMA).forEach(([key,labelText])=>{const label=criarElementoArma("label");const cb=criarElementoArma("input");cb.type="checkbox";cb.dataset.editorProp=key;cb.checked=!!card.querySelector('[data-propriedade="'+key+'"]')?.checked;label.append(cb,criarElementoArma("span",labelText));props.append(label);});
-  const versatile=form.querySelector('[data-editor-prop="versatil"]');
-  const campoDano=form.querySelector('[data-editor-campo="arma_dano"]');
-  const versatilBox=criarCampoEditorArma(campos,"arma_dano_versatil","Dano com duas mãos","input","text");versatilBox.value=card.querySelector('[data-campo="dano_2"]')?.value||"";versatilBox.closest("label").classList.add("arma-editor-versatil");versatilBox.closest("label").hidden=!versatile.checked;
-  versatile.onchange=()=>{versatilBox.closest("label").hidden=!versatile.checked;};
-  const ammoLabel=criarElementoArma("label",undefined,"armadura-editor-completo arma-editor-municao");ammoLabel.append(criarElementoArma("span","Pilha de munição vinculada"));const ammo=criarElementoArma("select");ammo.dataset.editorCampo="arma_municao_id";atualizarOpcoesMunicao(card);card.querySelector('[data-campo="arma_municao_id"]')?.querySelectorAll("option").forEach(o=>{const n=criarElementoArma("option",o.textContent);n.value=o.value;ammo.append(n);});ammo.value=card.querySelector('[data-campo="arma_municao_id"]')?.value||"";ammoLabel.append(ammo);campos.append(ammoLabel);
+  Object.entries(ROTULOS_PROPRIEDADE_ARMA).filter(([key])=>key!=="duas_maos"&&key!=="versatil").forEach(([key,labelText])=>{const label=criarElementoArma("label");const cb=criarElementoArma("input");cb.type="checkbox";cb.dataset.editorProp=key;cb.checked=!!card.querySelector('[data-propriedade="'+key+'"]')?.checked;label.append(cb,criarElementoArma("span",labelText));props.append(label);});
+  const empunhaduraLabel=criarElementoArma("label",undefined,"arma-editor-empunhadura");empunhaduraLabel.append(criarElementoArma("span","Empunhadura"));
+  const empunhadura=criarElementoArma("select");empunhadura.dataset.editorEmpunhadura="";
+  [["uma_mao","Uma mão"],["versatil","Versátil"],["duas_maos","Duas mãos"]].forEach(([value,label])=>{const option=criarElementoArma("option",label);option.value=value;empunhadura.append(option);});
+  const flagDuasMaos=!!card.querySelector('[data-propriedade="duas_maos"]')?.checked,flagVersatil=!!card.querySelector('[data-propriedade="versatil"]')?.checked;
+  empunhadura.value=flagDuasMaos?"duas_maos":flagVersatil?"versatil":"uma_mao";empunhaduraLabel.append(empunhadura);
+  const versatilBox=criarCampoEditorArma(grupoDano,"arma_dano_versatil","Dano com duas mãos","input","text");versatilBox.placeholder="Ex: 1d6";versatilBox.value=card.querySelector('[data-campo="dano_2"]')?.value||"";versatilBox.closest("label").classList.add("arma-editor-versatil");versatilBox.closest("label").hidden=empunhadura.value!=="versatil";
+  const ammoLabel=criarElementoArma("label",undefined,"armadura-editor-completo arma-editor-municao");ammoLabel.append(criarElementoArma("span","Munição vinculada"));const ammo=criarElementoArma("select");ammo.dataset.editorCampo="arma_municao_id";atualizarOpcoesMunicao(card);card.querySelector('[data-campo="arma_municao_id"]')?.querySelectorAll("option").forEach(o=>{const n=criarElementoArma("option",o.textContent);n.value=o.value;ammo.append(n);});ammo.value=card.querySelector('[data-campo="arma_municao_id"]')?.value||"";ammoLabel.append(ammo);campos.append(ammoLabel);
+  const atualizarCamposCondicionais=()=>{
+    const exibeDanoDuasMaos=empunhadura.value==="versatil";
+    versatilBox.closest("label").hidden=!exibeDanoDuasMaos;
+    grupoDano.classList.toggle("com-duas-maos",exibeDanoDuasMaos);
+    ammoLabel.hidden=!form.querySelector('[data-editor-prop="municao"]').checked;
+    const exibeDistancia=form.querySelector('[data-editor-prop="municao"]').checked||form.querySelector('[data-editor-prop="arremesso"]').checked;
+    campos.querySelectorAll(".arma-editor-distancia").forEach(label=>label.hidden=!exibeDistancia);
+    campos.querySelector(".arma-editor-alcance-propriedade").hidden=!form.querySelector('[data-editor-prop="alcance"]').checked;
+    campos.querySelector(".arma-editor-especial").hidden=!form.querySelector('[data-editor-prop="especial"]').checked;
+  };
+  props.querySelectorAll("[data-editor-prop]").forEach(cb=>cb.addEventListener("change",atualizarCamposCondicionais));
+  empunhadura.addEventListener("change",atualizarCamposCondicionais);
+  atualizarCamposCondicionais();
+  const descricaoLabel=campos.querySelector('[data-editor-campo="arma_descricao"]')?.closest("label");
+  const valorGroup=campos.querySelector(".arma-editor-valor");
+  const pesoLabel=campos.querySelector('[data-editor-campo="arma_peso"]')?.closest("label");
+  if(descricaoLabel&&valorGroup&&pesoLabel)descricaoLabel.after(valorGroup,pesoLabel);
+  const categoriaLabel=campos.querySelector('[data-editor-campo="arma_tipo"]')?.closest("label");
+  const tipoDanoLabel=campos.querySelector('[data-editor-campo="arma_dano_tipo"]')?.closest("label");
+  const alcanceGroup=criarElementoArma("div",undefined,"arma-editor-alcance-grupo");
+  const distanciaGroup=criarElementoArma("div",undefined,"arma-editor-distancia-grupo");
+  const alcanceCurto=campos.querySelector('[data-editor-campo="arma_dist_curto"]');
+  const alcanceLongo=campos.querySelector('[data-editor-campo="arma_dist_longo"]');
+  if(alcanceCurto)distanciaGroup.append(alcanceCurto.closest("label"));
+  if(alcanceLongo)distanciaGroup.append(alcanceLongo.closest("label"));
+  if(distanciaGroup.childElementCount)alcanceGroup.append(distanciaGroup);
+  const alcancePropriedade=campos.querySelector('[data-editor-campo="arma_alcance_m"]');
+  if(alcancePropriedade)alcanceGroup.append(alcancePropriedade.closest("label"));
+  const linhaCategoria=criarElementoArma("div",undefined,"arma-editor-linha");
+  const linhaDano=criarElementoArma("div",undefined,"arma-editor-linha");
+  const linhaAlcance=criarElementoArma("div",undefined,"arma-editor-linha");
+  if(categoriaLabel)linhaCategoria.append(categoriaLabel);
+  linhaCategoria.append(empunhaduraLabel);
+  linhaDano.append(grupoDano);
+  if(tipoDanoLabel)linhaDano.append(tipoDanoLabel);
+  linhaAlcance.append(alcanceGroup,ammoLabel);
+  campos.prepend(linhaCategoria,linhaDano,linhaAlcance);
   const flags=form.querySelector(".armadura-editor-flags");flags.replaceChildren();
   [["proficiente","Proficiente",!card.querySelector(".item-proficiencia")?.classList.contains("nao")],["magico","Item mágico",!!card.querySelector(".item-flag-magico")?.checked],["sintonizado","Sintonizado",!!card.querySelector(".item-flag-sintonizado")?.checked]].forEach(([k,t,checked])=>{const l=criarElementoArma("label");const c=criarElementoArma("input");c.type="checkbox";c.dataset.editorFlag=k;c.checked=checked;l.append(c,criarElementoArma("span",t));flags.append(l);});
-  form.querySelector('[data-acao="excluir"]').hidden=false;form.hidden=false;form.style.display="block";document.getElementById("armaModalVisualizacao").hidden=true;document.querySelector('#armaModalOverlay [data-acao="equipar"]').hidden=true;document.querySelector('#armaModalOverlay [data-acao="editar"]').hidden=true;
+  document.querySelector("#armaModalOverlay .magia-modal-topo").append(flags);
+  form.querySelector('[data-acao="excluir"]').hidden=false;form.hidden=false;form.style.display="block";document.getElementById("armaModalVisualizacao").hidden=true;document.querySelector('#armaModalOverlay [data-acao="equipar"]').hidden=true;document.querySelector('#armaModalOverlay [data-acao="editar"]').hidden=true;document.querySelector('#armaModalOverlay [data-acao="fechar"]').hidden=true;
   estadoModalArma.editando=true;estadoModalArma.retrato=retratoEditorArma(form);form.querySelector('[data-editor-campo="nome"]').focus();
 }
 
-function retratoEditorArma(form) { return JSON.stringify({campos:[...form.querySelectorAll("[data-editor-campo]")].map(c=>c.value),props:[...form.querySelectorAll("[data-editor-prop]")].map(c=>c.checked),flags:[...form.querySelectorAll("[data-editor-flag]")].map(c=>c.checked)}); }
+function retratoEditorArma(form) { const modal=form.closest(".arma-modal");return JSON.stringify({campos:[...form.querySelectorAll("[data-editor-campo]")].map(c=>c.value),empunhadura:form.querySelector("[data-editor-empunhadura]")?.value,props:[...form.querySelectorAll("[data-editor-prop]")].map(c=>c.checked),flags:[...modal.querySelectorAll("[data-editor-flag]")].map(c=>c.checked)}); }
 function confirmarDescarteArma(){if(!estadoModalArma.editando)return true;const form=document.getElementById("armaModalFormulario");if(estadoModalArma.retrato!==retratoEditorArma(form)&&!confirm("Descartar as alterações feitas nesta arma?"))return false;return true;}
 
 function salvarModalArma() {
   const card=estadoModalArma.card,form=document.getElementById("armaModalFormulario");if(!form.querySelector('[data-editor-campo="nome"]').value.trim()){form.querySelector('[data-editor-campo="nome"]').focus();return;}
   const fields=[...form.querySelectorAll("[data-editor-campo]")];
-  const versatile=form.querySelector('[data-editor-prop="versatil"]').checked;
-  const checkVers=card.querySelector('[data-propriedade="versatil"]');if(checkVers.checked!==versatile){checkVers.checked=versatile;checkVers.dispatchEvent(new Event("change",{bubbles:true}));}
+  const empunhadura=form.querySelector("[data-editor-empunhadura]").value;
+  const versatile=empunhadura==="versatil";
+  const modal=form.closest(".arma-modal");
   const propMap={};form.querySelectorAll("[data-editor-prop]").forEach(c=>propMap[c.dataset.editorProp]=c.checked);
+  propMap.versatil=versatile;propMap.duas_maos=empunhadura==="duas_maos";
+  const checkVers=card.querySelector('[data-propriedade="versatil"]');if(checkVers.checked!==versatile){checkVers.checked=versatile;checkVers.dispatchEvent(new Event("change",{bubbles:true}));}
+  const possuiDanoDuasMaos=versatile;
   card.querySelectorAll(".propriedade-checkbox").forEach(c=>{const v=!!propMap[c.dataset.propriedade];if(c.checked!==v){c.checked=v;c.dispatchEvent(new Event("change",{bubbles:true}));}});
   for(const field of fields){const key=field.dataset.editorCampo;if(key==="arma_dano_versatil")continue;if(key==="arma_dano"){
-      if(versatile){const one=card.querySelector('[data-campo="dano_1"]'),two=card.querySelector('[data-campo="dano_2"]');if(one)one.value=field.value;if(two)two.value=form.querySelector('[data-editor-campo="arma_dano_versatil"]').value;}
-      else {const target=card.querySelector('[data-campo="arma_dano"]');if(target)target.value=field.value;}continue;}
+      if(possuiDanoDuasMaos){const one=card.querySelector('[data-campo="dano_1"]'),two=card.querySelector('[data-campo="dano_2"]');if(one)one.value=field.value;if(two)two.value=form.querySelector('[data-editor-campo="arma_dano_versatil"]').value;}
+      else {const target=card.querySelector('[data-campo="arma_dano"]'),one=card.querySelector('[data-campo="dano_1"]'),two=card.querySelector('[data-campo="dano_2"]');if(target)target.value=field.value;if(one)one.value="";if(two)two.value="";}continue;}
     const target=card.querySelector('[data-campo="'+(key==="arma_dano_tipo"?"arma_tipo_dano":key)+'"]');if(target)target.value=field.value;
   }
   const ammo=card.querySelector('[data-campo="arma_municao_id"]');ammo.value=form.querySelector('[data-editor-campo="arma_municao_id"]').value;ammo.dispatchEvent(new Event("change",{bubbles:true}));
-  for(const [k,selector] of [["magico",".item-flag-magico"],["sintonizado",".item-flag-sintonizado"]])card.querySelector(selector).checked=form.querySelector('[data-editor-flag="'+k+'"]').checked;
-  const prof=form.querySelector('[data-editor-flag="proficiente"]').checked;card.querySelector(".item-proficiencia").classList.toggle("nao",!prof);card.querySelector(".item-proficiencia").classList.toggle("ativo",prof);
+  for(const [k,selector] of [["magico",".item-flag-magico"],["sintonizado",".item-flag-sintonizado"]])card.querySelector(selector).checked=modal.querySelector('[data-editor-flag="'+k+'"]').checked;
+  const prof=modal.querySelector('[data-editor-flag="proficiente"]').checked;card.querySelector(".item-proficiencia").classList.toggle("nao",!prof);card.querySelector(".item-proficiencia").classList.toggle("ativo",prof);
   atualizarMoedaArmaCard(card);atualizarCamposMagicosItem(card);atualizarPesoAtualInventario();atualizarListaArmasEquipamento();estadoModalArma.editando=false;renderizarModalArma();document.querySelector('#armaModalOverlay [data-acao="editar"]').focus();
 }
 

@@ -60,7 +60,21 @@ test("dados do catálogo mapeiam para os campos legados e preservam Versátil", 
   assert.equal(campos.arma_moeda, "po");
   assert.equal(campos.arma_peso, "1.5");
   assert.equal(campos.arma_municao_id, "");
+  assert.equal(campos.arma_alcance_m, "");
   assert.equal(catalogo.itens.find(item => item.id === "espada-longa").dano.versatil, "1d10");
+});
+
+test("armas com propriedade Alcance mantêm distância corpo a corpo separada do alcance à distância", () => {
+  const ids = ["glaive", "alabarda", "lanca-de-montaria", "pique", "chicote"];
+  for (const id of ids) {
+    const item = catalogo.itens.find(arma => arma.id === id);
+    assert.ok(item.propriedades.includes("alcance"));
+    assert.equal(item.alcancePropriedadeM, 3);
+    assert.equal(item.alcance, null);
+    const ctx = contexto();
+    ctx.item = item;
+    assert.equal(vm.runInContext("camposArmaDoCatalogo(item).arma_alcance_m", ctx), "3");
+  }
 });
 
 test("busca ignora acentos e filtros respeitam categoria, modo e proficiência", () => {

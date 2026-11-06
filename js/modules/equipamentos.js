@@ -270,7 +270,6 @@
         if (tipoArma) listaPropriedades.push(tipoArma);
 
         if (propriedades.acuidade) listaPropriedades.push("Acuidade");
-        if (propriedades.alcance) listaPropriedades.push("Alcance");
         if (propriedades.arremesso) listaPropriedades.push("Arremesso");
         if (propriedades.carregamento) listaPropriedades.push("Carregamento");
         if (propriedades.duas_maos) listaPropriedades.push("Duas Mãos");
@@ -281,6 +280,9 @@
 
         const distCurta = arma.arma_dist_curto?.trim();
         const distLonga = arma.arma_dist_longo?.trim();
+        const alcanceArma = arma.arma_alcance_m?.trim();
+        if (propriedades.alcance && alcanceArma) listaPropriedades.push(`Alcance (${alcanceArma} m)`);
+        else if (propriedades.alcance) listaPropriedades.push("Alcance");
         if (
           (propriedades.arremesso || propriedades.municao) &&
           (distCurta || distLonga)
@@ -602,10 +604,12 @@
         const tipoArma = arma.arma_tipo?.trim();
         const distCurta = arma.arma_dist_curto?.trim();
         const distLonga = arma.arma_dist_longo?.trim();
+        const alcanceArma = arma.arma_alcance_m?.trim();
+        if (propriedades.alcance && alcanceArma) listaPropriedades.push(`Alcance (${alcanceArma} m)`);
+        else if (propriedades.alcance) listaPropriedades.push("Alcance");
 
         if (tipoArma) listaPropriedades.push(tipoArma);
         if (propriedades.acuidade) listaPropriedades.push("Acuidade");
-        if (propriedades.alcance) listaPropriedades.push("Alcance");
         if (propriedades.arremesso) listaPropriedades.push("Arremesso");
         if (propriedades.carregamento) listaPropriedades.push("Carregamento");
         if (propriedades.duas_maos) listaPropriedades.push("Duas Mãos");

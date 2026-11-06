@@ -271,16 +271,31 @@ body.tema-classico #listaArmas > .item-card > .arma-resumo { background: linear-
 .arma-detalhe-municao.aviso { color: #8a4513; }
 .arma-detalhe-municao-select { min-width: 180px; max-width: 100%; padding: 6px 9px; border: 1px solid rgba(111,54,16,.38); border-radius: 7px; background: rgba(255,250,242,.9); color: inherit; font: inherit; }
 .arma-detalhe-municao-select:disabled { opacity: .75; }
+.arma-editor-identificacao { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
 .arma-editor-campos { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.arma-editor-linha { display: grid; grid-column: 1 / -1; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: start; gap: 12px; min-width: 0; }
+.arma-editor-linha > .armadura-editor-completo { grid-column: auto; }
+.arma-editor-alcance-grupo { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.arma-editor-distancia-grupo { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; min-width: 0; }
+.arma-editor-dano-grupo { display: grid; grid-template-columns: minmax(0,1fr); gap: 8px; min-width: 0; }
+.arma-editor-dano-grupo.com-duas-maos { grid-template-columns: repeat(2,minmax(0,1fr)); }
 .arma-editor-campos label { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; }
-.arma-editor-campos .armadura-editor-completo { grid-column: 1 / -1; }
-.arma-editor-propriedades { min-width: 0; margin: 16px 0 0; padding: 10px; border: 1px solid rgba(139,69,19,.25); border-radius: 8px; }
+.arma-editor-campos label[hidden] { display: none !important; }
+.arma-editor-campos > .armadura-editor-completo { grid-column: 1 / -1; }
+.arma-editor-valor { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; }
+.arma-editor-valor-controles { display: grid; grid-template-columns: minmax(0,1fr) 88px; gap: 8px; min-width: 0; }
+.arma-editor-valor-controles input, .arma-editor-valor-controles select { width: 100%; min-width: 0; box-sizing: border-box; }
+.arma-editor-identificacao label { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; }
+.arma-editor-identificacao select, .arma-editor-identificacao input { width: 100%; box-sizing: border-box; }
+.arma-editor-propriedades { min-width: 0; margin: 10px 0 12px; padding: 10px; border: 1px solid rgba(139,69,19,.25); border-radius: 8px; }
 .arma-editor-propriedades legend { padding: 0 5px; font-size: 12px; font-weight: 700; }
 .arma-editor-propriedades-lista { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; }
 .arma-editor-propriedades-lista label { display: flex; align-items: center; gap: 5px; min-width: 0; font-size: 11px; }
 .arma-editor-propriedades-lista input { flex: 0 0 auto; }
 .arma-editor-municao select { min-height: 38px; padding: 8px; border: 1px solid #bda68c; border-radius: 7px; background: var(--modal-bg); color: inherit; font: inherit; }
 .arma-modal .magia-modal-titulo { overflow-wrap: anywhere; }
+.arma-modal .magia-modal-topo > .armadura-editor-flags { display: flex; flex: 0 0 auto; align-items: center; gap: 12px; margin: 0 0 0 auto; padding: 9px 12px; border: 1px solid rgba(139, 69, 19, .48); border-radius: 9px; background: linear-gradient(145deg, #fff8e9, #ead8b8); box-shadow: inset 0 1px rgba(255,255,255,.9), 0 2px 6px rgba(76,50,21,.18); color: #603711; font-weight: 700; }
+.arma-modal .magia-modal-topo > .armadura-editor-flags label { white-space: nowrap; }
 @media (max-width: 640px) {
   .arma-selecao-modal .magia-selecao-filtros { grid-template-columns: 1fr; }
   .arma-selecao-modal .magia-selecao-conteudo { display: flex; flex-direction: column; overflow-y: auto; }
@@ -289,5 +304,7 @@ body.tema-classico #listaArmas > .item-card > .arma-resumo { background: linear-
   .arma-detalhe-resumo { grid-template-columns: 1fr; }
   .arma-detalhe-valores { justify-content: flex-start; }
   .arma-editor-campos { grid-template-columns: 1fr; }
+  .arma-editor-identificacao { grid-template-columns: 1fr; }
   .arma-editor-propriedades-lista { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .arma-modal .magia-modal-topo > .armadura-editor-flags { align-self: flex-end; flex-wrap: wrap; justify-content: flex-end; max-width: 100%; box-sizing: border-box; }
 }
