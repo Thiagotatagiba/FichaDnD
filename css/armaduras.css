@@ -1,6 +1,54 @@
 /* Armaduras usam a linguagem visual das listas e modais de magia. */
 #listaArmaduras { display: grid; gap: 8px; }
+.escudo-grupos, .escudo-sublista { display: grid; gap: 8px; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+.escudo-grupos > *, .escudo-sublista > *, .escudo-resumo, .escudo-abrir { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+.escudo-grupos > .inventario-botao-add-inferior { margin: 0; }
+#listaEscudosItens:empty::before { content: "Nenhum escudo adicionado. Escolha uma opção do catálogo ou crie o seu."; display: block; width: 100%; box-sizing: border-box; padding: 12px; border: 1px dashed #bda68c; border-radius: 10px; font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
+#listaEscudos .item-card[data-tipo="escudo"].escudo-catalogo { margin: 0; padding: 0; min-height: 0; width: 100%; max-width: 100%; border: 0; border-radius: 0; box-shadow: none; background: transparent; overflow: visible; box-sizing: border-box; }
+#listaEscudos .item-card[data-tipo="escudo"].escudo-catalogo::before,
+#listaEscudos .item-card[data-tipo="escudo"].escudo-catalogo::after { display: none; }
+#listaEscudos .item-card[data-tipo="escudo"].escudo-catalogo > :not(.escudo-resumo) { display: none !important; }
+.escudo-abrir.magia-item { grid-template-columns: minmax(0, 1fr); width: 100%; padding: 9px 10px; overflow: hidden; }
+.escudo-abrir .armadura-cartao-info { width: 100%; }
+.escudo-abrir .armadura-cartao-rodape { flex-wrap: wrap; gap: 5px 10px; }
+.escudo-abrir .armadura-cartao-meta { max-width: 100%; white-space: normal; text-align: right; overflow-wrap: anywhere; }
+.escudo-cartao-ca { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.escudo-cartao-ca-rotulo { color: #756b60; font-size: 10px; font-weight: 500; }
+.escudo-cartao-ca .armadura-cartao-ca { font-size: 20px; line-height: 1; }
+.escudo-cartao-tags { display: inline-flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.escudo-cartao-tag { padding: 2px 6px; border: 1px solid rgba(139, 69, 19, .3); border-radius: 999px; background: rgba(255, 250, 242, .7); color: #6f3610; font-size: 9px; line-height: 1.2; }
+.escudo-tags:empty { display: none; }
+.escudo-modal .magia-modal-topo-info { flex: 1 1 0; }
+.escudo-modal .armadura-modal-titulo-linha { width: max-content; max-width: 100%; }
+.escudo-modal .armadura-modal-titulo-linha .armadura-modal-equipar { margin-left: 0; }
+.escudo-modal .armadura-modal-titulo-linha .armadura-modal-equipar:not([hidden]) { display: inline-flex; visibility: visible; opacity: 1; }
+.escudo-modal-categorias { width: 100%; justify-content: flex-start; }
+.escudo-modal-tags { display: inline-flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 8px; margin-left: 0; }
+.escudo-modal .escudo-aviso-sintonizacao { margin-top: 10px; }
+.escudo-tempos-resumo { grid-template-columns: repeat(2, 76px); }
+.escudo-ca-resumo { border-bottom: 0; }
+.escudo-ca-com-tempos { align-items: start; }
+.escudo-condicoes > .armadura-condicao:first-child { display: none; }
+.escudo-previa-catalogo .escudo-detalhe-titulo { display: grid; grid-template-columns: 42px minmax(0, 1fr); align-items: center; gap: 3px 10px; }
+.escudo-previa-catalogo .armadura-modal-icone { grid-column: 1; grid-row: 1 / span 3; }
+.escudo-previa-catalogo .escudo-detalhe-titulo > .magia-card-detalhe-nome,
+.escudo-previa-catalogo .armadura-nome-original,
+.escudo-previa-catalogo .escudo-previa-categoria { grid-column: 2; }
+.escudo-previa-catalogo .escudo-previa-categoria { justify-self: start; margin: 0; }
+.escudo-detalhe .armadura-resumo-superior { grid-template-columns: minmax(0, 1fr) auto; }
+.escudo-modal .escudo-tempos-resumo { gap: 8px; }
+.escudo-selecao-modal .magia-selecao-detalhes { padding: 0 2px 4px; }
+body.tema-classico #listaEscudos .escudo-catalogo .armadura-abrir.magia-item {
+  background: linear-gradient(145deg, #f4ecd8, #e8dcc2) !important;
+  border-color: #3b2f1b !important;
+  color: #3b2f1b !important;
+}
 .armadura-subtitulo-barra { width: 100%; box-sizing: border-box; padding: 0 0 6px; }
+.inventario-separador { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(111, 54, 16, .28); }
+.inventario-categoria-box { display: grid; gap: 8px; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; padding: 10px; border: 1px solid rgba(111, 54, 16, .34); border-radius: 12px; background: rgba(255, 250, 242, .62); }
+.inventario-coluna-categorias { border: 0; border-radius: 0; padding: 0; background: transparent; }
+.inventario-categoria-box > .inventario-subtitulo-barra { padding-bottom: 3px; }
+.inventario-categoria-box > .inventario-subtitulo-barra.inventario-separador { margin-top: 0; padding-top: 0; border-top: 0; }
 .armadura-titulo { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; height: 38px; min-width: 0; box-sizing: border-box; padding: 0 8px 0 0; border: 2px solid #8b4513; border-radius: 20px; background: linear-gradient(145deg, #f4ecd8, #e8dcc2); color: #6f3610; }
 .armadura-titulo-icone { position: relative; z-index: 2; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 48px; width: 48px; height: 48px; box-sizing: border-box; margin: -7px 0 -7px -5px; padding: 0; border: 3px double #645e53; border-radius: 50%; background: radial-gradient(circle at 30% 24%, #e5e2d8 0, #b0b0a7 48%, #797c75 100%); color: #4b473e; box-shadow: inset 0 1px 3px rgba(255, 255, 245, .85), inset 0 -2px 4px rgba(61, 57, 45, .38), 0 1px 3px rgba(59, 47, 27, .28); cursor: pointer; }
 .armadura-titulo-emoji, .armadura-titulo-mais { position: absolute; transition: opacity .14s ease, transform .14s ease; }
@@ -10,6 +58,7 @@
 .armadura-titulo-icone:hover .armadura-titulo-mais, .armadura-titulo-icone:focus-visible .armadura-titulo-mais { opacity: 1; transform: scale(1); }
 .armadura-titulo-icone:focus-visible { outline: 2px solid #6f3610; outline-offset: 2px; }
 .armadura-titulo-nome { min-width: 0; line-height: 1.2; white-space: nowrap; }
+#inventarioTituloVestimentas .armadura-titulo-nome { min-width: 0; overflow: hidden; font-size: 11px; letter-spacing: -.02em; text-overflow: ellipsis; }
 .armadura-titulo-contagem { display: inline-flex; align-items: center; justify-content: center; margin-left: auto; flex: 0 0 auto; min-width: 26px; height: 22px; box-sizing: border-box; padding: 0 9px; border: 1px solid rgba(111, 54, 16, .5); border-radius: 999px; background: linear-gradient(180deg, #fffaf2, #e8dcc2); color: #5a4937; font-size: 11px; font-weight: 700; line-height: 1; white-space: nowrap; box-shadow: inset 0 1px 1px rgba(255, 255, 255, .85), 0 1px 2px rgba(59, 47, 27, .16); }
 body.tema-classico .armadura-titulo { background: linear-gradient(145deg, #f4ecd8, #e8dcc2) !important; border-color: #8b4513 !important; }
 body.tema-classico .armadura-titulo-icone { background: radial-gradient(circle at 30% 24%, #e5e2d8 0, #b0b0a7 48%, #797c75 100%) !important; border-color: #645e53 !important; }
@@ -38,7 +87,7 @@ body.tema-classico .armadura-titulo-contagem { background: linear-gradient(180de
 }
 .armadura-cartao-info { display: grid; gap: 8px; min-width: 0; }
 .armadura-cartao-topo, .armadura-cartao-dados, .armadura-cartao-rodape { display: flex; align-items: center; min-width: 0; }
-.armadura-cartao-topo { justify-content: space-between; gap: 8px; }
+.armadura-cartao-topo { justify-content: space-between; gap: 8px; padding-bottom: 5px; border-bottom: 1px solid rgba(111, 54, 16, .24); }
 .armadura-cartao-info .magia-item-nome { min-width: 0; font-size: 15px; overflow-wrap: anywhere; }
 .armadura-cartao-dados { justify-content: flex-start; flex-wrap: wrap; gap: 6px 9px; }
 .armadura-cartao-categoria { border: 1px solid rgba(59, 47, 27, .28); border-radius: 20px; padding: 2px 8px; font-size: 10px; line-height: 1.35; }

@@ -3475,7 +3475,8 @@
                   </button>
                 </div>
 
-                <div class="inventario-coluna">
+                <div class="inventario-coluna inventario-coluna-categorias">
+                  <section class="inventario-categoria-box">
                   <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
                     <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloArmaduras">
                       <button type="button" class="armadura-titulo-icone" onclick="abrirModalSelecaoArmadura()" title="Adicionar nova armadura" aria-label="Adicionar nova armadura">
@@ -3552,6 +3553,7 @@
                     </div>
 
                     <div class="arma-conteudo">
+                      <input type="hidden" data-campo="armadura_raridade" value="comum" />
                       <div class="item-linha armadura-linha-2-cols">
                         <div>
                           <label>CA</label>
@@ -3655,15 +3657,18 @@
                   >
                     + nova armadura
                   </button>
+                  </section>
 
-                  <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
+                  <div id="listaEscudos" class="escudo-grupos">
+                    <section class="inventario-categoria-box">
+                  <div class="inventario-subtitulo-barra armadura-subtitulo-barra inventario-separador">
                     <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloEscudos">
-                      <button type="button" class="armadura-titulo-icone" onclick="adicionarNovoEscudo()" title="Adicionar novo escudo ou vestimento" aria-label="Adicionar novo escudo ou vestimento">
+                      <button type="button" class="armadura-titulo-icone" onclick="abrirModalSelecaoEscudo()" title="Adicionar novo escudo" aria-label="Adicionar novo escudo">
                         <span class="armadura-titulo-emoji" aria-hidden="true">🛡️</span>
                         <span class="armadura-titulo-mais" aria-hidden="true">+</span>
                       </button>
-                      <span class="armadura-titulo-nome">Escudos e Vestimentos</span>
-                      <span class="armadura-titulo-contagem" id="inventarioContagemEscudos" title="Quantidade de escudos e vestimentos" aria-label="Quantidade de escudos e vestimentos: 0">0</span>
+                      <span class="armadura-titulo-nome">Escudos</span>
+                      <span class="armadura-titulo-contagem" id="inventarioContagemEscudos" title="Quantidade de escudos" aria-label="Quantidade de escudos: 0">0</span>
                     </div>
                   </div>
 
@@ -3705,7 +3710,7 @@
                             min="0"
                             step="0.1"
                             data-campo="escudo_peso"
-                            aria-label="Peso do escudo ou vestimento"
+                            aria-label="Peso do item"
                           />
                           <span class="sufixo">kg</span>
                         </div>
@@ -3724,32 +3729,33 @@
                         <input
                           type="text"
                           data-campo="escudo_nome"
-                          aria-label="Nome do escudo ou vestimento"
-                          placeholder="Nome do escudo ou vestimento"
+                          aria-label="Nome do item"
+                          placeholder="Nome do item"
                         />
                       </div>
                       <span class="item-toggle">🔽</span>
                     </div>
 
                     <div class="arma-conteudo">
+                      <input type="hidden" data-campo="escudo_raridade" value="comum" />
                       <div class="item-linha armadura-linha-2-cols">
                         <div>
-                          <label>CA</label>
+                          <label>Bônus de CA</label>
                           <input
                             type="text"
                             data-campo="escudo_ca"
                             placeholder="+2"
-                            aria-label="Bônus de classe de armadura do escudo ou vestimento"
+                            aria-label="Bônus de classe de armadura do item"
                           />
                         </div>
                         <div>
                           <label>Tipo</label>
                           <select
                             data-campo="escudo_tipo"
-                            aria-label="Tipo de escudo ou vestimento"
+                            aria-label="Tipo do item"
                           >
                             <option value="Escudo" selected>Escudo</option>
-                            <option value="Vestuario">Vesturário</option>
+                            <option value="Vestuario">Vestuário</option>
                             <option value="Item magico">Item mágico</option>
                           </select>
                         </div>
@@ -3781,21 +3787,43 @@
                           <textarea
                             class="item-descricao"
                             data-campo="escudo_descricao"
-                            aria-label="Descrição do escudo ou vestimento"
+                            aria-label="Descrição do item"
                           ></textarea>
                         </div>
                       </div>
                     </div>
                   </div>
 
-                  <div id="listaEscudos"></div>
-                  <button
-                    type="button"
-                    class="inventario-botao-add inventario-botao-add-inferior"
-                    onclick="adicionarNovoEscudo()"
-                  >
-                    + novo escudo
-                  </button>
+                    <div id="listaEscudosItens" class="escudo-sublista"></div>
+                    <button
+                      type="button"
+                      class="inventario-botao-add inventario-botao-add-inferior"
+                      onclick="abrirModalSelecaoEscudo()"
+                    >
+                      + novo escudo
+                    </button>
+                    </section>
+                    <section class="inventario-categoria-box">
+                    <div class="inventario-subtitulo-barra armadura-subtitulo-barra inventario-separador">
+                      <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloVestimentas">
+                        <button type="button" class="armadura-titulo-icone" onclick="adicionarNovoEscudo('Vestuario')" title="Adicionar vestimenta ou acessório" aria-label="Adicionar vestimenta ou acessório">
+                          <span class="armadura-titulo-emoji" aria-hidden="true">💍</span>
+                          <span class="armadura-titulo-mais" aria-hidden="true">+</span>
+                        </button>
+                        <span class="armadura-titulo-nome">Vestimentas e acessórios</span>
+                        <span class="armadura-titulo-contagem" id="inventarioContagemVestimentas" title="Quantidade de vestimentas e acessórios" aria-label="Quantidade de vestimentas e acessórios: 0">0</span>
+                      </div>
+                    </div>
+                    <div id="listaVestimentas" class="escudo-sublista"></div>
+                    <button
+                      type="button"
+                      class="inventario-botao-add inventario-botao-add-inferior"
+                      onclick="adicionarNovoEscudo('Vestuario')"
+                    >
+                      + nova vestimenta ou acessório
+                    </button>
+                    </section>
+                  </div>
                 </div>
 
                 <div class="inventario-coluna">
@@ -4059,6 +4087,7 @@
     <!-- ========================= -->
     <script src="../js/modules/equipamentos.js"></script>
     <script src="../js/modules/armaduras-catalogo.js"></script>
+    <script src="../js/modules/escudos-catalogo.js"></script>
 
     <!-- ========================= -->
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->

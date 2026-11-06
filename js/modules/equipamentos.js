@@ -201,6 +201,7 @@
         renderizarArmasEquipamento(coletarArmas());
         renderizarArmadurasEquipamento(coletarArmaduras());
         renderizarEscudosEquipamento(coletarEscudos());
+        if (typeof atualizarResumosEscudos === "function") atualizarResumosEscudos(coletarEscudos());
         renderizarOutrosEquipamento(coletarOutros());
         atualizarTodasMunicoesArmas();
         atualizarSelectNomeArmaduraEquipada(
@@ -2627,6 +2628,8 @@
 
         if (selectTipo) {
           selectTipo.addEventListener("change", () => {
+            moverEscudoParaGrupo(selectTipo, card);
+            atualizarVisibilidadeResumoEscudo(card);
             atualizarProficienciaCardEscudo(card);
             atualizarListaArmasEquipamento();
           });
@@ -2640,13 +2643,22 @@
         });
 
         atualizarProficienciaCardEscudo(card);
+        moverEscudoParaGrupo(selectTipo, card);
+        if (typeof atualizarVisibilidadeResumoEscudo === "function") atualizarVisibilidadeResumoEscudo(card);
         atualizarPesoAtualInventario();
         atualizarListaArmasEquipamento();
       }
 
-      function adicionarNovoEscudo() {
+      function moverEscudoParaGrupo(selectTipo, card) {
+        const tipo = selectTipo?.value || "Escudo";
+        const idLista = tipo === "Escudo" ? "listaEscudosItens" : "listaVestimentas";
+        const lista = document.getElementById(idLista);
+        if (lista && card.parentElement !== lista) lista.appendChild(card);
+      }
+
+      function adicionarNovoEscudo(tipo = "Escudo") {
         const modelo = document.getElementById("escudoModelo");
-        const container = document.getElementById("listaEscudos");
+        const container = document.getElementById(tipo === "Escudo" ? "listaEscudosItens" : "listaVestimentas");
 
         const novoEscudo = modelo.cloneNode(true);
         novoEscudo.removeAttribute("id");
@@ -2654,6 +2666,8 @@
         novoEscudo.classList.add("item-card");
         novoEscudo.classList.remove("fechado", "oculto");
         novoEscudo.dataset.tipo = "escudo";
+        const campoTipo = novoEscudo.querySelector('[data-campo="escudo_tipo"]');
+        if (campoTipo) campoTipo.value = tipo;
 
         container.appendChild(novoEscudo);
         inicializarEventosEscudo(novoEscudo);

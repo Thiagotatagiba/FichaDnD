@@ -362,7 +362,7 @@ async function aplicarDadosFicha(dados) {
       );
       atuais.forEach((e) => e.remove());
 
-      dados.escudos.forEach((dadosEscudo) => {
+      dados.escudos.filter((dadosEscudo) => dadosEscudo?.escudo_nome?.trim()).forEach((dadosEscudo) => {
         const novoCard = adicionarNovoEscudo();
         if (!novoCard) return;
 

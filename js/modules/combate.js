@@ -457,9 +457,9 @@ function fecharItemCard(card) {
 }
 
 function atualizarTitulosInventario() {
-  const contarItensPreenchidos = (seletor, campoNome) =>
+  const contarItensPreenchidos = (seletor, campoNome, incluir = () => true) =>
     Array.from(document.querySelectorAll(seletor)).filter((card) =>
-      card.querySelector(campoNome)?.value?.trim(),
+      card.querySelector(campoNome)?.value?.trim() && incluir(card),
     ).length;
 
   const contagens = {
@@ -481,10 +481,20 @@ function atualizarTitulosInventario() {
     },
     inventarioTituloEscudos: {
       emoji: "🛡️",
-      nome: "Escudos e Vestimentos",
+      nome: "Escudos",
       total: contarItensPreenchidos(
         '#listaEscudos .item-card[data-tipo="escudo"]',
         '[data-campo="escudo_nome"]',
+        (card) => (card.querySelector('[data-campo="escudo_tipo"]')?.value || "Escudo") === "Escudo",
+      ),
+    },
+    inventarioTituloVestimentas: {
+      emoji: "💍",
+      nome: "Vestimentas e acessórios",
+      total: contarItensPreenchidos(
+        '#listaEscudos .item-card[data-tipo="escudo"]',
+        '[data-campo="escudo_nome"]',
+        (card) => (card.querySelector('[data-campo="escudo_tipo"]')?.value || "Escudo") !== "Escudo",
       ),
     },
     inventarioTituloOutros: {

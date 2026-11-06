@@ -1,5 +1,6 @@
 // Catálogo estático e seleção de armaduras; os exemplares mantêm o formato legado.
 const TIPOS_ARMADURA_CATALOGO = { leve: "Leve", media: "Media", pesada: "Pesada" };
+const RARIDADES_ARMADURA_CATALOGO = new Set(["comum", "incomum", "raro", "muito raro", "lendário", "artefato"]);
 const estadoCatalogoArmaduras = { dados: null, promessa: null, selecionada: null, foco: null };
 
 function validarCatalogoArmaduras(dados) {
@@ -11,7 +12,8 @@ function validarCatalogoArmaduras(dados) {
     const leve = item.categoria === "leve";
     const media = item.categoria === "media";
     if (!item.id || typeof item.id !== "string" || ids.has(item.id) ||
-        item.tipo !== "armadura" || !Object.hasOwn(TIPOS_ARMADURA_CATALOGO, item.categoria) ||
+        item.tipo !== "armadura" || !RARIDADES_ARMADURA_CATALOGO.has(item.raridade) ||
+        !Object.hasOwn(TIPOS_ARMADURA_CATALOGO, item.categoria) ||
         typeof item.nome !== "string" || !item.nome.trim() || typeof item.nomeOriginal !== "string" ||
         typeof item.descricao !== "string" || !item.descricao.trim() ||
         !Number.isFinite(item.pesoKg) || item.pesoKg < 0 ||
@@ -47,6 +49,7 @@ async function carregarCatalogoArmaduras() {
 function camposArmaduraDoCatalogo(item) {
   return {
     armadura_nome: item.nome,
+    armadura_raridade: item.raridade,
     armadura_tipo: TIPOS_ARMADURA_CATALOGO[item.categoria],
     armadura_ca: String(item.ca.base),
     armadura_bonus: !item.ca.adicionaDestreza ? "0" : item.ca.limiteBonusDestreza === 2 ? "DES Max 2" : "DES",
@@ -264,8 +267,6 @@ function renderizarDetalhesArmadura(item, aoAdicionar = null, proficiente = null
   }
   const tags = criarElementoArmadura("div", undefined, "magia-card-detalhe-propriedades");
   if (item.equipada && aoAdicionar) tags.append(criarElementoArmadura("span", "Equipada", "magia-card-detalhe-tag"));
-  if (item.magico) tags.append(criarElementoArmadura("span", "Item mágico", "magia-card-detalhe-tag"));
-  if (item.sintonizado) tags.append(criarElementoArmadura("span", "Sintonizada", "magia-card-detalhe-tag"));
   const base = Number(item.ca.base) || 0;
   const mod = obterModDestrezaArmaduras();
   const total = base + (item.ca.adicionaDestreza ? item.ca.limiteBonusDestreza === 2 ? Math.min(mod, 2) : mod : 0);
@@ -521,6 +522,8 @@ function renderizarModalArmadura() {
   const categorias = document.getElementById("armaduraModalCategoria");
   categorias.replaceChildren(criarElementoArmadura("span", (dados.tipoExibicao || "Armadura").replace("Media", "Média"), "magia-modal-nivel"));
   if (dados.equipada) categorias.append(criarElementoArmadura("span", "Equipada", "magia-modal-nivel"));
+  if (dados.magico) categorias.append(criarElementoArmadura("span", "Item mágico", "magia-modal-nivel"));
+  if (dados.sintonizado) categorias.append(criarElementoArmadura("span", "Sintonizada", "magia-modal-nivel"));
   const visualizacao = document.getElementById("armaduraModalVisualizacao");
   visualizacao.replaceChildren(renderizarDetalhesArmadura(dados, null, !card.querySelector(".item-proficiencia").classList.contains("nao")));
   visualizacao.hidden = false;
@@ -539,7 +542,7 @@ function editarModalArmadura() {
   const campos = form.querySelector(".armadura-editor-campos");
   campos.replaceChildren();
   const rotulos = {
-    armadura_nome: "Nome", armadura_tipo: "Categoria", armadura_ca: "CA base",
+    armadura_nome: "Nome", armadura_raridade: "Raridade", armadura_tipo: "Categoria", armadura_ca: "CA base",
     armadura_bonus: "Destreza na CA", armadura_peso: "Peso (kg)", armadura_preco: "Valor (po)",
     armadura_forca: "Força mínima", armadura_furtividade: "Furtividade", armadura_descricao: "Descrição e anotações"
   };
@@ -547,12 +550,21 @@ function editarModalArmadura() {
     const origem = card.querySelector('[data-campo="' + nome + '"]');
     if (!origem) return;
     const grupo = criarElementoArmadura("label", undefined, nome === "armadura_nome" || nome === "armadura_descricao" ? "armadura-editor-completo" : "");
-    const campo = origem.cloneNode(true);
+    const campo = nome === "armadura_raridade" ? criarElementoArmadura("select") : origem.cloneNode(true);
+    if (nome === "armadura_raridade") {
+      [["comum", "Comum"], ["incomum", "Incomum"], ["raro", "Raro"],
+        ["muito raro", "Muito raro"], ["lendário", "Lendário"], ["artefato", "Artefato"]]
+        .forEach(([valor, texto]) => {
+          const opcao = criarElementoArmadura("option", texto);
+          opcao.value = valor;
+          campo.append(opcao);
+        });
+    }
     campo.removeAttribute("data-campo");
     campo.removeAttribute("id");
     campo.className = "";
     campo.dataset.editorCampo = nome;
-    campo.value = origem.value;
+    campo.value = nome === "armadura_raridade" ? origem.value || "comum" : origem.value;
     if (nome === "armadura_nome") campo.required = true;
     grupo.append(criarElementoArmadura("span", rotulo), campo);
     campos.append(grupo);

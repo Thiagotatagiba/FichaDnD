@@ -1,6 +1,6 @@
 {
   "versaoSchema": 1,
-  "versaoCatalogo": 2,
+  "versaoCatalogo": 3,
   "sistema": "dnd5e-2014",
   "status": "ativo",
   "fonte": {
@@ -22,7 +22,8 @@
     {
       "id": "armadura-acolchoada",
       "tipo": "armadura",
-      "nome": "Acolchoada",
+      "raridade": "comum",
+      "nome": "Armadura Acolchoada",
       "nomeOriginal": "Padded",
       "categoria": "leve",
       "custo": {
@@ -44,7 +45,8 @@
     {
       "id": "armadura-couro",
       "tipo": "armadura",
-      "nome": "Couro",
+      "raridade": "comum",
+      "nome": "Armadura de Couro",
       "nomeOriginal": "Leather",
       "categoria": "leve",
       "custo": {
@@ -66,7 +68,8 @@
     {
       "id": "armadura-couro-batido",
       "tipo": "armadura",
-      "nome": "Couro batido",
+      "raridade": "comum",
+      "nome": "Armadura de Couro Batido",
       "nomeOriginal": "Studded Leather",
       "categoria": "leve",
       "custo": {
@@ -88,6 +91,7 @@
     {
       "id": "armadura-gibao-de-peles",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Gibão de peles",
       "nomeOriginal": "Hide",
       "categoria": "media",
@@ -110,6 +114,7 @@
     {
       "id": "armadura-camisao-de-malha",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Camisão de malha",
       "nomeOriginal": "Chain Shirt",
       "categoria": "media",
@@ -132,6 +137,7 @@
     {
       "id": "armadura-brunea",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Brunea",
       "nomeOriginal": "Scale Mail",
       "categoria": "media",
@@ -154,6 +160,7 @@
     {
       "id": "armadura-peitoral",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Peitoral",
       "nomeOriginal": "Breastplate",
       "categoria": "media",
@@ -176,6 +183,7 @@
     {
       "id": "armadura-meia-armadura",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Meia armadura",
       "nomeOriginal": "Half Plate",
       "categoria": "media",
@@ -198,6 +206,7 @@
     {
       "id": "armadura-cota-de-aneis",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Cota de anéis",
       "nomeOriginal": "Ring Mail",
       "categoria": "pesada",
@@ -220,6 +229,7 @@
     {
       "id": "armadura-cota-de-malha",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Cota de malha",
       "nomeOriginal": "Chain Mail",
       "categoria": "pesada",
@@ -242,6 +252,7 @@
     {
       "id": "armadura-cota-de-talas",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Cota de talas",
       "nomeOriginal": "Splint",
       "categoria": "pesada",
@@ -264,6 +275,7 @@
     {
       "id": "armadura-placas",
       "tipo": "armadura",
+      "raridade": "comum",
       "nome": "Placas",
       "nomeOriginal": "Plate",
       "categoria": "pesada",

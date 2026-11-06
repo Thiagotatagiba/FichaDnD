@@ -1,0 +1,41 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 2,
+  "sistema": "dnd5e-2014",
+  "status": "ativo",
+  "fonte": {
+    "nome": "D&D Beyond — Basic Rules 2014, Equipment",
+    "url": "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment#ArmorandShields"
+  },
+  "unidadePeso": "kg",
+  "convencaoPeso": {
+    "metodo": "adaptacao-metrica-de-mesa",
+    "kgPorLibra": 0.5,
+    "status": "Convenção de mesa já aprovada no catálogo de armaduras"
+  },
+  "itens": [
+    {
+      "id": "escudo-comum",
+      "tipo": "escudo",
+      "raridade": "comum",
+      "nome": "Escudo Comum",
+      "nomeOriginal": "Shield",
+      "categoria": "escudo",
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 3,
+      "ca": {
+        "bonus": 2
+      },
+      "forcaMinima": null,
+      "desvantagemFurtividade": false,
+      "requerProficiencia": true,
+      "vestirAcoes": 1,
+      "retirarAcoes": 1,
+      "limiteEscudosAtivos": 1,
+      "descricao": "Feito de madeira ou metal e empunhado com uma mão. Enquanto estiver em uso, concede +2 à Classe de Armadura; o benefício vale para apenas um escudo por vez."
+    }
+  ]
+}

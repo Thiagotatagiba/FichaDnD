@@ -20,6 +20,7 @@ test("catálogo básico: 12 armaduras, preços, Força, furtividade e kg", () =>
   ctx.catalogo = catalogo;
   assert.equal(vm.runInContext("validarCatalogoArmaduras(catalogo).itens.length", ctx), 12);
   assert.ok(catalogo.itens.every(item => typeof item.descricao === "string" && item.descricao.trim().length > 30));
+  assert.ok(catalogo.itens.every(item => item.raridade === "comum"));
   assert.equal(new Set(catalogo.itens.map(item => item.descricao)).size, 12);
   assert.deepEqual(catalogo.itens.map(i => i.pesoKg), [4,5,6.5,6,10,22.5,10,20,20,27.5,30,32.5]);
   assert.deepEqual(catalogo.itens.map(i => i.custo.valor), [5,10,45,10,50,50,400,750,30,75,200,1500]);
@@ -37,6 +38,7 @@ test("validação rejeita IDs duplicados, unidades, números e regras incoerente
     c => c.itens[0].forcaMinima = -1,
     c => c.itens[0].custo.valor = -5,
     c => c.itens[0].descricao = "",
+    c => c.itens[0].raridade = "épico",
   ]) {
     const ctx = contexto();
     ctx.catalogo = structuredClone(catalogo);
@@ -53,6 +55,7 @@ test("adaptador usa valores reais dos selects; CA preserva DES negativo e teto p
   ]) {
     ctx.item = catalogo.itens.find(i => i.id === id);
     const campos = vm.runInContext("camposArmaduraDoCatalogo(item)", ctx);
+    assert.equal(campos.armadura_raridade, "comum");
     assert.ok(["Leve","Media","Pesada"].includes(campos.armadura_tipo));
     assert.deepEqual([-1,0,4].map(mod => {
       ctx.mod = mod;

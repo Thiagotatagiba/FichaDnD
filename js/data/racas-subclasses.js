@@ -1225,9 +1225,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 window.addEventListener("DOMContentLoaded", () => {
   const armaInicial = adicionarNovaArma();
-  const escudoInicial = adicionarNovoEscudo();
   const outroInicial = adicionarNovoOutro();
-  [armaInicial, escudoInicial, outroInicial].forEach(
+  [armaInicial, outroInicial].forEach(
     fecharItemCard,
   );
 });
