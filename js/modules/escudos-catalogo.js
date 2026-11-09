@@ -293,7 +293,17 @@ function dadosEscudoDoCatalogo(card) {
 }
 
 function inicializarResumoEscudo(card) {
-  if (card.querySelector(".escudo-resumo")) return;
+  const resumoExistente = card.querySelector(".escudo-resumo");
+  if (resumoExistente) {
+    const abrirExistente = resumoExistente.querySelector(".escudo-abrir");
+    if (abrirExistente) {
+      abrirExistente.onclick = evento => {
+        evento.stopPropagation();
+        abrirModalEscudo(card);
+      };
+    }
+    return;
+  }
   const resumo = criarElementoEscudo("div", undefined, "armadura-resumo escudo-resumo");
   const abrir = criarElementoEscudo("button", undefined, "magia-item armadura-abrir escudo-abrir"); abrir.type = "button";
   const info = criarElementoEscudo("span", undefined, "armadura-cartao-info");

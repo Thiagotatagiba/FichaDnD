@@ -145,6 +145,15 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - **Validação executada em 2026-11-06:** 7 testes do catálogo passaram, incluindo o mapeamento separado do alcance das cinco armas; `node --check` passou para os módulos alterados e `git diff --check` não encontrou erros.
 - **Próximos critérios:** validar no navegador a experiência de cadastro e os modais; testar combate, proficiência, dano/atributo, slots, munição e salvar/cancelar; fazer round-trip de fichas de teste e verificar armas legadas/personalizadas conforme [plano de catálogo de armas](docs/propostas/PLANO_CATALOGO_ARMAS.md). Não declarar concluída a integração até esses cenários passarem.
 
+### Responsividade dos modais de escudos, armaduras e armas — em andamento (Fase 4)
+
+- **Autorização:** usuário aprovou a execução em 2026-11-06.
+- **Plano:** [verificação responsiva dos modais do inventário](docs/propostas/PLANO_RESPONSIVIDADE_MODAIS_INVENTARIO.md), com matriz de viewports, roteiros por categoria, critérios de aceite e registro de evidências.
+- **Diagnóstico e ajustes iniciais:** em Chromium integrado, a 320 px, os detalhes de armaduras e escudos excediam a largura interna por causa das grades dos resumos e de dimensões mínimas. `css/armaduras.css` agora limita as colunas e largura dos painéis e empilha CA/bônus e tempos nos detalhes de armadura/escudo. Detalhes de armas receberam limites explícitos de largura.
+- **Validação parcial até 2026-11-07:** listas e detalhes dos seletores foram conferidos em 320 × 844, 390 × 844 e 768 × 844; não excederam as larguras internas após os ajustes. Em 320 × 640, as prévias de cadastro de armadura e escudo cabiam no painel, com título à direita do símbolo. A prévia de arma tinha sobreposição do símbolo/título e overflow de categoria; CSS corrigido com grade e quebra de texto. Formulário de armadura ainda mantinha duas colunas em 320 px; agora os campos ficam em uma coluna. Linhas de arma e escudo também foram conferidas com coluna única; rótulos longos de propriedades de arma quebram linha. Os formulários rolam verticalmente e suas ações ficam alcançáveis. Em 640 × 320, os modais de arma, armadura e escudo ficaram dentro da viewport e os três CTAs foram alcançáveis pela rolagem dos detalhes.
+- **Escudos — correções e validação integrada:** cards adicionados pelo catálogo agora têm o botão de detalhes funcional. Equipar/desequipar sincroniza o checkbox usando o índice real do item e atualiza a CA. Excluir um escudo equipado limpa o slot e recalcula a CA. Os fluxos foram conferidos em 390 × 844. Seletor desktop conferido em 1280 × 800, sem overflow geométrico.
+- **Pendências:** concluir fluxos integrados de adicionar/remover para armadura e arma; validar teclado, foco, safe areas e aparelho físico. A tarefa permanece em andamento até registrar os critérios restantes no plano.
+
 ### Tarefa concluída — fluxo dos modais de XP e Level Up
 
 **Estado geral:** Concluído para o escopo pontual abaixo. A Fase 3 continua em andamento como direção de longo prazo; esta tarefa não conclui a fase.
@@ -237,4 +246,4 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - Preservar regras de D&D, estruturas de dados, IDs, atributos HTML e compatibilidade com fichas existentes, salvo evidência que justifique uma mudança.
 - Commits são manuais e ficam a cargo do responsável pelo projeto.
 
-**Última atualização:** 2026-11-06 — refinamentos do catálogo e cadastro de armas registrados, com 7 testes de catálogo aprovados e validação integrada em navegador ainda pendente. As pendências anteriores de perícias, aplicação parcial de importação, timeline e round-trip narrativo de Thrain permanecem; Fase 3 continua em andamento e nenhuma fase inteira foi concluída.
+**Última atualização:** 2026-11-07 — prévias de cadastro de armaduras, escudos e armas e formulários manuais conferidos em viewport móvel; ajustes responsivos registrados na tarefa e no [plano responsivo](docs/propostas/PLANO_RESPONSIVIDADE_MODAIS_INVENTARIO.md). A regressão integrada de armas e as pendências anteriores de perícias, importação parcial, timeline e round-trip narrativo de Thrain permanecem. Fase 3 continua em andamento e nenhuma fase inteira foi concluída.

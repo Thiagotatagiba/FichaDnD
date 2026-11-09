@@ -1715,8 +1715,10 @@
         );
         if (indiceSlot === 2) {
           const indiceEscudo = extrairIndiceSlotEscudo(atual.value);
-          checkboxesEscudo.forEach((input, indice) => {
-            input.checked = indiceEscudo !== null && indice === indiceEscudo;
+          checkboxesEscudo.forEach((input) => {
+            input.checked =
+              indiceEscudo !== null &&
+              Number(input.dataset.index) === indiceEscudo;
           });
         }
 
@@ -1950,8 +1952,9 @@
         if (Number.isInteger(indiceEscudoAtivo)) {
           document
             .querySelectorAll("#lista-escudos-equipamento input")
-            .forEach((input, indice) => {
-              input.checked = indice === indiceEscudoAtivo;
+            .forEach((input) => {
+              input.checked =
+                Number(input.dataset.index) === indiceEscudoAtivo;
             });
         } else {
           document
@@ -2505,6 +2508,7 @@
               card.remove();
               atualizarPesoAtualInventario();
               atualizarListaArmasEquipamento();
+              sincronizarEquipamentosCombate();
               equiparArmadura(armaduraEquipadaIndice);
               atualizarResumosArmaduras();
             }
@@ -2615,6 +2619,23 @@
           btnRemover.addEventListener("click", function (e) {
             e.stopPropagation();
             if (confirm("Deseja remover este escudo ou vestimento?")) {
+              if (card.querySelector('[data-campo="escudo_tipo"]')?.value === "Escudo") {
+                const cardsEscudos = [...document.querySelectorAll(
+                  '#listaEscudos .item-card[data-tipo="escudo"]',
+                )];
+                const indiceRemovido = cardsEscudos.indexOf(card);
+                const selectSecundario = document.getElementById("arma2Nome");
+                const indiceEquipado = selectSecundario
+                  ? extrairIndiceSlotEscudo(selectSecundario.value)
+                  : null;
+                if (Number.isInteger(indiceEquipado)) {
+                  if (indiceEquipado === indiceRemovido) {
+                    selectSecundario.value = "";
+                  } else if (indiceEquipado > indiceRemovido) {
+                    selectSecundario.value = criarValorSlotEscudo(indiceEquipado - 1);
+                  }
+                }
+              }
               card.remove();
               atualizarPesoAtualInventario();
               atualizarListaArmasEquipamento();
