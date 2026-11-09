@@ -203,9 +203,6 @@ function configurarDiarioAventura() {
   if (!overlay || overlay.dataset.configurado === "true") return;
 
   overlay.dataset.configurado = "true";
-  overlay.addEventListener("click", (evento) => {
-    if (evento.target === overlay) fecharModalDiarioAventura();
-  });
 
   document.addEventListener("keydown", (evento) => {
     if (evento.key !== "Escape") return;

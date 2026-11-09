@@ -228,38 +228,6 @@ try {
 } catch (erro) {
   console.error("Falha ao preparar interface de talentos:", erro);
 }
-const overlayMagia = document.getElementById("magiaModalOverlay");
-if (overlayMagia) {
-  overlayMagia.addEventListener("click", (evento) => {
-    if (evento.target === overlayMagia) {
-      fecharModalMagia();
-    }
-  });
-}
-const overlayUsoMagia = document.getElementById("magiaSlotModalOverlay");
-if (overlayUsoMagia) {
-  overlayUsoMagia.addEventListener("click", (evento) => {
-    if (evento.target === overlayUsoMagia) {
-      fecharModalUsarMagia();
-    }
-  });
-}
-const overlayTalento = document.getElementById("talentoModalOverlay");
-if (overlayTalento) {
-  overlayTalento.addEventListener("click", (evento) => {
-    if (evento.target === overlayTalento) {
-      fecharModalTalento();
-    }
-  });
-}
-const overlayConfig = document.getElementById("configModalOverlay");
-if (overlayConfig) {
-  overlayConfig.addEventListener("click", (evento) => {
-    if (evento.target === overlayConfig) {
-      fecharConfigModal();
-    }
-  });
-}
 document.getElementById("magiaModalEditar")?.addEventListener("click", () => {
   preencherFormularioMagia(obterMagiaDoEstadoModal());
   alternarModoModalMagia("editar");
@@ -398,35 +366,6 @@ document.addEventListener("keydown", (evento) => {
 });
 window.addEventListener("resize", reposicionarMenuEmpunhadura);
 window.addEventListener("scroll", fecharMenuEmpunhadura, true);
-const overlayAtaque = document.getElementById("modalAtaqueOverlay");
-if (overlayAtaque) {
-  overlayAtaque.addEventListener("click", (evento) => {
-    if (evento.target === overlayAtaque) {
-      fecharModalAtaqueArma();
-    }
-  });
-}
-
-const overlayTesteResistencia = document.getElementById(
-  "modalTesteResistenciaOverlay",
-);
-if (overlayTesteResistencia) {
-  overlayTesteResistencia.addEventListener("click", (evento) => {
-    if (evento.target === overlayTesteResistencia) {
-      fecharModalTesteResistencia();
-    }
-  });
-}
-
-const overlayIniciativa = document.getElementById("modalIniciativaOverlay");
-if (overlayIniciativa) {
-  overlayIniciativa.addEventListener("click", (evento) => {
-    if (evento.target === overlayIniciativa) {
-      fecharModalIniciativa();
-    }
-  });
-}
-
 document
   .getElementById("abrirTesteResistenciaBtn")
   ?.addEventListener("click", abrirModalTesteResistencia);

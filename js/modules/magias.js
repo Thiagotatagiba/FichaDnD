@@ -1462,9 +1462,6 @@ function montarModalSelecaoMagia() {
   `;
 
   document.body.appendChild(overlay);
-  overlay.addEventListener("click", (evento) => {
-    if (evento.target === overlay) fecharModalSelecaoMagia();
-  });
   document
     .getElementById("magiaSelecaoModalFechar")
     ?.addEventListener("click", fecharModalSelecaoMagia);
@@ -2176,9 +2173,6 @@ function montarModalEncerrarConcentracao() {
       encerrarConcentracao("encerrada");
       fecharModalEncerrarConcentracao();
     });
-  overlay.addEventListener("click", (evento) => {
-    if (evento.target === overlay) fecharModalEncerrarConcentracao();
-  });
 }
 
 function abrirTesteConcentracaoPorDano(dano) {

@@ -8,11 +8,52 @@
 #listaEscudos .item-card[data-tipo="escudo"].escudo-catalogo::before,
 #listaEscudos .item-card[data-tipo="escudo"].escudo-catalogo::after { display: none; }
 #listaEscudos .item-card[data-tipo="escudo"].escudo-catalogo > :not(.escudo-resumo) { display: none !important; }
+#listaVestimentas .item-card[data-tipo="escudo"].vestimenta-catalogo { margin: 0; padding: 0; min-height: 0; width: 100%; max-width: 100%; border: 0; border-radius: 0; box-shadow: none; background: transparent; overflow: visible; box-sizing: border-box; }
+#listaVestimentas .item-card[data-tipo="escudo"].vestimenta-catalogo::before,
+#listaVestimentas .item-card[data-tipo="escudo"].vestimenta-catalogo::after { display: none; }
+#listaVestimentas .item-card[data-tipo="escudo"].vestimenta-catalogo > :not(.vestimenta-resumo) { display: none !important; }
+.vestimenta-resumo, .vestimenta-abrir { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
+.vestimenta-abrir.magia-item { grid-template-columns: minmax(0, 1fr); width: 100%; padding: 9px 10px; overflow: hidden; }
+.vestimenta-abrir .armadura-cartao-info { width: 100%; }
+.vestimenta-abrir .armadura-cartao-rodape { flex-wrap: wrap; gap: 5px 10px; }
+.vestimenta-abrir .armadura-cartao-meta { max-width: 100%; white-space: normal; text-align: right; overflow-wrap: anywhere; }
+.vestimenta-cartao-vantagens { font-size: 11px; }
+.vestimenta-cartao-tags { display: inline-flex; flex-wrap: wrap; gap: 4px; }
+.vestimenta-modal { max-width: 790px; }
+.vestimenta-editor { height: min(72vh, 620px); max-height: min(72vh, 620px); overflow-y: auto; padding: 18px 20px 20px; box-sizing: border-box; }
+.vestimenta-editor-campos { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.vestimenta-editor-campos .vestimenta-vantagens { min-width: 0; margin: 0; padding: 10px 12px 12px; border: 1px solid #d5b993; border-radius: 8px; }
+.vestimenta-vantagens > summary { color: #5f2d0c; font-size: 12px; cursor: pointer; user-select: none; }
+.vestimenta-vantagens[open] > summary { margin-bottom: 10px; }
+.vestimenta-vantagens > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px 12px; }
+.vestimenta-vantagens label { display: flex !important; flex-direction: row !important; align-items: center; justify-content: flex-start; gap: 5px !important; font-size: 12px; }
+.vestimenta-flags { margin: 2px 0 0; padding: 10px 12px; border: 1px solid rgba(139, 69, 19, .35); border-radius: 8px; background: rgba(255, 250, 242, .5); }
+label.vestimenta-sintonizado[hidden] { display: none !important; }
+.vestimenta-editor-acoes { margin-top: 16px; }
+.vestimenta-selecao-modal .magia-selecao-filtros { grid-template-columns: minmax(130px, .7fr) minmax(180px, 1.3fr); }
+.vestimenta-selecao-modal .armadura-selecao-status { margin: 8px 0 12px; font-size: 12px; opacity: .8; }
+.vestimenta-selecao-modal .magia-selecao-conteudo { flex: 1 1 auto; }
+.vestimenta-selecao-modal .magia-selecao-detalhes { padding: 0 2px 4px; }
+.vestimenta-selecao-previa { width: 100%; box-sizing: border-box; }
+.vestimenta-selecao-previa .armadura-detalhe-titulo { flex: 1 1 150px; min-width: 0; }
+.vestimenta-selecao-previa .armadura-detalhe-titulo > .magia-card-detalhe-nome { min-width: 0; overflow-wrap: anywhere; }
+.vestimenta-selecao-previa .armadura-previa-categoria { justify-self: start; margin: 0; }
+.vestimenta-selecao-previa .vestimenta-selecao-valores { margin: 10px 0; }
+.vestimenta-selecao-modal .magia-selecao-item { min-width: 0; }
+.vestimenta-selecao-modal .magia-selecao-item strong { min-width: 0; overflow-wrap: anywhere; }
+.vestimenta-selecao-modal .magia-selecao-item span { flex: 0 0 auto; max-width: 58%; white-space: normal; }
+@media (max-width: 640px) { .vestimenta-editor { padding: 14px; } .vestimenta-editor-campos { grid-template-columns: 1fr; } .vestimenta-editor-campos .armadura-editor-completo { grid-column: 1; } .vestimenta-vantagens > div { grid-template-columns: repeat(2, minmax(0, 1fr)); } .vestimenta-selecao-modal .magia-selecao-filtros { grid-template-columns: repeat(2, minmax(0, 1fr)); } .vestimenta-selecao-modal .magia-selecao-conteudo { display: flex; flex-direction: column; overflow-y: auto; } .vestimenta-selecao-modal .magia-selecao-lista { flex: 0 0 160px; } .vestimenta-selecao-modal .magia-selecao-item span { max-width: 52%; font-size: 10px; } .vestimenta-selecao-previa .magia-card-detalhe-header { align-items: flex-start; flex-wrap: wrap; } }
+@media (max-width: 420px) {
+  .vestimenta-selecao-modal .magia-selecao-filtros { grid-template-columns: minmax(0, 1fr); }
+  .vestimenta-selecao-modal .magia-selecao-item { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .vestimenta-selecao-modal .magia-selecao-item span { max-width: 100%; text-align: left; }
+}
 .escudo-abrir.magia-item { grid-template-columns: minmax(0, 1fr); width: 100%; padding: 9px 10px; overflow: hidden; }
 .escudo-abrir .armadura-cartao-info { width: 100%; }
 .escudo-abrir .armadura-cartao-rodape { flex-wrap: wrap; gap: 5px 10px; }
 .escudo-abrir .armadura-cartao-meta { max-width: 100%; white-space: normal; text-align: right; overflow-wrap: anywhere; }
 .escudo-cartao-ca { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 2px; min-width: 0; }
+.escudo-cartao-ca[hidden] { display: none !important; }
 .escudo-cartao-ca-rotulo { color: #756b60; font-size: 10px; font-weight: 500; }
 .escudo-cartao-ca .armadura-cartao-ca { font-size: 20px; line-height: 1; }
 .escudo-cartao-tags { display: inline-flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
@@ -322,8 +363,8 @@ body.tema-classico #listaArmas > .item-card > .arma-resumo { background: linear-
 .arma-editor-propriedades-lista input { flex: 0 0 auto; }
 .arma-editor-municao select { min-height: 38px; padding: 8px; border: 1px solid #bda68c; border-radius: 7px; background: var(--modal-bg); color: inherit; font: inherit; }
 .arma-modal .magia-modal-titulo { overflow-wrap: anywhere; }
-.arma-modal .magia-modal-topo > .armadura-editor-flags { display: flex; flex: 0 0 auto; align-items: center; gap: 12px; margin: 0 0 0 auto; padding: 9px 12px; border: 1px solid rgba(139, 69, 19, .48); border-radius: 9px; background: linear-gradient(145deg, #fff8e9, #ead8b8); box-shadow: inset 0 1px rgba(255,255,255,.9), 0 2px 6px rgba(76,50,21,.18); color: #603711; font-weight: 700; }
-.arma-modal .magia-modal-topo > .armadura-editor-flags label { white-space: nowrap; }
+.magia-modal-topo > .armadura-editor-flags { display: flex; flex: 0 0 auto; align-items: center; gap: 12px; margin: 0 0 0 auto; padding: 9px 12px; border: 1px solid rgba(139, 69, 19, .48); border-radius: 9px; background: linear-gradient(145deg, #fff8e9, #ead8b8); box-shadow: inset 0 1px rgba(255,255,255,.9), 0 2px 6px rgba(76,50,21,.18); color: #603711; font-weight: 700; }
+.magia-modal-topo > .armadura-editor-flags label { white-space: nowrap; }
 @media (max-width: 640px) {
   .arma-selecao-modal .magia-selecao-filtros { grid-template-columns: 1fr; }
   .arma-selecao-modal .magia-selecao-conteudo { display: flex; flex-direction: column; overflow-y: auto; }
@@ -338,7 +379,7 @@ body.tema-classico #listaArmas > .item-card > .arma-resumo { background: linear-
   .arma-editor-identificacao { grid-template-columns: 1fr; }
   .arma-editor-propriedades-lista { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .arma-editor-propriedades-lista label { overflow-wrap: anywhere; }
-  .arma-modal .magia-modal-topo > .armadura-editor-flags { align-self: flex-end; flex-wrap: wrap; justify-content: flex-end; max-width: 100%; box-sizing: border-box; }
+  .magia-modal-topo > .armadura-editor-flags { align-self: flex-end; flex-wrap: wrap; justify-content: flex-end; max-width: 100%; box-sizing: border-box; }
 }
 
 /* Viewports baixos em paisagem: manter espaço para percorrer a lista e os detalhes. */

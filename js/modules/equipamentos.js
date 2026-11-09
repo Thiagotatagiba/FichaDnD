@@ -204,6 +204,7 @@
         renderizarArmadurasEquipamento(coletarArmaduras());
         renderizarEscudosEquipamento(coletarEscudos());
         if (typeof atualizarResumosEscudos === "function") atualizarResumosEscudos(coletarEscudos());
+        if (typeof atualizarResumosVestimentas === "function") atualizarResumosVestimentas();
         renderizarOutrosEquipamento(coletarOutros());
         atualizarTodasMunicoesArmas();
         atualizarSelectNomeArmaduraEquipada(
@@ -714,6 +715,7 @@
         selecionadoPorPadrao = null,
         aoAlterarSelecao = null,
         preservarSelecaoAtual = true,
+        indicePersistido = null,
       }) {
         const container = document.getElementById(containerId);
         if (!container) return;
@@ -725,6 +727,7 @@
 
         itens.forEach((item, index) => {
           if (filtroItem && !filtroItem(item)) return;
+          const indiceItem = typeof indicePersistido === "function" ? indicePersistido(item, index) : index;
 
           const { linha1, linha2, proficiente } = formatarItem(item);
 
@@ -739,16 +742,16 @@
           const input = document.createElement("input");
           input.type = inputType;
           if (inputName) input.name = inputName;
-          input.dataset.index = String(index);
+          input.dataset.index = String(indiceItem);
           input.setAttribute("aria-label", ariaLabel);
           const jaEstavaSelecionado =
             preservarSelecaoAtual &&
             (multiplo
-              ? selecionados.includes(String(index))
-              : selecionados[0] === String(index));
+              ? selecionados.includes(String(indiceItem))
+              : selecionados[0] === String(indiceItem));
           const marcarPorPadrao =
             !jaEstavaSelecionado && typeof selecionadoPorPadrao === "function"
-              ? !!selecionadoPorPadrao(item, index)
+              ? !!selecionadoPorPadrao(item, indiceItem)
               : false;
           input.checked = jaEstavaSelecionado || marcarPorPadrao;
           input.addEventListener("change", () => {
@@ -773,9 +776,9 @@
               const selectSecundario = document.getElementById("arma2Nome");
               if (selectSecundario) {
                 if (input.checked) {
-                  selectSecundario.value = criarValorSlotEscudo(index);
+                  selectSecundario.value = criarValorSlotEscudo(indiceItem);
                 } else if (
-                  extrairIndiceSlotEscudo(selectSecundario.value) === index
+                  extrairIndiceSlotEscudo(selectSecundario.value) === indiceItem
                 ) {
                   selectSecundario.value = "";
                 }
@@ -783,7 +786,7 @@
             }
 
             if (typeof aoAlterarSelecao === "function") {
-              aoAlterarSelecao({ input, item, index, containerId });
+              aoAlterarSelecao({ input, item, index: indiceItem, containerId });
             }
 
             sincronizarEquipamentosCombate();
@@ -848,8 +851,9 @@
           inputType: "checkbox",
           inputName: "equipamento-escudo",
           ariaLabel: "Selecionar escudo para equipamento",
-          filtroItem: (escudo) => !!escudo?.escudo_nome?.trim(),
+          filtroItem: (escudo) => escudo?.escudo_tipo === "Escudo" && !!escudo?.escudo_nome?.trim(),
           maxSelecoes: 1,
+          indicePersistido: (_escudo, index) => index,
         });
       }
 
@@ -2128,9 +2132,13 @@
           (soma, outro) => soma + normalizarBonusCA(outro.outro_ca),
           0,
         );
+        const bonusVestimentasEquipadas = escudos
+          .filter(item => item.escudo_tipo === "Vestuario" && item.escudo_equipado === "true")
+          .reduce((soma, item) => soma + normalizarBonusCA(item.escudo_ca), 0);
 
         preencherCampo("outroEquipadoTipo", tiposOutros.join(", "));
-        preencherCampo("outroEquipadoCA", bonusOutros ? `+${bonusOutros}` : "");
+        const bonusCAAdicional = bonusOutros + bonusVestimentasEquipadas;
+        preencherCampo("outroEquipadoCA", bonusCAAdicional ? `+${bonusCAAdicional}` : "");
         atualizarListaPocoesEquipadas(outrosSelecionados);
 
         ["armaduraCA", "outroEquipadoCA", "escudoCA"].forEach(aplicarFormatoCA);

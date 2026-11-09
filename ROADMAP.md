@@ -154,6 +154,15 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - **Escudos — correções e validação integrada:** cards adicionados pelo catálogo agora têm o botão de detalhes funcional. Equipar/desequipar sincroniza o checkbox usando o índice real do item e atualiza a CA. Excluir um escudo equipado limpa o slot e recalcula a CA. Os fluxos foram conferidos em 390 × 844. Seletor desktop conferido em 1280 × 800, sem overflow geométrico.
 - **Pendências:** concluir fluxos integrados de adicionar/remover para armadura e arma; validar teclado, foco, safe areas e aparelho físico. A tarefa permanece em andamento até registrar os critérios restantes no plano.
 
+### Vestimentas e acessórios — estrutura e consistência do inventário (Fase 4)
+
+- **Estado:** implementação do catálogo e dos ajustes de consistência concluída para o escopo solicitado; validação automatizada ampla e revisão manual completa de todos os fluxos continuam pendentes.
+- **Implementado:** catálogo de itens comuns em JSON; cadastro, visualização e edição; categorias; tags de raridade, item mágico e sintonização; resumo com bônus de CA apenas quando diferente de zero; preço e peso; vantagem em perícias mantida como dado visual, sem aplicar mecânica ao personagem.
+- **Integridade:** validação do catálogo e prevenção de rascunhos vazios ao cancelar; exclusão atualiza o peso carregado; todos os pesos desta categoria são arredondados e exibidos com uma casa decimal.
+- **Interação e responsividade:** clique no fundo deixa de fechar os modais da ficha; fechamento permanece por controles explícitos e teclado onde disponível. Navegação por teclado/foco foi reforçada nos modais de vestimentas. Filtros do catálogo empilham em telas estreitas.
+- **Validação executada em 2026-11-09:** `node --check` em todos os módulos JavaScript e `git diff --check`; página de teste no navegador confirmou filtro de categoria, pesos com uma casa decimal, fundo sem fechar o seletor e cancelamento de criação sem deixar item vazio.
+- **Pendências:** validar editar/salvar/cancelar, exclusão e recálculo de carga com dados de teste; percorrer leitores de tela e viewports móveis; considerar testes automatizados de catálogo e persistência. Mecânica de vantagens fica adiada até a criação do sistema de vantagens da ficha.
+
 ### Tarefa concluída — fluxo dos modais de XP e Level Up
 
 **Estado geral:** Concluído para o escopo pontual abaixo. A Fase 3 continua em andamento como direção de longo prazo; esta tarefa não conclui a fase.

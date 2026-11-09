@@ -153,9 +153,6 @@ function montarModalSelecaoArmadura() {
     const card = adicionarNovaArmadura();
     abrirModalArmadura(card, true);
   };
-  overlay.addEventListener("click", evento => {
-    if (evento.target === overlay) fecharModalSelecaoArmadura();
-  });
   overlay.querySelectorAll("select, input").forEach(campo => campo.addEventListener(
     campo.type === "search" ? "input" : "change", renderizarCatalogoArmaduras));
   overlay.addEventListener("keydown", evento => {
@@ -474,10 +471,6 @@ function montarModalArmadura() {
     evento.preventDefault();
     salvarModalArmadura();
   };
-  overlay.addEventListener("click", evento => {
-    evento.stopPropagation();
-    if (evento.target === overlay) fecharModalArmadura();
-  });
   overlay.addEventListener("keydown", evento => {
     if (evento.key === "Escape") { evento.preventDefault(); evento.stopPropagation(); fecharModalArmadura(); }
     focarModalArmadura(overlay, evento);
@@ -485,7 +478,7 @@ function montarModalArmadura() {
 }
 
 function retratoEditorArmadura() {
-  return JSON.stringify([...document.querySelectorAll("#armaduraModalFormulario [data-editor-campo], #armaduraModalFormulario [data-editor-flag]")]
+  return JSON.stringify([...document.querySelectorAll("#armaduraModalFormulario [data-editor-campo], #armaduraModalOverlay [data-editor-flag]")]
     .map(campo => campo.type === "checkbox" ? campo.checked : campo.value));
 }
 
@@ -528,8 +521,11 @@ function renderizarModalArmadura() {
   visualizacao.replaceChildren(renderizarDetalhesArmadura(dados, null, !card.querySelector(".item-proficiencia").classList.contains("nao")));
   visualizacao.hidden = false;
   const form = document.getElementById("armaduraModalFormulario");
+  const flags = document.querySelector("#armaduraModalOverlay .armadura-editor-flags");
+  if (flags && flags.parentElement !== form) form.append(flags);
   form.hidden = true; form.style.display = "none";
   const overlay = document.getElementById("armaduraModalOverlay");
+  overlay.querySelector('[data-acao="fechar"]').hidden = false;
   overlay.querySelector('[data-acao="editar"]').hidden = false;
   const equipar = overlay.querySelector('[data-acao="equipar"]');
   equipar.hidden = false; equipar.textContent = dados.equipada ? "Desequipar" : "Equipar";
@@ -591,9 +587,11 @@ function editarModalArmadura() {
   };
   form.querySelector('[data-acao="restaurar"]').hidden = !card.dataset.catalogoId;
   form.hidden = false; form.style.display = "block";
+  document.querySelector("#armaduraModalOverlay .magia-modal-topo").append(flags);
   document.getElementById("armaduraModalVisualizacao").hidden = true;
   document.querySelector('#armaduraModalOverlay [data-acao="editar"]').hidden = true;
   document.querySelector('#armaduraModalOverlay [data-acao="equipar"]').hidden = true;
+  document.querySelector('#armaduraModalOverlay [data-acao="fechar"]').hidden = true;
   estadoModalArmadura.editando = true;
   estadoModalArmadura.original = retratoEditorArmadura();
   form.querySelector('[data-editor-campo="armadura_nome"]').focus();
@@ -606,9 +604,9 @@ function salvarModalArmadura() {
   form.querySelectorAll("[data-editor-campo]").forEach(campo => {
     card.querySelector('[data-campo="' + campo.dataset.editorCampo + '"]').value = campo.value;
   });
-  card.querySelector(".item-flag-magico").checked = form.querySelector('[data-editor-flag="magico"]').checked;
-  card.querySelector(".item-flag-sintonizado").checked = form.querySelector('[data-editor-flag="sintonizado"]').checked;
-  const proficiente = form.querySelector('[data-editor-flag="proficiente"]').checked;
+  card.querySelector(".item-flag-magico").checked = document.querySelector('#armaduraModalOverlay [data-editor-flag="magico"]').checked;
+  card.querySelector(".item-flag-sintonizado").checked = document.querySelector('#armaduraModalOverlay [data-editor-flag="sintonizado"]').checked;
+  const proficiente = document.querySelector('#armaduraModalOverlay [data-editor-flag="proficiente"]').checked;
   const indicador = card.querySelector(".item-proficiencia");
   indicador.classList.toggle("nao", !proficiente); indicador.classList.toggle("ativo", proficiente);
   atualizarCamposMagicosItem(card);

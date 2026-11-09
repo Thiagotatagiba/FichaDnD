@@ -1,8 +1,196 @@
 {
   "versaoSchema": 1,
-  "versaoCatalogo": 1,
+  "versaoCatalogo": 2,
   "sistema": "dnd5e-2014",
-  "status": "em-construcao",
+  "status": "ativo",
   "unidadePeso": "kg",
-  "itens": []
+  "itens": [
+    {
+      "id": "roupas-comuns",
+      "nome": "Roupas Comuns",
+      "categoria": "Vestuário",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Conjunto simples de roupas para o uso cotidiano. Item inicial comum em vários antecedentes.",
+      "valorPO": 0.5,
+      "pesoKg": 1.4
+    },
+    {
+      "id": "roupas-finas",
+      "nome": "Roupas Finas",
+      "categoria": "Vestuário",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Conjunto de roupas elegantes, feito com tecidos de boa qualidade. Aparece, por exemplo, nos equipamentos iniciais do Nobre e do Diplomata.",
+      "valorPO": 15,
+      "pesoKg": 2.7
+    },
+    {
+      "id": "traje-de-fantasia",
+      "nome": "Traje de Fantasia",
+      "categoria": "Vestuário",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Traje elaborado ou chamativo, usado em apresentações e ocasiões especiais. O antecedente Artista começa com um traje desse tipo.",
+      "valorPO": 5,
+      "pesoKg": 1.8
+    },
+    {
+      "id": "roupas-de-viajante",
+      "nome": "Roupas de Viajante",
+      "categoria": "Vestuário",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Conjunto prático para viagens e atividades ao ar livre.",
+      "valorPO": 2,
+      "pesoKg": 1.8
+    },
+    {
+      "id": "vestes-religiosas",
+      "nome": "Vestes Religiosas",
+      "categoria": "Vestuário",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Vestes usadas em cerimônias e serviços religiosos; aparecem no equipamento inicial do Acólito. Para preço e peso, usa como referência as vestes (robes) da lista de equipamento.",
+      "valorPO": 1,
+      "pesoKg": 1.8
+    },
+    {
+      "id": "anel-de-sinete",
+      "nome": "Anel de Sinete",
+      "categoria": "Anel",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Anel gravado com um brasão ou símbolo de identificação. Faz parte do equipamento inicial do Nobre.",
+      "valorPO": 5,
+      "pesoKg": 0
+    },
+    {
+      "id": "amuleto-simbolo-sagrado",
+      "nome": "Amuleto do Símbolo Sagrado",
+      "categoria": "Colar",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Amuleto com o símbolo de uma divindade ou panteão. Clérigos e paladinos podem receber um símbolo sagrado como equipamento inicial; para esta versão vestível, o formato é um amuleto.",
+      "valorPO": 5,
+      "pesoKg": 0.5
+    },
+    {
+      "id": "insignia-de-patente",
+      "nome": "Insígnia de Patente",
+      "categoria": "Outro acessório",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Marca que representa a patente ou posição militar do personagem. Item inicial do antecedente Soldado; o livro não define preço ou peso próprios.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "chapeu-de-palha",
+      "nome": "Chapéu de Palha",
+      "categoria": "Chapéu ou capacete",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Chapéu simples de palha, útil para proteger do sol. Exemplo personalizável; preço e peso ficam em zero até serem definidos.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "tunica",
+      "nome": "Túnica",
+      "categoria": "Vestuário",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Peça simples de roupa para o uso cotidiano. Item genérico para personalizar; preço e peso ficam em zero até serem definidos.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "colar-comum",
+      "nome": "Colar Comum",
+      "categoria": "Colar",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Colar simples e personalizável. O livro não fixa um modelo, preço ou peso para este item genérico.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "anel-comum",
+      "nome": "Anel Comum",
+      "categoria": "Anel",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Anel simples e personalizável. O livro não fixa um modelo, preço ou peso para este item genérico.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "chapeu-comum",
+      "nome": "Chapéu Comum",
+      "categoria": "Chapéu ou capacete",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Chapéu simples e personalizável. O livro não fixa um modelo, preço ou peso para este item genérico.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "botas-comuns",
+      "nome": "Botas Comuns",
+      "categoria": "Calçado",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Par de botas simples e personalizável. O livro não fixa modelo, preço ou peso para este item genérico.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "sapatos-comuns",
+      "nome": "Sapatos Comuns",
+      "categoria": "Calçado",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Par de sapatos simples e personalizável. O livro não fixa modelo, preço ou peso para este item genérico.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "cinto-comum",
+      "nome": "Cinto Comum",
+      "categoria": "Outro acessório",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Cinto simples e personalizável. O livro não fixa modelo, preço ou peso para este item genérico.",
+      "valorPO": 0,
+      "pesoKg": 0
+    },
+    {
+      "id": "luvas-comuns",
+      "nome": "Luvas Comuns",
+      "categoria": "Outro acessório",
+      "raridade": "comum",
+      "caBonus": 0,
+      "vantagensPericias": [],
+      "descricao": "Par de luvas simples e personalizável. O livro não fixa modelo, preço ou peso para este item genérico.",
+      "valorPO": 0,
+      "pesoKg": 0
+    }
+  ]
 }

@@ -210,7 +210,6 @@ function montarModalSelecaoArma() {
     fecharModalSelecaoArma();
     abrirModalArma(adicionarNovaArma(), true);
   };
-  overlay.addEventListener("click", e => { if (e.target === overlay) fecharModalSelecaoArma(); });
   overlay.querySelectorAll("select,input").forEach(campo => campo.addEventListener(campo.type === "search" ? "input" : "change", renderizarCatalogoArmas));
   overlay.addEventListener("keydown", e => {
     if (e.key === "Escape") { e.preventDefault(); fecharModalSelecaoArma(); }
@@ -312,8 +311,6 @@ function renderizarDetalhesArma(item, aoAdicionar = null, card = null) {
     const textoModo = item.modo === "distancia" ? "Distância" : "Corpo a corpo";
     tags.append(adicionarDicaArma(criarElementoArma("span", textoModo, "magia-card-detalhe-tag"), dicaCaracteristicaArma("modo", item.modo)));
   }
-  if (item.magico) tags.append(adicionarDicaArma(criarElementoArma("span", "Item mágico", "magia-card-detalhe-tag"), dicaCaracteristicaArma("magico")));
-  if (item.sintonizado) tags.append(adicionarDicaArma(criarElementoArma("span", "Sintonizada", "magia-card-detalhe-tag"), dicaCaracteristicaArma("sintonizado")));
   const desc = criarElementoArma("section", undefined, "armadura-descricao");
   desc.append(criarElementoArma("h4", "Descrição"), criarElementoArma("p", item.descricao || "Nenhuma descrição cadastrada."));
   container.append(header, resumo, tags);
@@ -486,7 +483,6 @@ function montarModalArma() {
   overlay.querySelector('[data-acao="cancelar"]').onclick=()=>{if(!confirmarDescarteArma())return;renderizarModalArma();overlay.querySelector('[data-acao="editar"]').focus();};
   overlay.querySelector('[data-acao="excluir"]').onclick=()=>{const card=estadoModalArma.card;card.querySelector(".btn-remover-item")?.click();if(!card.isConnected)fecharModalArma(true);};
   overlay.querySelector("form").onsubmit=e=>{e.preventDefault();salvarModalArma();};
-  overlay.addEventListener("click",e=>{e.stopPropagation();if(e.target===overlay)fecharModalArma();});
   overlay.addEventListener("keydown",e=>{if(e.key==="Escape"){e.preventDefault();fecharModalArma();}if(e.key!=="Tab")return;const f=[...overlay.querySelectorAll("button,input,select,textarea")].filter(el=>!el.disabled&&el.getClientRects().length);if(e.shiftKey&&document.activeElement===f[0]){e.preventDefault();f.at(-1)?.focus();}else if(!e.shiftKey&&document.activeElement===f.at(-1)){e.preventDefault();f[0]?.focus();}});
 }
 

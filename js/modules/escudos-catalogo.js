@@ -134,9 +134,6 @@ function montarModalSelecaoEscudo() {
     fecharModalSelecaoEscudo();
     abrirModalEscudo(adicionarNovoEscudo("Escudo"), true);
   };
-  overlay.addEventListener("click", evento => {
-    if (evento.target === overlay) fecharModalSelecaoEscudo();
-  });
   overlay.querySelector("input[type=search]").addEventListener("input", renderizarCatalogoEscudos);
   overlay.querySelector("#escudoSelecaoProficiencia").addEventListener("change", renderizarCatalogoEscudos);
   overlay.addEventListener("keydown", evento => {
@@ -247,7 +244,7 @@ function renderizarDetalhesEscudo(item, aoAdicionar = null, proficiente = null, 
   });
   resumoSuperior.append(valores);
   const condicoes = criarElementoEscudo("div", undefined, "armadura-condicoes escudo-condicoes");
-  [["Força mínima", "Nenhuma"], ["Furtividade", item.desvantagemFurtividade ? "Desvantagem" : "Normal"]].forEach(([rotulo, valor]) => {
+  [["Força mínima", "Nenhuma"]].forEach(([rotulo, valor]) => {
     const condicao = criarElementoEscudo("div", undefined, "armadura-condicao");
     condicao.append(criarElementoEscudo("span", rotulo, "armadura-condicao-rotulo"),
       criarElementoEscudo("strong", valor, "armadura-condicao-valor")); condicoes.append(condicao);
@@ -405,7 +402,6 @@ function montarModalEscudo() {
     if (!card.isConnected) fecharModalEscudo(true);
   };
   overlay.querySelector("form").onsubmit = evento => { evento.preventDefault(); salvarModalEscudo(); };
-  overlay.addEventListener("click", evento => { evento.stopPropagation(); if (evento.target === overlay) fecharModalEscudo(); });
   overlay.addEventListener("keydown", evento => {
     if (evento.key === "Escape") { evento.preventDefault(); evento.stopPropagation(); fecharModalEscudo(); }
     if (evento.key !== "Tab") return;
@@ -437,6 +433,8 @@ function renderizarModalEscudo() {
   document.getElementById("escudoModalVisualizacao").replaceChildren(
     renderizarDetalhesEscudo(item, null, !card.querySelector(".item-proficiencia")?.classList.contains("nao"), item.empunhado));
   const formulario = document.getElementById("escudoModalFormulario"); formulario.hidden = true; formulario.style.display = "none";
+  const flags = document.querySelector("#escudoModalOverlay .armadura-editor-flags"); if (flags && flags.parentElement !== formulario) formulario.append(flags);
+  document.querySelector('#escudoModalOverlay [data-acao="fechar"]').hidden = false;
   document.getElementById("escudoModalVisualizacao").hidden = false;
   const empunhar = document.querySelector('#escudoModalOverlay [data-acao="empunhar"]');
   empunhar.textContent = item.empunhado ? "Desequipar" : "Equipar";
@@ -496,9 +494,11 @@ function editarModalEscudo() {
   checkboxMagico.onchange = () => { checkboxSintonizado.disabled = !checkboxMagico.checked; if (!checkboxMagico.checked) checkboxSintonizado.checked = false; };
   form.querySelector('[data-acao="restaurar"]').hidden = !card.dataset.catalogoEscudoId;
   form.hidden = false; form.style.display = "block";
+  document.querySelector("#escudoModalOverlay .magia-modal-topo").append(flags);
   document.getElementById("escudoModalVisualizacao").hidden = true;
   document.querySelector('#escudoModalOverlay [data-acao="editar"]').hidden = true;
   document.querySelector('#escudoModalOverlay [data-acao="empunhar"]').hidden = true;
+  document.querySelector('#escudoModalOverlay [data-acao="fechar"]').hidden = true;
   estadoModalEscudo.editando = true;
   estadoModalEscudo.retrato = retratoFormularioEscudo(form);
   form.querySelector('[data-editor-campo="escudo_nome"]').focus();
@@ -507,7 +507,7 @@ function editarModalEscudo() {
 function retratoFormularioEscudo(form) {
   return JSON.stringify({
     campos: [...form.querySelectorAll("[data-editor-campo]")].map(campo => campo.value),
-    flags: [...form.querySelectorAll("[data-editor-flag]")].map(campo => campo.checked),
+    flags: [...document.querySelectorAll("#escudoModalOverlay [data-editor-flag]")].map(campo => campo.checked),
   });
 }
 
@@ -527,9 +527,9 @@ function salvarModalEscudo() {
     const controle = card.querySelector('[data-campo="' + campo.dataset.editorCampo + '"]');
     if (controle) controle.value = campo.value;
   });
-  card.querySelector(".item-flag-magico").checked = form.querySelector('[data-editor-flag="magico"]').checked;
-  card.querySelector(".item-flag-sintonizado").checked = form.querySelector('[data-editor-flag="sintonizado"]').checked;
-  const proficiente = form.querySelector('[data-editor-flag="proficiente"]').checked;
+  card.querySelector(".item-flag-magico").checked = document.querySelector('#escudoModalOverlay [data-editor-flag="magico"]').checked;
+  card.querySelector(".item-flag-sintonizado").checked = document.querySelector('#escudoModalOverlay [data-editor-flag="sintonizado"]').checked;
+  const proficiente = document.querySelector('#escudoModalOverlay [data-editor-flag="proficiente"]').checked;
   card.querySelector(".item-proficiencia").classList.toggle("nao", !proficiente);
   card.querySelector(".item-proficiencia").classList.toggle("ativo", proficiente);
   atualizarCamposMagicosItem(card); atualizarPesoAtualInventario(); atualizarListaArmasEquipamento();

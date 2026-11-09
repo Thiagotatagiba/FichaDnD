@@ -96,9 +96,6 @@ function inicializarSeletorCondicoes() {
       personalizada.value = "";
       atualizarCampo();
     });
-  overlay.addEventListener("click", (evento) => {
-    if (evento.target === overlay) fechar();
-  });
   document.addEventListener("keydown", (evento) => {
     if (evento.key === "Escape" && overlay.style.display === "flex") fechar();
   });
@@ -2035,10 +2032,6 @@ function inicializarModalSalvaguardaMorte() {
   });
   abrirBotao.addEventListener("click", () => {
     overlay.dataset.salvaguarda = "true";
-  });
-  overlay.addEventListener("click", (evento) => {
-    if (evento.target === overlay && overlay.dataset.salvaguarda === "true")
-      fechar();
   });
   document.addEventListener("keydown", (evento) => {
     if (evento.key === "Escape" && overlay.dataset.salvaguarda === "true")

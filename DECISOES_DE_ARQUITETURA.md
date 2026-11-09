@@ -117,3 +117,17 @@ A única personalização aprovada é o multiplicador da capacidade de carga, po
 - Futuramente, o usuário poderá alterar o multiplicador nas configurações; essa preferência deverá ser persistida e restaurada, e a capacidade deverá ser recalculada quando a Força ou o multiplicador mudar.
 - O limite para erguer, arrastar e puxar permanece independente e segue a regra do Livro do Jogador: Força × 15 kg.
 - Alterar o multiplicador configurável afeta exclusivamente a capacidade de carga e não modifica nenhuma outra regra do jogo.
+
+## 10. Convenções de interação e apresentação do inventário
+
+### Modais não fecham por clique no fundo
+
+Clique no overlay/fundo de um modal não deve fechá-lo. O usuário fecha o diálogo por uma ação explícita (por exemplo, Fechar ou Cancelar) ou pelo teclado quando o modal oferece esse comportamento. Isso evita perda acidental de edições e mantém um comportamento previsível entre categorias. Novos modais devem seguir esta convenção; ao alterar um modal existente, preservar seus controles explícitos de saída e o descarte seguro de alterações.
+
+### Precisão visual de peso de vestimentas
+
+Pesos de vestimentas e acessórios são normalizados e exibidos com exatamente uma casa decimal em quilogramas, usando vírgula na apresentação local (por exemplo, `2,7 kg` e `0,0 kg`). A normalização visual não cria precisão adicional nem altera a regra de capacidade de carga.
+
+### Catálogo de vestimentas sem efeitos de regra não implementados
+
+Dados de bônus ou vantagens associados a um item só devem alterar cálculos quando a regra correspondente existir e estiver aprovada. Até lá, as seleções de vantagem em vestimentas são apenas dados de cadastro/apresentação e não concedem vantagem automaticamente em testes.
