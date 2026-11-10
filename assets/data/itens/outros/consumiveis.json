@@ -1,0 +1,30 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "rascunho-para-revisao",
+  "unidadePeso": "kg",
+  "observacaoPeso": "Pesos em kg usam a convenção já documentada no projeto de 0,5 kg por libra. Peso indicado como traço no livro é null, não zero.",
+  "fontes": ["https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment"],
+  "itens": [
+    {"id":"acido-frasco","tipo":"consumivel","nome":"Ácido (frasco)","raridade":"comum","descricao":"Frasco de ácido usado como arma improvisada; consulte as regras do item antes do uso.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":25,"moeda":"po"},"pesoKg":0.5},
+    {"id":"fogo-alquimico-frasco","tipo":"consumivel","nome":"Fogo alquímico (frasco)","raridade":"comum","descricao":"Fluido adesivo que se inflama ao contato com o ar.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":50,"moeda":"po"},"pesoKg":0.5},
+    {"id":"antitoxina-frasco","tipo":"consumivel","nome":"Antitoxina (frasco)","raridade":"comum","descricao":"Líquido que concede vantagem em salvaguardas contra veneno por 1 hora.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":50,"moeda":"po"},"pesoKg":null},
+    {"id":"esferas-metalicas-1000","tipo":"consumivel","nome":"Esferas metálicas (bolsa de 1.000)","raridade":"comum","descricao":"Pequenas esferas que podem cobrir uma área de 3 m² e dificultar a passagem.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":1,"moeda":"po"},"pesoKg":1},
+    {"id":"estrepes-20","tipo":"consumivel","nome":"Estrepes (bolsa de 20)","raridade":"comum","descricao":"Peças pontiagudas espalhadas no chão para ferir e deter criaturas que atravessam a área.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":1,"moeda":"po"},"pesoKg":1},
+    {"id":"vela","tipo":"consumivel","nome":"Vela","raridade":"comum","descricao":"Ilumina por até 1 hora.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":1,"moeda":"pc"},"pesoKg":null},
+    {"id":"oleo-frasco","tipo":"consumivel","nome":"Óleo (frasco)","raridade":"comum","descricao":"Frasco de óleo inflamável, também útil para iluminação.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":1,"moeda":"pp"},"pesoKg":0.5},
+    {"id":"veneno-basico-frasco","tipo":"consumivel","nome":"Veneno básico (frasco)","raridade":"comum","descricao":"Veneno que pode ser aplicado a uma arma cortante ou perfurante ou a até três munições.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":100,"moeda":"po"},"pesoKg":null},
+    {"id":"racoes-dia","tipo":"consumivel","nome":"Rações (1 dia)","raridade":"comum","descricao":"Alimentos secos para viagem, como carne seca, frutas secas, pão duro e castanhas.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":5,"moeda":"pp"},"pesoKg":1},
+    {"id":"agua-benta-frasco","tipo":"consumivel","nome":"Água benta (frasco)","raridade":"comum","descricao":"Frasco consagrado que pode ser lançado contra criaturas do tipo ínfero ou morto-vivo; não é classificado como item mágico na tabela de equipamento.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":25,"moeda":"po"},"pesoKg":0.5},
+    {"id":"giz","tipo":"consumivel","nome":"Giz (1 peça)","raridade":"comum","descricao":"Pedaço de giz para fazer marcações.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":1,"moeda":"pc"},"pesoKg":null},
+    {"id":"tinta-frasco-30ml","tipo":"consumivel","nome":"Tinta (frasco de 30 ml)","raridade":"comum","descricao":"Frasco de tinta para escrita e desenho.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":10,"moeda":"po"},"pesoKg":null},
+    {"id":"papel-folha","tipo":"consumivel","nome":"Papel (folha)","raridade":"comum","descricao":"Uma folha de papel para escrita ou desenho.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":2,"moeda":"pp"},"pesoKg":null},
+    {"id":"pergaminho-folha","tipo":"consumivel","nome":"Pergaminho (folha)","raridade":"comum","descricao":"Uma folha de pergaminho para escrita ou desenho.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":1,"moeda":"pp"},"pesoKg":null},
+    {"id":"perfume-frasco","tipo":"consumivel","nome":"Perfume (frasco)","raridade":"comum","descricao":"Pequeno frasco de perfume.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":5,"moeda":"po"},"pesoKg":null},
+    {"id":"lacre","tipo":"consumivel","nome":"Lacre","raridade":"comum","descricao":"Cera usada para selar cartas e documentos.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":5,"moeda":"pp"},"pesoKg":null},
+    {"id":"sabao","tipo":"consumivel","nome":"Sabão","raridade":"comum","descricao":"Barra de sabão para higiene e limpeza.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":2,"moeda":"pc"},"pesoKg":null},
+    {"id":"incenso-bloco","tipo":"consumivel","nome":"Incenso (bloco)","raridade":"comum","descricao":"Bloco de incenso aromático, incluído no Pacote de Sacerdote. O equipamento básico não informa valor ou peso avulso.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":null,"moeda":null},"pesoKg":null},
+    {"id":"tocha","tipo":"consumivel","nome":"Tocha","raridade":"comum","descricao":"Queima por 1 hora, iluminando em um raio de 6 m e mais 6 m de luz fraca.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":true,"custo":{"valor":1,"moeda":"pc"},"pesoKg":0.5}
+  ]
+}

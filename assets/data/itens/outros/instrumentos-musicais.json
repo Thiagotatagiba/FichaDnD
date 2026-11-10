@@ -1,0 +1,183 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "rascunho-para-revisao",
+  "unidadePeso": "kg",
+  "observacao": "Os instrumentos são uma categoria própria porque cada instrumento tem proficiência individual e instrumentos musicais podem servir como foco de conjuração para bardos. Pode ser usado como foco está representado como uma opção simples (sim/não). Nenhuma regra de ocupação das mãos em combate está ativa nesta etapa; isso fica para uma futura mecânica.",
+  "fontes": [
+    "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment"
+  ],
+  "itens": [
+    {
+      "id": "instrumento-gaita-de-fole",
+      "tipo": "instrumentos-musicais",
+      "nome": "Gaita de Fole",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-gaita-de-fole",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 30,
+        "moeda": "po"
+      },
+      "pesoKg": 3,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-tambor",
+      "tipo": "instrumentos-musicais",
+      "nome": "Tambor",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-tambor",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 6,
+        "moeda": "po"
+      },
+      "pesoKg": 1.5,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-flauta",
+      "tipo": "instrumentos-musicais",
+      "nome": "Flauta",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-flauta",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 2,
+        "moeda": "po"
+      },
+      "pesoKg": 0.5,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-alaude",
+      "tipo": "instrumentos-musicais",
+      "nome": "Alaúde",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-alaude",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 35,
+        "moeda": "po"
+      },
+      "pesoKg": 1,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-flauta-pan",
+      "tipo": "instrumentos-musicais",
+      "nome": "Flauta de Pã",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-flauta-pan",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 12,
+        "moeda": "po"
+      },
+      "pesoKg": 1,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-trompa",
+      "tipo": "instrumentos-musicais",
+      "nome": "Trompa",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-trompa",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 3,
+        "moeda": "po"
+      },
+      "pesoKg": 1,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-violino",
+      "tipo": "instrumentos-musicais",
+      "nome": "Violino",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-violino",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 30,
+        "moeda": "po"
+      },
+      "pesoKg": 0.5,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-dulcimer",
+      "tipo": "instrumentos-musicais",
+      "nome": "Dulcimer",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-dulcimer",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 25,
+        "moeda": "po"
+      },
+      "pesoKg": 5,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-lira",
+      "tipo": "instrumentos-musicais",
+      "nome": "Lira",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-lira",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 30,
+        "moeda": "po"
+      },
+      "pesoKg": 1,
+      "podeSerFocoArcano": true
+    },
+    {
+      "id": "instrumento-charamela",
+      "tipo": "instrumentos-musicais",
+      "nome": "Charamela",
+      "raridade": "comum",
+      "proficienciaId": "instrumento-charamela",
+      "descricao": "Instrumento musical; a proficiência é individual para este instrumento. Pode ser usado como foco de conjuração por um bardo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 2,
+        "moeda": "po"
+      },
+      "pesoKg": 0.5,
+      "podeSerFocoArcano": true
+    }
+  ]
+}

@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../css/modal.css" />
     <link rel="stylesheet" href="../css/responsivo.css" />
     <link rel="stylesheet" href="../css/xp-modal.css" />
-    <link rel="stylesheet" href="../css/armaduras.css?v=municoes-card-11" />
+    <link rel="stylesheet" href="../css/card-itens.css?v=card-itens-4" />
   </head>
 
   <body class="tema-padrao">
@@ -3852,7 +3852,7 @@
                 <div class="inventario-coluna">
                   <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
                     <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloOutros">
-                      <button type="button" class="armadura-titulo-icone" onclick="adicionarNovoOutro()" title="Adicionar novo item em outros" aria-label="Adicionar novo item em outros">
+                      <button type="button" class="armadura-titulo-icone" onclick="abrirSelecaoOutros()" title="Adicionar novo item em outros" aria-label="Adicionar novo item em outros">
                         <span class="armadura-titulo-emoji" aria-hidden="true">📦</span>
                         <span class="armadura-titulo-mais" aria-hidden="true">+</span>
                       </button>
@@ -3908,6 +3908,17 @@
                     </div>
 
                     <div class="item-tipo-emoji" style="display: none">📦</div>
+                    <input type="hidden" data-campo="outro_catalogo_tipo" value="">
+                    <input type="hidden" data-campo="outro_catalogo_id" value="">
+                    <input type="hidden" data-campo="outro_categoria" value="">
+                    <input type="hidden" data-campo="outro_raridade" value="comum">
+                    <input type="hidden" data-campo="outro_moeda" value="po">
+                    <input type="hidden" data-campo="outro_consumivel" value="false">
+                    <input type="hidden" data-campo="outro_quantidade_maxima" value="">
+                    <input type="hidden" data-campo="outro_proficiencia_id" value="">
+                    <input type="hidden" data-campo="outro_pode_ser_foco_arcano" value="">
+                    <input type="hidden" data-campo="outro_peso_definido" value="true">
+                    <input type="hidden" data-campo="outro_preco_definido" value="true">
                     <!-- Header do card -->
                     <div
                       class="item-linha item-linha-1 item-header"
@@ -3993,7 +4004,7 @@
                   <button
                     type="button"
                     class="inventario-botao-add inventario-botao-add-inferior"
-                    onclick="adicionarNovoOutro()"
+                    onclick="abrirSelecaoOutros()"
                   >
                     + novo item
                   </button>
@@ -4097,7 +4108,7 @@
     <!-- CLASSES / LEVEL UP -->
     <!-- ========================= -->
     <script src="../js/data/personagem-opcoes.js"></script>
-    <script src="../js/data/racas-subclasses.js"></script>
+    <script src="../js/data/racas-subclasses.js?v=outros-catalogo-1"></script>
 
     <!-- ========================= -->
     <!-- UTILITÁRIOS -->
@@ -4108,12 +4119,14 @@
     <!-- ========================= -->
     <!-- INVENTÁRIO / EQUIPAMENTOS -->
     <!-- ========================= -->
-    <script src="../js/modules/equipamentos.js?v=municoes-3"></script>
+    <script src="../js/modules/equipamentos.js?v=outros-catalogo-2"></script>
     <script src="../js/modules/municoes-catalogo.js?v=municoes-card-12"></script>
     <script src="../js/modules/armas-catalogo.js?v=municoes-3"></script>
     <script src="../js/modules/armaduras-catalogo.js?v=modal-backdrop-policy-1"></script>
     <script src="../js/modules/escudos-catalogo.js?v=modal-backdrop-policy-1"></script>
     <script src="../js/modules/vestimentas-catalogo.js?v=vestimentas-review-polish-1"></script>
+    <script src="../js/modules/outros-catalogo.js?v=outros-catalogo-5"></script>
+    <script src="../js/modules/ordenacao-itens.js?v=ordenacao-itens-1"></script>
 
     <!-- ========================= -->
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
@@ -4153,7 +4166,7 @@
     <!-- ========================= -->
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
     <!-- ========================= -->
-    <script src="../js/modules/importacao.js?v=municoes-3"></script>
+    <script src="../js/modules/importacao.js?v=outros-catalogo-2"></script>
     <script src="../js/modules/entrada-criacao.js"></script>
 
     <script>

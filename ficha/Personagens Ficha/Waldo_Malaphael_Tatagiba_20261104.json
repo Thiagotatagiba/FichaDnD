@@ -441,20 +441,39 @@
       "escudo_item_magico": false,
       "escudo_sintonizado": false,
       "proficiente": true
+    },
+    {
+      "escudo_preco": "15",
+      "escudo_peso": "3",
+      "escudo_nome": "Roupas Finas (conjunto)",
+      "escudo_raridade": "comum",
+      "escudo_categoria": "Vestuário",
+      "escudo_vantagens_pericias": "[]",
+      "escudo_equipado": "false",
+      "escudo_ca": "0",
+      "escudo_tipo": "Vestuario",
+      "escudo_descricao": "Vestuário elegante usado para aparentar status social elevado. Pode ajudar em interações sociais dependendo da situação.\n➡️ Origem: (Antecedente – Charlatão)",
+      "escudo_item_magico": false,
+      "escudo_sintonizado": false,
+      "proficiente": true
+    },
+    {
+      "escudo_preco": "5",
+      "escudo_peso": "0",
+      "escudo_nome": "Anel de Sinete de um duque imaginário",
+      "escudo_raridade": "comum",
+      "escudo_categoria": "Anel",
+      "escudo_vantagens_pericias": "[]",
+      "escudo_equipado": "false",
+      "escudo_ca": "0",
+      "escudo_tipo": "Vestuario",
+      "escudo_descricao": "Anel com brasão falso usado para fingir nobreza.\n\n➡️ Origem: (Antecedente – Charlatão)",
+      "escudo_item_magico": false,
+      "escudo_sintonizado": false,
+      "proficiente": true
     }
   ],
   "outros": [
-    {
-      "id": "id_1775477747744_393",
-      "outro_preco": "15",
-      "outro_peso": "3",
-      "outro_quantidade": "1",
-      "outro_nome": "Roupas Finas (conjunto)",
-      "outro_tipo": "Outros",
-      "outro_descricao": "Vestuário elegante usado para aparentar status social elevado. Pode ajudar em interações sociais dependendo da situação.\n➡️ Origem: (Antecedente – Charlatão)",
-      "outro_item_magico": false,
-      "outro_sintonizado": false
-    },
     {
       "id": "id_1775479177581_219",
       "outro_preco": "25",
@@ -464,29 +483,18 @@
       "outro_tipo": "Kit",
       "outro_descricao": "Usado para mudar aparência e criar identidades.\n\n➡️ Origem: (Antecedente – Charlatão)",
       "outro_item_magico": false,
-      "outro_sintonizado": false
-    },
-    {
-      "id": "id_1775479300157_500",
-      "outro_preco": "5",
-      "outro_peso": "0",
-      "outro_quantidade": "1",
-      "outro_nome": "Anel de Sinete de um duque imaginário",
-      "outro_tipo": "Ferramentas",
-      "outro_descricao": "Anel com brasão falso usado para fingir nobreza.\n\n➡️ Origem: (Antecedente – Charlatão)",
-      "outro_item_magico": false,
-      "outro_sintonizado": false
-    },
-    {
-      "id": "id_1775483752618_657",
-      "outro_preco": "1",
-      "outro_peso": "0.75",
-      "outro_quantidade": "20",
-      "outro_nome": "Virotes",
-      "outro_tipo": "Municao",
-      "outro_descricao": "Munição utilizada por bestas. São pequenos projéteis de madeira com ponta metálica, armazenados em estojo ou aljava. São consumidos a cada disparo.\n➡️ Origem: (Classe – Clérigo)",
-      "outro_item_magico": false,
-      "outro_sintonizado": false
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "ferramentas-kits",
+      "outro_catalogo_id": "kit-disfarce",
+      "outro_categoria": "kits",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "kit-disfarce",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "true"
     },
     {
       "id": "id_1775483858617_754",
@@ -494,10 +502,21 @@
       "outro_peso": "0",
       "outro_quantidade": "1",
       "outro_nome": "Moeda da Sorte (Símbolo Sagrado)",
-      "outro_tipo": "Ferramentas",
+      "outro_tipo": "Outros",
       "outro_descricao": "Moeda da sorte (Símbolo sagrado)\nMoeda usada como foco para conjurar magias.\n\n➡️ Origem: (Função – Classe - Salys)",
       "outro_item_magico": false,
-      "outro_sintonizado": false
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "focos-conjuracao",
+      "outro_catalogo_id": "",
+      "outro_categoria": "Símbolo sagrado",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "true"
     },
     {
       "id": "id_1775484089401_502",
@@ -508,18 +527,58 @@
       "outro_tipo": "Kit",
       "outro_descricao": "Mochila\nCobertorConjunto de itens voltados para atividades religiosas e sobrevivência básica. Inclui utensílios para rituais, viagem e manutenção diária.\n➡️ Origem: (Classe – Clérigo)\n\nConteúdo:\n\nMochila\nCobertor\n10 velas\nCaixa de pederneira (para acender fogo)\nCaixa de esmolas\n2 blocos de incenso\nIncensário\nVestes\n2 dias de rações\nCantil\n10 velas\nCaixa de esmolas\n2 blocos de incenso\nIncensário\nVestes\nRações (2 dias)\nCantil",
       "outro_item_magico": false,
-      "outro_sintonizado": false
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "pacotes-equipamento",
+      "outro_catalogo_id": "pacote-sacerdote",
+      "outro_categoria": "Pacote",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "true"
     },
     {
       "id": "id_1775659161159_12",
       "outro_preco": "15",
       "outro_peso": "2.5",
       "outro_quantidade": "1",
-      "outro_nome": "Kit de Falsificação ",
+      "outro_nome": "Kit de Falsificação",
       "outro_tipo": "Kit",
       "outro_descricao": "Usado para criar documentos e assinaturas falsas.\n\n➡️ Origem: (Antecedente – Charlatão)",
       "outro_item_magico": false,
-      "outro_sintonizado": false
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "ferramentas-kits",
+      "outro_catalogo_id": "kit-falsificacao",
+      "outro_categoria": "kits",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "kit-falsificacao",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "true"
+    }
+  ],
+  "municoes": [
+    {
+      "id": "id_1775483752618_657",
+      "municao_nome": "Virotes",
+      "municao_quantidade": "20",
+      "municao_descricao": "Munição utilizada por bestas. São pequenos projéteis de madeira com ponta metálica, armazenados em estojo ou aljava. São consumidos a cada disparo.\n➡️ Origem: (Classe – Clérigo)",
+      "municao_catalogo_id": "virotes",
+      "municao_quantidade_pacote": "20",
+      "municao_peso_pacote": "0.75",
+      "municao_preco_pacote": "1",
+      "municao_moeda": "po",
+      "municao_raridade": "comum",
+      "municao_magica": "false",
+      "municao_sintonizado": "false",
+      "municao_bonus_ataque": "0",
+      "municao_bonus_dano": ""
     }
   ]
 }

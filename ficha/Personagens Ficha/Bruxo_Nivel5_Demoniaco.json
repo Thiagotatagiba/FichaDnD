@@ -4,184 +4,84 @@
     "Ficha ajustada para compatibilidade com o template do editor.",
     "Este JSON é usado pelo sistema de carregamento da ficha; chaves extras de template podem ser ignoradas pelo editor."
   ],
-
   "nomePersonagem": "Kael Vharos",
   "jogador": "Tatagiba",
   "nomePlayer": "Tatagiba",
-
   "classeID": "bruxo NV 5",
   "classeNomeID": "bruxo",
   "classeNivelID": "5",
   "classeNome": "bruxo",
   "classeNivel": "5",
   "subclasse": "O Demônio",
-
   "racaID": "Tiefling",
   "raca": "Tiefling",
   "antecedenteID": "Charlatão",
   "antecedente": "Charlatão",
   "alinhamentoID": "Caótico e Neutro (CN)",
   "alinhamento": "Caótico e Neutro (CN)",
-
   "for": "8",
   "des": "14",
   "con": "16",
   "int": "12",
   "sab": "10",
   "car": "18",
-
   "forBase": "8",
   "desBase": "14",
   "conBase": "16",
   "intBase": "12",
   "sabBase": "10",
   "carBase": "18",
-
   "bonusProf": "+3",
   "bonusProficiencia": "+3",
-
   "ca_valor": "14",
   "ataqueCaTotal": "14",
   "iniciativa": "+2",
   "deslocamento": "9m",
-
   "pvTotal": "38",
   "pvAtual": "38",
   "pvTemporario": "0",
-
   "dadosVidaTipo": "d8",
   "dadosVidaTotal": "5",
   "dadosVidaRestantes": "5",
-
   "prof_salv_sab": true,
   "prof_salv_car": true,
   "prof_salv_for": false,
   "prof_salv_des": false,
   "prof_salv_con": false,
-
   "prof_sab": true,
   "prof_car": true,
   "prof_for": false,
   "prof_des": false,
   "prof_con": false,
-
   "magiaClasseConjuradora": "Bruxo",
   "magiaAtributoConjuracao": "car",
   "magiaCD": "15",
   "magiaAtaqueMagico": "+7",
-
   "profArmaSimples": true,
   "profArmaduraLeves": true,
-
   "proficienciaIdiomas": "Comum, Infernal",
   "proficienciaFerramentas": "Kit de Disfarce",
-
   "arma1Nome": "Adaga",
   "arma1Ataque": "des",
   "arma1Dano": "1d4 Perfurante",
-
   "armaduraNome": "Armadura de couro batido",
   "armaduraCA": "12",
   "armaduraFurtividade": "Normal",
-
   "pp": "187",
   "po": "32",
   "pe": "14",
   "pc": "6",
-
-  "itens": [
-    {
-      "nome": "Mochila",
-      "quantidade": "1",
-      "peso": "2.5",
-      "descricao": "Mochila de couro escuro bastante usada."
-    },
-    {
-      "nome": "Livro de Sombras",
-      "quantidade": "1",
-      "peso": "1",
-      "descricao": "Tomado de símbolos infernais e anotações arcanas."
-    },
-    {
-      "nome": "Foco Arcano (Cristal Infernal)",
-      "quantidade": "1",
-      "peso": "0.5",
-      "descricao": "Cristal vermelho utilizado como foco de conjuração."
-    },
-    {
-      "nome": "Poção de Cura",
-      "quantidade": "2",
-      "peso": "0.5",
-      "descricao": "Recupera 2d4+2 PV."
-    },
-    {
-      "nome": "Kit de Disfarce",
-      "quantidade": "1",
-      "peso": "1.5",
-      "descricao": "Utilizado para manter identidades falsas."
-    },
-    {
-      "nome": "Manto Escuro com Capuz",
-      "quantidade": "1",
-      "peso": "2",
-      "descricao": "Vestimenta usada para ocultar sua aparência tiefling."
-    },
-    {
-      "nome": "Rações de viagem",
-      "quantidade": "10",
-      "peso": "5",
-      "descricao": "Comida seca suficiente para vários dias."
-    },
-    {
-      "nome": "Tocha",
-      "quantidade": "5",
-      "peso": "5",
-      "descricao": "Fonte simples de iluminação."
-    },
-    {
-      "nome": "Pederneira",
-      "quantidade": "1",
-      "peso": "0.1",
-      "descricao": "Usada para acender fogo."
-    },
-    {
-      "nome": "Bolsa de Componentes",
-      "quantidade": "1",
-      "peso": "1",
-      "descricao": "Bolsa contendo pequenos componentes arcanos."
-    },
-    {
-      "nome": "Corrente de prata",
-      "quantidade": "1",
-      "peso": "0.2",
-      "descricao": "Símbolo do pacto demoníaco de Kael."
-    },
-    {
-      "nome": "Virotes",
-      "quantidade": "20",
-      "peso": "1.5",
-      "descricao": "Munição para besta leve."
-    }
-  ],
-
   "magia0Texto": "[{\"id\":\"eldritch_blast\",\"nivel\":0,\"preparada\":true,\"nome\":\"Rajada Mística (Eldritch Blast)\",\"escola\":\"Evocação\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"36 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"Ataque\",\"teste_resistencia\":\"\",\"ataque_magico\":true,\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"1d10\",\"dano_tipo\":\"Força\",\"regra\":\"2 raios no nível 5\"}],\"descricao\":\"Você dispara raios de energia arcana.\",\"proximos_niveis\":\"3 raios no nível 11 e 4 raios no nível 17.\"},{\"id\":\"mage_hand\",\"nivel\":0,\"preparada\":true,\"nome\":\"Mão Mágica (Mage Hand)\",\"escola\":\"Conjuração\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"9 m\",\"duracao\":\"1 minuto\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Cria uma mão espectral flutuante.\",\"proximos_niveis\":\"\"},{\"id\":\"minor_illusion\",\"nivel\":0,\"preparada\":true,\"nome\":\"Ilusão Menor (Minor Illusion)\",\"escola\":\"Ilusão\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"9 m\",\"duracao\":\"1 minuto\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":false,\"somatico\":true,\"material\":true},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Cria sons ou imagens ilusórias simples.\",\"proximos_niveis\":\"\"}]",
-
   "magia1Texto": "[{\"id\":\"hex\",\"nivel\":1,\"preparada\":true,\"nome\":\"Hex\",\"escola\":\"Encantamento\",\"tempo_conjuracao\":\"1 ação bônus\",\"alcance\":\"27 m\",\"duracao\":\"Concentração, até 1 hora\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":true},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"1d6\",\"dano_tipo\":\"Necrótico\",\"regra\":\"dano extra\"}],\"descricao\":\"Amaldiçoa um alvo causando dano extra.\",\"proximos_niveis\":\"\"},{\"id\":\"armor_of_agathys\",\"nivel\":1,\"preparada\":true,\"nome\":\"Armadura de Agathys\",\"escola\":\"Abjuração\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"Pessoal\",\"duracao\":\"1 hora\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"15\",\"dano_tipo\":\"Frio\",\"regra\":\"Ao receber ataque corpo a corpo\"}],\"descricao\":\"Ganha PV temporários e causa dano de frio em atacantes.\",\"proximos_niveis\":\"Escala com slots maiores.\"}]",
-
   "magia2Texto": "[{\"id\":\"misty_step\",\"nivel\":2,\"preparada\":true,\"nome\":\"Passo Nebuloso (Misty Step)\",\"escola\":\"Conjuração\",\"tempo_conjuracao\":\"1 ação bônus\",\"alcance\":\"Pessoal\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":false,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Teletransporta até 9 metros.\",\"proximos_niveis\":\"\"}]",
-
   "magia3Texto": "[{\"id\":\"fireball\",\"nivel\":3,\"preparada\":true,\"nome\":\"Bola de Fogo (Fireball)\",\"escola\":\"Evocação\",\"tempo_conjuracao\":\"1 ação\",\"alcance\":\"45 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":true,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":true,\"somatico\":true,\"material\":true},\"resolucao\":\"Teste de Resistência\",\"teste_resistencia\":\"DES\",\"efeitos\":[{\"tipo\":\"dano\",\"formula\":\"8d6\",\"dano_tipo\":\"Fogo\",\"regra\":\"Metade no sucesso\"}],\"descricao\":\"Explosão flamejante em área.\",\"proximos_niveis\":\"\"},{\"id\":\"counterspell\",\"nivel\":3,\"preparada\":true,\"nome\":\"Contramágica (Counterspell)\",\"escola\":\"Abjuração\",\"tempo_conjuracao\":\"1 reação\",\"alcance\":\"18 m\",\"duracao\":\"Instantâneo\",\"propriedades\":{\"dano\":false,\"cura\":false,\"concentracao\":false},\"componentes\":{\"verbal\":false,\"somatico\":true,\"material\":false},\"resolucao\":\"\",\"teste_resistencia\":\"\",\"efeitos\":[],\"descricao\":\"Interrompe uma magia sendo conjurada.\",\"proximos_niveis\":\"\"}]",
-
   "magia3Total": "2",
   "magia3Usado": "0",
-
   "talentoClasse": "Pacto Mágico, Invocações Místicas, Dádiva do Pacto",
   "talentoArquetipo": "Bênção do Próprio Sombrio",
   "talentoRaca": "Visão no Escuro, Resistência Infernal, Legado Infernal",
   "talentoAntecedente": "Identidade falsa",
-
   "historiaPersonagem": "Kael Vharos fez um pacto infernal em troca de poder arcano e agora vaga pelo mundo acumulando conhecimento proibido.",
-
   "armas": [
     {
       "arma_preco": "2",
@@ -212,7 +112,6 @@
       "proficiente": true
     }
   ],
-
   "armaduras": [
     {
       "armadura_preco": "45",
@@ -226,6 +125,256 @@
       "armadura_descricao": "",
       "armadura_item_magico": false,
       "armadura_sintonizado": false,
+      "proficiente": true
+    }
+  ],
+  "outros": [
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_mochila_0",
+      "outro_preco": "",
+      "outro_peso": "2.5",
+      "outro_quantidade": "1",
+      "outro_nome": "Mochila",
+      "outro_tipo": "Outros",
+      "outro_descricao": "Mochila de couro escuro bastante usada.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "equipamento-geral",
+      "outro_catalogo_id": "mochila",
+      "outro_categoria": "Equipamento",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    },
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_livro_de_sombras_1",
+      "outro_preco": "",
+      "outro_peso": "1",
+      "outro_quantidade": "1",
+      "outro_nome": "Livro de Sombras",
+      "outro_tipo": "Outros",
+      "outro_descricao": "Tomado de símbolos infernais e anotações arcanas.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "equipamento-geral",
+      "outro_catalogo_id": "",
+      "outro_categoria": "Equipamento",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    },
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_foco_arcano_cristal_infernal_2",
+      "outro_preco": "",
+      "outro_peso": "0.5",
+      "outro_quantidade": "1",
+      "outro_nome": "Foco Arcano (Cristal Infernal)",
+      "outro_tipo": "Outros",
+      "outro_descricao": "Cristal vermelho utilizado como foco de conjuração.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "focos-conjuracao",
+      "outro_catalogo_id": "",
+      "outro_categoria": "Foco arcano",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    },
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_pocao_de_cura_3",
+      "outro_preco": "",
+      "outro_peso": "0.5",
+      "outro_quantidade": "2",
+      "outro_nome": "Poção de Cura",
+      "outro_tipo": "Pocao",
+      "outro_descricao": "Recupera 2d4+2 PV.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "pocoes",
+      "outro_catalogo_id": "",
+      "outro_categoria": "",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "true",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    },
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_kit_de_disfarce_4",
+      "outro_preco": "",
+      "outro_peso": "1.5",
+      "outro_quantidade": "1",
+      "outro_nome": "Kit de Disfarce",
+      "outro_tipo": "Kit",
+      "outro_descricao": "Utilizado para manter identidades falsas.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "ferramentas-kits",
+      "outro_catalogo_id": "kit-disfarce",
+      "outro_categoria": "kits",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "kit-disfarce",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    },
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_racoes_de_viagem_6",
+      "outro_preco": "",
+      "outro_peso": "5",
+      "outro_quantidade": "10",
+      "outro_nome": "Rações de viagem",
+      "outro_tipo": "Outros",
+      "outro_descricao": "Comida seca suficiente para vários dias.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "equipamento-geral",
+      "outro_catalogo_id": "",
+      "outro_categoria": "Equipamento",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    },
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_tocha_7",
+      "outro_preco": "",
+      "outro_peso": "5",
+      "outro_quantidade": "5",
+      "outro_nome": "Tocha",
+      "outro_tipo": "Comida",
+      "outro_descricao": "Fonte simples de iluminação.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "consumivel",
+      "outro_catalogo_id": "tocha",
+      "outro_categoria": "",
+      "outro_raridade": "comum",
+      "outro_moeda": "pc",
+      "outro_consumivel": "true",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    },
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_pederneira_8",
+      "outro_preco": "",
+      "outro_peso": "0.1",
+      "outro_quantidade": "1",
+      "outro_nome": "Pederneira",
+      "outro_tipo": "Outros",
+      "outro_descricao": "Usada para acender fogo.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "equipamento-geral",
+      "outro_catalogo_id": "",
+      "outro_categoria": "Equipamento",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    },
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_bolsa_de_componentes_9",
+      "outro_preco": "",
+      "outro_peso": "1",
+      "outro_quantidade": "1",
+      "outro_nome": "Bolsa de Componentes",
+      "outro_tipo": "Ingrediente",
+      "outro_descricao": "Bolsa contendo pequenos componentes arcanos.",
+      "outro_item_magico": false,
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "componentes-materiais",
+      "outro_catalogo_id": "bolsa-de-componentes",
+      "outro_categoria": "",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    }
+  ],
+  "municoes": [
+    {
+      "id": "migrado_bruxo_nivel5_demoniaco_json_virotes_11",
+      "municao_nome": "Virotes",
+      "municao_quantidade": "20",
+      "municao_descricao": "Munição para besta leve.",
+      "municao_catalogo_id": "virotes",
+      "municao_quantidade_pacote": "20",
+      "municao_peso_pacote": "0.75",
+      "municao_preco_pacote": "1",
+      "municao_moeda": "po",
+      "municao_raridade": "comum",
+      "municao_magica": "false",
+      "municao_sintonizado": "false",
+      "municao_bonus_ataque": "0",
+      "municao_bonus_dano": ""
+    }
+  ],
+  "escudos": [
+    {
+      "escudo_preco": "",
+      "escudo_peso": "2",
+      "escudo_nome": "Manto Escuro com Capuz",
+      "escudo_raridade": "comum",
+      "escudo_categoria": "Vestuário",
+      "escudo_vantagens_pericias": "[]",
+      "escudo_equipado": "false",
+      "escudo_ca": "0",
+      "escudo_tipo": "Vestuario",
+      "escudo_descricao": "Vestimenta usada para ocultar sua aparência tiefling.",
+      "escudo_item_magico": false,
+      "escudo_sintonizado": false,
+      "proficiente": true
+    },
+    {
+      "escudo_preco": "",
+      "escudo_peso": "0.2",
+      "escudo_nome": "Corrente de prata",
+      "escudo_raridade": "comum",
+      "escudo_categoria": "Colar",
+      "escudo_vantagens_pericias": "[]",
+      "escudo_equipado": "false",
+      "escudo_ca": "0",
+      "escudo_tipo": "Vestuario",
+      "escudo_descricao": "Símbolo do pacto demoníaco de Kael.",
+      "escudo_item_magico": false,
+      "escudo_sintonizado": false,
       "proficiente": true
     }
   ]

@@ -1224,10 +1224,6 @@ document.addEventListener("DOMContentLoaded", () => {
   atualizarXPENivel();
 });
 window.addEventListener("DOMContentLoaded", () => {
-  const outroInicial = adicionarNovoOutro();
-  fecharItemCard(outroInicial);
-});
-window.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll('.item-card[data-tipo="arma"]').forEach((card) => {
     atualizarOpcoesMunicao(card);
   });

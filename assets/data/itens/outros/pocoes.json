@@ -1,0 +1,10 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "reservado-sem-itens",
+  "unidadePeso": "kg",
+  "observacao": "A lista de equipamento básico não apresenta poções não mágicas. A Poção de Cura do livro é explicitamente mágica; foi omitida para respeitar o escopo atual de não cadastrar itens mágicos. Este arquivo fica reservado para a futura mecânica própria de poções.",
+  "fontes": ["https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment", "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/magic-items"],
+  "itens": []
+}

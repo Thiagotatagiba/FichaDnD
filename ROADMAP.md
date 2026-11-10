@@ -76,6 +76,18 @@ A única exceção aprovada é a capacidade de carga: o padrão é Força × 7,5
 
 Os padrões visuais reutilizáveis para card, modal de exibição, cadastro/edição e seleção de catálogo estão registrados em `DECISOES_DE_ARQUITETURA.md`, seção 12. A hierarquia separada entre categorias e a regra de não fechar modal pelo fundo permanecem nas seções 10 e 11.
 
+### Catálogo “Outros” — implementado; revisão visual ampla pendente (Fase 4)
+
+- **Resultado:** catálogos comuns separados por família em JSON e registrados centralmente; seletor com filtro, pesquisa, lista e prévia; painel único para tipos diversos; criação manual que solicita o tipo antes de abrir os campos específicos. Proficiência relacionada aparece apenas em ferramentas/kits e instrumentos, e o uso como foco arcano é uma propriedade de instrumento. Nenhuma regra de proficiência ou efeito mágico foi ativado.
+- **Compatibilidade:** instâncias continuam em `outros[]`, preservando os campos antigos e propriedades desconhecidas. O script `scripts/migrar-itens-personagens.cjs` normaliza os arquivos de personagem versionados, separando munições e vestimentas e migrando metadados dos demais itens.
+- **Validação:** testes automatizados cobrem o catálogo e seus fluxos. A conferência visual em várias larguras e o round-trip completo de fichas após a migração permanecem como validação manual pendente; veja [plano e resultado do catálogo](docs/propostas/PLANO_CATALOGO_OUTROS.md).
+
+### Reordenação manual dos cards — implementada (Fase 4)
+
+- **Resultado:** arraste para reordenar itens dentro de cada lista de Armas, Munições, Armaduras, Escudos, Vestimentas e acessórios e Outros. A ordem do DOM é coletada e persistida com a coleção; arrastar para outra categoria não é permitido.
+- **Integridade:** posições dos itens equipados são recalculadas por referência à instância para que reordenar não troque a seleção de arma, escudo ou armadura. Controles de quantidade e outros campos editáveis não iniciam arraste.
+- **Validação:** testes automatizados verificam as seis listas, o limite por categoria, a coleta na ordem visual e a preservação de equipamento. Arraste real e persistência após salvar/importar ainda precisam de validação manual no navegador.
+
 ### Possíveis evoluções
 
 - Sistema de campanhas e múltiplos personagens
@@ -267,4 +279,4 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - Preservar regras de D&D, estruturas de dados, IDs, atributos HTML e compatibilidade com fichas existentes, salvo evidência que justifique uma mudança.
 - Commits são manuais e ficam a cargo do responsável pelo projeto.
 
-**Última atualização:** 2026-11-10 — padrões visuais de cards e modais do inventário consolidados na seção 12 de `DECISOES_DE_ARQUITETURA.md`; munição agora documenta atualização imediata dos cards e seletores de armas quando a quantidade muda. Permanecem a validação integrada/responsiva de munições, a regressão integrada de armas e as pendências anteriores de perícias, importação parcial, timeline e round-trip narrativo de Thrain. Fase 3 continua em andamento e nenhuma fase inteira foi concluída.
+**Última atualização:** 2026-11-10 — documentados os catálogos e cadastros condicionais de Outros, a migração de fichas, a reordenação manual dos cards e a preservação dos itens equipados; padrões visuais de cards e modais do inventário e atualização imediata da munição também estão registrados em `DECISOES_DE_ARQUITETURA.md`. Permanecem validação integrada/responsiva de munições, regressão integrada de armas, validação manual do arraste/round-trip e pendências anteriores de perícias, importação parcial, timeline e round-trip narrativo de Thrain. Fase 3 continua em andamento e nenhuma fase inteira foi concluída.

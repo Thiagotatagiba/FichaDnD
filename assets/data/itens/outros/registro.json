@@ -1,0 +1,58 @@
+{
+  "versaoSchema": 1,
+  "sistema": "dnd5e-2014",
+  "status": "rascunho-para-revisao",
+  "catalogos": [
+    {
+      "tipo": "pocoes",
+      "nome": "Poções",
+      "arquivo": "pocoes.json",
+      "status": "reservado-sem-itens"
+    },
+    {
+      "tipo": "consumivel",
+      "nome": "Consumíveis",
+      "arquivo": "consumiveis.json"
+    },
+    {
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas e kits",
+      "arquivo": "ferramentas-kits.json"
+    },
+    {
+      "tipo": "instrumentos-musicais",
+      "nome": "Instrumentos musicais",
+      "arquivo": "instrumentos-musicais.json"
+    },
+    {
+      "tipo": "pacotes-equipamento",
+      "nome": "Pacotes de equipamento",
+      "arquivo": "pacotes-equipamento.json"
+    },
+    {
+      "tipo": "focos-conjuracao",
+      "nome": "Focos de conjuração",
+      "arquivo": "focos-conjuracao.json"
+    },
+    {
+      "tipo": "componentes-materiais",
+      "nome": "Componentes materiais",
+      "arquivo": "componentes-materiais.json"
+    },
+    {
+      "tipo": "equipamento-geral",
+      "nome": "Equipamento geral",
+      "arquivo": "equipamento-geral.json"
+    },
+    {
+      "tipo": "tesouros-valores",
+      "nome": "Tesouros e valores",
+      "arquivo": "tesouros-valores.json"
+    },
+    {
+      "tipo": "outros",
+      "nome": "Outros",
+      "arquivo": "outros.json"
+    }
+  ]
+}

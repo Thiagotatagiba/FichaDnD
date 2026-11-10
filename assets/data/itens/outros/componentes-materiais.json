@@ -1,0 +1,13 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "rascunho-para-revisao",
+  "unidadePeso": "kg",
+  "observacao": "O livro define a bolsa de componentes e componentes com custo específico dentro de cada magia, não uma tabela geral de componentes avulsos. Esta proposta lista a bolsa e mantém um modelo editável para componentes particulares; itens com custo próprio devem ser cadastrados com a referência da magia e nunca tratados como gratuitos por padrão.",
+  "fontes": ["https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment", "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/spellcasting"],
+  "itens": [
+    {"id":"bolsa-de-componentes","tipo":"componentes-materiais","nome":"Bolsa de Componentes","raridade":"comum","descricao":"Bolsa impermeável com compartimentos para componentes materiais e outros itens especiais necessários às magias, exceto componentes com custo específico indicado na magia.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":25,"moeda":"po"},"pesoKg":1},
+    {"id":"componente-material-personalizado","tipo":"componentes-materiais","nome":"Componente Material (personalizável)","raridade":"comum","descricao":"Modelo para cadastrar um componente específico. Informe a magia relacionada e o custo indicado nela quando houver; o livro não define preço ou peso universal para componentes avulsos.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":null,"moeda":null},"pesoKg":null,"modeloPersonalizavel":true}
+  ]
+}

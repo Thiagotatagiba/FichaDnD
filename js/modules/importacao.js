@@ -232,6 +232,7 @@ async function aplicarDadosFicha(dados) {
         novoCard.dataset.id = id;
         dadosOutro.id = id; // 🔥 MUITO IMPORTANTE
         if (!novoCard) return;
+        novoCard._dadosOriginais = { ...dadosOutro };
 
         novoCard.querySelectorAll("[data-campo]").forEach((campo) => {
           const valor = dadosOutro[campo.dataset.campo];

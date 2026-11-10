@@ -1,0 +1,23 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "rascunho-para-revisao",
+  "unidadePeso": "kg",
+  "observacaoPeso": "Conversão de catálogo: 0,5 kg por libra; traço na fonte = null.",
+  "fontes": ["https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment"],
+  "itens": [
+    {"id":"foco-arcano-cristal","tipo":"focos-conjuracao","nome":"Cristal","raridade":"comum","grupo":"foco-arcano","descricao":"Cristal especialmente preparado para canalizar magias arcanas.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":10,"moeda":"po"},"pesoKg":0.5},
+    {"id":"foco-arcano-orbe","tipo":"focos-conjuracao","nome":"Orbe","raridade":"comum","grupo":"foco-arcano","descricao":"Orbe especialmente preparado para canalizar magias arcanas.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":20,"moeda":"po"},"pesoKg":1.5},
+    {"id":"foco-arcano-bastao","tipo":"focos-conjuracao","nome":"Bastão arcano","raridade":"comum","grupo":"foco-arcano","descricao":"Bastão preparado como foco para magias arcanas.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":10,"moeda":"po"},"pesoKg":1},
+    {"id":"foco-arcano-cajado","tipo":"focos-conjuracao","nome":"Cajado arcano","raridade":"comum","grupo":"foco-arcano","descricao":"Cajado especialmente construído para canalizar magias arcanas.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":5,"moeda":"po"},"pesoKg":2},
+    {"id":"foco-arcano-varinha","tipo":"focos-conjuracao","nome":"Varinha arcana","raridade":"comum","grupo":"foco-arcano","descricao":"Varinha de madeira preparada para canalizar magias arcanas.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":10,"moeda":"po"},"pesoKg":0.5},
+    {"id":"foco-druidico-ramo-visco","tipo":"focos-conjuracao","nome":"Ramo de visco","raridade":"comum","grupo":"foco-druidico","descricao":"Ramo de visco usado como foco druídico.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":1,"moeda":"po"},"pesoKg":null},
+    {"id":"foco-druidico-totem","tipo":"focos-conjuracao","nome":"Totem druídico","raridade":"comum","grupo":"foco-druidico","descricao":"Totem usado como foco druídico.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":1,"moeda":"po"},"pesoKg":null},
+    {"id":"foco-druidico-cajado-madeira","tipo":"focos-conjuracao","nome":"Cajado de madeira","raridade":"comum","grupo":"foco-druidico","descricao":"Cajado de madeira usado como foco druídico.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":5,"moeda":"po"},"pesoKg":2},
+    {"id":"foco-druidico-varinha-teixo","tipo":"focos-conjuracao","nome":"Varinha de teixo","raridade":"comum","grupo":"foco-druidico","descricao":"Varinha de teixo usada como foco druídico.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":10,"moeda":"po"},"pesoKg":0.5},
+    {"id":"simbolo-sagrado-amuleto","tipo":"focos-conjuracao","nome":"Símbolo sagrado (amuleto)","raridade":"comum","grupo":"simbolo-sagrado","descricao":"Representação de uma divindade ou panteão em forma de amuleto; clérigos e paladinos podem usá-lo como foco de conjuração.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":5,"moeda":"po"},"pesoKg":0.5},
+    {"id":"simbolo-sagrado-emblema","tipo":"focos-conjuracao","nome":"Símbolo sagrado (emblema)","raridade":"comum","grupo":"simbolo-sagrado","descricao":"Símbolo sagrado em forma de emblema, que pode ser exibido ou afixado a um escudo conforme as regras de foco.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":5,"moeda":"po"},"pesoKg":null},
+    {"id":"simbolo-sagrado-relicario","tipo":"focos-conjuracao","nome":"Símbolo sagrado (relicário)","raridade":"comum","grupo":"simbolo-sagrado","descricao":"Pequena caixa contendo fragmento de uma relíquia sagrada.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":5,"moeda":"po"},"pesoKg":1}
+  ]
+}

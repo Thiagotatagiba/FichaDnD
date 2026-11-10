@@ -194,3 +194,25 @@ Os padrões abaixo consolidam as convenções aprovadas nas telas de Armas, Arma
 - O modal de seleção segue o padrão existente de pesquisa e filtragem: filtros e busca acima, lista de resultados de um lado e prévia detalhada do item selecionado do outro em telas largas; em telas estreitas, os blocos empilham e a lista mantém altura controlada.
 - A prévia reutiliza as tags, a descrição, o preço/peso e a apresentação do modal de exibição quando possível. A ação de adicionar fica junto da prévia e deixa claro que o item será copiado para o inventário.
 - Estados vazios, quantidade de resultados e falha de carregamento devem ter mensagens compreensíveis. Pesquisa, navegação por teclado e ações principais devem continuar acessíveis sem depender de ponteiro.
+
+### Implementação de “Outros”
+
+- “Outros” é um único painel. Seus itens de tipos diversos aparecem juntos e não são divididos visualmente em subcategorias. Os catálogos compartilhados ficam em JSONs próprios por família, ligados por `assets/data/itens/outros/registro.json`.
+- As instâncias continuam na coleção legada `outros[]` e conservam os campos `outro_*` já usados pela ficha. Metadados `outro_catalogo_*` registram família e origem sem substituir campos legados; a ausência de peso ou valor permanece representada como vazia, não como um dado inventado.
+- Cards têm um contorno externo único, com o botão interno transparente e sem moldura. Exibem nome, quantidade quando aplicável, tags de família e raridade, valor e peso. Poções/consumíveis têm quantidade editável no próprio card; nos demais itens a quantidade só aparece no título quando acima de 1 e é editada no modal.
+- Catálogo, visualização e edição não fecham com clique no fundo. A seleção copia o item para o inventário sem abrir edição. Modais oferecem saída explícita; editar mostra Cancelar/Salvar e Remover com lixeira e confirmação no canto inferior direito.
+- Proficiência relacionada a ferramentas/instrumentos e uso de instrumento como foco arcano são dados descritivos. Possuir/equipar esses itens não concede proficiência, bônus ou efeito de magia. O uso das mãos dos instrumentos em combate fica para uma futura mecânica específica.
+
+### Reordenação manual dos itens
+
+- Cards podem ser reorganizados por arraste dentro da própria categoria: Armas, Munições, Armaduras, Escudos, Vestimentas e acessórios ou Outros. Não é permitido mover um item para outra lista por arraste.
+- A ordem visual dos cards é a ordem da coleção na ficha e deve continuar igual após salvar, exportar e importar. A implementação usa a ordem dos elementos no DOM, que já é a fonte usada pelos coletores das coleções.
+- Reordenar cards não pode trocar quais itens estão equipados ou vinculados aos espaços de arma. Ao mudar a posição, a ficha remapeia os índices de equipamento para as mesmas instâncias de item.
+- Campos editáveis diretamente no card, como quantidade de munição, não iniciam arraste. A indicação de arraste e o estado visual de destino devem ser discretos e seguir o padrão de `card-itens.css`.
+- A validação automatizada cobre as seis listas, o limite de categoria e a preservação dos índices de equipamento. A interação real por ponteiro/toque e o round-trip visual em navegador continuam pendentes de validação manual.
+
+### Cadastro manual condicionado ao tipo de “Outros”
+
+- O fluxo de criação manual pergunta primeiro o tipo do item; em seguida apresenta apenas os campos pertinentes à família escolhida.
+- Proficiência relacionada só é cadastrável para ferramentas/kits e instrumentos musicais. O campo “pode ser foco arcano” pertence aos instrumentos. Ao salvar um tipo que não suporta proficiência, limpar qualquer referência de proficiência incompatível.
+- Esses metadados descrevem o item: possuir o item não concede proficiência, bônus, vantagem ou efeito de magia.

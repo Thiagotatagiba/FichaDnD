@@ -2703,13 +2703,6 @@
         }
 
         card.querySelectorAll("[data-campo]").forEach((campo) => {
-          campo.addEventListener("input", atualizarPesoAtualInventario);
-          campo.addEventListener("change", atualizarPesoAtualInventario);
-          campo.addEventListener("input", atualizarListaArmasEquipamento);
-          campo.addEventListener("change", atualizarListaArmasEquipamento);
-        });
-
-        card.querySelectorAll("[data-campo]").forEach((campo) => {
           campo.addEventListener("input", () => {
             atualizarPesoAtualInventario();
             atualizarListaArmasEquipamento();
@@ -2740,7 +2733,6 @@
 
         container.appendChild(novoOutro);
         inicializarEventosOutro(novoOutro);
-        abrirItemCard(novoOutro);
         atualizarListaArmasEquipamento();
 
         return novoOutro;
@@ -2753,7 +2745,7 @@
         );
 
         lista.forEach((card) => {
-          const outro = {};
+          const outro = { ...(card._dadosOriginais || {}) };
 
           // 🔹 NOVO: pegar ID existente do card
           let id = card.dataset.id;

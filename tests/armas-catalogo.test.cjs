@@ -43,10 +43,10 @@ test("a Besta Leve tem dano perfurante e as armas de distância declaram muniç�
 test("ficha de referência Waldo corrige o tipo da Besta Leve e preserva o vínculo com Virotes", () => {
   const ficha = JSON.parse(fs.readFileSync(path.join(root, "ficha/Personagens Ficha/Waldo_Malaphael_Tatagiba_20261105.json"), "utf8"));
   const besta = ficha.armas.find(item => item.nome === "Besta Leve");
-  const virotes = ficha.outros.find(item => item.id === besta.arma_municao_id);
+  const virotes = ficha.municoes.find(item => item.id === besta.arma_municao_id);
   assert.equal(besta.arma_tipo_dano, "Perfurante");
-  assert.equal(virotes?.outro_nome, "Virotes");
-  assert.equal(virotes?.outro_tipo, "Municao");
+  assert.equal(virotes?.municao_nome, "Virotes");
+  assert.equal(virotes?.municao_catalogo_id, "virotes");
 });
 
 test("dados do catálogo mapeiam para os campos legados e preservam Versátil", () => {

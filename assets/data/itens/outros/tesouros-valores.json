@@ -1,0 +1,15 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "rascunho-para-revisao",
+  "unidadePeso": "kg",
+  "observacao": "As regras descrevem gemas, joias, objetos de arte e bens de troca como tesouros, mas não fornecem uma lista universal com preço e peso para cada objeto no capítulo de equipamento. Os modelos abaixo não atribuem preço nem peso; esses dados precisam ser definidos pela aventura ou pelo mestre.",
+  "fontes": ["https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment"],
+  "itens": [
+    {"id":"gema-personalizada","tipo":"tesouros-valores","nome":"Gema (personalizável)","raridade":"comum","categoria":"Gema","descricao":"Modelo para uma gema encontrada como tesouro. Informe variedade, valor e peso conforme a aventura ou decisão do mestre.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":null,"moeda":null},"pesoKg":null,"modeloPersonalizavel":true},
+    {"id":"joia-personalizada","tipo":"tesouros-valores","nome":"Joia (personalizável)","raridade":"comum","categoria":"Joia","descricao":"Modelo para uma joia encontrada como tesouro. Informe descrição, valor e peso definidos para a peça.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":null,"moeda":null},"pesoKg":null,"modeloPersonalizavel":true},
+    {"id":"objeto-arte-personalizado","tipo":"tesouros-valores","nome":"Objeto de Arte (personalizável)","raridade":"comum","categoria":"Objeto de arte","descricao":"Modelo para um objeto de arte ou bem valioso. Informe descrição, valor e peso definidos para a peça.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":null,"moeda":null},"pesoKg":null,"modeloPersonalizavel":true},
+    {"id":"bem-troca-personalizado","tipo":"tesouros-valores","nome":"Bem de Troca (personalizável)","raridade":"comum","categoria":"Bem de troca","descricao":"Modelo para mercadorias usadas em troca, como barras de metal, sacos de sal ou animais. Valor e peso dependem do item e da campanha.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":null,"moeda":null},"pesoKg":null,"modeloPersonalizavel":true}
+  ]
+}

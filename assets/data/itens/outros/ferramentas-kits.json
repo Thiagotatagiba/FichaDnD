@@ -1,0 +1,524 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "rascunho-para-revisao",
+  "unidadePeso": "kg",
+  "observacaoPeso": "Pesos em kg usam 0,5 kg por libra conforme a convenção de catálogo documentada no projeto; traço na tabela original foi representado por null.",
+  "fontes": [
+    "https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment"
+  ],
+  "itens": [
+    {
+      "id": "kit-disfarce",
+      "tipo": "ferramentas-kits",
+      "nome": "Kit de Disfarce",
+      "raridade": "comum",
+      "grupo": "kits",
+      "proficienciaId": "kit-disfarce",
+      "descricao": "Estojo com cosméticos, tinturas para cabelo e pequenos adereços para criar disfarces. A proficiência aplica-se aos testes pertinentes ao uso deste kit.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 25,
+        "moeda": "po"
+      },
+      "pesoKg": 1.5
+    },
+    {
+      "id": "kit-falsificacao",
+      "tipo": "ferramentas-kits",
+      "nome": "Kit de Falsificação",
+      "raridade": "comum",
+      "grupo": "kits",
+      "proficienciaId": "kit-falsificacao",
+      "descricao": "Estojo com papéis, pergaminhos, penas, tintas, selos e lacre para produzir falsificações físicas.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 15,
+        "moeda": "po"
+      },
+      "pesoKg": 2.5
+    },
+    {
+      "id": "kit-herbalismo",
+      "tipo": "ferramentas-kits",
+      "nome": "Kit de Herbalismo",
+      "raridade": "comum",
+      "grupo": "kits",
+      "proficienciaId": "kit-herbalismo",
+      "descricao": "Instrumentos como tesouras, almofariz e pilão, bolsas e frascos usados por herbalistas.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 5,
+        "moeda": "po"
+      },
+      "pesoKg": 1.5
+    },
+    {
+      "id": "kit-venenos",
+      "tipo": "ferramentas-kits",
+      "nome": "Kit de Veneno",
+      "raridade": "comum",
+      "grupo": "kits",
+      "proficienciaId": "kit-venenos",
+      "descricao": "Frascos, produtos químicos e equipamento para criar e usar venenos.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 50,
+        "moeda": "po"
+      },
+      "pesoKg": 1
+    },
+    {
+      "id": "ferramentas-ladrao",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Ladrão",
+      "raridade": "comum",
+      "grupo": "ferramentas",
+      "proficienciaId": "ferramentas-ladrao",
+      "descricao": "Conjunto de lima, gazuas, espelho pequeno, tesoura de lâmina estreita e alicate.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 25,
+        "moeda": "po"
+      },
+      "pesoKg": 0.5
+    },
+    {
+      "id": "ferramentas-navegador",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Navegador",
+      "raridade": "comum",
+      "grupo": "ferramentas",
+      "proficienciaId": "ferramentas-navegador",
+      "descricao": "Instrumentos usados para navegação; a proficiência é individual para este conjunto.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 25,
+        "moeda": "po"
+      },
+      "pesoKg": 1
+    },
+    {
+      "id": "kit-escalada",
+      "tipo": "ferramentas-kits",
+      "nome": "Kit de Escalada",
+      "raridade": "comum",
+      "grupo": "kits",
+      "proficienciaId": null,
+      "descricao": "Inclui pitons especiais, pontas para botas, luvas e arnês. Pode ser ancorado para limitar uma queda conforme a regra do item.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 25,
+        "moeda": "po"
+      },
+      "pesoKg": 6
+    },
+    {
+      "id": "apetrechos-pesca",
+      "tipo": "ferramentas-kits",
+      "nome": "Apetrechos de Pesca",
+      "raridade": "comum",
+      "grupo": "kits",
+      "proficienciaId": null,
+      "descricao": "Conjunto com vara de madeira, linha, boias, anzóis, chumbadas, iscas e pequena rede.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 1,
+        "moeda": "po"
+      },
+      "pesoKg": 2
+    },
+    {
+      "id": "suprimentos-alquimista",
+      "tipo": "ferramentas-kits",
+      "nome": "Suprimentos de Alquimista",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "suprimentos-alquimista",
+      "descricao": "Ferramentas de artesão usadas em trabalhos de alquimia.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 50,
+        "moeda": "po"
+      },
+      "pesoKg": 4
+    },
+    {
+      "id": "suprimentos-cervejeiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Suprimentos de Cervejeiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "suprimentos-cervejeiro",
+      "descricao": "Ferramentas de artesão para produzir cerveja.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 20,
+        "moeda": "po"
+      },
+      "pesoKg": 4.5
+    },
+    {
+      "id": "ferramentas-caligrafo",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Calígrafo",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-caligrafo",
+      "descricao": "Materiais e instrumentos próprios para caligrafia.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 2.5
+    },
+    {
+      "id": "ferramentas-carpinteiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Carpinteiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-carpinteiro",
+      "descricao": "Ferramentas usadas em trabalhos de carpintaria.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 8,
+        "moeda": "po"
+      },
+      "pesoKg": 3
+    },
+    {
+      "id": "ferramentas-cartografo",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Cartógrafo",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-cartografo",
+      "descricao": "Instrumentos usados para criar e interpretar mapas.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 15,
+        "moeda": "po"
+      },
+      "pesoKg": 3
+    },
+    {
+      "id": "ferramentas-sapateiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Sapateiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-sapateiro",
+      "descricao": "Ferramentas para fabricar e reparar calçados.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 5,
+        "moeda": "po"
+      },
+      "pesoKg": 2.5
+    },
+    {
+      "id": "utensilios-cozinheiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Utensílios de Cozinheiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "utensilios-cozinheiro",
+      "descricao": "Utensílios usados para preparar alimentos.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 1,
+        "moeda": "po"
+      },
+      "pesoKg": 4
+    },
+    {
+      "id": "ferramentas-vidreiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Vidreiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-vidreiro",
+      "descricao": "Ferramentas de artesão para trabalhar vidro.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 30,
+        "moeda": "po"
+      },
+      "pesoKg": 2.5
+    },
+    {
+      "id": "ferramentas-joalheiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Joalheiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-joalheiro",
+      "descricao": "Ferramentas para trabalhar joias e pedras preciosas.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 25,
+        "moeda": "po"
+      },
+      "pesoKg": 1
+    },
+    {
+      "id": "ferramentas-coureiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Coureiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-coureiro",
+      "descricao": "Ferramentas para trabalhar couro.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 5,
+        "moeda": "po"
+      },
+      "pesoKg": 2.5
+    },
+    {
+      "id": "ferramentas-pedreiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Pedreiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-pedreiro",
+      "descricao": "Ferramentas para trabalhos de alvenaria e pedra.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 4
+    },
+    {
+      "id": "suprimentos-pintor",
+      "tipo": "ferramentas-kits",
+      "nome": "Suprimentos de Pintor",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "suprimentos-pintor",
+      "descricao": "Materiais para pintura e ilustração.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 2.5
+    },
+    {
+      "id": "ferramentas-oleiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Oleiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-oleiro",
+      "descricao": "Ferramentas para moldar e trabalhar cerâmica.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 10,
+        "moeda": "po"
+      },
+      "pesoKg": 1.5
+    },
+    {
+      "id": "ferramentas-ferreiro",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Ferreiro",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-ferreiro",
+      "descricao": "Ferramentas para forjar e reparar objetos de metal.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 20,
+        "moeda": "po"
+      },
+      "pesoKg": 4
+    },
+    {
+      "id": "ferramentas-artifice",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Artífice",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-artifice",
+      "descricao": "Ferramentas variadas para trabalhos de invenção e reparo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 50,
+        "moeda": "po"
+      },
+      "pesoKg": 5
+    },
+    {
+      "id": "ferramentas-tecelao",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Tecelão",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-tecelao",
+      "descricao": "Ferramentas para tecer e trabalhar tecidos.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 1,
+        "moeda": "po"
+      },
+      "pesoKg": 2.5
+    },
+    {
+      "id": "ferramentas-entalhador",
+      "tipo": "ferramentas-kits",
+      "nome": "Ferramentas de Entalhador",
+      "raridade": "comum",
+      "grupo": "ferramentas-artesao",
+      "proficienciaId": "ferramentas-entalhador",
+      "descricao": "Ferramentas para entalhar madeira.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 1,
+        "moeda": "po"
+      },
+      "pesoKg": 2.5
+    },
+    {
+      "id": "conjunto-dados",
+      "tipo": "ferramentas-kits",
+      "nome": "Conjunto de Dados",
+      "raridade": "comum",
+      "grupo": "jogos",
+      "proficienciaId": "conjunto-dados",
+      "descricao": "Conjunto de peças para jogos de dados; cada tipo de conjunto de jogo tem proficiência separada.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 1,
+        "moeda": "pp"
+      },
+      "pesoKg": null
+    },
+    {
+      "id": "conjunto-dragonchess",
+      "tipo": "ferramentas-kits",
+      "nome": "Conjunto de Dragonchess",
+      "raridade": "comum",
+      "grupo": "jogos",
+      "proficienciaId": "conjunto-dragonchess",
+      "descricao": "Conjunto de jogo Dragonchess.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 1,
+        "moeda": "po"
+      },
+      "pesoKg": 0.25
+    },
+    {
+      "id": "baralho-cartas",
+      "tipo": "ferramentas-kits",
+      "nome": "Baralho de Cartas",
+      "raridade": "comum",
+      "grupo": "jogos",
+      "proficienciaId": "baralho-cartas",
+      "descricao": "Conjunto de cartas de jogo.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 5,
+        "moeda": "pp"
+      },
+      "pesoKg": null
+    },
+    {
+      "id": "conjunto-three-dragon-ante",
+      "tipo": "ferramentas-kits",
+      "nome": "Conjunto de Three-Dragon Ante",
+      "raridade": "comum",
+      "grupo": "jogos",
+      "proficienciaId": "conjunto-three-dragon-ante",
+      "descricao": "Conjunto do jogo Three-Dragon Ante.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "consumivel": false,
+      "custo": {
+        "valor": 1,
+        "moeda": "po"
+      },
+      "pesoKg": null
+    },
+    {
+      "id": "kit-primeiros-socorros",
+      "tipo": "ferramentas-kits",
+      "nome": "Kit de Primeiros Socorros",
+      "raridade": "comum",
+      "grupo": "kits",
+      "proficienciaId": null,
+      "descricao": "Bolsa de couro com bandagens, unguentos e talas. Contém 10 usos; usar um permite estabilizar uma criatura com 0 pontos de vida sem teste de Medicina.",
+      "quantidadeInicial": 1,
+      "quantidadeMaxima": null,
+      "usosPorUnidade": 10,
+      "consumivel": false,
+      "custo": {
+        "valor": 5,
+        "moeda": "po"
+      },
+      "pesoKg": 1.5
+    }
+  ]
+}

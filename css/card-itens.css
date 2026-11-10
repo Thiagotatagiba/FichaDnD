@@ -1,4 +1,5 @@
-/* Armaduras usam a linguagem visual das listas e modais de magia. */
+/* Padrões visuais de cards e modais dos itens do inventário: armas, armaduras, escudos, vestimentas, munições e outros. */
+:root { --inventario-card-borda: 1px; }
 #listaArmaduras { display: grid; gap: 8px; }
 .escudo-grupos, .escudo-sublista { display: grid; gap: 8px; width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
 .escudo-grupos > *, .escudo-sublista > *, .escudo-resumo, .escudo-abrir { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; }
@@ -48,6 +49,32 @@ label.vestimenta-sintonizado[hidden] { display: none !important; }
   .vestimenta-selecao-modal .magia-selecao-item { align-items: flex-start; flex-direction: column; gap: 4px; }
   .vestimenta-selecao-modal .magia-selecao-item span { max-width: 100%; text-align: left; }
 }
+
+/* Arraste os cards entre posições da mesma categoria para definir sua ordem. */
+#listaArmas > .item-card[draggable="true"],
+#listaMunicoes > .item-card[draggable="true"],
+#listaArmaduras > .item-card[draggable="true"],
+#listaEscudosItens > .item-card[draggable="true"],
+#listaVestimentas > .item-card[draggable="true"],
+#listaOutros > .item-card[draggable="true"] { cursor: grab; }
+#listaArmas > .item-card.inventario-arrastando,
+#listaMunicoes > .item-card.inventario-arrastando,
+#listaArmaduras > .item-card.inventario-arrastando,
+#listaEscudosItens > .item-card.inventario-arrastando,
+#listaVestimentas > .item-card.inventario-arrastando,
+#listaOutros > .item-card.inventario-arrastando { opacity: .55; cursor: grabbing; }
+#listaArmas > .item-card.inventario-destino-arraste,
+#listaMunicoes > .item-card.inventario-destino-arraste,
+#listaArmaduras > .item-card.inventario-destino-arraste,
+#listaEscudosItens > .item-card.inventario-destino-arraste,
+#listaVestimentas > .item-card.inventario-destino-arraste,
+#listaOutros > .item-card.inventario-destino-arraste { outline: 2px dashed #8b4513; outline-offset: 2px; }
+#listaArmas.inventario-lista-arraste-ativa,
+#listaMunicoes.inventario-lista-arraste-ativa,
+#listaArmaduras.inventario-lista-arraste-ativa,
+#listaEscudosItens.inventario-lista-arraste-ativa,
+#listaVestimentas.inventario-lista-arraste-ativa,
+#listaOutros.inventario-lista-arraste-ativa { min-height: 20px; }
 .escudo-abrir.magia-item { grid-template-columns: minmax(0, 1fr); width: 100%; padding: 9px 10px; overflow: hidden; }
 .escudo-abrir .armadura-cartao-info { width: 100%; }
 .escudo-abrir .armadura-cartao-rodape { flex-wrap: wrap; gap: 5px 10px; }
@@ -123,7 +150,7 @@ body.tema-classico .armadura-titulo-contagem { background: linear-gradient(180de
   width: 100%; margin: 0; box-sizing: border-box; text-align: left;
   font-family: inherit; color: inherit; cursor: pointer;
   background: linear-gradient(145deg, #f4ecd8, #e8dcc2);
-  border: 1px solid #3b2f1b;
+  border: var(--inventario-card-borda) solid #3b2f1b;
   box-shadow: inset 0 0 8px rgba(0, 0, 0, .12), 0 2px 5px rgba(59, 47, 27, .12);
 }
 .armadura-cartao-info { display: grid; gap: 8px; min-width: 0; }
@@ -326,7 +353,7 @@ body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abr
 }
 .arma-resumo { width: 100%; min-width: 0; }
 .arma-resumo {
-  box-sizing: border-box; padding: 9px 11px; border: 2px solid #3b2f1b;
+  box-sizing: border-box; padding: 9px 11px; border: var(--inventario-card-borda) solid #3b2f1b;
   border-radius: 11px; background: linear-gradient(145deg,#f4ecd8,#e8dcc2);
   box-shadow: inset 0 0 8px rgba(0,0,0,.1), 0 2px 5px rgba(59,47,27,.12);
 }
@@ -354,8 +381,70 @@ body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abr
 .arma-resumo.armadura-equipada .armadura-cartao-estado::after { content: none; }
 
 /* Um contorno único envolve o card inteiro; o botão de título permanece sem borda própria. */
-.municao-resumo.arma-resumo { border: 2px solid #3b2f1b; border-radius: 11px; background: linear-gradient(145deg,#f4ecd8,#e8dcc2); box-shadow: inset 0 0 8px rgba(0,0,0,.1), 0 2px 5px rgba(59,47,27,.12); }
+.municao-resumo.arma-resumo { border: var(--inventario-card-borda) solid #3b2f1b; border-radius: 11px; background: linear-gradient(145deg,#f4ecd8,#e8dcc2); box-shadow: inset 0 0 8px rgba(0,0,0,.1), 0 2px 5px rgba(59,47,27,.12); }
 .municao-card .municao-card-head.magia-item.armadura-abrir { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+
+/* Outros usa um único card compacto no mesmo padrão de Armas e Armaduras. */
+#listaOutros { display: grid; gap: 8px; width: 100%; min-width: 0; }
+#listaOutros > .item-card[data-tipo="outro"].outro-catalogo-card { margin: 0; padding: 0; min-height: 0; width: 100%; max-width: 100%; border: 0; border-radius: 0; box-shadow: none; background: transparent; overflow: visible; box-sizing: border-box; }
+#listaOutros > .item-card.outro-catalogo-card::before,
+#listaOutros > .item-card.outro-catalogo-card::after { display: none; }
+#listaOutros > .item-card.outro-catalogo-card > :not(.outro-resumo) { display: none !important; }
+.outro-resumo { width: 100%; min-width: 0; box-sizing: border-box; padding: 8px 10px; border: var(--inventario-card-borda) solid #3b2f1b; border-radius: 11px; background: linear-gradient(145deg,#f4ecd8,#e8dcc2); box-shadow: inset 0 0 8px rgba(0,0,0,.1), 0 2px 5px rgba(59,47,27,.12); }
+.outro-resumo .armadura-cartao-info { gap: 6px; }
+.outro-resumo .armadura-cartao-topo { justify-content: space-between; flex-wrap: nowrap; }
+.outro-cartao-nome { min-width: 0; flex: 1 1 auto; padding: 0; border: 0; background: transparent; box-shadow: none; color: #6f3610; font: inherit; font-weight: 700; text-align: left; overflow-wrap: anywhere; cursor: pointer; }
+.outro-cartao-nome:hover, .outro-cartao-nome:focus-visible { color: #6f3610; text-decoration: none; }
+.outro-resumo .outro-cartao-proficiencia:not([hidden]) { display: inline-flex; flex: 0 0 auto; align-items: center; margin-left: auto; padding: 4px 8px; border: 0; border-radius: 20px; background: #526d39; color: #fff9e9; font-size: 10px; font-weight: 700; line-height: 1; text-align: center; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
+.outro-cartao-proficiencia[hidden] { display: none; }
+.outro-resumo { cursor: pointer; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+.outro-resumo:hover, .outro-resumo:focus-within { border-color: #8b5a2b; box-shadow: 0 6px 14px rgba(59,47,27,.12); transform: translateY(-1px); }
+.outro-resumo:focus-within { outline: 2px solid #8b4513; outline-offset: 2px; }
+.outro-cartao-quantidade { font-size: 13px; font-weight: 600; }
+.outro-cartao-detalhes { font-size: 10px; }
+.outro-cartao-tags { display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.outro-cartao-tags .armadura-cartao-tag { padding: 2px 6px; border: 1px solid rgba(111,54,16,.22); border-radius: 999px; font-size: 9px; line-height: 1.2; }
+.outro-resumo .armadura-cartao-rodape { flex-wrap: wrap; gap: 4px 8px; }
+.outro-resumo .armadura-cartao-meta { white-space: normal; text-align: right; overflow-wrap: anywhere; }
+.outro-quantidade-inline { width: 48px; flex: 0 0 48px; box-sizing: border-box; padding: 2px 4px; border: 0; border-bottom: 1px solid rgba(111,54,16,.5); border-radius: 3px; background: rgba(255,250,242,.7); color: inherit; font: inherit; font-size: 13px; text-align: center; }
+.outro-quantidade-inline:focus-visible { outline: 2px solid #8b4513; outline-offset: 2px; }
+.outro-item-modal { width: min(780px, 100%); }
+.outro-item-detalhes { padding: 18px 20px 8px; }
+.outro-item-detalhes .arma-detalhe-valores { justify-content: flex-end; }
+.outro-modal-nota { margin: 8px 0; font-size: 13px; }
+.outro-editor { display: grid; gap: 14px; height: min(72vh, 650px); max-height: min(72vh, 650px); overflow-y: auto; padding: 18px 20px 20px; box-sizing: border-box; }
+.outro-editor .armadura-editor-campos { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.outro-editor .armadura-editor-completo { grid-column: 1 / -1; }
+.outro-editor .armadura-editor-campos label[hidden] { display: none !important; }
+.outro-item-modal .magia-modal-topo > .outro-editor-flags[hidden] { display: none !important; }
+.outro-item-modal .outro-editor-flags [data-editor="proficiente"] { accent-color: #526d39; }
+.outro-editor-espacador { flex: 1; }
+.outro-modal-remover { display: flex; justify-content: flex-end; padding: 0 20px 18px; }
+.outro-modal-remover[hidden] { display: none !important; }
+.outro-selecao-modal { width: min(1100px, 100%); }
+.outro-selecao-filtros { grid-template-columns: minmax(180px,.7fr) minmax(220px,1.3fr); }
+.outro-opcao { width: 100%; text-align: left; }
+.outro-selecao-previa { padding: 14px; }
+.outro-selecao-previa .arma-detalhe-valores { justify-content: flex-start; margin: 12px 0; }
+.outro-tipo-criacao-modal { width: min(460px, 100%); }
+.outro-tipo-criacao-modal .magia-selecao-cabecalho { margin: -18px -18px 12px; }
+.outro-tipo-criacao-modal .magia-selecao-cabecalho .magia-slot-modal-titulo { margin: 0; }
+.outro-tipo-criacao-ajuda { margin: 0 0 14px; line-height: 1.45; }
+.outro-tipo-criacao-modal > .magia-selecao-classe { display: block; margin-bottom: 6px; }
+.outro-tipo-criacao-modal [data-tipo-criacao] { width: 100%; box-sizing: border-box; }
+.outro-tipo-criacao-acoes { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+@media (max-width: 680px) {
+  .outro-editor { height: auto; max-height: 68vh; padding: 14px; }
+  .outro-editor .armadura-editor-campos, .outro-selecao-filtros { grid-template-columns: minmax(0,1fr); }
+  .outro-editor .armadura-editor-completo { grid-column: auto; }
+  .outro-editor .armadura-editor-acoes { flex-wrap: wrap; }
+  .outro-editor-espacador { display: none; }
+  .outro-item-detalhes { padding: 14px 14px 6px; }
+  .outro-modal-remover { padding: 0 14px 14px; }
+  .outro-resumo .armadura-cartao-meta { margin-left: 0; text-align: left; }
+  .outro-tipo-criacao-modal { padding: 14px; }
+  .outro-tipo-criacao-modal .magia-selecao-cabecalho { margin: -14px -14px 12px; }
+}
 
 
 .arma-cartao-proficiencia { color: #9b2c19; font-size: 11px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }

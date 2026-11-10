@@ -379,7 +379,7 @@
       "arma_tipo": "Marcial",
       "arma_dist_curto": "45",
       "arma_dist_longo": "180",
-      "arma_municao_id": "",
+      "arma_municao_id": "id_1776975671796_799",
       "arma_descricao": "Arco de madeira de teixo com corda de intestino de boi. Usado para cobrir distâncias antes do combate próximo.",
       "propriedades": {
         "acuidade": false,
@@ -520,7 +520,7 @@
       "arma_tipo": "Simples",
       "arma_dist_curto": "24",
       "arma_dist_longo": "96",
-      "arma_municao_id": "",
+      "arma_municao_id": "id_1776975671803_925",
       "arma_descricao": "Mecanismo compacto com alça de ferro. Recarrega com manivela.",
       "propriedades": {
         "acuidade": false,
@@ -686,29 +686,18 @@
       "outro_tipo": "Pocao",
       "outro_descricao": "Frasco pequeno com líquido vermelho brilhante. Cura 2d4+2 PV.",
       "outro_item_magico": false,
-      "outro_sintonizado": false
-    },
-    {
-      "id": "id_1776975671796_799",
-      "outro_preco": "",
-      "outro_peso": "",
-      "outro_quantidade": "20",
-      "outro_nome": "Flechas",
-      "outro_tipo": "Municao",
-      "outro_descricao": "Pontas de ferro com penas de ganso. Para uso no arco longo.",
-      "outro_item_magico": false,
-      "outro_sintonizado": false
-    },
-    {
-      "id": "id_1776975671803_925",
-      "outro_preco": "",
-      "outro_peso": "",
-      "outro_quantidade": "20",
-      "outro_nome": "Virotes",
-      "outro_tipo": "Municao",
-      "outro_descricao": "Pequenos projéteis metálicos para besta leve.",
-      "outro_item_magico": false,
-      "outro_sintonizado": false
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "pocoes",
+      "outro_catalogo_id": "",
+      "outro_categoria": "",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "true",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "false",
+      "outro_preco_definido": "false"
     },
     {
       "id": "id_1776975671810_221",
@@ -716,10 +705,21 @@
       "outro_peso": "1",
       "outro_quantidade": "5",
       "outro_nome": "Rações",
-      "outro_tipo": "Comida",
+      "outro_tipo": "Outros",
       "outro_descricao": "Pacotes secos de carne, frutas e castanhas para viagem.",
       "outro_item_magico": false,
-      "outro_sintonizado": false
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "equipamento-geral",
+      "outro_catalogo_id": "",
+      "outro_categoria": "Equipamento",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
     },
     {
       "id": "id_1776975671816_950",
@@ -730,7 +730,52 @@
       "outro_tipo": "Kit",
       "outro_descricao": "Cordas, pitões de ferro e arnês de couro.",
       "outro_item_magico": false,
-      "outro_sintonizado": false
+      "outro_sintonizado": false,
+      "outro_catalogo_tipo": "ferramentas-kits",
+      "outro_catalogo_id": "kit-escalada",
+      "outro_categoria": "kits",
+      "outro_raridade": "comum",
+      "outro_moeda": "po",
+      "outro_consumivel": "false",
+      "outro_quantidade_maxima": "",
+      "outro_proficiencia_id": "",
+      "outro_pode_ser_foco_arcano": "",
+      "outro_peso_definido": "true",
+      "outro_preco_definido": "false"
+    }
+  ],
+  "municoes": [
+    {
+      "id": "id_1776975671796_799",
+      "municao_nome": "Flechas",
+      "municao_quantidade": "20",
+      "municao_descricao": "Pontas de ferro com penas de ganso. Para uso no arco longo.",
+      "municao_catalogo_id": "flechas",
+      "municao_quantidade_pacote": "20",
+      "municao_peso_pacote": "0.5",
+      "municao_preco_pacote": "1",
+      "municao_moeda": "po",
+      "municao_raridade": "comum",
+      "municao_magica": "false",
+      "municao_sintonizado": "false",
+      "municao_bonus_ataque": "0",
+      "municao_bonus_dano": ""
+    },
+    {
+      "id": "id_1776975671803_925",
+      "municao_nome": "Virotes",
+      "municao_quantidade": "20",
+      "municao_descricao": "Pequenos projéteis metálicos para besta leve.",
+      "municao_catalogo_id": "virotes",
+      "municao_quantidade_pacote": "20",
+      "municao_peso_pacote": "0.75",
+      "municao_preco_pacote": "1",
+      "municao_moeda": "po",
+      "municao_raridade": "comum",
+      "municao_magica": "false",
+      "municao_sintonizado": "false",
+      "municao_bonus_ataque": "0",
+      "municao_bonus_dano": ""
     }
   ]
 }

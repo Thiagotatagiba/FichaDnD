@@ -1,0 +1,12 @@
+{
+  "versaoSchema": 1,
+  "versaoCatalogo": 1,
+  "sistema": "dnd5e-2014",
+  "status": "rascunho-para-revisao",
+  "unidadePeso": "kg",
+  "observacao": "Categoria de reserva para itens mundanos que não se encaixem nas demais famílias. Campos sem valor oficial ficam null para serem preenchidos pela pessoa; este modelo não concede propriedades ou efeitos.",
+  "fontes": ["https://www.dndbeyond.com/sources/dnd/basic-rules-2014/equipment"],
+  "itens": [
+    {"id":"item-comum-personalizado","tipo":"outros","nome":"Item Comum Personalizado","raridade":"comum","categoria":"Outro","descricao":"Modelo genérico para um item mundano que não pertença às demais categorias. Edite nome, descrição, valor e peso.","quantidadeInicial":1,"quantidadeMaxima":null,"consumivel":false,"custo":{"valor":null,"moeda":null},"pesoKg":null,"modeloPersonalizavel":true}
+  ]
+}
