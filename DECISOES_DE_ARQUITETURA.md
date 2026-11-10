@@ -122,7 +122,7 @@ A única personalização aprovada é o multiplicador da capacidade de carga, po
 
 ### Modais não fecham por clique no fundo
 
-Clique no overlay/fundo de um modal não deve fechá-lo. O usuário fecha o diálogo por uma ação explícita (por exemplo, Fechar ou Cancelar) ou pelo teclado quando o modal oferece esse comportamento. Isso evita perda acidental de edições e mantém um comportamento previsível entre categorias. Novos modais devem seguir esta convenção; ao alterar um modal existente, preservar seus controles explícitos de saída e o descarte seguro de alterações.
+Clique no overlay/fundo de um modal não deve fechá-lo. O usuário fecha o diálogo por uma ação explícita (por exemplo, Fechar ou Cancelar) ou pelo teclado quando o modal oferece esse comportamento. Isso evita perda acidental de edições e mantém um comportamento previsível entre categorias. Novos modais devem seguir esta convenção; ao alterar um modal existente, preservar seus controles explícitos de saída e o descarte seguro de alterações. O seletor e os detalhes/edição de Munições seguem a mesma regra.
 
 ### Precisão visual de peso de vestimentas
 
@@ -131,3 +131,66 @@ Pesos de vestimentas e acessórios são normalizados e exibidos com exatamente u
 ### Catálogo de vestimentas sem efeitos de regra não implementados
 
 Dados de bônus ou vantagens associados a um item só devem alterar cálculos quando a regra correspondente existir e estiver aprovada. Até lá, as seleções de vantagem em vestimentas são apenas dados de cadastro/apresentação e não concedem vantagem automaticamente em testes.
+
+## 11. Catálogo próprio de munições e compatibilidade legada
+
+Munições têm coleção canônica `municoes` e seção própria sob Armas. Cada lote conserva `id`, nome, quantidade individual, descrição e referência ao tipo do catálogo. Preço e peso descrevem o pacote; o peso carregado é calculado por `quantidade / quantidadePacote × pesoPacoteKg`, sem arredondar o valor usado no cálculo.
+
+Durante a transição, a exportação também grava um espelho legado em `outros` com o mesmo ID e peso unitário. A importação nova migra registros com `outro_tipo = Municao`, remove duplicatas pelo ID e prefere `municoes` quando o lote aparece nos dois formatos. Para os quatro tipos conhecidos, o importador aplica tamanho e peso de pacote do catálogo; munição personalizada sem correspondência preserva a interpretação de peso unitário legada.
+
+Os vínculos das armas continuam usando `arma_municao_id` como ID de instância. A munição é consumida uma peça por ataque concluído, acertando ou errando; ataques com lote ausente ou zerado são bloqueados antes da rolagem. O catálogo inicial contém apenas munição comum; campos preparados para itens mágicos não ativam modificadores.
+
+### Hierarquia visual das categorias do inventário
+
+As colunas do inventário servem apenas para organizar e posicionar grupos; não devem formar um quadro externo único envolvendo categorias diferentes. Cada categoria deve ter seu próprio painel independente (`inventario-categoria-box`), com cabeçalho, contador, lista de itens e ação de adicionar pertencentes àquela categoria.
+
+Na primeira coluna, Armas e Munições são dois painéis irmãos, um após o outro. Munições fica abaixo de Armas, mas fora do painel de Armas. O mesmo princípio já é usado na coluna seguinte: Armaduras e Escudos têm painéis distintos; Vestimentas e acessórios também constitui seu próprio painel. Não aninhar uma categoria dentro do painel de outra, nem colocar um quadro externo adicional ao redor de várias categorias. A grade responsiva pode reposicionar as colunas, mas deve preservar essa separação e a hierarquia de cada painel.
+
+Ao criar ou reorganizar categorias do inventário, usar Armaduras/Escudos como referência: grupos relacionados podem compartilhar a coluna, porém cada grupo mantém seu próprio cabeçalho, contagem, conteúdo e botão de adição. Para Armas/Munições, Munições deve permanecer visualmente separada mesmo quando estiver logo abaixo de Armas.
+
+### Padrão visual do card de item do inventário
+
+O card de Munição estabelece o padrão a seguir ao atualizar o quadro “Outros”, usando o card da Besta Leve como referência visual:
+
+- A seção da categoria mantém sua própria moldura externa. Cada item mantém um único card arredondado dentro da seção; não remover nem duplicar essas duas camadas.
+- O contorno, fundo e sombra do item pertencem ao contêiner do card. O botão clicável do título/conteúdo fica transparente e sem borda ou sombra próprias, para não criar um segundo quadrado dentro do card.
+- Informações principais ficam agrupadas no card. A quantidade de munição é editável diretamente nele, sem ficar solta fora do contorno do item.
+- O título nomeia o recipiente/conjunto (por exemplo, “Estojo de Virotes” ou “Aljava de Flechas”). Dentro do card, “Quantidade atual” usa um rótulo menor acima do valor editável e da unidade; raridade fica em tag na mesma linha. A capacidade máxima fica no rodapé junto ao valor e peso e também limita a quantidade editável.
+- O cabeçalho mostra o nome e o indicador de abrir detalhes; valor e peso ficam alinhados no rodapé. Usar os ícones de moeda e balança e permitir quebra de linha sem transbordamento em telas estreitas.
+- Não repetir em tags o tipo já definido pelo título da seção (por exemplo, não mostrar a tag “Munição” dentro de Munições). Manter tags que acrescentem informação, como raridade ou estado mágico.
+
+Ao reformular os itens de “Outros”, reaproveitar essa hierarquia e apresentação, adaptando somente os dados e controles próprios de cada item. A moldura externa da categoria e o contorno único do item devem continuar visualmente distintos.
+
+## 12. Padrões visuais de cards e modais do inventário
+
+Os padrões abaixo consolidam as convenções aprovadas nas telas de Armas, Armaduras, Escudos, Vestimentas e Munições. Uma nova categoria deve reutilizar a estrutura e os estilos existentes antes de criar componentes visuais próprios; diferenças só devem existir para dados e ações específicas do tipo de item.
+
+### Card compacto no inventário
+
+- O card é um único contêiner arredondado, com fundo, contorno e sombra. O botão interno que abre os detalhes é transparente e sem moldura ou sombra próprias; não criar um segundo quadrado dentro do card.
+- O título e o indicador de abertura ficam no topo. Dados principais (como dano ou CA), propriedades úteis e tags ocupam o corpo; moeda e peso ficam juntos no rodapé, com os ícones já usados no inventário.
+- Tags devem ser curtas, consistentes e informativas: raridade e estados como Equipado, Item mágico, Sintonizado ou Sem proficiência quando aplicáveis. Não repetir a categoria que o cabeçalho da seção já informa. Esconder bônus nulo quando não acrescenta informação, como bônus de CA +0.
+- Mostrar preço e peso quando esses dados fizerem parte do item. Usar o mesmo formato de moeda e quilogramas dos demais cards; permitir quebra em telas estreitas sem sobreposição ou rolagem horizontal.
+- Quantidades que o usuário consulta ou altera com frequência podem ficar diretamente no card. Ao mudar a quantidade, persistir o valor no item e atualizar imediatamente todos os resumos e vínculos dependentes, preservando limites definidos pelo pacote.
+- A moldura do grupo e o card são níveis distintos da hierarquia. Categorias relacionadas podem compartilhar uma coluna, mas cada categoria tem seu painel próprio e seus próprios controles.
+
+### Modal de exibição
+
+- O cabeçalho identifica o item com ícone e nome, mostra raridade e tags aplicáveis e mantém as ações no topo. O botão **Editar** leva o ícone de lápis; **Fechar** permanece explícito. **Equipar/Desequipar** fica junto ao título quando a categoria oferece essa ação.
+- O corpo prioriza as informações necessárias para entender o item: dano/CA/quantidade, propriedades, preço e peso quando pertinentes e descrição. Blocos de descrição ou detalhes podem ter seu próprio acabamento leve, sem duplicar a moldura principal do modal.
+- **Remover** fica no canto inferior direito do modal de exibição, com ícone de lixeira e estilo de ação destrutiva. Reutilizar a confirmação e a lógica de exclusão já existentes para manter índices equipados, peso e vínculos consistentes.
+- O modal não fecha ao clicar no fundo. Fechamento ocorre por botão explícito ou comportamento de teclado existente; edição com alterações deve preservar a confirmação segura de descarte.
+
+### Modal de cadastro e edição
+
+- Diferenciar o formulário da prévia de catálogo: o formulário permite preencher/salvar; escolher um item de catálogo o adiciona ao inventário sem abrir automaticamente a edição, salvo se o fluxo da categoria pedir outra coisa.
+- O cabeçalho mostra ícone, nome do fluxo (“Novo …”/“Editar …”) e estados relevantes do item. Campos têm rótulos visíveis, controles alinhados e grupos coerentes; em desktop podem usar duas colunas, empilhando em telas estreitas.
+- Campos específicos de uma categoria aparecem apenas quando fazem sentido. Começar efeitos opcionais por valores neutros e não mostrá-los como bônus na exibição quando forem zero. Dados de efeitos que ainda não têm sistema de regra permanecem inertes.
+- Ações de salvar e cancelar ficam juntas no rodapé, com Salvar como ação primária. Em edição, Excluir usa estilo destrutivo e confirmação. Não depender do clique no fundo para cancelar ou fechar.
+- Usar os mesmos tokens de cores, tipografia, botões, tags, espaçamentos, limites de largura e comportamento responsivo dos modais de equipamento existentes. Formulários altos rolam verticalmente e deixam todas as ações alcançáveis; conteúdo não pode escapar da viewport.
+
+### Seletor de catálogo
+
+- O modal de seleção segue o padrão existente de pesquisa e filtragem: filtros e busca acima, lista de resultados de um lado e prévia detalhada do item selecionado do outro em telas largas; em telas estreitas, os blocos empilham e a lista mantém altura controlada.
+- A prévia reutiliza as tags, a descrição, o preço/peso e a apresentação do modal de exibição quando possível. A ação de adicionar fica junto da prévia e deixa claro que o item será copiado para o inventário.
+- Estados vazios, quantidade de resultados e falha de carregamento devem ter mensagens compreensíveis. Pesquisa, navegação por teclado e ações principais devem continuar acessíveis sem depender de ponteiro.

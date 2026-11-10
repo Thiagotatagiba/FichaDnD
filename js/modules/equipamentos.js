@@ -21,30 +21,31 @@
 
         // 🔹 PASSO 1: guardar valor atual
         const valorAtual = selectMunicao.value;
+        const armaCatalogoId = card.dataset.catalogoArmaId || "";
 
         selectMunicao.innerHTML = '<option value="">Sem Munição</option>';
 
-        const outrosItens = document.querySelectorAll(
-          '#listaOutros .item-card[data-tipo="outro"]',
+        const itensMunicao = document.querySelectorAll(
+          '#listaMunicoes .item-card[data-tipo="municao"]',
         );
 
-        outrosItens.forEach((item) => {
-          const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
-          const nome = item.querySelector('[data-campo="outro_nome"]')?.value;
-          const inputQuantidade = item.querySelector(
-            '[data-campo="outro_quantidade"]',
-          );
-          const quantidade = inputQuantidade ? inputQuantidade.value : "";
+        itensMunicao.forEach((item) => {
+          const nome = item.querySelector('[data-campo="municao_nome"]')?.value;
+          const quantidade = item.querySelector('[data-campo="municao_quantidade"]')?.value;
+          if (!nome) return;
+          const municaoDados = typeof obterCamposMunicao === "function" ? obterCamposMunicao(item) : null;
+          const definicaoMunicao = estadoCatalogoMunicoes.itens?.find(def => def.id === municaoDados?.municao_catalogo_id);
+          if (armaCatalogoId && definicaoMunicao && !definicaoMunicao.compatibilidade.includes(armaCatalogoId)) return;
+          const option = document.createElement("option");
+          option.value = item.dataset.id;
+          option.textContent = `${quantidade || "0"} ${nome}`;
+          selectMunicao.appendChild(option);
+        });
 
-          let id = item.dataset.id;
-
-          if (tipo?.toLowerCase() === "municao" && nome) {
-            const option = document.createElement("option");
-            option.value = id;
-            option.textContent = `${quantidade || "-"} ${nome}`;
-
-            selectMunicao.appendChild(option);
-          }
+        // Mantém os vínculos válidos de fichas antigas durante a migração.
+        document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]').forEach(item => {
+          if (String(item.querySelector('[data-campo="outro_tipo"]')?.value || "").toLowerCase() !== "municao" || !item.querySelector('[data-campo="outro_nome"]')?.value || localizarMunicao(item.dataset.id)) return;
+          const option = document.createElement("option"); option.value = item.dataset.id; option.textContent = `${item.querySelector('[data-campo="outro_quantidade"]')?.value || "0"} ${item.querySelector('[data-campo="outro_nome"]')?.value}`; selectMunicao.appendChild(option);
         });
 
         // 🔹 PASSO 2: restaurar valor
@@ -77,19 +78,13 @@
 
         const idMunicao = arma.arma_municao_id;
 
-        const itens = document.querySelectorAll(
-          '#listaOutros .item-card[data-tipo="outro"]',
-        );
-
-        const item = [...itens].find(
-          (itemInventario) => itemInventario.dataset.id === idMunicao,
-        );
+        const item = localizarMunicao(idMunicao) || [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')].find(itemInventario => itemInventario.dataset.id === idMunicao);
 
         if (!item) {
           return;
         }
 
-        const inputQtd = item.querySelector('[data-campo="outro_quantidade"]');
+        const inputQtd = item.querySelector('[data-campo="municao_quantidade"], [data-campo="outro_quantidade"]');
 
         let atual = parseInt(inputQtd.value) || 0;
 
@@ -103,15 +98,16 @@
 
         inputQtd.value = atual;
 
-        // 🔥 IMPORTANTE: dispara atualização
-        inputQtd.dispatchEvent(new Event("change"));
+        if (item.dataset.tipo === "municao" && typeof atualizarCardMunicao === "function") atualizarCardMunicao(item);
 
-        // 🔥 Atualiza selects
-        document
-          .querySelectorAll('.item-card[data-tipo="arma"]')
-          .forEach((card) => {
-            atualizarOpcoesMunicao(card);
-          });
+        // 🔥 IMPORTANTE: dispara atualização
+        inputQtd.dispatchEvent(new Event("change", { bubbles: true }));
+
+        // Atualiza as opções e os resumos visíveis das armas vinculadas.
+        // O select compacto do card é uma cópia do campo do formulário; atualizar
+        // só as opções do formulário deixa a quantidade exibida no card desatualizada.
+        atualizarListaArmasEquipamento();
+        atualizarSeletoresAtaqueEquipados();
       }
 
       document
@@ -121,9 +117,14 @@
         });
       //Atualizar automaticamente quando mudar
       document.addEventListener("change", (e) => {
+        if (e.target.matches('[data-campo="municao_quantidade"], [data-campo="municao_nome"]')) {
+          const card = e.target.closest('#listaMunicoes .item-card[data-tipo="municao"]');
+          if (card && typeof atualizarCardMunicao === "function") atualizarCardMunicao(card);
+          if (typeof atualizarPesoAtualInventario === "function") atualizarPesoAtualInventario();
+        }
         if (
           e.target.matches(
-            '[data-campo="outro_tipo"], [data-campo="outro_nome"], [data-campo="outro_quantidade"]',
+            '[data-campo="outro_tipo"], [data-campo="outro_nome"], [data-campo="outro_quantidade"], [data-campo="municao_quantidade"], [data-campo="municao_nome"]',
           )
         ) {
           document
@@ -131,6 +132,7 @@
             .forEach((card) => {
               atualizarOpcoesMunicao(card);
             });
+          if (typeof atualizarSeletoresAtaqueEquipados === "function") atualizarSeletoresAtaqueEquipados();
         }
       });
 
@@ -183,14 +185,19 @@
           (soma, escudo) => soma + getValorPesoItem(escudo.escudo_peso),
           0,
         );
-        const totalOutros = coletarOutros().reduce((soma, outro) => {
+        const totalOutros = coletarOutros().filter(outro => String(outro.outro_tipo || "").toLowerCase() !== "municao").reduce((soma, outro) => {
           const quantidade = Math.max(
             1,
             parseInt(outro.outro_quantidade, 10) || 1,
           );
           return soma + getValorPesoItem(outro.outro_peso) * quantidade;
         }, 0);
-        const total = totalArmas + totalArmaduras + totalEscudos + totalOutros;
+        const totalMunicoes = typeof coletarMunicoes === "function" ? coletarMunicoes().reduce((soma, municao) => {
+          const unidades = Math.max(0, Number(municao.municao_quantidade) || 0);
+          const porPacote = Math.max(1, Number(municao.municao_quantidade_pacote) || 1);
+          return soma + unidades / porPacote * (Number(municao.municao_peso_pacote) || 0);
+        }, 0) : 0;
+        const total = totalArmas + totalArmaduras + totalEscudos + totalOutros + totalMunicoes;
 
         campoPesoAtual.value = Number.isInteger(total)
           ? total
@@ -206,6 +213,7 @@
         if (typeof atualizarResumosEscudos === "function") atualizarResumosEscudos(coletarEscudos());
         if (typeof atualizarResumosVestimentas === "function") atualizarResumosVestimentas();
         renderizarOutrosEquipamento(coletarOutros());
+        if (typeof atualizarResumoMunicoes === "function") atualizarResumoMunicoes();
         atualizarTodasMunicoesArmas();
         atualizarSelectNomeArmaduraEquipada(
           coletarArmaduras(),
@@ -296,25 +304,8 @@
         if (propriedades.municao) {
           let textoMunicao = "Munição";
           const idMunicao = arma.arma_municao_id;
-
-          if (idMunicao) {
-            const item = [
-              ...document.querySelectorAll(
-                '#listaOutros .item-card[data-tipo="outro"]',
-              ),
-            ].find((el) => el.dataset.id === idMunicao);
-
-            const nome = item?.querySelector(
-              '[data-campo="outro_nome"]',
-            )?.value;
-            const qtd = item?.querySelector(
-              '[data-campo="outro_quantidade"]',
-            )?.value;
-
-            if (nome) {
-              textoMunicao += ` (${qtd || "-"} ${nome})`;
-            }
-          }
+          const muni = typeof buscarDadosMunicao === "function" ? buscarDadosMunicao(idMunicao) : null;
+          if (muni?.municao_nome) textoMunicao += ` (${muni.municao_quantidade || "-"} ${muni.municao_nome})`;
 
           listaPropriedades.push(textoMunicao);
         }
@@ -633,26 +624,8 @@
         if (propriedades.municao) {
           let textoFinal = "Munição";
 
-          const idMunicao = arma.arma_municao_id;
-
-          if (idMunicao) {
-            const item = [
-              ...document.querySelectorAll(
-                '#listaOutros .item-card[data-tipo="outro"]',
-              ),
-            ].find((el) => el.dataset.id === idMunicao);
-
-            const nome = item?.querySelector(
-              '[data-campo="outro_nome"]',
-            )?.value;
-            const qtd = item?.querySelector(
-              '[data-campo="outro_quantidade"]',
-            )?.value;
-
-            if (nome) {
-              textoFinal = `Munição (${qtd || "-"} ${nome})`;
-            }
-          }
+          const muni = typeof buscarDadosMunicao === "function" ? buscarDadosMunicao(arma.arma_municao_id) : null;
+          if (muni?.municao_nome) textoFinal = `Munição (${muni.municao_quantidade || "-"} ${muni.municao_nome})`;
 
           listaPropriedades.push(textoFinal);
         }
@@ -929,18 +902,9 @@
       function obterStatusMunicaoArma(arma) {
         if (!arma?.usaMunicao) return "";
 
-        const itemMunicao = [
-          ...document.querySelectorAll(
-            '#listaOutros .item-card[data-tipo="outro"]',
-          ),
-        ].find((item) => item.dataset.id === arma.arma_municao_id);
-
-        const nomeMunicao = itemMunicao
-          ?.querySelector('[data-campo="outro_nome"]')
-          ?.value?.trim();
-        const quantidadeMunicao = itemMunicao
-          ?.querySelector('[data-campo="outro_quantidade"]')
-          ?.value?.trim();
+        const itemMunicao = typeof buscarDadosMunicao === "function" ? buscarDadosMunicao(arma.arma_municao_id) : null;
+        const nomeMunicao = itemMunicao?.municao_nome?.trim();
+        const quantidadeMunicao = String(itemMunicao?.municao_quantidade ?? "").trim();
 
         if (!arma.arma_municao_id || !nomeMunicao) {
           return "SEM MUNIÇÃO";
@@ -978,26 +942,10 @@
           : "";
         select.innerHTML = '<option value="">Sem Munição</option>';
 
-        document
-          .querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')
-          .forEach((item) => {
-            const tipo = item.querySelector('[data-campo="outro_tipo"]')?.value;
-            const nome = item
-              .querySelector('[data-campo="outro_nome"]')
-              ?.value?.trim();
-            const quantidade = item
-              .querySelector('[data-campo="outro_quantidade"]')
-              ?.value?.trim();
-            const id = item.dataset.id;
-
-            if (String(tipo || "").toLowerCase() !== "municao" || !nome || !id)
-              return;
-
-            const option = document.createElement("option");
-            option.value = id;
-            option.textContent = `${quantidade || "-"} ${nome}`;
-            select.appendChild(option);
-          });
+        coletarMunicoes().forEach((municao) => {
+          if (!municao.municao_nome || !municao.id) return;
+          const option = document.createElement("option"); option.value = municao.id; option.textContent = `${municao.municao_quantidade || "0"} ${municao.municao_nome}`; select.appendChild(option);
+        });
 
         select.value = Array.from(select.options).some(
           (option) => option.value === valorAtual,

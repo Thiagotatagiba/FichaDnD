@@ -394,7 +394,9 @@ function salvarFicha() {
   dados.armas = coletarArmas();
   dados.armaduras = coletarArmaduras();
   dados.escudos = coletarEscudos();
-  dados.outros = coletarOutros();
+  dados.municoes = typeof coletarMunicoes === "function" ? coletarMunicoes() : [];
+  dados.outros = coletarOutros().filter(outro => String(outro.outro_tipo || "").toLowerCase() !== "municao");
+  if (typeof sincronizarMunicoesNaFicha === "function") dados.outros.push(...sincronizarMunicoesNaFicha(dados.municoes));
   dados.armaduraEquipadaIndice = armaduraEquipadaIndice;
 
   const nome = document.getElementById("nomePersonagem").value || "Personagem";

@@ -1169,6 +1169,13 @@ function fecharModalAtaqueArma() {
 }
 
 function abrirModalAtaqueArma(arma) {
+  if (arma?.usaMunicao || arma?.propriedades?.municao) {
+    const municao = typeof buscarDadosMunicao === "function" ? buscarDadosMunicao(arma.arma_municao_id) : null;
+    if (!municao || Number(municao.municao_quantidade) <= 0) {
+      alert(!municao ? "Selecione uma munição no equipamento de combate antes de atacar." : `Sem munição: ${municao.municao_nome} está com quantidade zero.`);
+      return;
+    }
+  }
   const overlay = document.getElementById("modalAtaqueOverlay");
   const titulo = document.getElementById("modalAtaqueTitulo");
   const subtitulo = document.getElementById("modalAtaqueSubtitulo");
@@ -1448,19 +1455,9 @@ function atualizarSubAbaArmas() {
       const idMunicao = arma.arma_municao_id;
 
       if (idMunicao) {
-        const itemMunicao = [
-          ...document.querySelectorAll(
-            '#listaOutros .item-card[data-tipo="outro"]',
-          ),
-        ].find((el) => el.dataset.id === idMunicao);
-
-        const nomeMunicao = itemMunicao?.querySelector(
-          '[data-campo="outro_nome"]',
-        )?.value;
-
-        const qtdAtual = itemMunicao?.querySelector(
-          '[data-campo="outro_quantidade"]',
-        )?.value;
+        const itemMunicao = typeof buscarDadosMunicao === "function" ? buscarDadosMunicao(idMunicao) : null;
+        const nomeMunicao = itemMunicao?.municao_nome;
+        const qtdAtual = itemMunicao?.municao_quantidade;
 
         if (nomeMunicao) {
           municaoTitulo = `${qtdAtual || "-"} ${nomeMunicao}`;

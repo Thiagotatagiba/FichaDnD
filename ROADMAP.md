@@ -65,6 +65,17 @@ A única exceção aprovada é a capacidade de carga: o padrão é Força × 7,5
 - Melhorar experiência de edição de ficha e usabilidade
 - Permitir melhor gestão de campanhas e personagens por perfil
 
+### Em andamento — catálogo próprio de munições
+
+- Separar munições da categoria Outros e posicionar a seção logo abaixo de Armas.
+- Usar um catálogo JSON de munições comuns de D&D 5e 2014; quantidade representa projéteis individuais e pode ser alterada no card.
+- Vincular lotes por ID estável a armas, seletores de combate, consumo por ataque e cálculo de peso proporcional ao pacote. Alterações manuais e consumo por ataque atualizam imediatamente os cards e seletores vinculados.
+- Migrar arquivos antigos preservando IDs e gravar temporariamente um espelho em `outros` para compatibilidade.
+- **Validação pendente:** revisar visualmente em celular e desktop; validar navegação por teclado e leitor de tela; importar/exportar Thrain; exercitar dois lotes compatíveis, remoção de lote vinculado e quantidade zero; confirmar na interface que editar quantidade e consumir munição em ataque atualizam imediatamente o card da arma e os seletores de combate.
+- Não marcar a iniciativa como concluída até os cenários de responsividade, round-trip e acessibilidade passarem.
+
+Os padrões visuais reutilizáveis para card, modal de exibição, cadastro/edição e seleção de catálogo estão registrados em `DECISOES_DE_ARQUITETURA.md`, seção 12. A hierarquia separada entre categorias e a regra de não fechar modal pelo fundo permanecem nas seções 10 e 11.
+
 ### Possíveis evoluções
 
 - Sistema de campanhas e múltiplos personagens
@@ -226,6 +237,7 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 
 ### Histórico recente
 
+- **2026-11-10 — Padrões visuais de inventário consolidados:** a seção 12 de `DECISOES_DE_ARQUITETURA.md` documenta card compacto, modal de exibição, cadastro/edição e seletor de catálogo, incluindo ações, tags, hierarquia de bordas, comportamento responsivo e atualização imediata dos vínculos de quantidade. Não conclui a validação integrada dos catálogos.
 - **2026-11-05 — Armaduras com apresentação e modais no padrão de magias:** revisão visual implementada a pedido do usuário; descrições pesquisadas no D&D Beyond 2014, catálogo versão 2, ação de adicionar no cabeçalho, propriedades organizadas em grade e edição com descarte seguro. Validações e limites em [proposta e resultado](docs/propostas/CATALOGO_ITENS_ARMADURAS.md).
 - **2026-11-06 — Acabamento dos títulos do inventário e modal de armaduras (`68faa8d`):** brasões com quantidade em cápsula, resumo compacto com avisos de proficiência/furtividade, modal reorganizado e prévia do catálogo no mesmo padrão visual. A documentação não declara validação visual adicional nesta etapa. Próxima continuidade aprovada pelo usuário: iniciar propostas próprias para os outros itens do inventário.
 - **2026-11-06 — Catálogo e modal de armas (`1c1943a`) e refinamentos do cadastro:** catálogo das 37 armas comuns de 2014, pesquisa, cards e edição implementados; alcance corpo a corpo separado dos campos de distância, com 3 m para as cinco armas com propriedade Alcance. Proficiência/magia/sintonização foram destacados no topo do cadastro e o botão Fechar foi removido durante a edição. Sete testes automatizados e verificações estáticas passaram; cenários de navegador, combate e round-trip permanecem pendentes conforme a tarefa acima.
@@ -255,4 +267,4 @@ Diagnóstico, implementação e validação são etapas distintas. Um diagnósti
 - Preservar regras de D&D, estruturas de dados, IDs, atributos HTML e compatibilidade com fichas existentes, salvo evidência que justifique uma mudança.
 - Commits são manuais e ficam a cargo do responsável pelo projeto.
 
-**Última atualização:** 2026-11-07 — prévias de cadastro de armaduras, escudos e armas e formulários manuais conferidos em viewport móvel; ajustes responsivos registrados na tarefa e no [plano responsivo](docs/propostas/PLANO_RESPONSIVIDADE_MODAIS_INVENTARIO.md). A regressão integrada de armas e as pendências anteriores de perícias, importação parcial, timeline e round-trip narrativo de Thrain permanecem. Fase 3 continua em andamento e nenhuma fase inteira foi concluída.
+**Última atualização:** 2026-11-10 — padrões visuais de cards e modais do inventário consolidados na seção 12 de `DECISOES_DE_ARQUITETURA.md`; munição agora documenta atualização imediata dos cards e seletores de armas quando a quantidade muda. Permanecem a validação integrada/responsiva de munições, a regressão integrada de armas e as pendências anteriores de perícias, importação parcial, timeline e round-trip narrativo de Thrain. Fase 3 continua em andamento e nenhuma fase inteira foi concluída.

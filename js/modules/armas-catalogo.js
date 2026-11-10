@@ -142,10 +142,11 @@ function atualizarMoedaArmaCard(card) {
 }
 
 function encontrarMunicaoDoTipo(tipo) {
-  const termos = { "virotes":["virote", "bolt"], "flechas":["flecha", "arrow"], "agulhas de zarabatana":["agulha", "needle"], "balas de funda":["bala", "pedra", "bullet"] }[tipo] || [tipo];
-  const itens = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')].filter(card =>
-    String(card.querySelector('[data-campo="outro_tipo"]')?.value || "").toLowerCase() === "municao" &&
-    textoBuscaArma(card.querySelector('[data-campo="outro_nome"]')?.value).includes(textoBuscaArma(termos[0])));
+  const catalogId = { "virotes":"virotes", "flechas":"flechas", "agulhas de zarabatana":"agulhas-zarabatana", "balas de funda":"balas-de-funda" }[tipo];
+  const itens = [...document.querySelectorAll('#listaMunicoes .item-card[data-tipo="municao"]')].filter(card => {
+    const dados = obterCamposMunicao(card);
+    return catalogId ? (dados.municao_catalogo_id === catalogId || textoBuscaArma(dados.municao_nome).includes(textoBuscaArma(tipo))) : textoBuscaArma(dados.municao_nome).includes(textoBuscaArma(tipo));
+  });
   return itens.length === 1 ? itens[0].dataset.id || "" : "";
 }
 
@@ -367,7 +368,7 @@ function dadosArmaDoCard(card) {
   const props = obterPropriedadesArmaCard(card);
   const um = valor("dano_1"), dois = valor("dano_2");
   const selectAmmo = card.querySelector('[data-campo="arma_municao_id"]');
-  const ammoName = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')].find(el => el.dataset.id === selectAmmo?.value)?.querySelector('[data-campo="outro_nome"]')?.value;
+  const ammoName = buscarDadosMunicao(selectAmmo?.value)?.municao_nome;
   const indice = [...document.querySelectorAll('#listaArmas .item-card[data-tipo="arma"]:not(#armaModelo)')].indexOf(card);
   const equipada = ["arma1Nome", "arma2Nome"].some(id => document.getElementById(id)?.value === String(indice));
   return {
@@ -475,7 +476,7 @@ function itemParaModalArma(card) {
 function montarModalArma() {
   if (document.getElementById("armaModalOverlay")) return;
   const overlay=criarElementoArma("div",undefined,"magia-modal-overlay modal-overlay-base oculto"); overlay.id="armaModalOverlay"; overlay.setAttribute("aria-hidden","true");
-  overlay.innerHTML=`<div class="magia-modal modal-base armadura-modal arma-modal" role="dialog" aria-modal="true" aria-labelledby="armaModalTitulo"><div class="magia-modal-topo modal-header-base"><div class="magia-modal-topo-info"><div class="armadura-modal-titulo-linha"><span class="armadura-modal-icone" aria-hidden="true">⚔️</span><h2 id="armaModalTitulo" class="magia-modal-titulo">Arma</h2><button type="button" class="magia-modal-botao armadura-modal-equipar" data-acao="equipar">Equipar</button></div><div id="armaModalTags" class="armadura-modal-categorias"></div></div><div class="magia-modal-acoes"><button type="button" class="magia-modal-botao" data-acao="editar">Editar</button><button type="button" class="magia-modal-botao" data-acao="fechar">Fechar</button></div></div><div id="armaModalVisualizacao"></div><form id="armaModalFormulario" class="armadura-editor" hidden style="display:none"><div class="arma-editor-identificacao"></div><fieldset class="arma-editor-propriedades"><legend>Propriedades da arma</legend><div class="arma-editor-propriedades-lista"></div></fieldset><div class="arma-editor-campos"></div><div class="armadura-editor-flags"></div><div class="armadura-editor-acoes"><button type="button" class="magia-modal-botao perigo" data-acao="excluir">Excluir arma</button><button type="button" class="magia-modal-botao" data-acao="cancelar">Cancelar</button><button type="submit" class="magia-modal-botao primario">Salvar</button></div></form></div>`;
+  overlay.innerHTML=`<div class="magia-modal modal-base armadura-modal arma-modal" role="dialog" aria-modal="true" aria-labelledby="armaModalTitulo"><div class="magia-modal-topo modal-header-base"><div class="magia-modal-topo-info"><div class="armadura-modal-titulo-linha"><span class="armadura-modal-icone" aria-hidden="true">⚔️</span><h2 id="armaModalTitulo" class="magia-modal-titulo">Arma</h2><button type="button" class="magia-modal-botao armadura-modal-equipar" data-acao="equipar">Equipar</button></div><div id="armaModalTags" class="armadura-modal-categorias"></div></div><div class="magia-modal-acoes"><button type="button" class="magia-modal-botao" data-acao="editar">✏️ Editar</button><button type="button" class="magia-modal-botao" data-acao="fechar">Fechar</button></div></div><div id="armaModalVisualizacao"></div><form id="armaModalFormulario" class="armadura-editor" hidden style="display:none"><div class="arma-editor-identificacao"></div><fieldset class="arma-editor-propriedades"><legend>Propriedades da arma</legend><div class="arma-editor-propriedades-lista"></div></fieldset><div class="arma-editor-campos"></div><div class="armadura-editor-flags"></div><div class="armadura-editor-acoes"><button type="button" class="magia-modal-botao perigo" data-acao="excluir">Excluir arma</button><button type="button" class="magia-modal-botao" data-acao="cancelar">Cancelar</button><button type="submit" class="magia-modal-botao primario">Salvar</button></div></form></div>`;
   document.body.append(overlay);
   overlay.querySelector('[data-acao="fechar"]').onclick=fecharModalArma;
   overlay.querySelector('[data-acao="editar"]').onclick=editarModalArma;
@@ -499,7 +500,8 @@ function renderizarModalArma() {
     const texto = tipo === "categoria" ? (valor === "simples" ? "Simples" : "Marcial") : valor;
     tags.append(adicionarDicaArma(criarElementoArma("span",texto,"magia-modal-nivel"),dicaCaracteristicaArma(tipo,valor)));
   });
-  document.getElementById("armaModalVisualizacao").replaceChildren(renderizarDetalhesArma(item,null,card));
+  const visualizacao=document.getElementById("armaModalVisualizacao");visualizacao.replaceChildren(renderizarDetalhesArma(item,null,card));
+  const acoesRemocao=criarElementoArma("div",undefined,"inventario-modal-acoes-inferior");const remover=criarElementoArma("button","🗑️ Remover","magia-modal-botao perigo");remover.type="button";remover.setAttribute("aria-label","Remover arma");remover.addEventListener("click",()=>document.querySelector('#armaModalFormulario [data-acao="excluir"]').click());acoesRemocao.append(remover);visualizacao.append(acoesRemocao);
   const form=document.getElementById("armaModalFormulario");
   const flags=document.querySelector("#armaModalOverlay .armadura-editor-flags");
   if(flags&&flags.parentElement!==form)form.append(flags);

@@ -1,0 +1,12 @@
+{
+  "versaoSchema": 1,
+  "sistema": "dnd5e-2014",
+  "versaoCatalogo": 1,
+  "unidadePeso": "kg",
+  "itens": [
+    { "id": "flechas", "nome": "Flechas", "nomeCard": "Aljava de Flechas", "nomeUnidade": "Flechas", "nomeOriginal": "Arrows", "tipo": "municao", "raridade": "comum", "compatibilidade": ["arco-curto", "arco-longo"], "quantidadePacote": 20, "custo": { "valor": 1, "moeda": "po" }, "pesoPacoteKg": 0.5, "descricao": "Munição para arcos. Cada ataque consome uma flecha; após o combate, metade das munições usadas pode ser recuperada com uma busca." },
+    { "id": "agulhas-zarabatana", "nome": "Agulhas de zarabatana", "nomeCard": "Pacote de Agulhas de Zarabatana", "nomeUnidade": "Agulhas", "nomeOriginal": "Blowgun needles", "tipo": "municao", "raridade": "comum", "compatibilidade": ["zarabatana"], "quantidadePacote": 50, "custo": { "valor": 1, "moeda": "po" }, "pesoPacoteKg": 0.5, "descricao": "Munição para zarabatanas. Cada ataque consome uma agulha; após o combate, metade das munições usadas pode ser recuperada com uma busca." },
+    { "id": "virotes", "nome": "Virotes", "nomeCard": "Estojo de Virotes", "nomeUnidade": "Virotes", "nomeOriginal": "Crossbow bolts", "tipo": "municao", "raridade": "comum", "compatibilidade": ["besta-leve", "besta-de-mao", "besta-pesada"], "quantidadePacote": 20, "custo": { "valor": 1, "moeda": "po" }, "pesoPacoteKg": 0.75, "descricao": "Munição para bestas. Cada ataque consome um virote; após o combate, metade das munições usadas pode ser recuperada com uma busca." },
+    { "id": "balas-de-funda", "nome": "Balas de funda", "nomeCard": "Pacote de Balas de Funda", "nomeUnidade": "Balas de funda", "nomeOriginal": "Sling bullets", "tipo": "municao", "raridade": "comum", "compatibilidade": ["funda"], "quantidadePacote": 20, "custo": { "valor": 4, "moeda": "pc" }, "pesoPacoteKg": 0.75, "descricao": "Munição para fundas. Cada ataque consome uma bala; após o combate, metade das munições usadas pode ser recuperada com uma busca." }
+  ]
+}

@@ -92,6 +92,17 @@ async function aplicarDadosFicha(dados) {
     dados.armaduraEquipadaIndice,
   );
   console.log("OUTROS COM ID:", dados.outros);
+  // Migra munições legadas de "Outros" para o catálogo dedicado, mantendo os IDs
+  // usados pelas armas. Se o arquivo já contém a coleção nova, ela é prioritária.
+  const antigosComoMunicao = (Array.isArray(dados.outros) ? dados.outros : []).filter(item => String(item.outro_tipo || "").trim().toLowerCase() === "municao");
+  const novasMunicoesPorId = new Map((Array.isArray(dados.municoes) ? dados.municoes : []).map(item => [String(item.id || ""), item]));
+  antigosComoMunicao.forEach(item => { if (!novasMunicoesPorId.has(String(item.id || ""))) novasMunicoesPorId.set(String(item.id || gerarId()), typeof converterMunicaoLegada === "function" ? converterMunicaoLegada(item) : item); });
+  const containerMunicoes = document.getElementById("listaMunicoes");
+  if (containerMunicoes && typeof criarCardMunicao === "function") {
+    containerMunicoes.replaceChildren();
+    novasMunicoesPorId.forEach(item => criarCardMunicao(item));
+  }
+  dados.outros = (Array.isArray(dados.outros) ? dados.outros : []).filter(item => String(item.outro_tipo || "").trim().toLowerCase() !== "municao");
   // 🔥 CAMPOS ESPECIAIS
   const camposEspeciais = {
     xp: (valor) => setXP(valor ?? 0),
@@ -392,7 +403,7 @@ async function aplicarDadosFicha(dados) {
   // =========================
   document
     .querySelectorAll(
-      '#listaArmas .item-card[data-tipo="arma"], #listaArmaduras .item-card[data-tipo="armadura"], #listaEscudos .item-card[data-tipo="escudo"], #listaOutros .item-card[data-tipo="outro"]',
+      '#listaArmas .item-card[data-tipo="arma"], #listaArmaduras .item-card[data-tipo="armadura"], #listaEscudos .item-card[data-tipo="escudo"], #listaOutros .item-card[data-tipo="outro"], #listaMunicoes .item-card[data-tipo="municao"]',
     )
     .forEach(fecharItemCard);
   atualizarListaArmasEquipamento();

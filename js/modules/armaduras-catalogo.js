@@ -429,7 +429,7 @@ function montarModalArmadura() {
         <div id="armaduraModalCategoria" class="armadura-modal-categorias"></div>
       </div>
         <div class="magia-modal-acoes">
-          <button type="button" class="magia-modal-botao modal-close-base" data-acao="editar">Editar</button>
+          <button type="button" class="magia-modal-botao modal-close-base" data-acao="editar">✏️ Editar</button>
           <button type="button" class="magia-modal-botao modal-close-base" data-acao="fechar">Fechar</button>
         </div>
       </div>
@@ -519,6 +519,7 @@ function renderizarModalArmadura() {
   if (dados.sintonizado) categorias.append(criarElementoArmadura("span", "Sintonizada", "magia-modal-nivel"));
   const visualizacao = document.getElementById("armaduraModalVisualizacao");
   visualizacao.replaceChildren(renderizarDetalhesArmadura(dados, null, !card.querySelector(".item-proficiencia").classList.contains("nao")));
+  const acoesRemocao=criarElementoArmadura("div",undefined,"inventario-modal-acoes-inferior");const remover=criarElementoArmadura("button","🗑️ Remover","magia-modal-botao perigo");remover.type="button";remover.setAttribute("aria-label","Remover armadura");remover.addEventListener("click",()=>document.querySelector('#armaduraModalFormulario [data-acao="excluir"]').click());acoesRemocao.append(remover);visualizacao.append(acoesRemocao);
   visualizacao.hidden = false;
   const form = document.getElementById("armaduraModalFormulario");
   const flags = document.querySelector("#armaduraModalOverlay .armadura-editor-flags");

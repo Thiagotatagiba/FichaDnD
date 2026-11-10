@@ -372,7 +372,7 @@ function montarModalEscudo() {
           <div id="escudoModalCategoria" class="armadura-modal-categorias escudo-modal-categorias"></div>
         </div>
         <div class="magia-modal-acoes">
-          <button type="button" class="magia-modal-botao modal-close-base" data-acao="editar">Editar</button>
+          <button type="button" class="magia-modal-botao modal-close-base" data-acao="editar">✏️ Editar</button>
           <button type="button" class="magia-modal-botao modal-close-base" data-acao="fechar">Fechar</button>
         </div>
       </div>
@@ -430,8 +430,9 @@ function renderizarModalEscudo() {
   if (item.magico) tags.append(criarElementoEscudo("span", "Item mágico", "magia-modal-nivel"));
   if (item.sintonizado) tags.append(criarElementoEscudo("span", "Sintonizada", "magia-modal-nivel"));
   if (tags.childElementCount) categorias.append(tags);
-  document.getElementById("escudoModalVisualizacao").replaceChildren(
+  const visualizacao=document.getElementById("escudoModalVisualizacao");visualizacao.replaceChildren(
     renderizarDetalhesEscudo(item, null, !card.querySelector(".item-proficiencia")?.classList.contains("nao"), item.empunhado));
+  const acoesRemocao=criarElementoEscudo("div",undefined,"inventario-modal-acoes-inferior");const remover=criarElementoEscudo("button","🗑️ Remover","magia-modal-botao perigo");remover.type="button";remover.setAttribute("aria-label","Remover escudo");remover.addEventListener("click",()=>document.querySelector('#escudoModalFormulario [data-acao="excluir"]').click());acoesRemocao.append(remover);visualizacao.append(acoesRemocao);
   const formulario = document.getElementById("escudoModalFormulario"); formulario.hidden = true; formulario.style.display = "none";
   const flags = document.querySelector("#escudoModalOverlay .armadura-editor-flags"); if (flags && flags.parentElement !== formulario) formulario.append(flags);
   document.querySelector('#escudoModalOverlay [data-acao="fechar"]').hidden = false;

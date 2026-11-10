@@ -276,6 +276,54 @@ body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abr
 #listaArmas > .item-card::before,
 #listaArmas > .item-card::after { display: none; }
 #listaArmas > .item-card > :not(.arma-resumo) { display: none !important; }
+
+/* Munições seguem a estrutura visual de armas, armaduras e escudos. */
+.lista-municoes { display: flex; flex-direction: column; gap: 9px; min-width: 0; }
+#listaMunicoes:empty::before { content: "Nenhuma munição adicionada. Escolha uma opção do catálogo ou crie a sua."; display: block; padding: 12px; border: 1px dashed #bda68c; border-radius: 10px; color: #806f58; font-size: 13px; line-height: 1.5; }
+#listaMunicoes > .municao-card { width: 100%; min-width: 0; min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; overflow: visible; box-sizing: border-box; }
+#listaMunicoes > .municao-card::before, #listaMunicoes > .municao-card::after { display: none; }
+.municao-resumo { width: 100%; min-width: 0; box-sizing: border-box; }
+.municao-card-head { display: block; width: 100%; min-width: 0; padding: 0; border: 0; background: transparent; color: inherit; text-align: left; cursor: pointer; }
+.municao-card-topo { padding-bottom: 5px; border-bottom: 1px solid rgba(111,54,16,.2); }
+.municao-card-conteudo { display: grid; grid-template-columns: minmax(0,1fr); justify-items: start; gap: 5px; padding-top: 8px; }
+.municao-card .municao-card-controls { display: grid; justify-items: start; gap: 2px; width: 100%; min-width: 0; margin: 0; padding: 0; border: 0; font-size: 13px; }
+.municao-card-quantidade-rotulo { color: #756b60; font-size: 9px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; }
+.municao-card-quantidade-linha { display: flex; align-items: center; justify-content: flex-start; gap: 6px; min-width: 0; font-weight: 700; }
+.municao-card .municao-quantidade { flex: 0 0 50px; width: 50px; min-height: 25px; box-sizing: border-box; padding: 2px 4px; border: 1px solid #bda68c; border-radius: 5px; background: rgba(255,250,242,.9); color: inherit; font: inherit; font-size: 14px; font-weight: 700; text-align: center; }
+.municao-card-unidade { overflow-wrap: anywhere; font-size: 15px; }
+.municao-card-tags { display: flex; flex-wrap: wrap; gap: 4px; font-size: 11px; font-weight: 400; }
+.municao-card-rodape { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px 8px; width: 100%; min-width: 0; }
+.municao-card-capacidade { max-width: 100%; text-align: left; font-size: 10px; }
+.municao-card-chevron { font-size: 1.2rem; line-height: 1; }
+.municao-card-meta { max-width: 100%; white-space: normal; text-align: left; overflow-wrap: anywhere; }
+.municao-modal-overlay { z-index: 10020; }
+.municao-detalhe-modal { width: min(860px, 94vw); }
+.municao-detalhes-conteudo { display: grid; gap: 12px; }
+.municao-detalhes-conteudo .armadura-descricao { width: 100%; box-sizing: border-box; }
+.municao-detalhe-acoes { display: flex; justify-content: flex-end; width: 100%; margin-top: 2px; }
+.inventario-modal-acoes-inferior { display: flex; justify-content: flex-end; width: 100%; margin: 12px 0 0; }
+.municao-catalogo-modal { width: min(920px, 94vw); }
+.municao-catalogo-filtros { grid-template-columns: minmax(180px,.55fr) minmax(0,1fr); }
+.municao-catalogo-conteudo { display: grid; grid-template-columns: minmax(220px,.8fr) minmax(0,1.2fr); gap: 14px; min-height: 260px; }
+.municao-catalogo-lista { display: grid; align-content: start; gap: 7px; max-height: 52vh; overflow: auto; }
+.municao-catalogo-detalhe { display: block; min-width: 0; overflow: auto; }
+.municao-previa-catalogo { width: 100%; box-sizing: border-box; }
+.municao-editor-modal { width: min(760px,94vw); }
+.municao-editor-modal > h2 { margin: 0; }
+.municao-form { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
+.municao-form > label { display: grid; gap: 5px; min-width: 0; font-size: .85rem; }
+.municao-form > label:first-child, .municao-form > label:nth-child(3), .municao-modal-acoes { grid-column: 1 / -1; }
+.municao-form textarea { min-height: 90px; resize: vertical; }
+.municao-modal-acoes { display: flex; justify-content: end; gap: 8px; }
+@media (max-width: 640px) {
+  .municao-catalogo-modal { max-height: 96dvh; overflow-y: auto; }
+  .municao-catalogo-filtros, .municao-catalogo-conteudo { grid-template-columns: minmax(0,1fr); }
+  .municao-catalogo-lista { max-height: 24vh; }
+  .municao-form { grid-template-columns: minmax(0,1fr); }
+  .municao-form > label:first-child, .municao-form > label:nth-child(3), .municao-modal-acoes { grid-column: auto; }
+  .municao-card-conteudo { grid-template-columns: minmax(0,1fr); justify-items: start; }
+  .municao-card-rodape { justify-content: flex-start; }
+}
 .arma-resumo { width: 100%; min-width: 0; }
 .arma-resumo {
   box-sizing: border-box; padding: 9px 11px; border: 2px solid #3b2f1b;
@@ -304,6 +352,12 @@ body.tema-classico #listaArmaduras > .item-card > .armadura-resumo .armadura-abr
 .arma-abrir .armadura-cartao-estado { flex: 0 0 auto; font-size: 0; }
 .arma-resumo.armadura-equipada .armadura-cartao-estado { padding: 4px 8px; border-radius: 20px; background: #526d39; color: #fff9e9; font-size: 10px; font-weight: 700; white-space: nowrap; box-shadow: 0 1px 3px rgba(0,0,0,.25); }
 .arma-resumo.armadura-equipada .armadura-cartao-estado::after { content: none; }
+
+/* Um contorno único envolve o card inteiro; o botão de título permanece sem borda própria. */
+.municao-resumo.arma-resumo { border: 2px solid #3b2f1b; border-radius: 11px; background: linear-gradient(145deg,#f4ecd8,#e8dcc2); box-shadow: inset 0 0 8px rgba(0,0,0,.1), 0 2px 5px rgba(59,47,27,.12); }
+.municao-card .municao-card-head.magia-item.armadura-abrir { border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+
+
 .arma-cartao-proficiencia { color: #9b2c19; font-size: 11px; font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
 .arma-cartao-proficiencia[hidden] { display: none; }
 .arma-cartao-municao { display: grid; grid-template-columns: auto minmax(0,1fr); align-items: center; gap: 8px; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(111,54,16,.2); font-size: 10px; font-weight: 700; }

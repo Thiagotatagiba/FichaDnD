@@ -8,6 +8,10 @@ Este arquivo é um espaço de captura para ideias ainda não avaliadas. Uma anot
 - **Vestimentas — integrar vantagens em perícias:** hoje os itens podem guardar a seleção de perícias, mas a ficha ainda não tem um sistema de vantagens aplicável aos testes. Quando esse sistema existir, avaliar como converter os dados do item em vantagem real, tratar múltiplas fontes e exibir a origem do benefício. Não implementar antes de definir a mecânica geral.
 - **Vestimentas — ampliar cobertura de validação:** considerar testes automatizados para catálogo inválido/duplicado, normalização de peso para uma casa decimal, cancelar criação, edição e exclusão com atualização da carga; complementar a verificação visual em telas pequenas e com navegação por teclado/leitor de tela.
 
+- **Munições — recuperação após combate:** avaliar ação manual para recuperar metade das peças gastas conforme as regras, com confirmação e registro no histórico. Não recuperar automaticamente nesta primeira versão.
+- **Munições mágicas — regras futuras:** definir uma lista de efeitos estruturados e como bônus interagem com ataque/dano antes de ativar qualquer bônus; os campos extensíveis atuais são somente dados inertes.
+- **Munições — retirar espelho legado:** após período de compatibilidade e validação de fichas antigas, decidir quando deixar de gravar a cópia dos lotes em `outros`.
+
 - **Magias — busca e filtros na lista do personagem:** avaliar busca por nome e filtros por nível, escola e estado de preparo para listas extensas. O catálogo de adição já filtra por classe e nível; esta ideia se refere à lista de magias já cadastradas no personagem.
 
 - **Magias — navegação para listas extensas:** avaliar apresentação compacta, paginação ou outra navegação quando um personagem tiver muitas magias. A UI atual já renderiza itens por nível e oferece visualização/edição em modal.

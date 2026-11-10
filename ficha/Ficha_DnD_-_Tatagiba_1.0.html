@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="../css/modal.css" />
     <link rel="stylesheet" href="../css/responsivo.css" />
     <link rel="stylesheet" href="../css/xp-modal.css" />
-    <link rel="stylesheet" href="../css/armaduras.css?v=vestimenta-review-polish-1" />
+    <link rel="stylesheet" href="../css/armaduras.css?v=municoes-card-11" />
   </head>
 
   <body class="tema-padrao">
@@ -3190,7 +3190,8 @@
             <div class="inventario-card">
               <div class="status-titulo">Inventário</div>
               <div class="inventario-colunas">
-                <div class="inventario-coluna">
+                <div class="inventario-coluna inventario-coluna-categorias">
+                  <section class="inventario-categoria-box">
                   <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
                     <div class="inventario-subtitulo armadura-titulo" id="inventarioTituloArmas">
                       <button type="button" class="armadura-titulo-icone" onclick="abrirModalSelecaoArma()" title="Adicionar nova arma" aria-label="Adicionar nova arma">
@@ -3477,6 +3478,21 @@
                   >
                     + nova arma
                   </button>
+                  </section>
+                  <section class="inventario-categoria-box">
+                    <div class="inventario-subtitulo-barra armadura-subtitulo-barra">
+                      <div class="inventario-subtitulo armadura-titulo">
+                        <button type="button" class="armadura-titulo-icone" onclick="abrirCatalogoMunicoes()" title="Adicionar munição" aria-label="Adicionar munição">
+                          <span class="armadura-titulo-emoji" aria-hidden="true">🏹</span>
+                          <span class="armadura-titulo-mais" aria-hidden="true">+</span>
+                        </button>
+                        <span class="armadura-titulo-nome">Munições</span>
+                        <span class="armadura-titulo-contagem" id="inventarioContagemMunicoes">0</span>
+                      </div>
+                    </div>
+                    <div id="listaMunicoes" class="lista-municoes"></div>
+                    <button type="button" class="inventario-botao-add inventario-botao-add-inferior" onclick="abrirCatalogoMunicoes()">+ nova munição</button>
+                  </section>
                 </div>
 
                 <div class="inventario-coluna inventario-coluna-categorias">
@@ -4092,8 +4108,9 @@
     <!-- ========================= -->
     <!-- INVENTÁRIO / EQUIPAMENTOS -->
     <!-- ========================= -->
-    <script src="../js/modules/equipamentos.js"></script>
-    <script src="../js/modules/armas-catalogo.js?v=modal-backdrop-policy-1"></script>
+    <script src="../js/modules/equipamentos.js?v=municoes-3"></script>
+    <script src="../js/modules/municoes-catalogo.js?v=municoes-card-12"></script>
+    <script src="../js/modules/armas-catalogo.js?v=municoes-3"></script>
     <script src="../js/modules/armaduras-catalogo.js?v=modal-backdrop-policy-1"></script>
     <script src="../js/modules/escudos-catalogo.js?v=modal-backdrop-policy-1"></script>
     <script src="../js/modules/vestimentas-catalogo.js?v=vestimentas-review-polish-1"></script>
@@ -4101,7 +4118,7 @@
     <!-- ========================= -->
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
     <!-- ========================= -->
-    <script src="../js/core/storage.js"></script>
+    <script src="../js/core/storage.js?v=municoes-3"></script>
 
     <!-- ========================= -->
     <!-- ATRIBUTOS / PROFICIÊNCIAS -->
@@ -4121,7 +4138,7 @@
     <!-- ========================= -->
     <!-- COMBATE -->
     <!-- ========================= -->
-    <script src="../js/modules/combate.js?v=modal-backdrop-policy-1"></script>
+    <script src="../js/modules/combate.js?v=municoes-3"></script>
 
     <!-- ========================= -->
     <!-- UI / MODAIS / TABS -->
@@ -4136,7 +4153,7 @@
     <!-- ========================= -->
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
     <!-- ========================= -->
-    <script src="../js/modules/importacao.js"></script>
+    <script src="../js/modules/importacao.js?v=municoes-3"></script>
     <script src="../js/modules/entrada-criacao.js"></script>
 
     <script>
