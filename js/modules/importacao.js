@@ -239,6 +239,9 @@ async function aplicarDadosFicha(dados, opcoes = {}) {
         snapshot.estadoTimerAvisoClasse,
       );
     }
+    if (typeof window.__limparStatusExportacaoAposImportacaoValida === "function") {
+      window.__limparStatusExportacaoAposImportacaoValida();
+    }
     return aplicado;
   } catch (erroAplicacao) {
     window.__fichaImportacaoEpoch =

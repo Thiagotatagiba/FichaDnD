@@ -265,7 +265,7 @@ function createHarness() {
     addEventListener() {}, removeEventListener() {},
     getElementById(id) { return getElement(id); },
     querySelectorAll(selector) {
-      if (selector === 'input, select, textarea') return [...fields.values()].filter((field) => field.isConnected);
+      if (selector === 'input, select, textarea') return [...fields.values()].filter((field) => field.isConnected && field.id !== 'exportacaoStatus');
       if (selector === '.pericia-linha') return [];
       if (selector.includes('.item-card[data-tipo="arma"]')) return lists.get('listaArmas')?.children || [];
       if (selector.includes('.item-card[data-tipo="armadura"]')) return lists.get('listaArmaduras')?.children || [];
@@ -792,6 +792,64 @@ async function importPayload(harness, payload) {
   harness.payloadText = JSON.stringify(payload);
   await harness.run(`processarImportacao(payloadText, result => { completionResult = result; })`);
 }
+
+function seedExportRequestForCharacterA(harness) {
+  harness.run(`
+    ultimaExportacaoSolicitadaFicha = {
+      solicitadaEm: '2026-11-13T12:00:00.000Z',
+      nomeArquivo: 'Personagem_A_Jogador_20261113.json',
+    };
+    atualizarStatusExportacao('Exportação solicitada ao navegador. Confirme se o arquivo foi salvo.');
+  `);
+}
+
+test('importação válida limpa aviso e solicitação de exportação do personagem substituído', async () => {
+  const harness = createHarness();
+  seedExportRequestForCharacterA(harness);
+  const dirtyBefore = harness.run('obterEstadoPersistenciaFicha().alteracoesPendentes');
+
+  await importPayload(harness, {
+    nomePersonagem: 'Personagem B',
+    jogador: 'Jogador B',
+    armas: [],
+    municoes: [],
+  });
+
+  const persistence = JSON.parse(harness.run('JSON.stringify(obterEstadoPersistenciaFicha())'));
+  const status = harness.run(`({ text: document.getElementById('exportacaoStatus').textContent, hidden: document.getElementById('exportacaoStatus').hidden })`);
+  assert.equal(harness.run('completionResult.tipo'), 'sucesso');
+  assert.equal(persistence.ultimaExportacaoSolicitada, null);
+  assert.equal(persistence.ultimoBackupLocal, null);
+  assert.equal(persistence.alteracoesPendentes, false);
+  assert.notEqual(dirtyBefore, null);
+  assert.equal(status.text, '');
+  assert.equal(status.hidden, true);
+});
+
+test('rollback de importação falha preserva aviso e solicitação do personagem restaurado', async () => {
+  const harness = createHarness();
+  seedExportRequestForCharacterA(harness);
+  const before = JSON.parse(harness.run('JSON.stringify(obterEstadoPersistenciaFicha())'));
+  armFailure(harness, 'end-sync');
+
+  await importPayload(harness, {
+    nomePersonagem: 'Personagem B inválido na aplicação',
+    jogador: 'Jogador B',
+    armas: [],
+    municoes: [],
+  });
+
+  const after = JSON.parse(harness.run('JSON.stringify(obterEstadoPersistenciaFicha())'));
+  const status = harness.run(`({ text: document.getElementById('exportacaoStatus').textContent, hidden: document.getElementById('exportacaoStatus').hidden })`);
+  assert.equal(harness.run('completionResult.tipo'), 'erro');
+  assert.equal(after.ultimaExportacaoSolicitada.nomeArquivo, before.ultimaExportacaoSolicitada.nomeArquivo);
+  assert.equal(after.ultimaExportacaoSolicitada.solicitadaEm, before.ultimaExportacaoSolicitada.solicitadaEm);
+  assert.equal(after.ultimoBackupLocal, before.ultimoBackupLocal);
+  assert.equal(after.alteracoesPendentes, before.alteracoesPendentes);
+  assert.match(status.text, /Exportação solicitada ao navegador/);
+  assert.equal(status.hidden, false);
+  assert.doesNotMatch(status.text, /importada com sucesso/i);
+});
 
 for (const [phase, prepare] of [
   ['antes da importação', async () => ({ harness: createHarness() })],

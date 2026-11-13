@@ -18,10 +18,10 @@ Antes de qualquer commit local no projeto FichaDnD.
 ## Procedimento
 
 1. Registrar branch, HEAD, `git status --short`, diffs rastreados, arquivos não rastreados e `git diff --check` antes de editar.
-2. Revisar o TODO para separar trabalho comprovadamente concluído de ideias e tarefas parciais; preservar ideias rascunhadas e não promovê-las sem aprovação.
+2. Revisar o TODO para identificar tarefas comprovadamente concluídas e preservar ideias e tarefas parciais sem marcá-las como concluídas. Não exigir que uma ideia esteja implementada para incluí-la no checkpoint: quando o TODO tiver alterações autorizadas ou o responsável determinar sua inclusão, versionar o arquivo inteiro preservando os rascunhos. Não promover ideias ao Roadmap sem aprovação.
 3. Atualizar o Roadmap somente com resultados e status sustentados por evidências. Conferir consistência com o estado de execução.
 4. Avaliar se decisões e procedimentos observados são reutilizáveis; atualizar `AGENTS.md` ou skills somente quando houver regra permanente, evitando duplicação.
-5. Auditar cada diff e arquivo não rastreado por finalidade, autorização e relação com o checkpoint. Excluir temporários, JSONs originais protegidos, artefatos e arquivos de autoria/finalidade incerta. Se um arquivo necessário não puder ser classificado, parar antes do commit e explicar o bloqueio.
+5. Auditar cada diff e arquivo não rastreado por finalidade, autorização e relação com o checkpoint. Excluir temporários, JSONs originais protegidos e artefatos. Preservar o TODO modificado quando sua inclusão tiver sido autorizada ou determinada pelo responsável, ainda que contenha ideias não implementadas. Se qualquer outro arquivo tiver autoria/finalidade incerta, parar antes do commit e explicar o bloqueio.
 6. Preservar todas as alterações preexistentes. Nunca usar `git add .` como substituto de uma seleção revisada.
 7. Executar a suíte de testes e verificações de sintaxe adequadas; executar `git diff --check` e validar contratos protegidos.
 8. Conferir o diff staged completo, os nomes staged e a coerência entre TODO, Roadmap, skills e estado de execução.

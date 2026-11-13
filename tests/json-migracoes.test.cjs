@@ -7,17 +7,29 @@ const { test } = require('node:test');
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'js/core/storage.js'), 'utf8');
 
-function storageContext() {
+function storageContext(options = {}) {
   const serializedDownloads = [];
   let downloadClickCount = 0;
+  const scheduledTimers = [];
+  const revokedObjectUrls = [];
   const elements = new Map();
+  const fields = [];
   const document = {
     readyState: 'loading',
     addEventListener() {},
     removeEventListener() {},
-    querySelectorAll() { return []; },
+    querySelectorAll() { return fields; },
     getElementById(id) {
-      if (!elements.has(id)) elements.set(id, { value: '', checked: false });
+      if (!elements.has(id)) {
+        const element = { id, value: '', checked: false, textContent: '' };
+        if (id === 'exportacaoStatus' && options.statusError) {
+          Object.defineProperty(element, 'textContent', {
+            get() { return ''; },
+            set() { throw options.statusError; },
+          });
+        }
+        elements.set(id, element);
+      }
       return elements.get(id);
     },
     querySelector() { return null; },
@@ -26,14 +38,20 @@ function storageContext() {
         return {
           set href(value) { this._href = value; },
           set download(value) { this._download = value; },
-          click() { downloadClickCount += 1; },
+          click() {
+            if (options.clickError) throw options.clickError;
+            downloadClickCount += 1;
+          },
         };
       }
       return { style: {}, click() {} };
     },
   };
   class CapturedBlob {
-    constructor(parts) { serializedDownloads.push(String(parts[0])); }
+    constructor(parts) {
+      if (options.blobError) throw options.blobError;
+      serializedDownloads.push(String(parts[0]));
+    }
   }
   const context = vm.createContext({
     document,
@@ -45,9 +63,26 @@ function storageContext() {
     obterSelecaoArmaEquipada() { return { nome: '', indice: null }; },
     console: { error() {} },
     Blob: CapturedBlob,
-    URL: { createObjectURL() { return 'blob:test'; } },
-    setTimeout,
-    clearTimeout,
+    URL: {
+      createObjectURL() {
+        if (options.urlError) throw options.urlError;
+        return 'blob:test';
+      },
+      revokeObjectURL(url) { revokedObjectUrls.push(url); },
+    },
+    setTimeout(callback, delay) {
+      const timer = { callback, delay };
+      if (delay === 5000) {
+        scheduledTimers.push(timer);
+      } else {
+        callback();
+      }
+      return timer;
+    },
+    clearTimeout(timer) {
+      const index = scheduledTimers.indexOf(timer);
+      if (index >= 0) scheduledTimers.splice(index, 1);
+    },
     Date,
     JSON,
     confirm: () => true,
@@ -59,6 +94,14 @@ function storageContext() {
     elements,
     downloaded: () => serializedDownloads.map((json) => JSON.parse(json)),
     downloadClickCount: () => downloadClickCount,
+    fields,
+    elements,
+    status: () => elements.get('exportacaoStatus')?.textContent || '',
+    scheduledTimers,
+    revokedObjectUrls,
+    flushTimers() {
+      while (scheduledTimers.length) scheduledTimers.shift().callback();
+    },
     run: (expression) => vm.runInContext(expression, context),
   };
 }
@@ -219,12 +262,12 @@ test('exportação grava dados coletados atuais e não reexecuta migração de a
     coletarEscudos = () => [];
     coletarMunicoes = () => [];
     coletarOutros = () => [];
-    marcarFichaComoSalva = () => {};
   `);
 
-  harness.run('salvarFicha()');
+  const outcome = harness.run('salvarFicha()');
   const [exported] = harness.downloaded();
 
+  assert.equal(outcome.ok, true);
   assert.equal(harness.downloadClickCount(), 1);
   assert.equal(exported.fichaSchemaVersion, 1);
   assert.equal(exported.bonusProf, 4);
@@ -232,4 +275,139 @@ test('exportação grava dados coletados atuais e não reexecuta migração de a
   assert.equal(exported.magia1Rest, 'valor-atual', 'valor atual não é recalculado a partir dos aliases legados');
   assert.equal(exported.magia1Total, '4');
   assert.equal(exported.magia1Usado, '2');
+  assert.match(harness.status(), /Exportação solicitada/);
+  assert.match(harness.status(), /Confirme se o arquivo foi salvo/);
+});
+
+test('solicitações repetidas de exportação são separadas e não limpam alterações pendentes', () => {
+  const harness = storageContext();
+  harness.run(`
+    let exportName = 'Personagem';
+    document.getElementById('nomePersonagem').value = 'Personagem';
+    document.getElementById('jogador').value = 'Jogador';
+    document.getElementById('classeData').value = '';
+    document.getElementById('subclasseData').value = '';
+    coletarDadosFicha = () => ({ nomePersonagem: exportName });
+    coletarArmas = coletarArmaduras = coletarEscudos = coletarMunicoes = coletarOutros = () => [];
+    marcarFichaComoSalva();
+    exportName = 'Personagem editado';
+  `);
+
+  const first = harness.run('salvarFicha()');
+  harness.run(`exportName = 'Personagem novamente editado'; document.getElementById('nomePersonagem').value = 'Personagem novamente editado';`);
+  const second = harness.run('salvarFicha()');
+  const state = JSON.parse(harness.run('JSON.stringify(obterEstadoPersistenciaFicha())'));
+  const downloads = harness.downloaded();
+
+  assert.equal(first.ok, true);
+  assert.equal(second.ok, true);
+  assert.equal(harness.downloadClickCount(), 2);
+  assert.equal(downloads[0].nomePersonagem, 'Personagem editado');
+  assert.equal(downloads[1].nomePersonagem, 'Personagem novamente editado');
+  assert.equal(state.alteracoesPendentes, true, 'o clique não confirma gravação nem avança o baseline');
+  assert.equal(state.ultimoBackupLocal, null, 'backup local só será implementado em E1.6');
+  assert.ok(state.ultimaExportacaoSolicitada.solicitadaEm);
+  assert.equal(typeof state.ultimaExportacaoSolicitada.nomeArquivo, 'string');
+  assert.equal(harness.scheduledTimers.length, 2);
+  assert.ok(harness.scheduledTimers.every((timer) => timer.delay === 5000));
+  assert.equal(harness.revokedObjectUrls.length, 0, 'a URL só é revogada depois de iniciar a solicitação');
+  harness.flushTimers();
+  assert.deepEqual(harness.revokedObjectUrls, ['blob:test', 'blob:test']);
+});
+
+test('falha de interface depois do clique não classifica uma solicitação iniciada como falha total', () => {
+  const harness = storageContext({ statusError: new Error('status indisponível') });
+  harness.run(`
+    document.getElementById('nomePersonagem').value = 'Personagem';
+    document.getElementById('jogador').value = 'Jogador';
+    document.getElementById('classeData').value = '';
+    document.getElementById('subclasseData').value = '';
+    coletarDadosFicha = () => ({ nomePersonagem: 'Personagem' });
+    coletarArmas = coletarArmaduras = coletarEscudos = coletarMunicoes = coletarOutros = () => [];
+  `);
+
+  const result = harness.run('salvarFicha()');
+  const state = JSON.parse(harness.run('JSON.stringify(obterEstadoPersistenciaFicha())'));
+
+  assert.equal(result.ok, true);
+  assert.equal(result.estado, 'solicitacao_iniciada_com_erro');
+  assert.equal(harness.downloadClickCount(), 1);
+  assert.ok(state.ultimaExportacaoSolicitada);
+  assert.equal(harness.revokedObjectUrls.length, 0, 'a URL permanece válida até a limpeza adiada');
+  harness.flushTimers();
+  assert.deepEqual(harness.revokedObjectUrls, ['blob:test']);
+});
+
+test('falha ao criar Blob ou URL não registra exportação e preserva alterações pendentes', () => {
+  for (const options of [
+    { blobError: new Error('blob indisponível') },
+    { urlError: new Error('URL indisponível') },
+    { clickError: new Error('clique indisponível') },
+  ]) {
+    const harness = storageContext(options);
+    harness.run(`
+      document.getElementById('nomePersonagem').value = 'Personagem';
+      document.getElementById('jogador').value = 'Jogador';
+      document.getElementById('classeData').value = '';
+      document.getElementById('subclasseData').value = '';
+      coletarDadosFicha = () => ({ nomePersonagem: document.getElementById('nomePersonagem').value });
+      coletarArmas = coletarArmaduras = coletarEscudos = coletarMunicoes = coletarOutros = () => [];
+      marcarFichaComoSalva();
+      document.getElementById('nomePersonagem').value = 'Alterado';
+    `);
+
+    const result = harness.run('salvarFicha()');
+    const state = JSON.parse(harness.run('JSON.stringify(obterEstadoPersistenciaFicha())'));
+
+    assert.equal(result.ok, false);
+    assert.equal(state.alteracoesPendentes, true);
+    assert.equal(state.ultimaExportacaoSolicitada, null);
+    assert.equal(harness.downloadClickCount(), 0);
+    if (options.clickError) {
+      assert.deepEqual(harness.revokedObjectUrls, ['blob:test'], 'falha no clique libera a URL criada');
+    }
+    assert.match(harness.status(), /não foi possível iniciar a exportação/i);
+    assert.match(harness.status(), /alterações pendentes foram preservadas/i);
+  }
+});
+
+test('sem confirmação do diálogo nativo, a exportação permanece apenas solicitada', () => {
+  const harness = storageContext();
+  harness.run(`
+    document.getElementById('nomePersonagem').value = 'Personagem';
+    document.getElementById('jogador').value = 'Jogador';
+    document.getElementById('classeData').value = '';
+    document.getElementById('subclasseData').value = '';
+    coletarDadosFicha = () => ({ nomePersonagem: document.getElementById('nomePersonagem').value });
+    coletarArmas = coletarArmaduras = coletarEscudos = coletarMunicoes = coletarOutros = () => [];
+    marcarFichaComoSalva();
+    document.getElementById('nomePersonagem').value = 'Alterado';
+    salvarFicha();
+  `);
+
+  // O navegador não fornece ao código um evento portátil de arquivo salvo/cancelado.
+  const state = JSON.parse(harness.run('JSON.stringify(obterEstadoPersistenciaFicha())'));
+  assert.equal(state.alteracoesPendentes, true);
+  assert.ok(state.ultimaExportacaoSolicitada);
+  assert.equal(Object.hasOwn(state, 'exportacaoConfirmada'), false);
+  assert.match(harness.status(), /Confirme se o arquivo foi salvo/);
+});
+
+test('interação apenas com campos transitórios de modal não marca a ficha como alterada', () => {
+  const harness = storageContext();
+  const persisted = {
+    id: 'nomePersonagem', type: 'text', value: 'Personagem',
+    closest: () => null,
+  };
+  const transient = {
+    id: 'xpAddModalInput', type: 'number', value: '0',
+    closest: () => ({ id: 'xpAddModal' }),
+  };
+  harness.fields.push(persisted, transient);
+  harness.run('marcarFichaComoSalva()');
+
+  transient.value = '250';
+  assert.equal(harness.run('fichaFoiAlterada()'), false);
+  persisted.value = 'Outro nome';
+  assert.equal(harness.run('fichaFoiAlterada()'), true);
 });

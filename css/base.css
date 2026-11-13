@@ -93,6 +93,18 @@ body {
   font-family: "MedievalSharp";
 }
 
+.acoes {
+  flex-wrap: wrap;
+}
+
+.exportacao-status {
+  flex: 0 0 100%;
+  color: var(--cor-texto-suave, #7b664f);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: right;
+}
+
 .topo {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 300px);

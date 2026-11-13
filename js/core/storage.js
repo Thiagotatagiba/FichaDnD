@@ -722,6 +722,10 @@ function coletarDadosFicha() {
 }
 
 let ultimoEstadoSalvo = JSON.stringify(coletarDadosFicha());
+// O baseline de alterações pendentes é independente de backups e exportações.
+// E1.6 implementará o backup local; até lá, null significa que não há backup local.
+let ultimoBackupLocalFicha = null;
+let ultimaExportacaoSolicitadaFicha = null;
 
 function capturarBaselineImportacaoFicha() {
   return ultimoEstadoSalvo;
@@ -735,6 +739,7 @@ function restaurarBaselineImportacaoFicha(baseline) {
 }
 
 function marcarFichaComoSalva() {
+  // Atualiza o baseline conhecido da sessão. Isto não confirma download nem cria backup.
   ultimoEstadoSalvo = JSON.stringify(coletarDadosFicha());
 }
 
@@ -839,52 +844,147 @@ function fichaFoiAlterada() {
   return JSON.stringify(coletarDadosFicha()) !== ultimoEstadoSalvo;
 }
 
+function obterEstadoPersistenciaFicha() {
+  return {
+    alteracoesPendentes: fichaFoiAlterada(),
+    ultimoBackupLocal: ultimoBackupLocalFicha
+      ? { ...ultimoBackupLocalFicha }
+      : null,
+    ultimaExportacaoSolicitada: ultimaExportacaoSolicitadaFicha
+      ? { ...ultimaExportacaoSolicitadaFicha }
+      : null,
+  };
+}
+window.obterEstadoPersistenciaFicha = obterEstadoPersistenciaFicha;
+
+function atualizarStatusExportacao(mensagem) {
+  const status = document.getElementById("exportacaoStatus");
+  if (status) {
+    status.textContent = mensagem;
+    status.hidden = false;
+  }
+}
+
+function limparStatusExportacaoAposImportacaoValida() {
+  // A solicitação anterior pertencia ao personagem substituído. Só chamar após
+  // o commit da importação; rollback mantém a mensagem e seu estado intactos.
+  ultimaExportacaoSolicitadaFicha = null;
+  try {
+    const status = document.getElementById("exportacaoStatus");
+    if (status) {
+      status.textContent = "";
+      status.hidden = true;
+    }
+    return true;
+  } catch (erro) {
+    console.warn("Não foi possível limpar o aviso da exportação anterior:", erro);
+    return false;
+  }
+}
+window.__limparStatusExportacaoAposImportacaoValida =
+  limparStatusExportacaoAposImportacaoValida;
+
 /* SALVAR Ficha*/
 function salvarFicha() {
-  // Salvar class/subclass data
-  const classeData = document.getElementById("classeData").value;
-  const subData = document.getElementById("subclasseData").value;
+  let urlTemporaria = null;
+  let timerRevogacaoUrl = null;
+  let cliqueExecutado = false;
+  let nomeArquivoSolicitado = null;
+  try {
+    // Preparar uma única captura: mudanças após esta captura continuam pendentes.
+    const classeData = document.getElementById("classeData").value;
+    const subData = document.getElementById("subclasseData").value;
 
-  const dados = coletarDadosFicha();
-  dados.classeData = classeData;
-  dados.subclasseData = subData;
-  dados.caracteristicaClasseArquivo =
-    document.getElementById("caracteristicaClasseArquivo")?.value || "";
-  dados.caracteristicaClasseSubclasse =
-    document.getElementById("caracteristicaClasseSubclasse")?.value ||
-    document.getElementById("selectSubclasse")?.value ||
-    "";
-  dados.caracteristicaClasseSubdominio = dados.caracteristicaClasseSubclasse;
-  dados.armas = coletarArmas();
-  dados.armaduras = coletarArmaduras();
-  dados.escudos = coletarEscudos();
-  dados.municoes = typeof coletarMunicoes === "function" ? coletarMunicoes() : [];
-  dados.outros = coletarOutros().filter(outro => String(outro.outro_tipo || "").toLowerCase() !== "municao");
-  if (typeof sincronizarMunicoesNaFicha === "function") dados.outros.push(...sincronizarMunicoesNaFicha(dados.municoes));
-  dados.armaduraEquipadaIndice = armaduraEquipadaIndice;
-  // Marca somente os dados atuais coletados; não reaplica migrações legadas.
-  dados.fichaSchemaVersion = FICHA_SCHEMA_VERSION_ATUAL;
+    const dados = coletarDadosFicha();
+    dados.classeData = classeData;
+    dados.subclasseData = subData;
+    dados.caracteristicaClasseArquivo =
+      document.getElementById("caracteristicaClasseArquivo")?.value || "";
+    dados.caracteristicaClasseSubclasse =
+      document.getElementById("caracteristicaClasseSubclasse")?.value ||
+      document.getElementById("selectSubclasse")?.value ||
+      "";
+    dados.caracteristicaClasseSubdominio = dados.caracteristicaClasseSubclasse;
+    dados.armas = coletarArmas();
+    dados.armaduras = coletarArmaduras();
+    dados.escudos = coletarEscudos();
+    dados.municoes = typeof coletarMunicoes === "function" ? coletarMunicoes() : [];
+    dados.outros = coletarOutros().filter(outro => String(outro.outro_tipo || "").toLowerCase() !== "municao");
+    if (typeof sincronizarMunicoesNaFicha === "function") dados.outros.push(...sincronizarMunicoesNaFicha(dados.municoes));
+    dados.armaduraEquipadaIndice = armaduraEquipadaIndice;
+    // Marca somente os dados atuais coletados; não reaplica migrações legadas.
+    dados.fichaSchemaVersion = FICHA_SCHEMA_VERSION_ATUAL;
 
-  const nome = document.getElementById("nomePersonagem").value || "Personagem";
-  const jogador = document.getElementById("jogador").value || "Jogador";
+    const nome = document.getElementById("nomePersonagem").value || "Personagem";
+    const jogador = document.getElementById("jogador").value || "Jogador";
+    const hoje = new Date();
+    const data =
+      hoje.getFullYear().toString() +
+      String(hoje.getMonth() + 1).padStart(2, "0") +
+      String(hoje.getDate()).padStart(2, "0");
+    const nomeArquivo = `${nome}_${jogador}_${data}.json`.replace(/\s+/g, "_");
+    nomeArquivoSolicitado = nomeArquivo;
+    const conteudo = JSON.stringify(dados, null, 2);
+    const blob = new Blob([conteudo], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    urlTemporaria = url;
+    // A revogação é deliberadamente adiada para tolerar o início assíncrono do download.
+    // Isso não confirma que o usuário salvou o arquivo.
+    timerRevogacaoUrl = setTimeout(() => {
+      try {
+        URL.revokeObjectURL(url);
+      } catch (erroLiberacao) {
+        console.error("Não foi possível liberar a URL temporária da exportação:", erroLiberacao);
+      }
+    }, 5000);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = nomeArquivo;
+    a.click();
+    cliqueExecutado = true;
 
-  const hoje = new Date();
-  const data =
-    hoje.getFullYear().toString() +
-    String(hoje.getMonth() + 1).padStart(2, "0") +
-    String(hoje.getDate()).padStart(2, "0");
-
-  const nomeArquivo = `${nome}_${jogador}_${data}.json`.replace(/\s+/g, "_");
-
-  const blob = new Blob([JSON.stringify(dados, null, 2)], {
-    type: "application/json",
-  });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = nomeArquivo;
-  a.click();
-
-  marcarFichaComoSalva();
+    // O navegador não fornece confirmação confiável de gravação/cancelamento.
+    // Registrar somente que a solicitação foi iniciada; não limpar o baseline.
+    ultimaExportacaoSolicitadaFicha = {
+      solicitadaEm: new Date().toISOString(),
+      nomeArquivo,
+    };
+    atualizarStatusExportacao(
+      "Exportação solicitada ao navegador. Confirme se o arquivo foi salvo.",
+    );
+    return { ok: true, estado: "solicitada", nomeArquivo };
+  } catch (erro) {
+    if (cliqueExecutado) {
+      // O navegador pode já ter iniciado a solicitação; não a descreva como cancelada
+      // nem invalide o Blob por uma falha posterior de interface/registro.
+      ultimaExportacaoSolicitadaFicha = {
+        solicitadaEm: new Date().toISOString(),
+        nomeArquivo: nomeArquivoSolicitado,
+      };
+      try {
+        atualizarStatusExportacao(
+          "A exportação pode ter sido solicitada ao navegador. Confirme se o arquivo foi salvo.",
+        );
+      } catch (erroStatus) {
+        console.error("Não foi possível atualizar o status após solicitar a exportação:", erroStatus);
+      }
+      console.error("Falha após iniciar a solicitação de exportação da ficha:", erro);
+      return { ok: true, estado: "solicitacao_iniciada_com_erro", nomeArquivo: nomeArquivoSolicitado };
+    }
+    if (timerRevogacaoUrl !== null) clearTimeout(timerRevogacaoUrl);
+    if (urlTemporaria) {
+      try {
+        URL.revokeObjectURL(urlTemporaria);
+      } catch (erroLiberacao) {
+        console.error("Não foi possível liberar a URL temporária da exportação:", erroLiberacao);
+      }
+    }
+    console.error("Não foi possível preparar ou solicitar a exportação da ficha:", erro);
+    atualizarStatusExportacao(
+      "Não foi possível iniciar a exportação. As alterações pendentes foram preservadas.",
+    );
+    return { ok: false, estado: "falhou", erro };
+  }
 }
 
 /* IMPORTAR Ficha*/
