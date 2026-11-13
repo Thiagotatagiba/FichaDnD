@@ -2403,7 +2403,7 @@
         );
 
         lista.forEach((card) => {
-          const arma = {};
+          const arma = { ...(card._dadosOriginais || {}) };
           const indicadorProficiencia =
             card.querySelector(".item-proficiencia");
 
@@ -2413,7 +2413,13 @@
           });
 
           // 2. Propriedades (checkbox)
-          arma.propriedades = {};
+          const propriedadesOriginais = arma.propriedades;
+          arma.propriedades =
+            propriedadesOriginais &&
+            typeof propriedadesOriginais === "object" &&
+            !Array.isArray(propriedadesOriginais)
+              ? { ...propriedadesOriginais }
+              : {};
           card.querySelectorAll(".propriedade-checkbox").forEach((checkbox) => {
             const nomePropriedade = checkbox.dataset.propriedade;
             arma.propriedades[nomePropriedade] = checkbox.checked;
@@ -2529,8 +2535,17 @@
         );
 
         lista.forEach((card) => {
-          const armadura = {};
-          armadura.instanciaId = card.dataset.instanciaId;
+          const armadura = { ...(card._dadosOriginais || {}) };
+          if (card.dataset.instanciaIdTransitorio === "true") {
+            delete armadura.instanciaId;
+          } else if (
+            !Object.prototype.hasOwnProperty.call(
+              card._dadosOriginais || {},
+              "instanciaId",
+            )
+          ) {
+            armadura.instanciaId = card.dataset.instanciaId;
+          }
           if (card.dataset.catalogoId) {
             armadura.catalogoId = card.dataset.catalogoId;
             armadura.catalogoVersao = Number(card.dataset.catalogoVersao) || 1;
@@ -2668,7 +2683,7 @@
           '#listaEscudos .item-card[data-tipo="escudo"]',
         );
         lista.forEach((card) => {
-          const escudo = {};
+          const escudo = { ...(card._dadosOriginais || {}) };
           const indicadorProficiencia =
             card.querySelector(".item-proficiencia");
 
@@ -2745,18 +2760,28 @@
         );
 
         lista.forEach((card) => {
-          const outro = { ...(card._dadosOriginais || {}) };
+          const dadosOriginais = card._dadosOriginais || {};
+          const outro = { ...dadosOriginais };
 
-          // 🔹 NOVO: pegar ID existente do card
-          let id = card.dataset.id;
-
-          // 🔹 Se não tiver ID, cria um novo
-          if (!id) {
-            id = gerarId();
-            card.dataset.id = id;
+          // Itens legados sem ID usam somente uma identidade de interface. Ela
+          // não deve ser persistida ao coletar/exportar o payload.
+          if (card.dataset.idTransitorio === "true") {
+            if (Object.prototype.hasOwnProperty.call(dadosOriginais, "id")) {
+              outro.id = dadosOriginais.id;
+            } else {
+              delete outro.id;
+            }
+          } else if (Object.prototype.hasOwnProperty.call(dadosOriginais, "id")) {
+            // Preserva o tipo e o valor originais do ID recebido.
+            outro.id = dadosOriginais.id;
+          } else {
+            let id = card.dataset.id;
+            if (!id) {
+              id = gerarId();
+              card.dataset.id = id;
+            }
+            outro.id = id;
           }
-
-          outro.id = id;
 
           // 🔹 resto dos campos
           card.querySelectorAll("[data-campo]").forEach((campo) => {

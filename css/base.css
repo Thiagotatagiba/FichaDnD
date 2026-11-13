@@ -95,7 +95,7 @@ body {
 
 .topo {
   display: grid;
-  grid-template-columns: 1fr 220px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 300px);
   border-bottom: 2px solid #8b4513;
   padding-bottom: 10px;
   margin-bottom: 15px;
@@ -6706,10 +6706,11 @@ body {
   position: relative;
   width: 100%;
   height: 10px;
-  background: #ddd;
+  background: #e6e8eb;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #999;
+  border: 1px solid #59636e;
+  isolation: isolate;
 }
 
 .xp-bar-fill {
@@ -6753,17 +6754,28 @@ body {
 }
 
 .xp-bar-fill-current {
-  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  background: #18324a;
   z-index: 1;
 }
 
 .xp-bar-fill-next {
-  background: linear-gradient(
-    90deg,
-    rgba(33, 150, 243, 0.85),
-    rgba(3, 169, 244, 0.85)
-  );
+  background: #f2c14e;
   z-index: 2;
+}
+
+.xp-progress-marker {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  transform: translateX(-50%);
+  background: #fff;
+  border-left: 1px solid #101820;
+  border-right: 1px solid #101820;
+  box-shadow: 0 0 0 1px #fff;
+  pointer-events: none;
 }
 
 .xp-texto {
@@ -6782,8 +6794,264 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
-  margin-top: 4px;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 24px;
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 6px;
+}
+
+.xp-info #xpTexto {
+  color: var(--cor-texto, #3f2712);
+}
+
+.jogador-topo {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.jogador-identificacao {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  padding: 5px 9px;
+  border: 1px solid var(--cor-borda-suave, #bda68c);
+  border-radius: 6px;
+  background: var(--cor-campo, #fffaf2);
+  color: var(--cor-texto-suave, #7b664f);
+  font-size: 11px;
+}
+
+.jogador-identificacao label {
+  color: var(--cor-titulo, #6f3610);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.jogador-identificacao input {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  padding: 3px 5px;
+  border: 0;
+  border-bottom: 1px solid var(--cor-borda-suave, #bda68c);
+  border-radius: 3px 3px 0 0;
+  outline: 0;
+  background: transparent;
+  color: var(--cor-texto, #3f2712);
+  font: 13px/1.3 system-ui, sans-serif;
+}
+
+.jogador-identificacao input::placeholder {
+  color: var(--cor-texto-suave, #7b664f);
+  opacity: 0.85;
+}
+
+.jogador-identificacao:focus-within {
+  border-color: var(--cor-titulo, #6f3610);
+  box-shadow: 0 0 0 2px rgba(111, 54, 16, 0.14);
+}
+
+.jogador-xp.xp-panel {
+  position: relative;
+  min-width: 0;
+  width: 100%;
+  gap: 8px;
+  padding: 9px 11px 8px;
+  border: 1px solid var(--cor-borda-suave, #bda68c);
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--cor-campo, #fffaf2), var(--cor-painel, #f6f2ea));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 1px 2px rgba(63, 39, 18, 0.12);
+}
+
+.xp-panel-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--cor-titulo, #6f3610);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  line-height: 1.25;
+}
+
+.xp-panel-title {
+  white-space: nowrap;
+}
+
+.xp-level-label {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  border: 1px solid var(--cor-borda-suave, #bda68c);
+  border-radius: 999px;
+  background: var(--cor-campo-secundario, #efe7da);
+  color: var(--cor-texto, #3f2712);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.xp-progress-shell {
+  position: relative;
+  padding: 2px 0;
+}
+
+.xp-bar-container {
+  height: 16px;
+  border-color: #614326;
+  border-radius: 999px;
+  background: #e6e8eb;
+  cursor: help;
+  outline-offset: 3px;
+}
+
+.xp-bar-container:focus-visible {
+  outline: 2px solid #18324a;
+}
+
+.xp-progress-marker {
+  width: 4px;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.9);
+}
+
+.xp-tooltip {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 5px);
+  left: 50%;
+  max-width: min(280px, calc(100vw - 32px));
+  padding: 5px 8px;
+  transform: translate(-50%, -2px);
+  border: 1px solid #614326;
+  border-radius: 5px;
+  background: #332315;
+  color: #fffaf2;
+  box-shadow: 0 2px 6px rgba(33, 19, 10, 0.24);
+  font: 600 11px/1.35 system-ui, sans-serif;
+  text-align: center;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.xp-bar-container:hover + .xp-tooltip,
+.xp-bar-container:focus-visible + .xp-tooltip {
+  transform: translate(-50%, 0);
+  visibility: visible;
+  opacity: 1;
+}
+
+.xp-info {
+  align-items: center;
+  gap: 5px;
+  margin-top: 0;
+  min-height: 28px;
+  row-gap: 6px;
+}
+
+.xp-values {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-width: max-content;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  color: var(--cor-texto, #3f2712);
+  white-space: nowrap;
+}
+
+.xp-current-value {
+  font-family: system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.xp-threshold-value {
+  color: var(--cor-texto-suave, #7b664f);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.xp-info #btnAddXP {
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-height: 32px;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 4px;
+  border: 1px solid #79542e;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #fff9ef, #efe3d1);
+  color: #4a2e16;
+  font: 700 11px/1.2 system-ui, sans-serif;
+  white-space: nowrap;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.xp-info #btnAddXP:hover:not(:disabled) {
+  border-color: #5f3d1c;
+  background: #f3e3c5;
+  transform: none;
+}
+
+.xp-info #btnAddXP:focus-visible {
+  outline: 2px solid #18324a;
+  outline-offset: 2px;
+}
+
+.xp-info #btnAddXP:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.xp-add-icon {
+  font: 700 16px/0.8 system-ui, sans-serif;
+}
+
+.xp-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 560px) {
+  .jogador-xp.xp-panel {
+    padding-inline: 8px;
+  }
+
+  .xp-info {
+    gap: 6px;
+  }
+
+  .xp-info #btnAddXP {
+    padding-inline: 4px;
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-bar-fill {
+    transition: none !important;
+  }
 }
 
 .levelup-overlay {

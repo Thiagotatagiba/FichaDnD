@@ -14,14 +14,13 @@ function normalizarEventosDiarioAventura(eventos) {
   return eventos
     .filter((evento) => evento && typeof evento === "object")
     .map((evento, indice) => ({
-      id: String(evento.id || gerarIdDiarioAventura()),
+      ...evento,
       titulo: String(evento.titulo || "").trim(),
       texto: String(evento.texto || ""),
       criadoEm: Number.isFinite(Number(evento.criadoEm))
         ? Number(evento.criadoEm)
         : indice,
-    }))
-    .filter((evento) => evento.titulo || evento.texto);
+    }));
 }
 
 function ordenarEventosDiarioAventura(eventos) {
@@ -158,12 +157,12 @@ function salvarEventoDiarioAventura() {
     return;
   }
 
+  const eventoOriginal =
+    indiceEventoDiarioAberto === null
+      ? null
+      : eventosDiarioAventura[indiceEventoDiarioAberto] || null;
   const evento = {
-    id:
-      indiceEventoDiarioAberto === null
-        ? gerarIdDiarioAventura()
-        : eventosDiarioAventura[indiceEventoDiarioAberto]?.id ||
-          gerarIdDiarioAventura(),
+    ...(eventoOriginal || {}),
     titulo: titulo || `Evento ${eventosDiarioAventura.length + 1}`,
     texto,
     criadoEm:
@@ -172,6 +171,17 @@ function salvarEventoDiarioAventura() {
         : eventosDiarioAventura[indiceEventoDiarioAberto]?.criadoEm ||
           Date.now(),
   };
+
+  if (indiceEventoDiarioAberto === null) {
+    evento.id = gerarIdDiarioAventura();
+  } else if (
+    eventoOriginal &&
+    Object.prototype.hasOwnProperty.call(eventoOriginal, "id")
+  ) {
+    evento.id = eventoOriginal.id;
+  } else {
+    delete evento.id;
+  }
 
   if (indiceEventoDiarioAberto === null) {
     eventosDiarioAventura.unshift(evento);

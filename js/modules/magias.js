@@ -289,11 +289,11 @@ function normalizarItemTalento(item, categoria) {
     nome: String(item.nome || item.titulo || "").trim(),
     descricao: String(item.descricao || "").trim(),
     tipo: String(
-      item.tipo ||
-        TALENTOS_CONFIG[categoria]?.rotulo ||
-        (categoria === "outros" ? "Talento" : "Característica"),
+      item.tipo ??
+        (TALENTOS_CONFIG[categoria]?.rotulo ||
+          (categoria === "outros" ? "Talento" : "Característica")),
     ).trim(),
-    origem: String(item.origem || obterOrigemTalento(categoria)).trim(),
+    origem: String(item.origem ?? obterOrigemTalento(categoria)).trim(),
   };
 }
 
@@ -317,6 +317,67 @@ function normalizarListaTalentos(valor, categoria) {
   }
 
   return [];
+}
+
+// Preparação de importação sem DOM: conserva categorias e propriedades
+// desconhecidas e normaliza apenas os formatos conhecidos que a ficha renderiza.
+function prepararTalentosImportacao(dados = {}) {
+  const possuiEstrutura = Object.prototype.hasOwnProperty.call(
+    dados,
+    "talentosEstruturados",
+  );
+  const base =
+    dados.talentosEstruturados &&
+    typeof dados.talentosEstruturados === "object" &&
+    !Array.isArray(dados.talentosEstruturados)
+      ? { ...dados.talentosEstruturados }
+      : {};
+  if (possuiEstrutura && dados.talentosEstruturados === null) return null;
+
+  Object.entries(TALENTOS_CONFIG).forEach(([categoria, config]) => {
+    let valor;
+    if (Object.prototype.hasOwnProperty.call(base, categoria)) {
+      valor = base[categoria];
+    } else if (Object.prototype.hasOwnProperty.call(dados, config.campoId)) {
+      valor = dados[config.campoId];
+    } else {
+      return;
+    }
+
+    if (valor === null) {
+      base[categoria] = null;
+      return;
+    }
+    const padrao = config.rotulo || (categoria === "outros" ? "Talento" : "Característica");
+    const normalizarItem = (item) => {
+      if (typeof item === "string") {
+        return { nome: item.trim(), descricao: "", tipo: padrao, origem: padrao };
+      }
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        return { nome: "", descricao: "", tipo: padrao, origem: padrao };
+      }
+      return {
+        ...item,
+        nome: String(item.nome ?? item.titulo ?? "").trim(),
+        descricao: String(item.descricao ?? "").trim(),
+        tipo: String(item.tipo ?? padrao).trim(),
+        origem: String(item.origem ?? padrao).trim(),
+      };
+    };
+    const itens = Array.isArray(valor)
+      ? valor.map(normalizarItem)
+      : typeof valor === "string"
+        ? valor
+            .split(/\r?\n|;|,/)
+            .filter((nome) => nome.trim())
+            .map((nome) => normalizarItem(nome))
+        : [];
+    // Não descartar objetos só porque o nome está ausente: podem carregar
+    // metadados desconhecidos que devem sobreviver ao próximo round-trip.
+    base[categoria] = itens;
+  });
+
+  return base;
 }
 
 function montarTalentosEstruturados(dados = {}) {
@@ -511,16 +572,21 @@ function abrirModalTalento(
 function modalTalentoTemAlteracoes() {
   if (estadoModalTalento.modo !== "editar") return false;
   const original = estadoModalTalento.itemOriginal || {};
-  const nomeAtual = String(
-    document.getElementById("talentoModalNomeInput")?.value || "",
-  ).trim();
-  const descricaoAtual = String(
-    document.getElementById("talentoModalDescricaoInput")?.value || "",
-  ).trim();
-  return (
-    nomeAtual !== String(original.nome || "").trim() ||
-    descricaoAtual !== String(original.descricao || "").trim()
-  );
+  const editaveis = obterCamposEditaveisTalento();
+  return Object.entries(editaveis).some(([chave, valor]) => {
+    return valor !== String(original[chave] || "").trim();
+  });
+}
+
+function obterCamposEditaveisTalento() {
+  return {
+    nome: String(
+      document.getElementById("talentoModalNomeInput")?.value || "",
+    ).trim(),
+    descricao: String(
+      document.getElementById("talentoModalDescricaoInput")?.value || "",
+    ).trim(),
+  };
 }
 
 function fecharModalTalento() {
@@ -575,20 +641,22 @@ function salvarModalTalento() {
   if (!categoria) return;
 
   const campoNome = document.getElementById("talentoModalNomeInput");
-  const campoDescricao = document.getElementById("talentoModalDescricaoInput");
-  const nome = String(campoNome?.value || "").trim();
-  const descricao = String(campoDescricao?.value || "").trim();
+  const editaveis = obterCamposEditaveisTalento();
+  const { nome } = editaveis;
   if (!nome) {
     campoNome?.focus();
     return;
   }
 
+  const itemOriginal = estadoModalTalento.itemOriginal || {};
   const item = normalizarItemTalento(
     {
-      nome,
-      descricao,
-      tipo: categoria === "outros" ? "Talento" : "Característica",
-      origem: obterOrigemTalento(categoria),
+      ...itemOriginal,
+      ...editaveis,
+      tipo:
+        itemOriginal.tipo ??
+        (categoria === "outros" ? "Talento" : "Característica"),
+      origem: itemOriginal.origem ?? obterOrigemTalento(categoria),
     },
     categoria,
   );
@@ -636,9 +704,25 @@ function excluirTalentoAtual() {
   fecharModalTalento();
 }
 
-function inicializarTalentos(dados = {}) {
+function inicializarTalentos(dados = {}, opcoes = {}) {
   try {
-    talentosEstruturados = montarTalentosEstruturados(dados);
+    if (opcoes.preparado) {
+      if (
+        dados.talentosEstruturados &&
+        typeof dados.talentosEstruturados === "object" &&
+        !Array.isArray(dados.talentosEstruturados)
+      ) {
+        // O preparo já validou e normalizou as categorias conhecidas sem DOM.
+        // Atribuição direta mantém categorias e metadados adicionais.
+        talentosEstruturados = dados.talentosEstruturados;
+      } else {
+        // Importação substitui a ficha: ausência ou null limpa a interface e o
+        // estado exportável, sem recorrer ao DOM para reconstruir valores.
+        talentosEstruturados = {};
+      }
+    } else {
+      talentosEstruturados = montarTalentosEstruturados(dados);
+    }
     renderTalentos();
   } catch (erro) {
     console.error("Falha ao inicializar talentos:", erro);

@@ -152,6 +152,7 @@
           }
 
           function rolar() {
+            const epochImportacao = global.__fichaImportacaoEpoch || 0;
             botaoRolar.disabled = true;
             return global
               .animarRolagemNoCampo(
@@ -162,6 +163,11 @@
                 config.intervaloMs,
               )
               .then((rolagem) => {
+                if (
+                  !rolagem ||
+                  (global.__fichaImportacaoEpoch || 0) !== epochImportacao ||
+                  global.__fichaImportacaoTransacaoAtiva
+                ) return null;
                 estado.ultimaRolagem = rolagem;
                 setValor(rolagem?.soma, true);
                 if (config.onRoll) config.onRoll(rolagem, api);

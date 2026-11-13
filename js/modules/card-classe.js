@@ -55,6 +55,22 @@ const CARD_CLASSE_HTML = `
 
 let dadosClasse = null;
 let subclasseAtual = "";
+let geracaoCardClasseLocal = 0;
+
+function iniciarGeracaoCarregamentoCardClasse() {
+  if (typeof window.__iniciarCarregamentoCardClasse === "function") {
+    return window.__iniciarCarregamentoCardClasse();
+  }
+  geracaoCardClasseLocal += 1;
+  return geracaoCardClasseLocal;
+}
+
+function carregamentoCardClasseContinuaAtual(geracao) {
+  if (typeof window.__carregamentoCardClasseAtual === "function") {
+    return window.__carregamentoCardClasseAtual(geracao);
+  }
+  return geracao != null && geracao === geracaoCardClasseLocal;
+}
 
 function inicializarCardClasse() {
   const container = document.getElementById("cardClasseContainer");
@@ -72,8 +88,15 @@ function configurarImportacaoManualCard() {
     const arquivo = e.target.files?.[0];
     if (!arquivo) return;
 
+    const geracaoCard = iniciarGeracaoCarregamentoCardClasse();
+    if (!geracaoCard) return;
+
     const reader = new FileReader();
     reader.onload = (evt) => {
+      if (!carregamentoCardClasseContinuaAtual(geracaoCard)) {
+        fileInput.value = "";
+        return;
+      }
       try {
         const selectArquivo = document.getElementById(
           "caracteristicaClasseArquivo",
@@ -338,16 +361,6 @@ function aplicarDadosClasseNoCard(data, classe = "") {
   importarJSONNoCard(data, "carregamento automatico", classe);
 }
 
-window.addEventListener("message", function (event) {
-  if (event.data?.action !== "loadClassCardData" || !event.data?.jsonData)
-    return;
-  atualizarStatusCargaClasse(
-    `Dados recebidos via ficha principal para ${event.data.classe || event.data.jsonData?.nome || "classe"}.`,
-    "info",
-  );
-  aplicarDadosClasseNoCard(event.data.jsonData, event.data.classe || "");
-});
-
 function importarJSON() {
   document.getElementById("classeFileInput")?.click();
 }
@@ -528,11 +541,15 @@ document.addEventListener("DOMContentLoaded", function () {
       caminhoArquivoCaracteristica(arquivo) ||
       `Classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
     atualizarStatusCargaClasse(`Classe solicitada: ${classe}`, "info");
+    const geracaoCard = iniciarGeracaoCarregamentoCardClasse();
+    if (!geracaoCard) return;
     carregarJSONClasse(caminhoJson, classe)
       .then((data) => {
+        if (!carregamentoCardClasseContinuaAtual(geracaoCard)) return;
         aplicarDadosClasseNoCard(data, classe);
       })
       .catch((error) => {
+        if (!carregamentoCardClasseContinuaAtual(geracaoCard)) return;
         console.error("Erro ao carregar JSON:", error);
         atualizarStatusCargaClasse(
           `Falha ao carregar JSON: ${caminhoJson}`,

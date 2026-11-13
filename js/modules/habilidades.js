@@ -407,9 +407,11 @@ document
     const botao = document.getElementById("modalIniciativaRolarDado");
     if (!campoDado || !botao) return;
 
+    const epochImportacao = window.__fichaImportacaoEpoch || 0;
     botao.classList.add("rolando");
     animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then((rolagem) => {
       botao.classList.remove("rolando");
+      if (!rolagem || (window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
       registrarRolagemModalIniciativa(rolagem);
       atualizarTotalModalIniciativa();
       if (rolagem?.resultados?.length) {
@@ -502,10 +504,12 @@ document
     const botao = document.getElementById("modalAtaqueRolarDado");
     if (!campoDado || !botao) return;
 
+    const epochImportacao = window.__fichaImportacaoEpoch || 0;
     botao.classList.add("rolando");
 
     animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then((rolagem) => {
       botao.classList.remove("rolando");
+      if (!rolagem || (window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
       registrarRolagemModalAtaque(rolagem);
       atualizarEstadoCriticoModalAtaque();
       if (rolagem?.resultados?.length) {
@@ -540,8 +544,10 @@ document
       return;
     }
 
+    const epochImportacao = window.__fichaImportacaoEpoch || 0;
     animarRolagemNoCampo(campoDano, qtd, faces, 1000, 60).then((rolagem) => {
       botao.classList.remove("rolando");
+      if (!rolagem || (window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
       registrarRolagemModalDano(rolagem);
       atualizarTotalModalDano();
     });

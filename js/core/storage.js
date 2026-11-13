@@ -1,8 +1,385 @@
 // ===== Persistencia da ficha =====
-function normalizarDadosImportacao(dadosOriginais) {
+const FICHA_SCHEMA_VERSION_ATUAL = 1;
+
+/**
+ * Valida e migra somente o envelope de versão da ficha.
+ * A migração v0 → v1 não interpreta os dados: ela preserva aliases, coleções,
+ * metadados legados e propriedades desconhecidas, acrescentando a versão atual.
+ */
+function migrarDadosFicha(dadosOriginais) {
+  if (
+    !dadosOriginais ||
+    typeof dadosOriginais !== "object" ||
+    Array.isArray(dadosOriginais)
+  ) {
+    const erro = new Error(
+      "O JSON selecionado não contém um objeto de ficha no nível principal.",
+    );
+    erro.code = "INVALID_CHARACTER_SHEET_ROOT";
+    throw erro;
+  }
+
+  let versao = Object.prototype.hasOwnProperty.call(
+    dadosOriginais,
+    "fichaSchemaVersion",
+  )
+    ? dadosOriginais.fichaSchemaVersion
+    : 0;
+
+  if (
+    !Number.isSafeInteger(versao) ||
+    versao < 0 ||
+    (versao === 0 &&
+      Object.prototype.hasOwnProperty.call(
+        dadosOriginais,
+        "fichaSchemaVersion",
+      ))
+  ) {
+    const erro = new Error(
+      'O campo "fichaSchemaVersion" deve ser um inteiro positivo quando presente.',
+    );
+    erro.code = "INVALID_CHARACTER_SHEET_VERSION";
+    throw erro;
+  }
+
+  if (versao > FICHA_SCHEMA_VERSION_ATUAL) {
+    const erro = new Error(
+      `A ficha usa a versão de esquema ${versao}, que não é compatível com esta versão do aplicativo.`,
+    );
+    erro.code = "UNSUPPORTED_CHARACTER_SHEET_VERSION";
+    throw erro;
+  }
+
+  let dados = { ...dadosOriginais };
+  const migracoes = {
+    0: (origem) => ({ ...origem, fichaSchemaVersion: 1 }),
+  };
+
+  while (versao < FICHA_SCHEMA_VERSION_ATUAL) {
+    const migrar = migracoes[versao];
+    if (typeof migrar !== "function") {
+      const erro = new Error(
+        `Não existe migração para a versão ${versao} da ficha.`,
+      );
+      erro.code = "UNSUPPORTED_CHARACTER_SHEET_VERSION";
+      throw erro;
+    }
+    dados = migrar(dados);
+    versao += 1;
+  }
+
+  return dados;
+}
+
+function erroValidacaoImportacao(mensagem, codigo) {
+  const erro = new Error(mensagem);
+  erro.code = codigo;
+  return erro;
+}
+
+function clonarDadosJsonSeguro(valor, caminho = "$", vistos = new WeakSet()) {
+  if (valor === null || typeof valor === "string" || typeof valor === "boolean") {
+    return valor;
+  }
+  if (typeof valor === "number" && Number.isFinite(valor)) return valor;
+
+  if (Array.isArray(valor)) {
+    if (vistos.has(valor)) {
+      throw erroValidacaoImportacao(
+        `A estrutura JSON contém uma referência circular em ${caminho}.`,
+        "INVALID_CHARACTER_SHEET_JSON",
+      );
+    }
+    vistos.add(valor);
+    const copia = valor.map((item, indice) =>
+      clonarDadosJsonSeguro(item, `${caminho}[${indice}]`, vistos),
+    );
+    vistos.delete(valor);
+    return copia;
+  }
+
+  if (typeof valor === "object") {
+    const prototipo = Object.getPrototypeOf(valor);
+    if (prototipo !== Object.prototype && prototipo !== null) {
+      throw erroValidacaoImportacao(
+        `A estrutura em ${caminho} não é um objeto JSON simples.`,
+        "INVALID_CHARACTER_SHEET_JSON",
+      );
+    }
+    if (vistos.has(valor)) {
+      throw erroValidacaoImportacao(
+        `A estrutura JSON contém uma referência circular em ${caminho}.`,
+        "INVALID_CHARACTER_SHEET_JSON",
+      );
+    }
+    vistos.add(valor);
+    const copia = {};
+    Object.keys(valor).forEach((chave) => {
+      const descriptor = Object.getOwnPropertyDescriptor(valor, chave);
+      if (!descriptor || !Object.prototype.hasOwnProperty.call(descriptor, "value")) {
+        throw erroValidacaoImportacao(
+          `A propriedade ${caminho}.${chave} não é um valor JSON simples.`,
+          "INVALID_CHARACTER_SHEET_JSON",
+        );
+      }
+      Object.defineProperty(copia, chave, {
+        value: clonarDadosJsonSeguro(
+          descriptor.value,
+          `${caminho}.${chave}`,
+          vistos,
+        ),
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
+    });
+    vistos.delete(valor);
+    return copia;
+  }
+
+  throw erroValidacaoImportacao(
+    `O valor em ${caminho} não pode ser representado como JSON.`,
+    "INVALID_CHARACTER_SHEET_JSON",
+  );
+}
+
+function validarEstruturaImportacao(dados) {
+  if (!dados || typeof dados !== "object" || Array.isArray(dados)) {
+    throw erroValidacaoImportacao(
+      "O JSON selecionado não contém um objeto de ficha no nível principal.",
+      "INVALID_CHARACTER_SHEET_ROOT",
+    );
+  }
+
+  // XP é um total inteiro acumulado. Fichas legadas exportam esse valor como
+  // número ou texto numérico; ambos são aceitos sem converter o payload. Um
+  // valor explicitamente inválido é recusado antes de qualquer mutação.
+  if (Object.prototype.hasOwnProperty.call(dados, "xp")) {
+    const valorXP = dados.xp;
+    const textoXP = typeof valorXP === "string" ? valorXP.trim() : "";
+    const numeroXP = typeof valorXP === "number" ? valorXP : Number(textoXP);
+    // Número JSON pode chegar em notação exponencial (ex.: 1e21) mesmo sendo
+    // um inteiro. Não impor teto de jogo; a representação numérica JS segue a
+    // precisão nativa de Number.
+    const formatoXP =
+      typeof valorXP === "number" || /^\+?\d+(?:e[+-]?\d+)?$/i.test(textoXP);
+    if (
+      !formatoXP ||
+      !Number.isFinite(numeroXP) ||
+      !Number.isInteger(numeroXP) ||
+      numeroXP < 0
+    ) {
+      throw erroValidacaoImportacao(
+        'O campo "xp" deve ser um total inteiro não negativo.',
+        "INVALID_XP_VALUE",
+      );
+    }
+  }
+
+  ["armas", "armaduras", "escudos", "outros"].forEach((campo) => {
+    if (
+      Object.prototype.hasOwnProperty.call(dados, campo) &&
+      !Array.isArray(dados[campo])
+    ) {
+      throw erroValidacaoImportacao(
+        `O campo "${campo}" é incompatível: era esperada uma lista de equipamentos.`,
+        "INVALID_CHARACTER_SHEET_COLLECTION",
+      );
+    }
+
+    if (!Array.isArray(dados[campo])) return;
+    dados[campo].forEach((item, indice) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        throw erroValidacaoImportacao(
+          `O item ${indice + 1} do campo "${campo}" não é um objeto de equipamento válido.`,
+          "INVALID_CHARACTER_SHEET_COLLECTION_ITEM",
+        );
+      }
+      if (
+        campo === "escudos" &&
+        Object.prototype.hasOwnProperty.call(item, "escudo_nome") &&
+        item.escudo_nome !== null &&
+        typeof item.escudo_nome !== "string"
+      ) {
+        throw erroValidacaoImportacao(
+          `O campo "escudos[${indice}].escudo_nome" deve ser texto ou null.`,
+          "INVALID_CHARACTER_SHEET_COLLECTION_FIELD",
+        );
+      }
+    });
+  });
+
+  // O aplicador cria um mapa por `item.id`; rejeitar envelope/item malformado
+  // evita que uma entrada ruim seja tratada como coleção vazia e apague cards.
+  // Nenhum campo ou contrato de munições é interpretado ou normalizado.
+  if (
+    Object.prototype.hasOwnProperty.call(dados, "municoes") &&
+    !Array.isArray(dados.municoes)
+  ) {
+    throw erroValidacaoImportacao(
+      'O campo "municoes" deve ser uma lista para ser aplicado com segurança.',
+      "INVALID_CHARACTER_SHEET_COLLECTION",
+    );
+  }
+  if (Array.isArray(dados.municoes)) {
+    dados.municoes.forEach((item, indice) => {
+      if (!item || typeof item !== "object" || Array.isArray(item)) {
+        throw erroValidacaoImportacao(
+          `O item ${indice + 1} do campo "municoes" não pode ser processado pela ficha.`,
+          "INVALID_CHARACTER_SHEET_COLLECTION_ITEM",
+        );
+      }
+    });
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(dados, "historiaDiarioAventura") &&
+    !Array.isArray(dados.historiaDiarioAventura)
+  ) {
+    throw erroValidacaoImportacao(
+      'O campo "historiaDiarioAventura" deve ser uma lista de eventos.',
+      "INVALID_CHARACTER_SHEET_COLLECTION",
+    );
+  }
+  if (Array.isArray(dados.historiaDiarioAventura)) {
+    dados.historiaDiarioAventura.forEach((evento, indice) => {
+      if (
+        !evento ||
+        typeof evento !== "object" ||
+        Array.isArray(evento) ||
+        (Object.getPrototypeOf(evento) !== Object.prototype &&
+          Object.getPrototypeOf(evento) !== null)
+      ) {
+        throw erroValidacaoImportacao(
+          `O evento ${indice + 1} de "historiaDiarioAventura" deve ser um objeto simples.`,
+          "INVALID_CHARACTER_SHEET_COLLECTION_ITEM",
+        );
+      }
+      // O consumidor existente converte titulo/texto com String(...). Manter
+      // essa coerção preserva compatibilidade com os formatos legados.
+    });
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(dados, "estadoCombate") &&
+    dados.estadoCombate !== null &&
+    (typeof dados.estadoCombate !== "object" || Array.isArray(dados.estadoCombate))
+  ) {
+    throw erroValidacaoImportacao(
+      'O campo "estadoCombate" deve ser um objeto ou null.',
+      "INVALID_CHARACTER_SHEET_FIELD",
+    );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(dados, "configFicha") &&
+    dados.configFicha !== null &&
+    (typeof dados.configFicha !== "object" || Array.isArray(dados.configFicha))
+  ) {
+    throw erroValidacaoImportacao(
+      'O campo "configFicha" deve ser um objeto ou null.',
+      "INVALID_CHARACTER_SHEET_FIELD",
+    );
+  }
+  if (
+    dados.configFicha &&
+    Object.prototype.hasOwnProperty.call(dados.configFicha, "custom") &&
+    dados.configFicha.custom !== null &&
+    (typeof dados.configFicha.custom !== "object" || Array.isArray(dados.configFicha.custom))
+  ) {
+    throw erroValidacaoImportacao(
+      'O campo "configFicha.custom" deve ser um objeto ou null.',
+      "INVALID_CHARACTER_SHEET_FIELD",
+    );
+  }
+
+  if (
+    Object.prototype.hasOwnProperty.call(dados, "talentosEstruturados") &&
+    dados.talentosEstruturados !== null &&
+    (typeof dados.talentosEstruturados !== "object" || Array.isArray(dados.talentosEstruturados))
+  ) {
+    throw erroValidacaoImportacao(
+      'O campo "talentosEstruturados" deve ser um objeto ou null.',
+      "INVALID_CHARACTER_SHEET_FIELD",
+    );
+  }
+  if (dados.talentosEstruturados && typeof TALENTOS_CONFIG === "object") {
+    Object.entries(TALENTOS_CONFIG).forEach(([categoria]) => {
+      const chave = `talentosEstruturados.${categoria}`;
+      const valor = dados.talentosEstruturados[categoria];
+      validarColecaoTalentosImportacao(valor, chave);
+    });
+  }
+  if (typeof TALENTOS_CONFIG === "object") {
+    Object.entries(TALENTOS_CONFIG).forEach(([categoria, config]) => {
+      if (!Object.prototype.hasOwnProperty.call(dados, config.campoId)) return;
+      validarColecaoTalentosImportacao(dados[config.campoId], config.campoId);
+    });
+  }
+}
+
+function validarColecaoTalentosImportacao(valor, caminho) {
+  if (valor === undefined || valor === null || typeof valor === "string") return;
+  if (!Array.isArray(valor)) {
+    throw erroValidacaoImportacao(
+      `O campo "${caminho}" deve ser texto, lista ou null.`,
+      "INVALID_CHARACTER_SHEET_FIELD",
+    );
+  }
+  valor.forEach((item, indice) => {
+    if (
+      item === null ||
+      (typeof item !== "string" &&
+        (typeof item !== "object" || Array.isArray(item)))
+    ) {
+      throw erroValidacaoImportacao(
+        `O item ${indice + 1} de "${caminho}" deve ser texto ou objeto.`,
+        "INVALID_CHARACTER_SHEET_FIELD",
+      );
+    }
+  });
+}
+
+function prepararImportacaoFicha(entrada) {
+  try {
+    let objeto;
+    if (typeof entrada === "string") {
+      try {
+        objeto = JSON.parse(entrada);
+      } catch (erro) {
+        throw erroValidacaoImportacao(
+          "O arquivo selecionado não contém JSON válido. Confira o arquivo e tente novamente.",
+          "INVALID_CHARACTER_SHEET_JSON",
+        );
+      }
+    } else {
+      objeto = entrada;
+    }
+
+    if (!objeto || typeof objeto !== "object" || Array.isArray(objeto)) {
+      throw erroValidacaoImportacao(
+        "O JSON selecionado não contém um objeto de ficha no nível principal.",
+        "INVALID_CHARACTER_SHEET_ROOT",
+      );
+    }
+
+    const dadosIsolados = clonarDadosJsonSeguro(objeto);
+    validarEstruturaImportacao(dadosIsolados);
+    const dadosPreparados = normalizarDadosImportacao(dadosIsolados, {
+      preparacaoPura: true,
+    });
+    validarEstruturaImportacao(dadosPreparados);
+    return dadosPreparados;
+  } catch (erro) {
+    if (erro && typeof erro === "object") erro.stage = "preparacao";
+    throw erro;
+  }
+}
+
+function normalizarDadosImportacao(dadosOriginais, opcoes = {}) {
   if (!dadosOriginais || typeof dadosOriginais !== "object") return {};
 
-  const dados = { ...dadosOriginais };
+  const dados = migrarDadosFicha(dadosOriginais);
   const aliases = {
     nomePlayer: "jogador",
     classeNome: "classeNomeID",
@@ -42,6 +419,36 @@ function normalizarDadosImportacao(dadosOriginais) {
     }
   });
 
+  // Os seis atributos de salvaguarda são entradas numéricas com mínimo 0 no
+  // formulário. Aceitamos o formato numérico em texto já exportado pela ficha,
+  // sem converter o valor nem estabelecer um máximo que o controle não define.
+  const validarAtributoImportado = (chave) => {
+    if (!Object.prototype.hasOwnProperty.call(dados, chave)) return;
+    const valor = dados[chave];
+    if (valor === null || valor === "") return;
+
+    const texto = typeof valor === "string" ? valor.trim() : String(valor);
+    // Os inputs numéricos usam o step padrão inteiro; decimais e expoentes
+    // seriam reinterpretados incorretamente por preencherCampo(parseInt).
+    const formatoNumerico = /^[+-]?\d+$/;
+    const numero = typeof valor === "number" ? valor : Number(texto);
+    if (
+      (typeof valor !== "number" && typeof valor !== "string") ||
+      !formatoNumerico.test(texto) ||
+      !Number.isFinite(numero) ||
+      numero < 0
+    ) {
+      const erro = new Error(
+        `O campo "${chave}" deve ser um valor numérico não negativo.`,
+      );
+      erro.code = "INVALID_NUMERIC_FIELD";
+      throw erro;
+    }
+  };
+
+  ["atrib_for", "atrib_des", "atrib_con", "atrib_int", "atrib_sab", "atrib_car"]
+    .forEach(validarAtributoImportado);
+
   Object.keys(dados)
     .filter((chave) => /^pericia[A-Za-z]+Estado$/.test(chave))
     .forEach((chave) => {
@@ -77,6 +484,17 @@ function normalizarDadosImportacao(dadosOriginais) {
     const possuiRest = Object.prototype.hasOwnProperty.call(dados, campoRest);
     const possuiTotal = Object.prototype.hasOwnProperty.call(dados, campoTotal);
     const possuiUsado = Object.prototype.hasOwnProperty.call(dados, campoUsado);
+
+    if (possuiRest && dados[campoRest] !== null && dados[campoRest] !== "") {
+      const atual = parseContadorEspacoMagia(dados[campoRest]);
+      if (atual === null) {
+        const erro = new Error(
+          `O campo "${campoRest}" deve ser um inteiro não negativo.`,
+        );
+        erro.code = "INVALID_MAGIC_SLOTS";
+        throw erro;
+      }
+    }
 
     if (possuiRest || (!possuiTotal && !possuiUsado)) continue;
 
@@ -133,14 +551,32 @@ function normalizarDadosImportacao(dadosOriginais) {
     }
   });
 
-  if (
+  if (opcoes.preparacaoPura) {
+    if (
+      dados.talentosEstruturados &&
+      typeof prepararTalentosImportacao === "function"
+    ) {
+      dados.talentosEstruturados = prepararTalentosImportacao(dados);
+    } else if (
+      !Object.prototype.hasOwnProperty.call(dados, "talentosEstruturados") &&
+      typeof TALENTOS_CONFIG === "object" &&
+      Object.values(TALENTOS_CONFIG).some((config) =>
+        Object.prototype.hasOwnProperty.call(dados, config.campoId),
+      ) &&
+      typeof prepararTalentosImportacao === "function"
+    ) {
+      dados.talentosEstruturados = prepararTalentosImportacao(dados);
+    }
+  } else if (
     !dados.talentosEstruturados ||
     typeof dados.talentosEstruturados !== "object"
   ) {
     dados.talentosEstruturados = montarTalentosEstruturados(dados);
   }
 
-  dados.configFicha = normalizarConfigFicha(dados.configFicha);
+  if (!opcoes.preparacaoPura) {
+    dados.configFicha = normalizarConfigFicha(dados.configFicha);
+  }
 
   return dados;
 }
@@ -206,6 +642,22 @@ function obterArmaduraSeguro(indice = 0) {
 }
 window.obterArmaduraSeguro = window.obterArmaduraSeguro || obterArmaduraSeguro;
 
+function campoEhPersistenteDaFicha(campo) {
+  if (!campo || !campo.id) return false;
+  if (campo.type === "file" || campo.id === "importarFichaInput") return false;
+  if (["modalIniciativaDado", "modalPosicaoIniciativa"].includes(campo.id)) {
+    return false;
+  }
+  if (
+    campo.closest(
+      "#armaduraSelecaoOverlay, #armaduraModalOverlay, .modal-overlay-base, [role='dialog']",
+    )
+  ) {
+    return false;
+  }
+  return true;
+}
+
 function carregarFicha(personagem) {
   return aplicarDadosFicha(personagem);
 }
@@ -229,12 +681,7 @@ function coletarDadosFicha() {
   const dados = {};
 
   document.querySelectorAll("input, select, textarea").forEach((campo) => {
-    if (!campo.id) return;
-    if (campo.closest("#armaduraSelecaoOverlay, #armaduraModalOverlay")) return;
-    if (campo.type === "file") return;
-    if (campo.id === "importarFichaInput") return;
-    if (["modalIniciativaDado", "modalPosicaoIniciativa"].includes(campo.id))
-      return;
+    if (!campoEhPersistenteDaFicha(campo)) return;
     dados[campo.id] = campo.type === "checkbox" ? campo.checked : campo.value;
   });
 
@@ -275,6 +722,17 @@ function coletarDadosFicha() {
 }
 
 let ultimoEstadoSalvo = JSON.stringify(coletarDadosFicha());
+
+function capturarBaselineImportacaoFicha() {
+  return ultimoEstadoSalvo;
+}
+
+function restaurarBaselineImportacaoFicha(baseline) {
+  if (typeof baseline !== "string") {
+    throw new TypeError("O baseline da ficha não pode ser restaurado.");
+  }
+  ultimoEstadoSalvo = baseline;
+}
 
 function marcarFichaComoSalva() {
   ultimoEstadoSalvo = JSON.stringify(coletarDadosFicha());
@@ -343,8 +801,14 @@ const registrarInteracaoDuranteInicializacaoFicha = () => {
 );
 
 function finalizarInicializacaoEstadoFicha() {
+  const epochInicializacao = window.__fichaImportacaoEpoch || 0;
   const atualizarReferenciaInicial = () => {
-    if (!houveInteracaoDuranteInicializacaoFicha) marcarFichaComoSalva();
+    const inicializacaoAindaAtual =
+      (window.__fichaImportacaoEpoch || 0) === epochInicializacao &&
+      !window.__fichaImportacaoTransacaoAtiva;
+    if (!houveInteracaoDuranteInicializacaoFicha && inicializacaoAindaAtual) {
+      marcarFichaComoSalva();
+    }
     ["input", "change", "click"].forEach((tipoEvento) =>
       document.removeEventListener(
         tipoEvento,
@@ -398,6 +862,8 @@ function salvarFicha() {
   dados.outros = coletarOutros().filter(outro => String(outro.outro_tipo || "").toLowerCase() !== "municao");
   if (typeof sincronizarMunicoesNaFicha === "function") dados.outros.push(...sincronizarMunicoesNaFicha(dados.municoes));
   dados.armaduraEquipadaIndice = armaduraEquipadaIndice;
+  // Marca somente os dados atuais coletados; não reaplica migrações legadas.
+  dados.fichaSchemaVersion = FICHA_SCHEMA_VERSION_ATUAL;
 
   const nome = document.getElementById("nomePersonagem").value || "Personagem";
   const jogador = document.getElementById("jogador").value || "Jogador";
@@ -568,74 +1034,24 @@ function aguardarTempoMinimoModalImportacao() {
   return new Promise((resolver) => setTimeout(resolver, tempoRestante));
 }
 
-function validarEstruturaImportacao(dados) {
-  // A importação mapeia propriedades de um objeto JSON para campos da ficha.
-  if (
-    !dados ||
-    typeof dados !== "object" ||
-    Array.isArray(dados)
-  ) {
-    const erro = new Error(
-      "O JSON selecionado não contém um objeto de ficha no nível principal.",
-    );
-    erro.code = "INVALID_CHARACTER_SHEET_ROOT";
-    throw erro;
-  }
-
-  // As coleções são opcionais em fichas antigas; quando presentes, o importador
-  // remove os cards atuais e acessa propriedades de cada item antes de recriá-los.
-  ["armas", "armaduras", "escudos", "outros"].forEach((campo) => {
-    if (
-      Object.prototype.hasOwnProperty.call(dados, campo) &&
-      !Array.isArray(dados[campo])
-    ) {
-      const erro = new Error(
-        `O campo "${campo}" é incompatível: era esperada uma lista de equipamentos.`,
-      );
-      erro.code = "INVALID_CHARACTER_SHEET_COLLECTION";
-      throw erro;
-    }
-
-    if (Array.isArray(dados[campo])) {
-      const indiceInvalido = dados[campo].findIndex(
-        (item) => !item || typeof item !== "object" || Array.isArray(item),
-      );
-      if (indiceInvalido !== -1) {
-        const erro = new Error(
-          `O item ${indiceInvalido + 1} do campo "${campo}" não é um objeto de equipamento válido.`,
-        );
-        erro.code = "INVALID_CHARACTER_SHEET_COLLECTION_ITEM";
-        throw erro;
-      }
-    }
-  });
-}
-
 async function processarImportacao(conteudo, aoFinalizar) {
   let resultado;
   try {
     await aguardarRenderizacaoModalImportacao();
 
-    let dados;
-    try {
-      dados = typeof conteudo === "string" ? JSON.parse(conteudo) : conteudo;
-    } catch (erro) {
-      const erroJson = new Error(
-        "O arquivo selecionado não contém JSON válido. Confira o arquivo e tente novamente.",
-      );
-      erroJson.code = "INVALID_CHARACTER_SHEET_JSON";
-      throw erroJson;
-    }
-
-    validarEstruturaImportacao(dados);
+    const dados = prepararImportacaoFicha(conteudo);
     if (typeof aplicarDadosFicha !== "function") {
       const erro = new Error("A função de aplicação da ficha não está disponível.");
       erro.code = "CHARACTER_SHEET_APPLIER_UNAVAILABLE";
       throw erro;
     }
 
-    // aplicarDadosFicha normaliza e valida slots legados antes de tocar no estado/UI.
-    const aplicado = await aplicarDadosFicha(dados);
+    // Toda preparação/validação termina antes do aplicador. Falhas posteriores
+    // pertencem ao rollback transacional planejado para E1.4.
+    const aplicado = await aplicarDadosFicha(dados, {
+      preparado: true,
+      transacional: true,
+    });
     if (aplicado !== true) {
       const erro = new Error("A ficha não foi aplicada.");
       erro.code = "CHARACTER_SHEET_APPLY_NOT_COMPLETED";
@@ -648,21 +1064,69 @@ async function processarImportacao(conteudo, aoFinalizar) {
   } catch (erro) {
     console.error("Erro durante a importação da ficha:", erro);
     let mensagem = erro?.message || "Ocorreu um erro ao importar a ficha.";
+    const rollbackAplicacaoVerificado =
+      erro?.code === "CHARACTER_SHEET_APPLY_FAILED_ROLLED_BACK" &&
+      erro?.snapshotRestored === true &&
+      erro?.snapshotVerification?.valido === true &&
+      erro?.rollbackComplete === true;
     if (
-      erro?.code === "INVALID_LEGACY_MAGIC_SLOTS" ||
-      erro?.code === "INVALID_CHARACTER_SHEET_ROOT" ||
-      erro?.code === "INVALID_CHARACTER_SHEET_COLLECTION" ||
-      erro?.code === "INVALID_CHARACTER_SHEET_COLLECTION_ITEM" ||
-      erro?.code === "INVALID_CHARACTER_SHEET_JSON" ||
+      erro?.stage === "preparacao" ||
       erro?.code === "CHARACTER_SHEET_APPLIER_UNAVAILABLE" ||
-      erro?.code === "CHARACTER_SHEET_APPLY_NOT_COMPLETED"
+      erro?.code === "CHARACTER_SHEET_SNAPSHOT_FAILED" ||
+      erro?.code === "CHARACTER_SHEET_IMPORT_BUSY"
     ) {
       // Essas rejeições ocorrem antes de a ficha ser aplicada.
+    } else if (rollbackAplicacaoVerificado) {
+      mensagem =
+        "A importação falhou, mas a ficha anterior e seu estado de alterações foram restaurados.";
+    } else if (erro?.code === "CHARACTER_SHEET_ROLLBACK_FAILED") {
+      mensagem =
+        "A importação falhou e a recuperação da ficha ficou incompleta. O estado pode estar parcialmente alterado; confira os dados antes de continuar.";
+    } else if (erro?.code === "CHARACTER_SHEET_ROLLBACK_UNVERIFIED") {
+      mensagem = erro?.postReconciliationVerification?.valido === true &&
+        erro?.postReconciliationVerification?.sentinelasDeListaConfirmados === true
+        ? "A importação falhou; os dados persistentes coincidiram após a verificação e os sentinelas das listas-alvo executaram (isso não comprova que todos os observers ou writers estejam registrados ou drenados). Timers, integrações externas ou estados privados ainda impedem confirmar recuperação integral. Confira os dados antes de continuar."
+        : erro?.postReconciliationVerification?.valido === true &&
+          erro?.postReconciliationVerification?.janelaEstabilidadeObservada === true
+          ? "A importação falhou; os dados persistentes coincidiram durante a janela observada, mas os observers conhecidos não foram confirmados. Confira os dados antes de continuar."
+          : "A importação falhou e a restauração pós-reconciliação não foi comprovada. Confira os dados antes de continuar.";
     } else {
       mensagem =
         "Ocorreu uma falha durante a aplicação da ficha. A atualização pode ter sido parcial; confira os dados antes de continuar.";
     }
-    resultado = { tipo: "erro", mensagem };
+    resultado = {
+      tipo: "erro",
+      mensagem,
+      codigo: erro?.code || null,
+      recuperacao:
+        rollbackAplicacaoVerificado
+          ? "restaurada"
+          : erro?.code === "CHARACTER_SHEET_ROLLBACK_FAILED"
+            ? "incompleta"
+            : erro?.code === "CHARACTER_SHEET_ROLLBACK_UNVERIFIED"
+              ? "snapshot_restaurado_com_limite_async"
+            : erro?.code === "CHARACTER_SHEET_SNAPSHOT_FAILED"
+              ? "nao_iniciada"
+              : "nao_confirmada",
+      rollbackComplete:
+        rollbackAplicacaoVerificado
+          ? true
+          : erro?.code === "CHARACTER_SHEET_ROLLBACK_FAILED"
+            ? false
+            : erro?.code === "CHARACTER_SHEET_ROLLBACK_UNVERIFIED"
+              ? false
+            : null,
+      snapshotRestored: erro?.snapshotRestored === true,
+      verificacaoSnapshot: erro?.snapshotVerification || null,
+      verificacaoPosReconciliacao: erro?.postReconciliationVerification || null,
+      tarefasAssincronasNaoCercadas: erro?.unfencedAsyncWriters || [],
+      erroAplicacao: erro?.applicationError?.message || null,
+      errosRestauracao: Array.isArray(erro?.restorationErrors)
+        ? erro.restorationErrors.map((erroRestauracao) =>
+            String(erroRestauracao?.message || erroRestauracao),
+          )
+        : [],
+    };
   } finally {
     await aguardarTempoMinimoModalImportacao();
     if (resultado) mostrarResultadoImportacao(resultado.tipo, resultado.mensagem);

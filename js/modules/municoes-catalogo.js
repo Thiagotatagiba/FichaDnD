@@ -170,4 +170,15 @@ function sincronizarMunicoesNaFicha(lista = coletarMunicoes()) {
   return espelho;
 }
 
-document.addEventListener("DOMContentLoaded", () => { atualizarResumoMunicoes(); carregarCatalogoMunicoes().then(() => { document.querySelectorAll("#listaMunicoes .municao-card").forEach(atualizarCardMunicao); if (typeof atualizarTodasMunicoesArmas === "function") atualizarTodasMunicoesArmas(); }).catch(erro => console.error("Falha ao iniciar catálogo de munições", erro)); });
+document.addEventListener("DOMContentLoaded", () => {
+  atualizarResumoMunicoes();
+  carregarCatalogoMunicoes().then(async () => {
+    let resultadoImportacao = null;
+    while (window.__fichaImportacaoTransacaoAtiva) {
+      resultadoImportacao = await window.__aguardarFimImportacaoFicha?.();
+    }
+    if (resultadoImportacao && !resultadoImportacao.sucesso && !resultadoImportacao.restaurado) return;
+    document.querySelectorAll("#listaMunicoes .municao-card").forEach(atualizarCardMunicao);
+    if (typeof atualizarTodasMunicoesArmas === "function") atualizarTodasMunicoesArmas();
+  }).catch(erro => console.error("Falha ao iniciar catálogo de munições", erro));
+});

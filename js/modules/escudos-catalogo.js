@@ -1,7 +1,50 @@
 // Catálogo, seleção e detalhes de escudos; os cartões continuam no formato legado.
 const estadoCatalogoEscudos = { dados: null, promessa: null, selecionada: null, foco: null };
 const RARIDADES_ESCUDO_CATALOGO = new Set(["comum", "incomum", "raro", "muito raro", "lendário", "artefato"]);
-const estadoModalEscudo = { card: null, foco: null, editando: false, retrato: null };
+const estadoModalEscudo = { card: null, foco: null, editando: false, retrato: null, invalidada: false, sessao: 0 };
+
+function cardEscudoNaListaAtiva(card) {
+  const lista = document.getElementById("listaEscudos");
+  return Boolean(
+    card && card.isConnected && lista?.contains(card) &&
+    card.matches('.item-card[data-tipo="escudo"]') && card.id !== "escudoModelo",
+  );
+}
+
+function editorEscudoPodeAgir() {
+  const card = estadoModalEscudo.card;
+  if (window.__fichaImportacaoTransacaoAtiva) return false;
+  if (!card || estadoModalEscudo.invalidada || !cardEscudoNaListaAtiva(card)) {
+    if (card) {
+      estadoModalEscudo.invalidada = true;
+      fecharModalEscudo(true);
+    }
+    return false;
+  }
+  return true;
+}
+
+globalThis.__reconciliarEditorEscudoImportacao = function () {
+  try {
+    const card = estadoModalEscudo.card;
+    const overlay = document.getElementById("escudoModalOverlay");
+    if (!card) {
+      if (overlay?.classList.contains("ativo")) fecharModalEscudo(true);
+      return { ok: true, closed: Boolean(overlay?.classList.contains("oculto")) };
+    }
+    if (!estadoModalEscudo.invalidada && cardEscudoNaListaAtiva(card)) {
+      return { ok: true, closed: false };
+    }
+    estadoModalEscudo.invalidada = true;
+    fecharModalEscudo(true);
+    if (estadoModalEscudo.card || overlay?.classList.contains("ativo")) {
+      throw new Error("O editor de escudo obsoleto não foi encerrado.");
+    }
+    return { ok: true, closed: true };
+  } catch (error) {
+    return { ok: false, error };
+  }
+};
 
 function criarElementoEscudo(tag, texto, classe) {
   const elemento = document.createElement(tag);
@@ -398,6 +441,7 @@ function montarModalEscudo() {
   };
   overlay.querySelector('[data-acao="restaurar"]').onclick = restaurarPadraoModalEscudo;
   overlay.querySelector('[data-acao="excluir"]').onclick = () => {
+    if (!editorEscudoPodeAgir()) return;
     const card = estadoModalEscudo.card; card.querySelector(".btn-remover-item").click();
     if (!card.isConnected) fecharModalEscudo(true);
   };
@@ -413,14 +457,17 @@ function montarModalEscudo() {
 }
 
 function abrirModalEscudo(card, editar = false) {
-  montarModalEscudo(); estadoModalEscudo.card = card; estadoModalEscudo.foco = document.activeElement;
+  if (window.__fichaImportacaoTransacaoAtiva || !cardEscudoNaListaAtiva(card)) return;
+  montarModalEscudo(); estadoModalEscudo.sessao += 1; estadoModalEscudo.card = card; estadoModalEscudo.foco = document.activeElement;
+  estadoModalEscudo.invalidada = false;
   const overlay = document.getElementById("escudoModalOverlay");
   overlay.classList.remove("oculto"); overlay.classList.add("ativo"); overlay.setAttribute("aria-hidden", "false");
   renderizarModalEscudo(); if (editar) editarModalEscudo(); else overlay.querySelector('[data-acao="editar"]').focus();
 }
 
 function renderizarModalEscudo() {
-  const card = estadoModalEscudo.card; if (!card?.isConnected) return;
+  if (!editorEscudoPodeAgir()) return;
+  const card = estadoModalEscudo.card;
   estadoModalEscudo.editando = false; estadoModalEscudo.retrato = null;
   const item = dadosEscudoDoCatalogo(card);
   document.getElementById("escudoModalTitulo").textContent = item.nome || "Novo escudo";
@@ -444,6 +491,7 @@ function renderizarModalEscudo() {
 }
 
 function alternarEmpunharEscudo() {
+  if (!editorEscudoPodeAgir()) return;
   const card = estadoModalEscudo.card;
   let checkbox = [...document.querySelectorAll("#lista-escudos-equipamento input")]
     .find(input => Number(input.dataset.index) === [...document.querySelectorAll('#listaEscudos .item-card[data-tipo="escudo"]')].indexOf(card));
@@ -455,7 +503,14 @@ function alternarEmpunharEscudo() {
 }
 
 function editarModalEscudo() {
+  if (!editorEscudoPodeAgir()) return;
+  estadoModalEscudo.sessao += 1;
+  const sessaoEditor = estadoModalEscudo.sessao;
   const card = estadoModalEscudo.card, form = document.getElementById("escudoModalFormulario");
+  form.onsubmit = evento => {
+    evento.preventDefault();
+    salvarModalEscudo(sessaoEditor);
+  };
   const campos = form.querySelector(".armadura-editor-campos"); campos.replaceChildren();
   const definicoes = [
     ["escudo_nome", "Nome", "text", "nome", true],
@@ -521,7 +576,9 @@ function confirmarDescarteEdicaoEscudo() {
   return true;
 }
 
-function salvarModalEscudo() {
+function salvarModalEscudo(sessaoEsperada = estadoModalEscudo.sessao) {
+  if (sessaoEsperada !== estadoModalEscudo.sessao || !estadoModalEscudo.editando) return false;
+  if (!editorEscudoPodeAgir()) return false;
   const form = document.getElementById("escudoModalFormulario"); if (!form.reportValidity()) return;
   const card = estadoModalEscudo.card;
   form.querySelectorAll("[data-editor-campo]").forEach(campo => {
@@ -539,11 +596,14 @@ function salvarModalEscudo() {
 }
 
 async function restaurarPadraoModalEscudo() {
+  if (!editorEscudoPodeAgir()) return;
   const card = estadoModalEscudo.card;
   if (!confirm("Restaurar nome e propriedades do catálogo? A descrição personalizada será preservada.")) return;
+  const epochImportacao = window.__fichaImportacaoEpoch || 0;
   try {
     const catalogo = await carregarCatalogoEscudos();
-    if (estadoModalEscudo.card !== card || !card.isConnected) return;
+    if ((window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
+    if (!editorEscudoPodeAgir() || estadoModalEscudo.card !== card || !cardEscudoNaListaAtiva(card)) return;
     const item = catalogo.itens.find(entrada => entrada.id === card.dataset.catalogoEscudoId);
     if (!item) { alert("Este escudo não está disponível no catálogo atual."); return; }
     aplicarCatalogoAoCardEscudo(card, item, true); renderizarModalEscudo();
@@ -559,5 +619,7 @@ function fecharModalEscudo(forcar = false) {
   const overlay = document.getElementById("escudoModalOverlay"); if (!overlay) return;
   overlay.classList.remove("ativo"); overlay.classList.add("oculto"); overlay.setAttribute("aria-hidden", "true");
   estadoModalEscudo.card = null; estadoModalEscudo.editando = false; estadoModalEscudo.retrato = null;
+  estadoModalEscudo.sessao += 1;
+  estadoModalEscudo.invalidada = false;
   if (estadoModalEscudo.foco?.isConnected) estadoModalEscudo.foco.focus();
 }

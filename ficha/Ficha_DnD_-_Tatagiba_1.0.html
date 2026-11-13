@@ -11,7 +11,7 @@
       href="https://fonts.googleapis.com/css2?family=Metamorphous&family=MedievalSharp&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/base.css?v=xp-ui-layout-fix-6" />
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/componentes.css" />
     <link rel="stylesheet" href="../css/abas.css" />
@@ -1030,37 +1030,60 @@
           <input id="nomePersonagem" placeholder="Nome do Personagem" />
         </div>
 
-        <div class="jogador-xp">
-          <label for="jogador">Jogador</label>
-          <input id="jogador" placeholder="Nome do Jogador" />
+        <div class="jogador-topo">
+          <div class="jogador-identificacao">
+            <label for="jogador">Jogador</label>
+            <input id="jogador" placeholder="Nome do Jogador" />
+          </div>
+          <div class="jogador-xp xp-panel" role="group" aria-label="Painel de experiência">
+          <!-- O campo persistente continua oculto; o painel apresenta seu valor. -->
+          <input id="xp" type="number" min="0" step="1" inputmode="numeric" value="0" aria-label="XP acumulado" />
 
-          <label for="xp">XP</label>
-
-          <!-- input continua existindo -->
-          <input id="xp" value="0" />
-
-          <!-- barra -->
-          <div class="xp-bar-container" id="xpBar">
-            <div class="xp-bar-fill xp-bar-fill-current xp-bar-fill-base" id="xpBarCurrent">
-              <div class="xp-bar-tip" aria-hidden="true"></div>
-            </div>
-            <div class="xp-bar-fill xp-bar-fill-next xp-bar-fill-overlay" id="xpBarNext">
-              <div class="xp-bar-tip" aria-hidden="true"></div>
-            </div>
+          <div class="xp-panel-heading">
+            <span class="xp-panel-title">✦ EXPERIÊNCIA</span>
+            <span id="xpLevelLabel" class="xp-level-label">NÍVEL 1</span>
           </div>
 
-          <!-- linha com texto + botão -->
+          <div class="xp-progress-shell">
+            <div
+              class="xp-bar-container"
+              id="xpBar"
+              role="progressbar"
+              tabindex="0"
+              aria-label="Progresso de XP na faixa do nível atual"
+              aria-describedby="xpTooltip"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              aria-valuenow="0"
+              aria-valuetext="0 de 300 XP, nível 1"
+            >
+              <div class="xp-bar-fill xp-bar-fill-current xp-bar-fill-base" id="xpBarCurrent">
+                <div class="xp-bar-tip" aria-hidden="true"></div>
+              </div>
+              <div class="xp-bar-fill xp-bar-fill-next xp-bar-fill-overlay" id="xpBarNext">
+                <div class="xp-bar-tip" aria-hidden="true"></div>
+              </div>
+              <span class="xp-progress-marker" id="xpProgressMarker" aria-hidden="true"></span>
+            </div>
+            <span id="xpTooltip" class="xp-tooltip" role="tooltip">Faltam 300 XP para o nível 2</span>
+          </div>
+
           <div class="xp-info">
-            <span id="xpTexto">0/300 XP</span>
+            <span id="xpTexto" class="xp-visually-hidden" aria-hidden="true"></span>
+            <span class="xp-values" aria-hidden="true">
+              <strong id="xpCurrentValue" class="xp-current-value">0</strong>
+              <small id="xpThresholdValue" class="xp-threshold-value">/ 300 XP</small>
+            </span>
             <button
               id="btnAddXP"
-              title="Adicionar XP"
               type="button"
-              aria-label="Adicionar experiência"
+              aria-label="Adicionar XP"
             >
-              ⬆️
+              <span class="xp-add-icon" aria-hidden="true">+</span>
+              <span>Adicionar XP</span>
             </button>
           </div>
+        </div>
         </div>
       </div>
 

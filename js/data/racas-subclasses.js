@@ -78,7 +78,15 @@ function obterCampoRaca() {
   return document.getElementById("racaID");
 }
 
-function normalizarConfigFicha(config) {
+function normalizarConfigFicha(config, opcoes = {}) {
+  const preservarDesconhecidos = opcoes.preservarDesconhecidos === true;
+  const configObjeto =
+    preservarDesconhecidos &&
+    config &&
+    typeof config === "object" &&
+    !Array.isArray(config)
+      ? config
+      : {};
   const custom =
     config &&
     typeof config === "object" &&
@@ -88,7 +96,14 @@ function normalizarConfigFicha(config) {
       : {};
 
   return {
+    ...(preservarDesconhecidos ? configObjeto : {}),
     custom: {
+      ...(preservarDesconhecidos &&
+      custom &&
+      typeof custom === "object" &&
+      !Array.isArray(custom)
+        ? custom
+        : {}),
       classe: String(custom.classe || "").trim(),
       subclasse: String(custom.subclasse || "").trim(),
       raca: String(custom.raca || "").trim(),
@@ -636,11 +651,119 @@ function pegarFraseXP() {
   return frasesXP[Math.floor(Math.random() * frasesXP.length)];
 }
 
+const operacoesModaisXPLevelUp = new Set();
+
+window.__cancelarOperacoesModaisXPLevelUp = async function () {
+  const operacoes = [...operacoesModaisXPLevelUp];
+  const modais = ["xpAddModal", "levelUpModal"]
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
+  const focoAtivo = document.activeElement;
+  const focusTarget = operacoes
+    .map((operacao) => operacao.focusTarget?.())
+    .find((alvo) => alvo?.isConnected && !modais.some((modal) => modal.contains(alvo))) ||
+    (focoAtivo?.isConnected && !modais.some((modal) => modal.contains(focoAtivo))
+      ? focoAtivo
+      : null);
+  const cancelled = [];
+  const completions = [];
+  let ok = true;
+  for (const operacao of operacoes) {
+    if (operacao.settled) continue;
+    try {
+      const completion = operacao.cancel();
+      if (completion && typeof completion.then === "function") {
+        completions.push(completion);
+      }
+      cancelled.push(operacao.kind);
+    } catch (erro) {
+      ok = false;
+    }
+  }
+  // Give Promise continuations (which are epoch fenced) a chance to settle
+  // before the character applicator starts mutating state.
+  const results = await Promise.allSettled(completions);
+  if (results.some((result) => result.status === "rejected")) ok = false;
+  await Promise.resolve();
+  return { ok: ok && operacoes.every((op) => op.settled), cancelled, focusTarget };
+};
+
+window.__reconciliarModaisXPLevelUp = function ({ focusTarget, reconciliarXP = false } = {}) {
+  try {
+    for (const id of ["xpAddModal", "levelUpModal"]) {
+      const modal = document.getElementById(id);
+      if (!modal) continue;
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+      modal.classList.remove("ativo");
+    }
+    document.getElementById("xpAddModalProgressFill")?.classList.remove("xp-glow");
+    const progressoXP = document.getElementById("xpAddModalProgressFill");
+    if (progressoXP) progressoXP.style.transition = "";
+    document.getElementById("btnRolarDado")?.classList.remove("rolando");
+    for (const id of ["xpBar", "xpBarCurrent", "xpBarNext"]) {
+      const barra = document.getElementById(id);
+      if (barra) barra.style.transition = "";
+    }
+    // O snapshot pode capturar a largura-alvo de uma animação antes de o XP
+    // persistente mudar. No rollback, refaça a representação visual a partir
+    // do campo XP já restaurado, sem recalcular nível, vida ou Level Up.
+    if (reconciliarXP && typeof atualizarXPENivel === "function") {
+      atualizarXPENivel({ apenasVisual: true });
+    }
+    const modais = ["xpAddModal", "levelUpModal"]
+      .map((id) => document.getElementById(id))
+      .filter(Boolean);
+    if (modais.some((modal) => modal.contains(document.activeElement))) {
+      if (focusTarget?.isConnected && !modais.some((modal) => modal.contains(focusTarget))) {
+        focusTarget.focus();
+      } else {
+        document.activeElement?.blur?.();
+      }
+    }
+    return { ok: true };
+  } catch (erro) {
+    return { ok: false, error: erro };
+  }
+};
+
 // Animação visual simples para celebrar Level Up.
 // (celebração visual removida por solicitação — sem efeitos extras)
 
 function abrirModalAdicionarXP() {
+  const epochImportacao = window.__fichaImportacaoEpoch || 0;
+  const geracaoModalXP = (window.__geracaoModalAdicionarXP || 0) + 1;
+  window.__geracaoModalAdicionarXP = geracaoModalXP;
+  const operacaoContinuaAtual = () =>
+    (window.__fichaImportacaoEpoch || 0) === epochImportacao &&
+    !window.__fichaImportacaoTransacaoAtiva;
   return new Promise((resolve) => {
+    let resolvida = false;
+    const timers = new Set();
+    const resolverUmaVez = (valor) => {
+      if (resolvida) return;
+      resolvida = true;
+      for (const timer of timers) clearTimeout(timer);
+      timers.clear();
+      operacoesModaisXPLevelUp.delete(operacao);
+      resolve(valor);
+    };
+    const agendar = (callback, atraso) => {
+      const timer = setTimeout(() => {
+        timers.delete(timer);
+        if (!resolvida) callback();
+      }, atraso);
+      timers.add(timer);
+      return timer;
+    };
+    let cancelamento;
+    const operacao = {
+      kind: "xp",
+      settled: false,
+      focusTarget: () => elementoAnteriorFocado,
+      cancel: () => cancelamento?.(),
+    };
+    Object.defineProperty(operacao, "settled", { get: () => resolvida });
     const modal = document.getElementById("xpAddModal");
     const frase = document.getElementById("xpAddModalEpicPhrase");
     const input = document.getElementById("xpAddModalInput");
@@ -655,7 +778,11 @@ function abrirModalAdicionarXP() {
     const missingEl = document.getElementById("xpAddModalMissing");
 
     if (!modal || !input || !btnConfirm || !btnCancel || !btnClose || !frase) {
-      resolve(null);
+      resolverUmaVez(null);
+      return;
+    }
+    if (!operacaoContinuaAtual()) {
+      resolverUmaVez(null);
       return;
     }
 
@@ -741,14 +868,15 @@ function abrirModalAdicionarXP() {
       modal.setAttribute("aria-hidden", "false");
       modal.style.display = "flex";
       // small delay to ensure display applied before focusing
-      setTimeout(() => {
+      agendar(() => {
+        if (!operacaoContinuaAtual()) return;
         input.focus();
         input.select();
       }, 0);
       document.addEventListener("keydown", keydownHandler);
     };
 
-    const limpar = () => {
+    const limpar = (restaurarFoco = true) => {
       input.oninput = null;
       if (btnConfirmHandler) {
         btnConfirm.removeEventListener("click", btnConfirmHandler);
@@ -758,16 +886,34 @@ function abrirModalAdicionarXP() {
       btnClose.removeEventListener("click", fecharModal);
       document.removeEventListener("keydown", keydownHandler);
 
-      try {
-        if (
-          elementoAnteriorFocado &&
-          typeof elementoAnteriorFocado.focus === "function"
-        ) {
-          elementoAnteriorFocado.focus();
+      if (restaurarFoco) {
+        try {
+          if (
+            elementoAnteriorFocado &&
+            typeof elementoAnteriorFocado.focus === "function"
+          ) {
+            elementoAnteriorFocado.focus();
+          }
+        } catch (err) {
+          // ignore
         }
-      } catch (err) {
-        // ignore
       }
+    };
+
+    const finalizarOperacaoObsoleta = async () => {
+      while (window.__fichaImportacaoTransacaoAtiva) {
+        await window.__aguardarFimImportacaoFicha?.();
+      }
+      if (resolvida) return;
+      if (window.__geracaoModalAdicionarXP !== geracaoModalXP) {
+        resolverUmaVez(null);
+        return;
+      }
+      limpar(false);
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+      progressFill?.classList.remove("xp-glow");
+      resolverUmaVez(null);
     };
 
     function atualizarPreview() {
@@ -796,13 +942,24 @@ function abrirModalAdicionarXP() {
       limpar();
       modal.style.display = "none";
       modal.setAttribute("aria-hidden", "true");
-      resolve(null);
+      resolverUmaVez(null);
+    };
+
+    cancelamento = () => {
+      for (const timer of timers) clearTimeout(timer);
+      timers.clear();
+      limpar(false);
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+      progressFill?.classList.remove("xp-glow");
+      resolverUmaVez(null);
     };
 
     btnCancel.addEventListener("click", fecharModal);
     btnClose.addEventListener("click", fecharModal);
 
     btnConfirmHandler = () => {
+      if (!operacaoContinuaAtual()) return;
       const valor = Number(input.value) || 0;
       if (!Number.isInteger(valor) || valor <= 0) return;
 
@@ -824,24 +981,34 @@ function abrirModalAdicionarXP() {
         progressFill.style.width = "100%";
         progressFill.classList.add("xp-glow");
 
-        setTimeout(() => {
+        agendar(() => {
+          if (!operacaoContinuaAtual()) {
+            void finalizarOperacaoObsoleta();
+            return;
+          }
           limpar();
           // mantém o glow por pouco tempo e fecha o modal
-          setTimeout(() => progressFill.classList.remove("xp-glow"), 600);
+          agendar(() => {
+            if (operacaoContinuaAtual()) progressFill.classList.remove("xp-glow");
+          }, 600);
           modal.style.display = "none";
           modal.setAttribute("aria-hidden", "true");
-          resolve(valor);
+          resolverUmaVez(valor);
         }, 850);
       } else {
         // animação simples até novo progresso
         progressFill.style.transition = "width 600ms ease";
         progressFill.style.width = `${progressoNovo * 100}%`;
 
-        setTimeout(() => {
+        agendar(() => {
+          if (!operacaoContinuaAtual()) {
+            void finalizarOperacaoObsoleta();
+            return;
+          }
           limpar();
           modal.style.display = "none";
           modal.setAttribute("aria-hidden", "true");
-          resolve(valor);
+          resolverUmaVez(valor);
         }, 650);
       }
     };
@@ -849,12 +1016,43 @@ function abrirModalAdicionarXP() {
     btnConfirm.addEventListener("click", btnConfirmHandler);
 
     input.oninput = atualizarPreview;
+    operacoesModaisXPLevelUp.add(operacao);
     abrir();
   });
 }
 
 function abrirModalLevelUp({ nivelAnterior, nivelAtual, bonusProf, dadoVida }) {
+  if (window.__fichaImportacaoTransacaoAtiva) return Promise.resolve(null);
+  const epochImportacao = window.__fichaImportacaoEpoch || 0;
+  let operacao;
+  let resolvida = false;
+  const timers = new Set();
+  const resolverUmaVez = (resolve, valor) => {
+    if (resolvida) return;
+    resolvida = true;
+    for (const timer of timers) clearTimeout(timer);
+    timers.clear();
+    operacoesModaisXPLevelUp.delete(operacao);
+    resolve(valor);
+  };
+  const agendar = (callback, atraso) => {
+    const timer = setTimeout(() => {
+      timers.delete(timer);
+      if (!resolvida) callback();
+    }, atraso);
+    timers.add(timer);
+    return timer;
+  };
+  const operacaoContinuaAtual = () =>
+    !resolvida && (window.__fichaImportacaoEpoch || 0) === epochImportacao &&
+    !window.__fichaImportacaoTransacaoAtiva;
   return new Promise((resolve) => {
+    operacao = {
+      kind: "levelUp",
+      get settled() { return resolvida; },
+      focusTarget: () => elementoAnteriorFocadoLevelUp,
+      cancel: () => cancelar?.(),
+    };
     const modal = document.getElementById("levelUpModal");
     const frase = document.getElementById("levelUpFrase");
     const info = document.getElementById("levelUpInfo");
@@ -871,6 +1069,7 @@ function abrirModalLevelUp({ nivelAnterior, nivelAtual, bonusProf, dadoVida }) {
     const dadoQuantidade = `${nivelAtual}${dadoBase}`;
     const max = obterMaxDadoVidaFromString(dadoVida);
     const historicoRolagensVida = [];
+    const pendingRolls = new Set();
 
     frase.textContent = pegarFraseLevelUP();
 
@@ -907,7 +1106,7 @@ Bônus de Proficiência: +${bonusProf}
         // Cancelar a rolagem não equivale a um resultado numérico.
         limparLevelUp();
         modal.style.display = "none";
-        resolve(null);
+        finalizar(null);
         return;
       }
 
@@ -932,12 +1131,19 @@ Bônus de Proficiência: +${bonusProf}
       }
     }
 
+    modal.setAttribute("aria-hidden", "false");
     modal.style.display = "flex";
 
     const botao = document.getElementById("btnConfirmarLevelUp");
+    const handlers = { dado: null, input: null, historico: null, confirmar: null };
 
-    function limparLevelUp() {
+    function limparLevelUp(restaurarFoco = true) {
       document.removeEventListener("keydown", keydownHandlerLevelUp);
+      if (input.oninput === handlers.input) input.oninput = null;
+      if (historicoVida && historicoVida.onclick === handlers.historico) historicoVida.onclick = null;
+      if (btnDado && btnDado.onclick === handlers.dado) btnDado.onclick = null;
+      if (botao && botao.onclick === handlers.confirmar) botao.onclick = null;
+      if (!restaurarFoco) return;
       try {
         if (
           elementoAnteriorFocadoLevelUp &&
@@ -951,7 +1157,8 @@ Bônus de Proficiência: +${bonusProf}
 
     elementoAnteriorFocadoLevelUp = document.activeElement;
     // small delay to ensure visible
-    setTimeout(() => {
+    agendar(() => {
+      if (!operacaoContinuaAtual()) return;
       if (input) input.focus();
       else if (botao) botao.focus();
     }, 0);
@@ -1002,12 +1209,16 @@ Bônus de Proficiência: +${bonusProf}
         .join(", ");
     }
 
-    btnDado.onclick = () => {
+    handlers.dado = () => {
       if (!input || !btnDado) return;
+      if (!operacaoContinuaAtual()) return;
 
       btnDado.classList.add("rolando");
 
-      animarRolagemNoCampo(input, 1, max, 1000, 60).then((rolagem) => {
+      const pendingRoll = animarRolagemNoCampo(input, 1, max, 1000, 60);
+      pendingRolls.add(pendingRoll);
+      pendingRoll.then((rolagem) => {
+        if (!operacaoContinuaAtual() || !rolagem) return;
         btnDado.classList.remove("rolando");
         const resultado = rolagem?.resultados?.[0];
 
@@ -1028,13 +1239,15 @@ Bônus de Proficiência: +${bonusProf}
         }
 
         validarInput();
-      });
+      }).finally(() => { pendingRolls.delete(pendingRoll); });
     };
+    btnDado.onclick = handlers.dado;
 
     // valida enquanto digita
-    input.oninput = validarInput;
+    handlers.input = validarInput;
+    input.oninput = handlers.input;
     if (historicoVida) {
-      historicoVida.onclick = (evento) => {
+      handlers.historico = (evento) => {
         const botaoHistorico = evento.target.closest("[data-valor-rolagem]");
         if (!botaoHistorico) return;
 
@@ -1043,6 +1256,7 @@ Bônus de Proficiência: +${bonusProf}
           botaoHistorico.dataset.valorRolagem,
         );
       };
+      historicoVida.onclick = handlers.historico;
     }
 
     // inicia bloqueado
@@ -1050,16 +1264,33 @@ Bônus de Proficiência: +${bonusProf}
     input.classList.add("invalido");
 
     // botão confirmar
-    botao.onclick = () => {
+    handlers.confirmar = () => {
+      if (!operacaoContinuaAtual()) return;
       if (!validarInput()) return;
 
       const valor = Number(input.value);
 
       limparLevelUp();
       modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
 
-      resolve(valor);
+      finalizar(valor);
     };
+    botao.onclick = handlers.confirmar;
+    let cancelar;
+    function finalizar(valor) {
+      limparLevelUp(false);
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+      btnDado?.classList.remove("rolando");
+      resolverUmaVez(resolve, valor);
+    }
+    cancelar = async () => {
+      finalizar(null);
+      if (pendingRolls.size) await Promise.allSettled([...pendingRolls]);
+    };
+    operacao.cancel = cancelar;
+    operacoesModaisXPLevelUp.add(operacao);
     atualizarFicha();
   });
 }
@@ -1106,9 +1337,13 @@ function formatarDadoVidaTexto() {
 
 // ===== Lógica de Level Up =====
 async function processarLevelUp(nivelAntigo, nivelNovo) {
-  if (bloqueandoLevelUp) return;
+  if (bloqueandoLevelUp || window.__fichaImportacaoTransacaoAtiva) return;
+  const epochImportacao = window.__fichaImportacaoEpoch || 0;
+  const nivelContinuaAtual = () =>
+    (window.__fichaImportacaoEpoch || 0) === epochImportacao;
 
   for (let nivel = nivelAntigo + 1; nivel <= nivelNovo; nivel++) {
+    if (window.__fichaImportacaoTransacaoAtiva) break;
     const bonusProf = calcularBonusProf(nivel);
 
     const ganhoHP = await abrirModalLevelUp({
@@ -1118,6 +1353,7 @@ async function processarLevelUp(nivelAntigo, nivelNovo) {
       dadoVida: document.getElementById("dadosVidaTipo")?.value,
     });
 
+    if (!nivelContinuaAtual()) break;
     if (ganhoHP === null) break;
 
     const hpMaxInput = document.getElementById("pvTotal");
@@ -1136,10 +1372,14 @@ document.addEventListener("DOMContentLoaded", () => {
     .addEventListener("input", atualizarDadosVidaTotal);
 
   document.getElementById("btnAddXP").addEventListener("click", async () => {
+    const epochImportacao = window.__fichaImportacaoEpoch || 0;
+    const operacaoContinuaAtual = () =>
+      (window.__fichaImportacaoEpoch || 0) === epochImportacao;
     const xpInput = document.getElementById("xp");
     const xpAtual = Number(xpInput.value);
     const valor = await abrirModalAdicionarXP();
 
+    if (!operacaoContinuaAtual()) return;
     if (valor !== null && valor !== undefined) {
       const novo = xpAtual + valor;
 
@@ -1181,9 +1421,39 @@ document.addEventListener("DOMContentLoaded", () => {
             res();
             return;
           }
+          let settled = false;
+          let timer;
+          let resolveDrain;
+          const drain = new Promise((resolve) => { resolveDrain = resolve; });
+          const finish = () => {
+            if (settled) return;
+            settled = true;
+            if (timer) clearTimeout(timer);
+            operacoesModaisXPLevelUp.delete(operacaoVisualXP);
+            res();
+            resolveDrain();
+          };
+          const operacaoVisualXP = {
+            kind: "xpAnimation",
+            get settled() { return settled; },
+            focusTarget: () => document.getElementById("btnAddXP"),
+            cancel: () => {
+              target.style.transition = "";
+              finish();
+              return drain;
+            },
+          };
+          operacoesModaisXPLevelUp.add(operacaoVisualXP);
           target.style.transition = `width ${duration}ms ease`;
           target.style.width = `${toPercent}%`;
-          setTimeout(() => {
+          timer = setTimeout(() => {
+            if (!operacaoContinuaAtual()) {
+              // A importação/cancelamento já reconcilia a barra. Um callback
+              // antigo não deve tocar nela: pode haver uma animação legítima
+              // mais nova no mesmo elemento.
+              finish();
+              return;
+            }
             // se animamos até 100%, movemos a ponta para a esquerda (wrap)
             try {
               const tip =
@@ -1198,13 +1468,14 @@ document.addEventListener("DOMContentLoaded", () => {
               }
             } catch (err) {}
             target.style.transition = "";
-            res();
+            finish();
           }, duration + 40);
         });
 
       if (novo >= xpProximoNivel) {
         // anima até 100% antes de aplicar o XP e disparar level-up
         await animateBar(100, 800);
+        if (!operacaoContinuaAtual()) return;
         setXP(novo);
       } else {
         const progressoNovo = Math.max(
@@ -1212,6 +1483,7 @@ document.addEventListener("DOMContentLoaded", () => {
           Math.min(1, (novo - xpNivelAtual) / denom),
         );
         await animateBar(progressoNovo * 100, 600);
+        if (!operacaoContinuaAtual()) return;
         setXP(novo);
       }
     }
@@ -1231,10 +1503,27 @@ window.addEventListener("DOMContentLoaded", () => {
 
 function setXP(valor) {
   const xpInput = document.getElementById("xp");
+  const texto = typeof valor === "string" ? valor.trim() : "";
+  const numero = typeof valor === "number" ? valor : Number(texto);
+  const formatoValido = typeof valor === "number" || /^\+?(?:\d+)(?:e[+-]?\d+)?$/i.test(texto);
+  if (
+    !formatoValido ||
+    !Number.isFinite(numero) ||
+    !Number.isInteger(numero) ||
+    numero < 0
+  ) {
+    xpInput.setCustomValidity?.("Informe um total de XP inteiro e não negativo.");
+    xpInput.setAttribute?.("aria-invalid", "true");
+    const ultimoXPValido = xpInput.dataset?.xpValido;
+    if (ultimoXPValido !== undefined) xpInput.value = ultimoXPValido;
+    return false;
+  }
 
-  xpInput.value = Number(valor) || 0;
-
-  atualizarXPENivel(); // 🔥 sempre atualiza tudo
+  xpInput.setCustomValidity?.("");
+  xpInput.removeAttribute?.("aria-invalid");
+  xpInput.value = numero;
+  atualizarXPENivel(); // sempre atualiza nível, vida e apresentação visual
+  return true;
 }
 
 document.addEventListener("change", (e) => {
@@ -1246,14 +1535,39 @@ document.addEventListener("change", (e) => {
   }
 });
 
-function atualizarXPENivel() {
+function atualizarXPENivel(opcoes = {}) {
+  const apenasVisual = opcoes?.apenasVisual === true;
   const xpInput = document.getElementById("xp");
   const nivelInput = document.getElementById("classeNivelID");
   const xpBarCurrent = document.getElementById("xpBarCurrent");
   const xpBarNext = document.getElementById("xpBarNext");
   const xpTexto = document.getElementById("xpTexto");
+  const xpCurrentValue = document.getElementById("xpCurrentValue");
+  const xpThresholdValue = document.getElementById("xpThresholdValue");
+  const xpLevelLabel = document.getElementById("xpLevelLabel");
+  const xpTooltip = document.getElementById("xpTooltip");
 
-  const xp = parseInt(xpInput.value) || 0;
+  const valorXP = xpInput.value;
+  const textoXP = typeof valorXP === "string" ? valorXP.trim() : "";
+  const xp = typeof valorXP === "number" ? valorXP : Number(textoXP);
+  // Input type=number pode serializar inteiros grandes em notação exponencial.
+  // Aceitamos essa forma apenas quando o valor numérico continua inteiro.
+  const formatoXP = typeof valorXP === "number" || /^\+?(?:\d+)(?:e[+-]?\d+)?$/i.test(textoXP);
+  if (
+    !formatoXP ||
+    !Number.isFinite(xp) ||
+    !Number.isInteger(xp) ||
+    xp < 0
+  ) {
+    xpInput.setCustomValidity?.("Informe um total de XP inteiro e não negativo.");
+    xpInput.setAttribute?.("aria-invalid", "true");
+    const ultimoXPValido = xpInput.dataset?.xpValido;
+    if (ultimoXPValido !== undefined) xpInput.value = ultimoXPValido;
+    return false;
+  }
+  xpInput.setCustomValidity?.("");
+  xpInput.removeAttribute?.("aria-invalid");
+  if (xpInput.dataset) xpInput.dataset.xpValido = String(xp);
 
   // 🔹 calcular nível
   let nivelAtual = 1;
@@ -1271,17 +1585,18 @@ function atualizarXPENivel() {
     }
   }
 
-  const nivelAnterior = Number(nivelInput.value) || 1;
+  if (!apenasVisual) {
+    const nivelAnterior = Number(nivelInput.value) || 1;
+    nivelInput.value = nivelAtual;
+    atualizarDadosVidaTotal();
 
-  nivelInput.value = nivelAtual;
-  atualizarDadosVidaTotal();
-
-  // 🔥 DETECTAR LEVEL UP
-  if (nivelAtual > nivelAnterior) {
-    processarLevelUp(nivelAnterior, nivelAtual);
+    // 🔥 DETECTAR LEVEL UP
+    if (nivelAtual > nivelAnterior) {
+      processarLevelUp(nivelAnterior, nivelAtual);
+    }
   }
 
-  // 🔹 calcular progresso
+  // 🔹 calcular somente a faixa do nível atual; o XP acumulado não é zerado.
   let progresso = 1;
 
   if (nivelAtual < 20) {
@@ -1290,35 +1605,13 @@ function atualizarXPENivel() {
 
   progresso = Math.max(0, Math.min(1, progresso));
 
-  // 🔹 aplicar barra com sobreposição: base fixa, apenas camada ativa muda
+  // Uma barra, duas camadas sobrepostas. A base representa a faixa anterior
+  // (ou o trilho neutro no nível 1); a camada superior representa a faixa atual.
   if (xpBarCurrent && xpBarNext) {
-    // Alterna cor garantindo que o elemento ANIMADO receba a cor adequada:
-    // - níveis ímpares: elemento animado = verde, outro = azul
-    // - níveis pares: elemento animado = azul, outro = verde
-    const animandoNext = nivelAtual > 1; // quando >1 animamos a overlay (xpBarNext)
-    const corVerde = "linear-gradient(90deg, #4caf50, #8bc34a)";
-    const corAzul =
-      "linear-gradient(90deg, rgba(33,150,243,0.85), rgba(3,169,244,0.85))";
-
-    if (nivelAtual % 2 === 1) {
-      // nível ímpar -> animado = verde
-      if (animandoNext) {
-        xpBarNext.style.background = corVerde;
-        xpBarCurrent.style.background = corAzul;
-      } else {
-        xpBarCurrent.style.background = corVerde;
-        xpBarNext.style.background = corAzul;
-      }
-    } else {
-      // nível par -> animado = azul
-      if (animandoNext) {
-        xpBarNext.style.background = corAzul;
-        xpBarCurrent.style.background = corVerde;
-      } else {
-        xpBarCurrent.style.background = corAzul;
-        xpBarNext.style.background = corVerde;
-      }
-    }
+    const corAnterior = PALETA_XP_NIVEIS[Math.max(0, nivelAtual - 2)];
+    const corAtual = PALETA_XP_NIVEIS[nivelAtual - 1];
+    xpBarCurrent.style.background = nivelAtual === 1 ? corAtual : corAnterior;
+    xpBarNext.style.background = corAtual;
 
     // âncoras à esquerda (preenchimento left→right)
     xpBarCurrent.style.left = "0";
@@ -1332,48 +1625,33 @@ function atualizarXPENivel() {
       xpBarCurrent.style.width = "100%";
 
       // camada ativa (overlay) cresce sobre a base
-      xpBarNext.style.transition = "width 0.3s ease";
+      xpBarNext.style.transition = apenasVisual ? "none" : "width 0.3s ease";
       xpBarNext.style.width = progresso * 100 + "%";
     } else {
       // nível 1: não há base fixa — usamos apenas a camada current para mostrar progresso
-      xpBarCurrent.style.transition = "width 0.3s ease";
+      xpBarCurrent.style.transition = apenasVisual ? "none" : "width 0.3s ease";
       xpBarCurrent.style.width = progresso * 100 + "%";
       xpBarNext.style.transition = "none";
       xpBarNext.style.width = "0%";
     }
 
-    // Ajuste de opacidade e ponta brilhante:
+    // As cores são opacas para manter contraste entre as faixas; o marcador
+    // independente acompanha a largura e não depende da cor ou do gradiente.
     try {
       const tipCurrent = xpBarCurrent.querySelector(".xp-bar-tip");
       const tipNext = xpBarNext.querySelector(".xp-bar-tip");
 
       if (nivelAtual > 1) {
-        xpBarCurrent.style.opacity = "0.6";
+        xpBarCurrent.style.opacity = "1";
         xpBarNext.style.opacity = "1";
 
-        if (tipNext) {
-          tipNext.style.opacity = progresso > 0 ? "1" : "0";
-          const cor =
-            nivelAtual % 2 === 1
-              ? "rgba(76,175,80,0.95)"
-              : "rgba(33,150,243,0.95)";
-          tipNext.style.boxShadow = `0 0 8px ${cor}`;
-          tipNext.style.borderColor = cor;
-        }
-        if (tipCurrent) tipCurrent.style.opacity = "0.4";
+        if (tipNext) tipNext.style.opacity = "0";
+        if (tipCurrent) tipCurrent.style.opacity = "0";
       } else {
         xpBarCurrent.style.opacity = "1";
-        xpBarNext.style.opacity = "0.6";
+        xpBarNext.style.opacity = "1";
 
-        if (tipCurrent) {
-          tipCurrent.style.opacity = progresso > 0 ? "1" : "0";
-          const cor =
-            nivelAtual % 2 === 1
-              ? "rgba(76,175,80,0.95)"
-              : "rgba(33,150,243,0.95)";
-          tipCurrent.style.boxShadow = `0 0 8px ${cor}`;
-          tipCurrent.style.borderColor = cor;
-        }
+        if (tipCurrent) tipCurrent.style.opacity = "0";
         if (tipNext) tipNext.style.opacity = "0";
       }
     } catch (err) {
@@ -1381,12 +1659,45 @@ function atualizarXPENivel() {
     }
   }
 
-  // 🔹 texto
-  if (nivelAtual < 20) {
-    xpTexto.textContent = `${xp}/${xpProximoNivel} XP`;
-  } else {
-    xpTexto.textContent = `MAX`;
+  const marcador = document.getElementById("xpProgressMarker");
+  const percentual = Math.round(progresso * 1000) / 10;
+  if (marcador) {
+    marcador.style.left = `${percentual}%`;
+    marcador.setAttribute("aria-hidden", "true");
   }
+  const formatarXP = (valor) => new Intl.NumberFormat("pt-BR").format(valor);
+  const percentualTexto = new Intl.NumberFormat("pt-BR", {
+    maximumFractionDigits: 1,
+  }).format(percentual);
+
+  // O total e o limite ficam fora da barra; o nível e a faixa também são
+  // anunciados por texto acessível e pelo tooltip associado à barra.
+  const xpRestante = Math.max(0, xpProximoNivel - xp);
+  if (xpLevelLabel) xpLevelLabel.textContent = `NÍVEL ${nivelAtual}`;
+  if (xpCurrentValue) xpCurrentValue.textContent = formatarXP(xp);
+  if (nivelAtual < 20) {
+    if (xpThresholdValue) xpThresholdValue.textContent = `/ ${formatarXP(xpProximoNivel)} XP`;
+    xpTexto.textContent =
+      `${formatarXP(xp)} / ${formatarXP(xpProximoNivel)} XP · Nível ${nivelAtual} · ` +
+      `${percentualTexto}% até o nível ${nivelAtual + 1}`;
+    if (xpTooltip) xpTooltip.textContent =
+      `Faltam ${formatarXP(xpRestante)} XP para o nível ${nivelAtual + 1}`;
+  } else {
+    if (xpThresholdValue) xpThresholdValue.textContent = "XP acumulados";
+    xpTexto.textContent = `${formatarXP(xp)} XP acumulados · Nível 20 (máximo)`;
+    if (xpTooltip) xpTooltip.textContent = "Nível máximo alcançado";
+  }
+
+  const xpBar = document.getElementById("xpBar");
+  if (xpBar) {
+    xpBar.setAttribute("role", "progressbar");
+    xpBar.setAttribute("aria-label", "Progresso de XP na faixa do nível atual");
+    xpBar.setAttribute("aria-valuemin", "0");
+    xpBar.setAttribute("aria-valuemax", "100");
+    xpBar.setAttribute("aria-valuenow", String(percentual));
+    xpBar.setAttribute("aria-valuetext", xpTexto.textContent);
+  }
+  return true;
 }
 
 document.getElementById("xp").addEventListener("input", atualizarXPENivel);
@@ -1412,6 +1723,16 @@ const tabelaXP = [
   { xp: 265000, nivel: 18 },
   { xp: 305000, nivel: 19 },
   { xp: 355000, nivel: 20 },
+];
+
+// Luminância alternada e matizes distintos mantêm as faixas separáveis em
+// escala de cinza e sob simulações comuns de daltonismo. Os pares foram
+// avaliados com a paleta efetiva, sem transparência entre as duas camadas.
+const PALETA_XP_NIVEIS = [
+  "#18324A", "#F2C14E", "#542E6F", "#72DDF7", "#5B2333",
+  "#E8F1F2", "#243B1E", "#F4A259", "#3D405B", "#F2CC8F",
+  "#6D213C", "#B8F2E6", "#284B63", "#F4D35E", "#4C2A85",
+  "#A8DADC", "#3A2618", "#D7E3FC", "#5F0F40", "#FAA916",
 ];
 
 function calcularNivelPorXP(xp) {

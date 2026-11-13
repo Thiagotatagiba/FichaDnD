@@ -45,6 +45,57 @@
         );
       }
 
+      function novaGeracaoAvisoCaracteristicaClasse() {
+        window.__geracaoAvisoCaracteristicaClasse =
+          (window.__geracaoAvisoCaracteristicaClasse || 0) + 1;
+        return window.__geracaoAvisoCaracteristicaClasse;
+      }
+
+      function agendarRemocaoAvisoCaracteristicaClasse(aviso, restante, geracao) {
+        if (!aviso || restante < 0) return;
+        window.__expiraAvisoCaracteristicaClasseEm = Date.now() + restante;
+        window.caracteristicaClasseAvisoTimer = setTimeout(() => {
+          if (window.__geracaoAvisoCaracteristicaClasse !== geracao) return;
+          if (document.getElementById("caracteristicaClasseAviso") !== aviso) return;
+          aviso.remove();
+          window.caracteristicaClasseAvisoTimer = null;
+          window.__expiraAvisoCaracteristicaClasseEm = null;
+        }, restante);
+      }
+
+      function cancelarTimerAvisoCaracteristicaClasse() {
+        clearTimeout(window.caracteristicaClasseAvisoTimer);
+        window.caracteristicaClasseAvisoTimer = null;
+        window.__expiraAvisoCaracteristicaClasseEm = null;
+        return novaGeracaoAvisoCaracteristicaClasse();
+      }
+
+      window.__suspenderTimerAvisoCaracteristicaClasse = () => {
+        const aviso = document.getElementById("caracteristicaClasseAviso");
+        const expiracao = window.__expiraAvisoCaracteristicaClasseEm;
+        const restante = Number.isFinite(expiracao)
+          ? Math.max(0, expiracao - Date.now())
+          : 0;
+        cancelarTimerAvisoCaracteristicaClasse();
+        return {
+          aviso,
+          restante,
+          tinhaTimer: Number.isFinite(expiracao),
+          geracaoSuspensa: window.__geracaoAvisoCaracteristicaClasse,
+        };
+      };
+
+      window.__retomarTimerAvisoCaracteristicaClasse = (estado, forcar = false) => {
+        if (!estado?.aviso || !estado.tinhaTimer) return;
+        if (!forcar && window.__geracaoAvisoCaracteristicaClasse !== estado.geracaoSuspensa) return;
+        if (document.getElementById("caracteristicaClasseAviso") !== estado.aviso) return;
+        clearTimeout(window.caracteristicaClasseAvisoTimer);
+        window.caracteristicaClasseAvisoTimer = null;
+        window.__expiraAvisoCaracteristicaClasseEm = null;
+        const geracao = novaGeracaoAvisoCaracteristicaClasse();
+        agendarRemocaoAvisoCaracteristicaClasse(estado.aviso, estado.restante, geracao);
+      };
+
       function avisarCaracteristicaClasse(mensagem, tipo = "info") {
         if (typeof atualizarStatusCargaClasse === "function") {
           atualizarStatusCargaClasse(mensagem, tipo);
@@ -66,11 +117,37 @@
 
         aviso.textContent = mensagem;
         aviso.className = `caracteristica-classe-aviso ${tipo}`;
-        clearTimeout(window.caracteristicaClasseAvisoTimer);
-        window.caracteristicaClasseAvisoTimer = setTimeout(() => {
-          aviso.remove();
-        }, tipo === "erro" ? 9000 : 5200);
+        const geracao = cancelarTimerAvisoCaracteristicaClasse();
+        agendarRemocaoAvisoCaracteristicaClasse(
+          aviso,
+          tipo === "erro" ? 9000 : 5200,
+          geracao,
+        );
       }
+
+      function invalidarCarregamentosClasseExternos() {
+        window.__geracaoCarregamentoCaracteristicasClasse =
+          (window.__geracaoCarregamentoCaracteristicasClasse || 0) + 1;
+        window.__geracaoCarregamentoCardClasse =
+          (window.__geracaoCarregamentoCardClasse || 0) + 1;
+        // A carga invalidada já não pode concluir seu finally.
+        mostrarCarregando(false);
+      }
+      window.__limparCarregamentoClasseObsoleto = () => {
+        mostrarCarregando(false);
+      };
+      window.__iniciarCarregamentoCardClasse = () => {
+        if (window.__fichaImportacaoTransacaoAtiva) return null;
+        const geracao = (window.__geracaoCarregamentoCardClasse || 0) + 1;
+        window.__geracaoCarregamentoCardClasse = geracao;
+        return geracao;
+      };
+      window.__carregamentoCardClasseAtual = (geracao) =>
+        !!geracao &&
+        !window.__fichaImportacaoTransacaoAtiva &&
+        window.__geracaoCarregamentoCardClasse === geracao;
+      window.__invalidarCarregamentosClasseExternos =
+        invalidarCarregamentosClasseExternos;
 
       function mensagemImportacaoManualCaracteristica() {
         return "Você pode importar manualmente escolhendo um arquivo no select da aba Característica de Classe e clicando em Importar.";
@@ -370,13 +447,18 @@
                 caminhoArquivoCaracteristica(arquivo) ||
                 `Classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
               if (typeof carregarJSONClasse === "function") {
+                const geracaoCard =
+                  window.__iniciarCarregamentoCardClasse?.();
+                if (!geracaoCard) return;
                 carregarJSONClasse(caminhoJson, classe)
                   .then((data) => {
+                    if (!window.__carregamentoCardClasseAtual?.(geracaoCard)) return;
                     if (typeof aplicarDadosClasseNoCard === "function") {
                       aplicarDadosClasseNoCard(data, classe);
                     }
                   })
                   .catch((error) => {
+                    if (!window.__carregamentoCardClasseAtual?.(geracaoCard)) return;
                     console.warn("[Ficha] Erro ao carregar classe:", error);
                   });
               }
@@ -399,6 +481,7 @@
       // ===== ETAPA 3: AUTO-CARREGAMENTO CARACTERÍSTICAS CLASSE =====
       function mostrarCarregando(show = true) {
         let spinner = document.getElementById("classeSpinner");
+        if (!spinner && !show) return;
         if (!spinner) {
           spinner = document.createElement("div");
           spinner.id = "classeSpinner";
@@ -539,6 +622,19 @@
         subclasse = "",
         opcoes = {},
       ) {
+        const tokenImportacaoAtivo = window.__fichaImportacaoTransacaoAtiva;
+        if (
+          tokenImportacaoAtivo &&
+          opcoes.importacaoFichaToken !== tokenImportacaoAtivo
+        ) {
+          return false;
+        }
+        const geracaoCarregamento =
+          (window.__geracaoCarregamentoCaracteristicasClasse || 0) + 1;
+        window.__geracaoCarregamentoCaracteristicasClasse = geracaoCarregamento;
+        const carregamentoAtual = () =>
+          window.__geracaoCarregamentoCaracteristicasClasse ===
+          geracaoCarregamento;
         const dadosImportados = validarDadosImportadosCaracteristica(
           opcoes,
           classe,
@@ -550,6 +646,7 @@
         });
 
         if (!classe) {
+          mostrarCarregando(false);
           console.log("[CardLoad] Classe vazia, limpando");
           definirCampoCaracteristicaAutomatico("classeData", "");
           definirCampoCaracteristicaAutomatico("subclasseData", "");
@@ -579,7 +676,9 @@
               classePath,
               classeReferencia || classe,
             );
+            if (!carregamentoAtual()) return;
           } catch (error) {
+            if (!carregamentoAtual()) return;
             if (error?.code !== "CARACTERISTICAS_CLASSE_INDISPONIVEIS") {
               throw error;
             }
@@ -676,7 +775,7 @@
             definirCampoCaracteristicaAutomatico("subclasseData", "");
           }
         } finally {
-          mostrarCarregando(false);
+          if (carregamentoAtual()) mostrarCarregando(false);
         }
       }
 
@@ -731,21 +830,7 @@
         subInput.addEventListener("change", handleClasseChange);
       }
 
-      // Integra com load (chama após carregarFicha)
       const originalCarregarFicha = window.carregarFicha;
-      window.addEventListener("message", function (event) {
-        if (event.data.action === "applyClassFeatures") {
-          const { classe, nivel, subclasse, jsonData } = event.data;
-          if (typeof window.carregarCaracteristicasClasse === "function") {
-            window.carregarCaracteristicasClasse(classe, nivel, subclasse);
-          }
-          console.log("✅ Features aplicadas via iframe:", {
-            classe,
-            nivel,
-            subclasse,
-          });
-        }
-      });
 
       window.carregarFicha = async function (personagem) {
         if (!originalCarregarFicha) return false;

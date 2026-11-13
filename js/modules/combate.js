@@ -17,6 +17,18 @@ const CONDICOES_DND = [
   "Petrificado",
 ];
 
+function agendarFocoModalCombate(campo) {
+  const epochInicial = window.__fichaImportacaoEpoch || 0;
+  setTimeout(() => {
+    if (
+      (window.__fichaImportacaoEpoch || 0) !== epochInicial ||
+      window.__fichaImportacaoTransacaoAtiva ||
+      !campo?.isConnected
+    ) return;
+    campo.focus();
+  }, 0);
+}
+
 function inicializarSeletorCondicoes() {
   const campo = document.getElementById("ataqueCondicao");
   const overlay = document.getElementById("condicoesModalOverlay");
@@ -992,6 +1004,7 @@ function fecharModalIniciativa() {
 }
 
 function confirmarIniciativa() {
+  if (window.__fichaImportacaoTransacaoAtiva) return;
   const campoDado = document.getElementById("modalIniciativaDado");
   const campoPosicao = document.getElementById("modalPosicaoIniciativa");
   const dado = parseInt(campoDado?.value, 10);
@@ -1251,7 +1264,7 @@ function abrirModalAtaqueArma(arma) {
   overlay.classList.remove("oculto");
   overlay.setAttribute("aria-hidden", "false");
 
-  setTimeout(() => campoDado.focus(), 0);
+  agendarFocoModalCombate(campoDado);
 }
 
 function abrirModalAtaqueMagia(magia, nivelSlot = null) {
@@ -1328,7 +1341,7 @@ function abrirEtapaDanoAtaque() {
 
   atualizarHistoricoRolagensModalDano();
   alternarEtapaModalAtaque(true);
-  setTimeout(() => campoDano.focus(), 0);
+  agendarFocoModalCombate(campoDano);
 }
 
 function configurarBotaoRolarDanoModal() {
@@ -1406,7 +1419,7 @@ function abrirModalDanoMagia(magia, opcoes = {}) {
   overlay.classList.add("ativo");
   overlay.classList.remove("oculto");
   overlay.setAttribute("aria-hidden", "false");
-  setTimeout(() => campoDano.focus(), 0);
+  agendarFocoModalCombate(campoDano);
 }
 
 function atualizarSubAbaArmas() {
@@ -1992,6 +2005,21 @@ function inicializarModalSalvaguardaMorte() {
     if (posicao) posicao.style.display = "";
   };
 
+  window.__cancelarModalSalvaguardaMorteParaImportacao = function () {
+    const estavaAberto = !overlay.classList.contains("oculto");
+    if (estavaAberto) {
+      if (rolar) {
+        rolar.__geracaoRolagemSalvaguarda = Symbol("importacao-invalida-rolagem");
+        rolar.classList.remove("rolando");
+      }
+      fechar();
+    }
+    return {
+      ok: !estavaAberto || overlay.classList.contains("oculto"),
+      estavaAberto,
+    };
+  };
+
   abrirBotao.addEventListener("click", () => {
     abrirModalIniciativa();
     titulo.textContent = "Rolar Salvaguarda Contra Morte";
@@ -2010,20 +2038,27 @@ function inicializarModalSalvaguardaMorte() {
   rolar?.addEventListener("click", (evento) => {
     if (overlay.dataset.salvaguarda !== "true") return;
     evento.stopImmediatePropagation();
+    const epochImportacao = window.__fichaImportacaoEpoch || 0;
+    const geracaoRolagem = Symbol("rolagem-salvaguarda");
+    rolar.__geracaoRolagemSalvaguarda = geracaoRolagem;
     rolar.classList.add("rolando");
     animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then(() => {
+      if (rolar.__geracaoRolagemSalvaguarda !== geracaoRolagem) return;
       rolar.classList.remove("rolando");
+      if ((window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
     });
   });
   confirmar?.addEventListener("click", (evento) => {
     if (overlay.dataset.salvaguarda !== "true") return;
     evento.stopImmediatePropagation();
+    if (window.__fichaImportacaoTransacaoAtiva) return;
     adicionarSucesso();
     fechar();
   });
   cancelar?.addEventListener("click", (evento) => {
     if (overlay.dataset.salvaguarda !== "true") return;
     evento.stopImmediatePropagation();
+    if (window.__fichaImportacaoTransacaoAtiva) return;
     adicionarFracasso();
     fechar();
   });
@@ -2039,6 +2074,7 @@ function inicializarModalSalvaguardaMorte() {
 document.addEventListener("DOMContentLoaded", inicializarModalSalvaguardaMorte);
 
 function adicionarSucesso() {
+  if (window.__fichaImportacaoTransacaoAtiva) return;
   for (let i = 1; i <= 3; i++) {
     const dot = document.getElementById("sucesso" + i);
 
@@ -2053,6 +2089,7 @@ function adicionarSucesso() {
 }
 
 function adicionarFracasso() {
+  if (window.__fichaImportacaoTransacaoAtiva) return;
   for (let i = 1; i <= 3; i++) {
     const dot = document.getElementById("fracasso" + i);
 

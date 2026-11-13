@@ -42,7 +42,17 @@
 
           return new Promise((resolve) => {
             const inicio = Date.now();
+            const epochInicial = global.__fichaImportacaoEpoch || 0;
             const timer = setInterval(() => {
+              const epochImportacao = global.__fichaImportacaoEpoch || 0;
+              if (
+                global.__fichaImportacaoTransacaoAtiva ||
+                epochImportacao !== epochInicial
+              ) {
+                clearInterval(timer);
+                resolve(null);
+                return;
+              }
               const parcial = rolarDado(quantidade, faces);
               campo.value = parcial?.soma ?? "";
               campo.dispatchEvent(new Event("input"));

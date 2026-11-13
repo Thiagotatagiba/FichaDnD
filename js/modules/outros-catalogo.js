@@ -137,8 +137,6 @@ function atualizarResumosOutros() {
       resumo.addEventListener("click", event => { if (!event.target.closest("button,input")) abrirModalOutro(card); });
     }
     const item = itemLegadoOutro(card);
-    const f = camposOutro(card);
-    if (!f.get("catalogo_tipo")) f.set("catalogo_tipo", item.tipo);
     resumo.querySelector(".outro-cartao-nome").textContent = item.nome;
     const proficiencia = resumo.querySelector(".outro-cartao-proficiencia");
     proficiencia.hidden = !outroProficienciaAtiva(item);

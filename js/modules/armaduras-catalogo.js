@@ -398,7 +398,52 @@ function atualizarResumosArmaduras(armaduras = null) {
   });
 }
 
-const estadoModalArmadura = { card: null, foco: null, editando: false, original: "" };
+const estadoModalArmadura = { card: null, foco: null, editando: false, original: "", invalidada: false, sessao: 0 };
+
+function cardArmaduraNaListaAtiva(card) {
+  const lista = document.getElementById("listaArmaduras");
+  return Boolean(
+    card && card.isConnected && lista?.contains(card) &&
+    card.matches('.item-card[data-tipo="armadura"]') && card.id !== "armaduraModelo",
+  );
+}
+
+function editorArmaduraPodeAgir() {
+  const card = estadoModalArmadura.card;
+  if (window.__fichaImportacaoTransacaoAtiva) return false;
+  if (!card || estadoModalArmadura.invalidada || !cardArmaduraNaListaAtiva(card)) {
+    if (card) {
+      estadoModalArmadura.invalidada = true;
+      fecharModalArmadura(true);
+    }
+    return false;
+  }
+  return true;
+}
+
+globalThis.__reconciliarEditorArmaduraImportacao = function () {
+  try {
+    const card = estadoModalArmadura.card;
+    const overlay = document.getElementById("armaduraModalOverlay");
+    if (!card) {
+      // O snapshot DOM pode reabrir visualmente um overlay já invalidado. Sem
+      // uma referência privada válida, esse modal é órfão e deve ficar fechado.
+      if (overlay?.classList.contains("ativo")) fecharModalArmadura(true);
+      return { ok: true, closed: Boolean(overlay?.classList.contains("oculto")) };
+    }
+    if (!estadoModalArmadura.invalidada && cardArmaduraNaListaAtiva(card)) {
+      return { ok: true, closed: false };
+    }
+    estadoModalArmadura.invalidada = true;
+    fecharModalArmadura(true);
+    if (estadoModalArmadura.card || overlay?.classList.contains("ativo")) {
+      throw new Error("O editor de armadura obsoleto não foi encerrado.");
+    }
+    return { ok: true, closed: true };
+  } catch (error) {
+    return { ok: false, error };
+  }
+};
 
 function focarModalArmadura(overlay, evento) {
   if (evento.key !== "Tab") return;
@@ -449,6 +494,7 @@ function montarModalArmadura() {
   overlay.querySelector('[data-acao="fechar"]').onclick = fecharModalArmadura;
   overlay.querySelector('[data-acao="editar"]').onclick = editarModalArmadura;
   overlay.querySelector('[data-acao="equipar"]').onclick = () => {
+    if (!editorArmaduraPodeAgir()) return;
     const card = estadoModalArmadura.card;
     const indice = [...document.querySelectorAll('#listaArmaduras .item-card[data-tipo="armadura"]')].indexOf(card);
     equiparArmadura(normalizarIndiceEquipamento(armaduraEquipadaIndice) === indice ? null : indice);
@@ -463,6 +509,7 @@ function montarModalArmadura() {
   };
   overlay.querySelector('[data-acao="restaurar"]').onclick = restaurarPadraoModalArmadura;
   overlay.querySelector('[data-acao="excluir"]').onclick = () => {
+    if (!editorArmaduraPodeAgir()) return;
     const card = estadoModalArmadura.card;
     card.querySelector(".btn-remover-item").click();
     if (!card.isConnected) fecharModalArmadura(true);
@@ -488,9 +535,12 @@ function confirmarDescarteModalArmadura() {
 }
 
 function abrirModalArmadura(card, editar = false) {
+  if (window.__fichaImportacaoTransacaoAtiva || !cardArmaduraNaListaAtiva(card)) return;
   if (estadoModalArmadura.card && !confirmarDescarteModalArmadura()) return;
   montarModalArmadura();
+  estadoModalArmadura.sessao += 1;
   estadoModalArmadura.card = card;
+  estadoModalArmadura.invalidada = false;
   estadoModalArmadura.foco = document.activeElement;
   const overlay = document.getElementById("armaduraModalOverlay");
   overlay.classList.remove("oculto");
@@ -508,7 +558,7 @@ function abrirModalArmadura(card, editar = false) {
 
 function renderizarModalArmadura() {
   const card = estadoModalArmadura.card;
-  if (!card?.isConnected) return;
+  if (!editorArmaduraPodeAgir()) return;
   estadoModalArmadura.editando = false;
   const dados = lerDetalhesCardArmadura(card);
   document.getElementById("armaduraModalTitulo").textContent = dados.nome || "Nova armadura";
@@ -534,8 +584,15 @@ function renderizarModalArmadura() {
 }
 
 function editarModalArmadura() {
+  if (!editorArmaduraPodeAgir()) return;
+  estadoModalArmadura.sessao += 1;
+  const sessaoEditor = estadoModalArmadura.sessao;
   const card = estadoModalArmadura.card;
   const form = document.getElementById("armaduraModalFormulario");
+  form.onsubmit = evento => {
+    evento.preventDefault();
+    salvarModalArmadura(sessaoEditor);
+  };
   const campos = form.querySelector(".armadura-editor-campos");
   campos.replaceChildren();
   const rotulos = {
@@ -598,7 +655,9 @@ function editarModalArmadura() {
   form.querySelector('[data-editor-campo="armadura_nome"]').focus();
 }
 
-function salvarModalArmadura() {
+function salvarModalArmadura(sessaoEsperada = estadoModalArmadura.sessao) {
+  if (sessaoEsperada !== estadoModalArmadura.sessao || !estadoModalArmadura.editando) return false;
+  if (!editorArmaduraPodeAgir()) return false;
   const form = document.getElementById("armaduraModalFormulario");
   if (!form.reportValidity()) return;
   const card = estadoModalArmadura.card;
@@ -619,11 +678,14 @@ function salvarModalArmadura() {
 }
 
 async function restaurarPadraoModalArmadura() {
+  if (!editorArmaduraPodeAgir()) return;
   const card = estadoModalArmadura.card;
   if (!confirm("Restaurar nome e propriedades do catálogo? Alterações não salvas serão descartadas; descrição e propriedades mágicas já salvas serão preservadas.")) return;
+  const epochImportacao = window.__fichaImportacaoEpoch || 0;
   try {
     const catalogo = await carregarCatalogoArmaduras();
-    if (estadoModalArmadura.card !== card || !card.isConnected) return;
+    if ((window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
+    if (!editorArmaduraPodeAgir() || estadoModalArmadura.card !== card || !cardArmaduraNaListaAtiva(card)) return;
     const item = catalogo.itens.find(entrada => entrada.id === card.dataset.catalogoId);
     if (!item) { alert("Esta armadura não está disponível no catálogo atual."); return; }
     aplicarCatalogoAoCardArmadura(card, item);
@@ -641,6 +703,8 @@ function fecharModalArmadura(forcar = false) {
   overlay.classList.remove("ativo"); overlay.classList.add("oculto");
   overlay.setAttribute("aria-hidden", "true");
   estadoModalArmadura.card = null; estadoModalArmadura.editando = false;
+  estadoModalArmadura.sessao += 1;
+  estadoModalArmadura.invalidada = false;
   if (estadoModalArmadura.foco?.isConnected) estadoModalArmadura.foco.focus();
 }
 
