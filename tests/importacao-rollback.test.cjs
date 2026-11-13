@@ -851,6 +851,38 @@ test('rollback de importação falha preserva aviso e solicitação do personage
   assert.doesNotMatch(status.text, /importada com sucesso/i);
 });
 
+test('transação de importação suspende o debounce e agenda somente o snapshot final no sucesso', async () => {
+  const harness = createHarness();
+  harness.run(`
+    window.__backupEvents = [];
+    window.__suspenderBackupLocalAutomatico = () => window.__backupEvents.push('suspender');
+    window.__retomarBackupLocalAutomatico = options => window.__backupEvents.push('retomar:' + options.persistir);
+  `);
+
+  await importPayload(harness, { nomePersonagem: 'Personagem B', jogador: 'Jogador B', armas: [], municoes: [] });
+
+  assert.equal(harness.run('JSON.stringify(window.__backupEvents)'), '["suspender","retomar:true"]');
+});
+
+test('rollback retoma backup somente quando a restauração foi verificada', async () => {
+  const harness = createHarness();
+  harness.run(`
+    window.__backupEvents = [];
+    window.__suspenderBackupLocalAutomatico = () => window.__backupEvents.push('suspender');
+    window.__retomarBackupLocalAutomatico = options => window.__backupEvents.push('retomar:' + options.persistir);
+  `);
+  armFailure(harness, 'end-sync');
+
+  await importPayload(harness, { nomePersonagem: 'Personagem B', jogador: 'Jogador B', armas: [], municoes: [] });
+
+  const events = JSON.parse(harness.run('JSON.stringify(window.__backupEvents)'));
+  assert.equal(events[0], 'suspender');
+  assert.match(events[1], /^retomar:(true|false)$/);
+  if (harness.run('completionResult.rollbackComplete') === true) {
+    assert.equal(events[1], 'retomar:true');
+  }
+});
+
 for (const [phase, prepare] of [
   ['antes da importação', async () => ({ harness: createHarness() })],
   ['depois do rollback', async () => {

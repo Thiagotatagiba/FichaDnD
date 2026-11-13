@@ -1021,10 +1021,25 @@
       <div class="acoes">
         <button type="button" onclick="salvarFicha()">💾 Salvar</button>
         <button id="btnImportarFicha" type="button" onclick="importarFicha()">📤 Importar</button>
+        <button id="backupLocalAbrir" type="button" hidden>Recuperar backup</button>
         <button id="configBtn" type="button">⚙️</button>
         <input type="file" id="fileInput" hidden />
         <span id="exportacaoStatus" class="exportacao-status" role="status" aria-live="polite" aria-atomic="true" hidden></span>
+        <span id="backupLocalStatus" class="backup-local-status" role="status" aria-live="polite" aria-atomic="true" hidden></span>
+        <span id="backupRecuperacaoStatus" class="backup-local-status" role="status" aria-live="polite" aria-atomic="true" hidden></span>
       </div>
+
+      <dialog id="backupLocalDialogo" aria-labelledby="backupLocalTitulo" aria-describedby="backupLocalDescricao">
+        <h2 id="backupLocalTitulo">Backup local disponível</h2>
+        <p id="backupLocalDescricao">Selecione uma cópia válida. Nenhum backup será aplicado sem sua confirmação.</p>
+        <label for="backupLocalSelecionado">Personagem e data do backup</label>
+        <select id="backupLocalSelecionado"></select>
+        <p id="backupLocalDetalhes" aria-live="polite"></p>
+        <div id="backupLocalEventos" class="backup-local-acoes">
+          <button type="button" data-acao="manter">Manter ficha atual</button>
+          <button type="button" data-acao="restaurar">Restaurar backup selecionado</button>
+        </div>
+      </dialog>
 
       <div class="topo">
         <div class="nome-personagem">
@@ -4192,6 +4207,7 @@
     <!-- ========================= -->
     <script src="../js/modules/importacao.js?v=outros-catalogo-2"></script>
     <script src="../js/modules/entrada-criacao.js"></script>
+    <script src="../js/core/backup-local.js?v=e1-6-3"></script>
 
     <script>
       const CHAVE_IMPORTACAO_PENDENTE = "fichaImportarPendente";

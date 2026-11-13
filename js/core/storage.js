@@ -727,6 +727,13 @@ let ultimoEstadoSalvo = JSON.stringify(coletarDadosFicha());
 let ultimoBackupLocalFicha = null;
 let ultimaExportacaoSolicitadaFicha = null;
 
+function registrarUltimoBackupLocalFicha(backup) {
+  ultimoBackupLocalFicha = backup && typeof backup === "object"
+    ? { ...backup }
+    : null;
+}
+window.__registrarUltimoBackupLocalFicha = registrarUltimoBackupLocalFicha;
+
 function capturarBaselineImportacaoFicha() {
   return ultimoEstadoSalvo;
 }
@@ -884,6 +891,32 @@ function limparStatusExportacaoAposImportacaoValida() {
 window.__limparStatusExportacaoAposImportacaoValida =
   limparStatusExportacaoAposImportacaoValida;
 
+function coletarSnapshotPersistenteFicha() {
+  const classeData = document.getElementById("classeData").value;
+  const subData = document.getElementById("subclasseData").value;
+  const dados = coletarDadosFicha();
+  dados.classeData = classeData;
+  dados.subclasseData = subData;
+  dados.caracteristicaClasseArquivo =
+    document.getElementById("caracteristicaClasseArquivo")?.value || "";
+  dados.caracteristicaClasseSubclasse =
+    document.getElementById("caracteristicaClasseSubclasse")?.value ||
+    document.getElementById("selectSubclasse")?.value ||
+    "";
+  dados.caracteristicaClasseSubdominio = dados.caracteristicaClasseSubclasse;
+  dados.armas = coletarArmas();
+  dados.armaduras = coletarArmaduras();
+  dados.escudos = coletarEscudos();
+  dados.municoes = typeof coletarMunicoes === "function" ? coletarMunicoes() : [];
+  dados.outros = coletarOutros().filter(outro => String(outro.outro_tipo || "").toLowerCase() !== "municao");
+  if (typeof sincronizarMunicoesNaFicha === "function") dados.outros.push(...sincronizarMunicoesNaFicha(dados.municoes));
+  dados.armaduraEquipadaIndice = armaduraEquipadaIndice;
+  // Marca somente os dados atuais coletados; não reexecuta migrações legadas.
+  dados.fichaSchemaVersion = FICHA_SCHEMA_VERSION_ATUAL;
+  return dados;
+}
+window.coletarSnapshotPersistenteFicha = coletarSnapshotPersistenteFicha;
+
 /* SALVAR Ficha*/
 function salvarFicha() {
   let urlTemporaria = null;
@@ -892,29 +925,7 @@ function salvarFicha() {
   let nomeArquivoSolicitado = null;
   try {
     // Preparar uma única captura: mudanças após esta captura continuam pendentes.
-    const classeData = document.getElementById("classeData").value;
-    const subData = document.getElementById("subclasseData").value;
-
-    const dados = coletarDadosFicha();
-    dados.classeData = classeData;
-    dados.subclasseData = subData;
-    dados.caracteristicaClasseArquivo =
-      document.getElementById("caracteristicaClasseArquivo")?.value || "";
-    dados.caracteristicaClasseSubclasse =
-      document.getElementById("caracteristicaClasseSubclasse")?.value ||
-      document.getElementById("selectSubclasse")?.value ||
-      "";
-    dados.caracteristicaClasseSubdominio = dados.caracteristicaClasseSubclasse;
-    dados.armas = coletarArmas();
-    dados.armaduras = coletarArmaduras();
-    dados.escudos = coletarEscudos();
-    dados.municoes = typeof coletarMunicoes === "function" ? coletarMunicoes() : [];
-    dados.outros = coletarOutros().filter(outro => String(outro.outro_tipo || "").toLowerCase() !== "municao");
-    if (typeof sincronizarMunicoesNaFicha === "function") dados.outros.push(...sincronizarMunicoesNaFicha(dados.municoes));
-    dados.armaduraEquipadaIndice = armaduraEquipadaIndice;
-    // Marca somente os dados atuais coletados; não reaplica migrações legadas.
-    dados.fichaSchemaVersion = FICHA_SCHEMA_VERSION_ATUAL;
-
+    const dados = coletarSnapshotPersistenteFicha();
     const nome = document.getElementById("nomePersonagem").value || "Personagem";
     const jogador = document.getElementById("jogador").value || "Jogador";
     const hoje = new Date();

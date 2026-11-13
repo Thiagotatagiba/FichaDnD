@@ -165,6 +165,11 @@ async function aplicarDadosFicha(dados, opcoes = {}) {
   window.__fichaImportacaoEpoch =
     (window.__fichaImportacaoEpoch || 0) + 1;
   try {
+    window.__suspenderBackupLocalAutomatico?.();
+  } catch (erroBackup) {
+    console.warn("Não foi possível suspender o backup local antes da importação:", erroBackup);
+  }
+  try {
     if (typeof window.__invalidarCarregamentosClasseExternos === "function") {
       window.__invalidarCarregamentosClasseExternos();
     } else {
@@ -241,6 +246,12 @@ async function aplicarDadosFicha(dados, opcoes = {}) {
     }
     if (typeof window.__limparStatusExportacaoAposImportacaoValida === "function") {
       window.__limparStatusExportacaoAposImportacaoValida();
+    }
+    try {
+      window.__registrarUltimoBackupLocalFicha?.(null);
+      window.__retomarBackupLocalAutomatico?.({ persistir: true });
+    } catch (erroBackup) {
+      console.warn("Não foi possível agendar backup após a importação válida:", erroBackup);
     }
     return aplicado;
   } catch (erroAplicacao) {
@@ -383,6 +394,13 @@ async function aplicarDadosFicha(dados, opcoes = {}) {
       sucesso: false,
       restaurado: verificacaoSnapshot.valido && verificacaoPosReconciliacao.valido && errosRestauracao.length === 0,
     });
+    try {
+      window.__retomarBackupLocalAutomatico?.({
+        persistir: verificacaoSnapshot.valido && verificacaoPosReconciliacao.valido && errosRestauracao.length === 0,
+      });
+    } catch (erroBackup) {
+      console.warn("Não foi possível retomar o backup após a recuperação da importação:", erroBackup);
+    }
     if (errosRestauracao.length) {
       const erro = new Error(
         "A aplicação da ficha falhou e a recuperação do estado anterior ficou incompleta.",

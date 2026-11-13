@@ -105,6 +105,54 @@ body {
   text-align: right;
 }
 
+.backup-local-status {
+  flex: 0 0 100%;
+  color: var(--cor-texto-suave, #7b664f);
+  font-size: 11px;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.backup-local-status[data-estado="erro"] {
+  color: #8b2f20;
+}
+
+#backupLocalDialogo {
+  width: min(92vw, 520px);
+  max-height: 85vh;
+  overflow: auto;
+  border: 1px solid #8b6847;
+  border-radius: 10px;
+  padding: 20px;
+  color: #3f2d1d;
+  background: #f6eddd;
+  box-shadow: 0 12px 36px rgb(45 29 14 / 35%);
+}
+
+#backupLocalDialogo::backdrop {
+  background: rgb(24 18 12 / 55%);
+}
+
+#backupLocalDialogo select {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: 6px;
+}
+
+.backup-local-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.backup-local-acoes button:focus-visible,
+#backupLocalDialogo select:focus-visible {
+  outline: 3px solid #246d8e;
+  outline-offset: 2px;
+}
+
 .topo {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 300px);
