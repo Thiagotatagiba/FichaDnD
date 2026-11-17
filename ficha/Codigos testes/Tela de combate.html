@@ -1,154 +1,222 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Combate - Versão Escudo</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FichaDnD — Combate 2.0 (protótipo)</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --parchment: #f4eee2;
+      --paper: #fffaf1;
+      --ink: #2d241c;
+      --muted: #756555;
+      --wood: #7d3f19;
+      --bronze: #b27b3f;
+      --line: #d8c4a6;
+      --red: #a3372b;
+      --green: #35694d;
+      font-family: Georgia, "Times New Roman", serif;
+    }
 
-<style>
-body {
-    background: #e7e1d5;
-    font-family: Arial;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: clamp(12px, 3vw, 32px);
+      color: var(--ink);
+      background: #e7e1d5;
+    }
+    button { font: inherit; }
+    .combat {
+      width: min(100%, 920px);
+      margin: 0 auto;
+      padding: clamp(16px, 3vw, 28px);
+      border: 2px solid var(--wood);
+      border-radius: 18px;
+      background: var(--parchment);
+      box-shadow: 0 8px 24px #3925111c;
+    }
+    .page-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .eyebrow {
+      margin: 0 0 5px;
+      color: var(--wood);
+      font: 700 .72rem/1.2 Arial, sans-serif;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    h1 { margin: 0; font-size: clamp(1.45rem, 4vw, 2rem); }
+    .sample-note { color: var(--muted); font: .78rem Arial, sans-serif; text-align: right; }
+    .overview {
+      display: grid;
+      grid-template-columns: minmax(220px, .85fr) minmax(0, 1.4fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .panel {
+      min-width: 0;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: var(--paper);
+    }
+    .panel h2 { margin: 0 0 12px; font-size: 1rem; }
+    .defense-value {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .shield-mark {
+      display: grid;
+      width: 62px;
+      aspect-ratio: .84;
+      place-items: center;
+      flex: 0 0 auto;
+      clip-path: polygon(50% 0, 95% 17%, 87% 70%, 50% 100%, 13% 70%, 5% 17%);
+      background: linear-gradient(145deg, #d5a45f, #805027);
+      color: #fff8e9;
+      font: 700 1.5rem Arial, sans-serif;
+      filter: drop-shadow(0 2px 2px #39251155);
+    }
+    .ca-number { font: 700 2.5rem/1 Arial, sans-serif; color: var(--wood); }
+    .ca-caption { margin-top: 4px; color: var(--muted); font: .8rem Arial, sans-serif; }
+    .defense-details { display: grid; gap: 7px; margin: 14px 0 0; }
+    .detail-row { display: flex; justify-content: space-between; gap: 10px; font: .82rem Arial, sans-serif; }
+    .detail-row span:first-child { color: var(--muted); }
+    .hp-layout { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+    .hp-current { font: 700 2.2rem/1 Arial, sans-serif; }
+    .hp-current small { color: var(--muted); font-size: .95rem; font-weight: 400; }
+    .hp-track { height: 10px; margin: 10px 0; overflow: hidden; border-radius: 99px; background: #e4d9c8; }
+    .hp-fill { width: 56%; height: 100%; border-radius: inherit; background: var(--green); }
+    .hp-mark { background: linear-gradient(145deg, #b95746, #76251f); font-size: 1.15rem; }
+    .hp-meta { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font: .76rem Arial, sans-serif; }
+    .hp-actions { display: flex; gap: 8px; margin-top: 12px; }
+    .action {
+      min-height: 36px;
+      padding: 7px 12px;
+      border: 1px solid var(--wood);
+      border-radius: 8px;
+      background: #f7eee0;
+      color: var(--wood);
+      cursor: pointer;
+      font: 700 .8rem Arial, sans-serif;
+    }
+    .action:hover, .action:focus-visible { background: #ead7bb; outline: 2px solid var(--bronze); outline-offset: 2px; }
+    .combat-grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(250px, .85fr); gap: 16px; margin-top: 16px; }
+    .hands { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .hand-card { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: #fbf5e9; }
+    .hand-label { margin: 0 0 7px; color: var(--muted); font: 700 .69rem Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; }
+    .hand-item { font-weight: 700; }
+    .hand-meta { margin-top: 5px; color: var(--muted); font: .75rem Arial, sans-serif; }
+    .attack-list { display: grid; gap: 8px; }
+    .attack { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 10px; border-left: 3px solid var(--bronze); border-radius: 5px; background: #fbf5e9; }
+    .attack-name { font-weight: 700; }
+    .attack-type, .attack-bonus { color: var(--muted); font: .75rem Arial, sans-serif; }
+    .attack-bonus { color: var(--wood); font-weight: 700; white-space: nowrap; }
+    .inventory-groups { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+    .inventory-panel { margin-top: 16px; }
+    .inventory-chip { padding: 9px 8px; border: 1px solid var(--line); border-radius: 8px; text-align: center; font: .76rem Arial, sans-serif; }
+    .inventory-chip strong { display: block; margin-bottom: 3px; color: var(--wood); }
+    .prototype-foot { margin: 16px 0 0; color: var(--muted); font: .72rem/1.45 Arial, sans-serif; }
 
-/* CONTAINER */
-.combate {
-    width: 360px;
-    background: #f6f2ea;
-    border: 3px solid #8b4513;
-    border-radius: 16px;
-    padding: 20px;
-}
-
-/* BLOCO DEFESA */
-.defesa-wrapper {
-    position: relative;
-}
-
-/* ESCUDO (CA) */
-.ca-escudo {
-    position: absolute;
-    left: -35px;
-    top: 10px;
-    width: 70px;
-    height: 90px;
-    background: white;
-    border: 3px solid #333;
-    border-radius: 35px 35px 50px 50px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    font-size: 20px;
-    box-shadow: 2px 4px 8px rgba(0,0,0,0.2);
-    z-index: 2;
-}
-
-/* PV BLOCO */
-.pv-box {
-    display: grid;
-    grid-template-columns: 1fr 60px;
-    border: 3px solid #333;
-    border-radius: 12px;
-    background: white;
-    overflow: hidden;
-}
-
-/* PV ESQUERDA */
-.pv-main {
-    padding: 12px;
-    text-align: center;
-}
-
-.pv-atual {
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.coracoes {
-    margin: 6px 0;
-}
-
-/* PV DIREITA */
-.pv-side {
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    border-left: 2px solid #333;
-}
-
-.pv-max, .pv-temp {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
-
-.pv-max {
-    border-bottom: 2px solid #333;
-    background: #f4efe6;
-}
-
-.pv-temp {
-    background: #e0f0ff;
-}
-
-/* BOTÕES */
-.pv-acoes {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.botao {
-    flex: 1;
-    padding: 10px;
-    border: 2px solid #8b4513;
-    border-radius: 8px;
-    background: #d4c5ae;
-    cursor: pointer;
-    font-weight: bold;
-}
-</style>
+    @media (max-width: 640px) {
+      .page-heading { align-items: start; flex-direction: column; }
+      .sample-note { text-align: left; }
+      .overview, .combat-grid { grid-template-columns: 1fr; }
+      .inventory-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 360px) {
+      body { padding: 8px; }
+      .combat { padding: 12px; }
+      .panel { padding: 12px; }
+      .hands { grid-template-columns: 1fr; }
+      .hp-layout { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-
 <body>
+  <main class="combat" aria-labelledby="combat-title">
+    <header class="page-heading">
+      <div>
+        <p class="eyebrow">FichaDnD · protótipo de interface</p>
+        <h1 id="combat-title">Combate</h1>
+      </div>
+      <div class="sample-note">Prévia estática · valores sintéticos</div>
+    </header>
 
-<div class="combate">
-
-    <div class="defesa-wrapper">
-
-        <!-- CA -->
-        <div class="ca-escudo">12</div>
-
-        <!-- PV -->
-        <div class="pv-box">
-
-            <!-- ESQUERDA -->
-            <div class="pv-main">
-                <div class="pv-atual">10</div>
-                <div class="coracoes">❤️❤️❤️❤️❤️</div>
-            </div>
-
-            <!-- DIREITA -->
-            <div class="pv-side">
-                <div class="pv-max">18</div>
-                <div class="pv-temp">+3</div>
-            </div>
-
+    <section class="overview" aria-label="Defesa e pontos de vida">
+      <article class="panel" aria-labelledby="defense-title">
+        <h2 id="defense-title">Defesa</h2>
+        <div class="defense-value">
+          <div class="shield-mark" aria-hidden="true">18</div>
+          <div><div class="ca-number">18</div><div class="ca-caption">Classe de Armadura</div></div>
         </div>
+        <div class="defense-details">
+          <div class="detail-row"><span>Armadura</span><strong>Peitoral</strong></div>
+          <div class="detail-row"><span>Escudo equipado</span><strong>Escudo +2</strong></div>
+        </div>
+      </article>
 
-    </div>
+      <article class="panel" aria-labelledby="hp-title">
+        <h2 id="hp-title">Pontos de Vida</h2>
+        <div class="hp-layout">
+          <div>
+            <div class="hp-current">21 <small>/ 38 PV</small></div>
+            <div class="hp-track" role="progressbar" aria-label="Pontos de vida" aria-valuemin="0" aria-valuemax="38" aria-valuenow="21"><div class="hp-fill"></div></div>
+            <div class="hp-meta"><span>PV atuais</span><span>Temporários: 4</span></div>
+          </div>
+          <div class="shield-mark hp-mark" aria-hidden="true">PV</div>
+        </div>
+        <div class="hp-actions" aria-label="Ações ilustrativas">
+          <button class="action" type="button">− Dano</button>
+          <button class="action" type="button">+ Cura</button>
+        </div>
+      </article>
+    </section>
 
-    <!-- BOTÕES -->
-    <div class="pv-acoes">
-        <button class="botao">- Dano</button>
-        <button class="botao">+ Curar</button>
-    </div>
+    <section class="combat-grid" aria-label="Equipamentos de combate">
+      <article class="panel" aria-labelledby="hands-title">
+        <h2 id="hands-title">Equipamento em mãos</h2>
+        <div class="hands">
+          <div class="hand-card">
+            <p class="hand-label">Mão principal</p>
+            <div class="hand-item">Espada longa</div>
+            <div class="hand-meta">Arma · empunhada com uma mão</div>
+          </div>
+          <div class="hand-card">
+            <p class="hand-label">Mão secundária</p>
+            <div class="hand-item">Escudo +2</div>
+            <div class="hand-meta">Escudo · bônus exibido no painel de defesa</div>
+          </div>
+        </div>
+      </article>
 
-</div>
+      <article class="panel" aria-labelledby="attacks-title">
+        <h2 id="attacks-title">Ataques</h2>
+        <div class="attack-list">
+          <div class="attack"><div><div class="attack-name">Espada longa</div><div class="attack-type">Cortante · 1d8 + 4</div></div><div class="attack-bonus">+6 para atingir</div></div>
+          <div class="attack"><div><div class="attack-name">Besta leve</div><div class="attack-type">Perfurante · 1d8 + 3</div></div><div class="attack-bonus">+5 para atingir</div></div>
+        </div>
+      </article>
+    </section>
 
+    <section class="panel inventory-panel" aria-labelledby="inventory-title">
+      <h2 id="inventory-title">Equipamentos e inventário</h2>
+      <div class="inventory-groups">
+        <div class="inventory-chip"><strong>Armas</strong>2 itens</div>
+        <div class="inventory-chip"><strong>Armaduras</strong>1 item</div>
+        <div class="inventory-chip"><strong>Escudos</strong>1 item</div>
+        <div class="inventory-chip"><strong>Vestimentas</strong>3 itens</div>
+      </div>
+    </section>
+    <p class="prototype-foot">Protótipo independente da ficha oficial. Valores e ações são apenas demonstrativos; nenhuma regra, seleção ou alteração de estado está conectada.</p>
+  </main>
 </body>
 </html>

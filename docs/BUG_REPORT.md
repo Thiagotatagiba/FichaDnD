@@ -4,6 +4,73 @@ Data: 2026-07-03
 
 Resumo: levantamento inicial de problemas detectados por busca de marcadores (`TODO`, `FIXME`) e logs (`console.error`, `console.warn`, `throw`) no código-fonte. Cada item traz local, síntese e recomendação rápida.
 
+
+### BUG — Combate: vestimentas e acessórios classificados como escudos
+
+**Data:** 13/11/2026; investigação e correção em 16/11/2026
+**Módulo:** Combate → Itens Equipados → Mão Secundária / Escudo
+**Status:** Corrigido e validado por testes automatizados e interação na ficha oficial em Chromium integrado isolado
+**Prioridade sugerida:** Alta (integridade das regras de equipamento)
+
+#### Descrição
+
+O seletor de equipamentos da mão secundária está apresentando itens da categoria **Vestimentas e Acessórios** como se fossem escudos.
+
+Na captura de tela, os itens "Roupas Finas" e "Anel de Sinete" aparecem com o ícone de escudo, junto de equipamentos legítimos como "Escudo +2".
+
+#### Passos para reproduzir
+
+1. Abrir uma ficha que contenha vestimentas, acessórios e escudos no inventário.
+2. Acessar a aba **Combate**.
+3. Localizar **Itens Equipados → Armas**.
+4. Abrir o seletor **Mão Secundária / Escudo**.
+5. Observar que vestimentas e acessórios aparecem como opções de escudo.
+
+#### Comportamento esperado
+
+- Apenas itens compatíveis com a mão secundária devem aparecer no seletor.
+- Escudos devem ser reconhecidos por sua categoria/tipo real, não pelo ícone ou pela presença de algum atributo genérico.
+- Vestimentas e acessórios comuns não devem ser tratados como escudos.
+- Itens especiais que efetivamente possam ser empunhados devem seguir regras explícitas de classificação.
+
+#### Comportamento observado
+
+O seletor mistura escudos, armas e itens da categoria Vestimentas e Acessórios, exibindo estes últimos com o ícone de escudo.
+
+#### Diagnóstico
+
+- O wrapper `#listaEscudos` contém `#listaEscudosItens` e `#listaVestimentas`. Os cards de vestimenta usam o template de escudo e mantêm `data-tipo="escudo"`.
+- `coletarEscudos()` coleta ambos os grupos. O renderer da lista de escudos já filtrava `escudo_tipo === "Escudo"`, mas o seletor da mão secundária não repetia esse critério e oferecia todos os registros coletados.
+- A falha é estrutural e pode afetar qualquer vestimenta/acessório representado pelo mesmo template, não somente os dois nomes da captura.
+
+#### Impacto confirmado e hipóteses
+
+- **Comportamento anterior — confirmação estática e regressão:** o resolver classificava valores de escudo sem validar o tipo do registro e consumia o índice da coleção agregada. Os testes RED reproduziram a inclusão de vestimentas e a aceitação indevida antes da correção.
+- **CA e ocupação — navegador isolado:** na ficha oficial servida em `http://127.0.0.1:18031`, com dados sintéticos, arma Espada Curta na mão principal e Escudo Comum na secundária resultaram em CA 12 (base 10 + escudo +2). Remover o escudo retornou a CA a 10. Trocar para um escudo sintético +1 mostrou CA 11; retornar ao +2 mostrou 12. O painel de ataques acompanhou os mesmos totais.
+- **Seleções inválidas e arma de duas mãos — navegador isolado:** Roupas Finas e Anel de Sinete foram criados como vestimentas sintéticas e não apareceram no seletor; armas e escudos genuínos permaneceram listados. Um valor legado apontando para o índice de vestimenta foi descartado e deixou CA 10/`escudoCA +0`. Ao selecionar Malho (propriedade Duas Mãos) como principal, o slot secundário foi limpo, as opções incompatíveis ficaram desabilitadas e o bônus do escudo foi removido; retornar à Espada Curta reabilitou as opções compatíveis.
+- **Persistência:** após solicitação de exportação, o status informou que a exportação foi solicitada; não foi capturado evento de download e não se afirma que um arquivo foi salvo. O backup local sintético foi gravado no IndexedDB, a ficha recarregou com o aviso de backup restaurado e a aba Combate voltou com personagem, armas, vínculo do slot, escudo e CA 12; após o reload, Roupas Finas continuou fora do seletor. A recuperação manual por diálogo não foi usada como prova adicional.
+
+#### Critérios de correção
+
+- Identificar a causa da classificação incorreta.
+- Corrigir a filtragem sem impedir armas válidas na mão secundária.
+- Preservar itens e vínculos existentes.
+- Adicionar testes de regressão para escudos, armas, vestimentas e acessórios.
+- Verificar CA, ocupação das mãos, importação, exportação e backup.
+- Validar a interface oficial em navegador isolado (executado em 2026-11-16; ver resultados abaixo).
+
+**Evidências:** captura de tela original de 13/11/2026; interação DOM da ficha oficial em Chromium integrado ao VS Code, origem HTTP temporária isolada e dados sintéticos, em 16/11/2026. Não foi usada instância autônoma de Chrome nem perfil pessoal.
+
+#### Correção e validação
+
+- O seletor agora inclui somente registros com `escudo_tipo` igual a `Escudo` e nome válido, preservando o índice original do item para não quebrar os vínculos de slot.
+- A validação e resolução de um valor de slot também conferem o tipo real do registro. Um valor legado que aponte para vestimenta não é aceito como escudo e não é usado para preencher os campos do escudo/CA.
+- Testes: `node --test tests/seletor-equipamentos.test.cjs` — 2/2 aprovados; o mesmo teste foi executado antes da correção e falhou nos dois casos (itens indevidos no seletor e aceitação de item não escudo).
+- `node --check js/modules/equipamentos.js` passou. Em 16/11/2026, `node --test tests/*.test.cjs` passou 254/254; `node --check` passou no módulo e teste do seletor; `git diff --check` passou.
+- Cenários integrados: filtragem de Roupas Finas e Anel de Sinete; arma de uma mão com escudos +2/+1; remoção/troca e CA 10/12/11; arma de duas mãos Malho; seleção legada inválida; reload após backup local no IndexedDB. Todos os resultados observáveis foram coerentes com a correção. A captura automatizada do download manual não ocorreu; o download externo segue não verificado.
+
+**Observação:** a correção está isolada em `equipamentos.js`; as alterações E2 preexistentes em `combate.js` e no HTML principal foram preservadas.
+
 ## Modais de XP e Level Up — correção aplicada
 
 **Data:** 2026-10-22

@@ -440,6 +440,9 @@ document
 document
   .getElementById("modalTesteResistenciaCancelar")
   ?.addEventListener("click", fecharModalTesteResistencia);
+document
+  .getElementById("modalTesteResistenciaAbandonar")
+  ?.addEventListener("click", abandonarConcentracaoPendente);
 document.querySelectorAll("[data-atributo-teste]").forEach((botao) => {
   botao.addEventListener("click", () =>
     selecionarAtributoTesteResistencia(botao.dataset.atributoTeste),
@@ -455,6 +458,17 @@ document
       confirmarTesteResistencia();
     }
   });
+
+function tratarEscapeTesteResistencia() {
+  const overlay = document.getElementById("modalTesteResistenciaOverlay");
+  if (!overlay || overlay.classList.contains("oculto")) return false;
+  if (estadoTesteResistencia.contextoConcentracao) {
+    document.getElementById("modalTesteResistenciaDado")?.focus();
+  } else {
+    fecharModalTesteResistencia();
+  }
+  return true;
+}
 
 document
   .getElementById("modalAtaqueSucesso")
@@ -606,13 +620,7 @@ document.addEventListener("keydown", (evento) => {
       return;
     }
 
-    const overlayTeste = document.getElementById(
-      "modalTesteResistenciaOverlay",
-    );
-    if (overlayTeste && !overlayTeste.classList.contains("oculto")) {
-      fecharModalTesteResistencia();
-      return;
-    }
+    if (tratarEscapeTesteResistencia()) return;
 
     const overlay = document.getElementById("modalAtaqueOverlay");
     if (overlay && !overlay.classList.contains("oculto")) {

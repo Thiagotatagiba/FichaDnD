@@ -218,7 +218,9 @@ const estadoTesteResistencia = {
   atributo: "for",
   dadoSistema: null,
   contextoConcentracao: null,
+  filaConcentracao: [],
 };
+const tokenFechamentoResolvidoTesteResistencia = Symbol("resistencia-resolvida");
 
 function obterBonusTesteResistencia(chaveAtributo) {
   const chave = String(chaveAtributo || "").toLowerCase();
@@ -322,7 +324,9 @@ function obterDadoTesteResistencia() {
 function obterTotalTesteResistencia() {
   const dado = obterDadoTesteResistencia();
   if (dado === null) return null;
-  return dado + obterBonusTesteResistencia(estadoTesteResistencia.atributo);
+  return RegrasCombate.calcularTotalD20(dado, [
+    obterBonusTesteResistencia(estadoTesteResistencia.atributo),
+  ]);
 }
 
 function atualizarBotaoConfirmarTesteResistencia() {
@@ -347,8 +351,13 @@ function abrirModalTesteResistencia(opcoes = {}) {
   const sistema = garantirSistemaDadoTesteResistencia();
   if (!overlay || !sistema) return;
 
-  estadoTesteResistencia.contextoConcentracao =
-    opcoes.contextoConcentracao || null;
+  const novoContexto = opcoes.contextoConcentracao || null;
+  if (estadoTesteResistencia.contextoConcentracao) {
+    if (novoContexto) estadoTesteResistencia.filaConcentracao.push(novoContexto);
+    return false;
+  }
+
+  estadoTesteResistencia.contextoConcentracao = novoContexto;
   estadoTesteResistencia.atributo =
     opcoes.atributo || estadoTesteResistencia.atributo || "for";
 
@@ -364,20 +373,111 @@ function abrirModalTesteResistencia(opcoes = {}) {
   overlay.classList.add("ativo");
   overlay.setAttribute("aria-hidden", "false");
 
+  const botaoAbandonar = document.getElementById("modalTesteResistenciaAbandonar");
+  const botaoVoltar = document.getElementById("modalTesteResistenciaCancelar");
+  const concentracaoPendente = !!estadoTesteResistencia.contextoConcentracao;
+  if (botaoAbandonar) {
+    botaoAbandonar.hidden = !concentracaoPendente;
+    botaoAbandonar.classList.toggle("oculto", !concentracaoPendente);
+  }
+  if (botaoVoltar) {
+    botaoVoltar.textContent = concentracaoPendente ? "Continuar teste" : "Cancelar";
+  }
+
   document.getElementById("modalTesteResistenciaDado")?.focus();
 }
 
-function fecharModalTesteResistencia() {
+function fecharModalTesteResistencia(opcoes = {}) {
   const overlay = document.getElementById("modalTesteResistenciaOverlay");
   if (!overlay) return;
+
+  if (estadoTesteResistencia.contextoConcentracao &&
+      opcoes.tokenResolucao !== tokenFechamentoResolvidoTesteResistencia) {
+    document.getElementById("modalTesteResistenciaDado")?.focus();
+    return false;
+  }
 
   overlay.classList.remove("ativo");
   overlay.classList.add("oculto");
   overlay.setAttribute("aria-hidden", "true");
   estadoTesteResistencia.contextoConcentracao = null;
+  estadoTesteResistencia.filaConcentracao.length = 0;
+
+  const botaoAbandonar = document.getElementById("modalTesteResistenciaAbandonar");
+  const botaoVoltar = document.getElementById("modalTesteResistenciaCancelar");
+  if (botaoAbandonar) {
+    botaoAbandonar.hidden = true;
+    botaoAbandonar.classList.add("oculto");
+  }
+  if (botaoVoltar) botaoVoltar.textContent = "Cancelar";
 
   const titulo = document.getElementById("modalTesteResistenciaTitulo");
   if (titulo) titulo.textContent = "Teste de Resistência";
+  return true;
+}
+
+function abandonarConcentracaoPendente() {
+  const contexto = estadoTesteResistencia.contextoConcentracao;
+  if (!contexto) return;
+
+  const concentracaoCorrespondente = concentracaoAtiva?.chave === contexto.chave &&
+    concentracaoAtiva?.instanciaId === contexto.instanciaId;
+  const nome = obterNomeConcentracao(contexto.magia);
+  adicionarRegistroHistoricoCombate(
+    "Concentração",
+    concentracaoCorrespondente
+      ? `abandonada voluntariamente: ${nome} (teste de resistência pendente)`
+      : `teste pendente descartado: ${nome} já não está em concentração ativa`,
+    concentracaoCorrespondente ? "❌" : "ℹ️",
+    "",
+    {
+      timeline: {
+        simples: true,
+        exibirBadge: false,
+        texto: concentracaoCorrespondente
+          ? `❌ Concentração abandonada: ${nome}`
+          : `ℹ️ Teste obsoleto descartado: ${nome}`,
+      },
+    },
+  );
+  if (concentracaoCorrespondente) {
+    encerrarConcentracao("abandonada", { registrarHistorico: false });
+  } else if (avancarTesteConcentracaoNaFila()) {
+    return;
+  }
+  fecharModalTesteResistencia({ tokenResolucao: tokenFechamentoResolvidoTesteResistencia });
+}
+
+function avancarTesteConcentracaoNaFila() {
+  let proximo = null;
+  while (estadoTesteResistencia.filaConcentracao.length) {
+    const candidato = estadoTesteResistencia.filaConcentracao.shift();
+    if (concentracaoAtiva?.chave === candidato.chave &&
+        concentracaoAtiva?.instanciaId === candidato.instanciaId) {
+      proximo = candidato;
+      break;
+    }
+    adicionarRegistroHistoricoCombate(
+      "Concentração",
+      `teste pendente descartado: ${obterNomeConcentracao(candidato.magia)} já não está em concentração ativa`,
+      "ℹ️",
+    );
+  }
+  if (!proximo) {
+    fecharModalTesteResistencia({ tokenResolucao: tokenFechamentoResolvidoTesteResistencia });
+    return true;
+  }
+
+  estadoTesteResistencia.contextoConcentracao = proximo;
+  estadoTesteResistencia.atributo = "con";
+  const nome = obterNomeConcentracao(proximo.magia);
+  const titulo = document.getElementById("modalTesteResistenciaTitulo");
+  if (titulo) titulo.textContent = `Teste para manter concentração em ${nome}`;
+  selecionarAtributoTesteResistencia("con");
+  estadoTesteResistencia.dadoSistema?.setValor("");
+  atualizarBotaoConfirmarTesteResistencia();
+  document.getElementById("modalTesteResistenciaDado")?.focus();
+  return true;
 }
 
 function confirmarTesteResistencia() {
@@ -392,12 +492,23 @@ function confirmarTesteResistencia() {
     estadoTesteResistencia.atributo,
   );
   const bonus = obterBonusTesteResistencia(estadoTesteResistencia.atributo);
-  const total = dado + bonus;
+  const total = RegrasCombate.calcularTotalD20(dado, [bonus]);
   const sinal = bonus >= 0 ? "+" : "-";
   const valor = `${dado} ${sinal} ${Math.abs(bonus)} = ${total}`;
   const contextoConcentracao = estadoTesteResistencia.contextoConcentracao;
 
   if (contextoConcentracao) {
+    if (concentracaoAtiva?.chave !== contextoConcentracao.chave ||
+        concentracaoAtiva?.instanciaId !== contextoConcentracao.instanciaId) {
+      adicionarRegistroHistoricoCombate(
+        "Concentração",
+        `teste pendente descartado: ${obterNomeConcentracao(contextoConcentracao.magia)} já não está em concentração ativa`,
+        "ℹ️",
+      );
+      avancarTesteConcentracaoNaFila();
+      return;
+    }
+
     const sucesso = total >= contextoConcentracao.cd;
     const magia = contextoConcentracao.magia;
     const nome = obterNomeConcentracao(magia);
@@ -419,11 +530,13 @@ function confirmarTesteResistencia() {
     if (sucesso) {
       ultimoResultadoConcentracao = "sucesso";
       atualizarSubAbaMagiasCombate();
-    } else if (concentracaoAtiva?.chave === contextoConcentracao.chave) {
+      if (avancarTesteConcentracaoNaFila()) return;
+    } else {
       encerrarConcentracao("perdida", { registrarHistorico: false });
+      estadoTesteResistencia.filaConcentracao.length = 0;
     }
 
-    fecharModalTesteResistencia();
+    fecharModalTesteResistencia({ tokenResolucao: tokenFechamentoResolvidoTesteResistencia });
     return;
   }
 
@@ -441,7 +554,7 @@ function confirmarTesteResistencia() {
     },
   );
 
-  fecharModalTesteResistencia();
+  fecharModalTesteResistencia({ tokenResolucao: tokenFechamentoResolvidoTesteResistencia });
 }
 
 function abrirItemCard(card) {
@@ -885,7 +998,9 @@ function atualizarTotalModalIniciativa() {
   const campoSubtitulo = document.getElementById("modalIniciativaSubtitulo");
   const bonus = obterBonusIniciativaAtual();
   const dado = parseInt(campoDado?.value, 10);
-  const total = Number.isInteger(dado) ? dado + bonus : null;
+  const total = Number.isInteger(dado)
+    ? RegrasCombate.calcularTotalD20(dado, [bonus])
+    : null;
   const textoBonus = `${bonus >= 0 ? "+" : ""}${bonus}`;
 
   estadoModalIniciativa.dado = Number.isInteger(dado) ? dado : null;
@@ -1020,7 +1135,7 @@ function confirmarIniciativa() {
     return;
   }
 
-  const total = dado + obterBonusIniciativaAtual();
+  const total = RegrasCombate.calcularTotalD20(dado, [obterBonusIniciativaAtual()]);
   estadoCombateIniciativa.ativo = true;
   estadoCombateIniciativa.rodada = 1;
   estadoCombateIniciativa.posicao = posicao;
@@ -1295,8 +1410,10 @@ function abrirEtapaDanoAtaque() {
 
   estadoAtaqueArma.dado = dado;
   subtitulo.textContent = obterSubtituloModalAtaque(estadoAtaqueArma.arma);
-  const totalAtaque =
-    dado + (estadoAtaqueArma.modBase || 0) + (estadoAtaqueArma.bonusProf || 0);
+  const totalAtaque = RegrasCombate.calcularTotalD20(dado, [
+    estadoAtaqueArma.modBase || 0,
+    estadoAtaqueArma.bonusProf || 0,
+  ]);
   const iconeAtributo = obterIconeAtributoAtaque(
     estadoAtaqueArma.rotuloAtributo,
   );
@@ -1838,7 +1955,9 @@ function registrarHistoricoAtaqueArma(sucesso, dano) {
   const bonusAtaque =
     Number(estadoAtaqueArma.modBase || 0) +
     Number(estadoAtaqueArma.bonusProf || 0);
-  const totalAtaque = Number.isInteger(dado) ? dado + bonusAtaque : null;
+  const totalAtaque = Number.isInteger(dado)
+    ? RegrasCombate.calcularTotalD20(dado, [bonusAtaque])
+    : null;
   const valor = ehMagia
     ? [
         arma.nome || "Magia",

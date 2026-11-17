@@ -171,6 +171,7 @@ const estadoModalSelecaoMagia = {
   ultimoFoco: null,
 };
 let concentracaoAtiva = null;
+let sequenciaInstanciaConcentracao = 0;
 const efeitosMagicosPendentes = new Map();
 let ultimoResultadoConcentracao = null;
 let ultimoFocoModalConcentracao = null;
@@ -2140,6 +2141,8 @@ function iniciarConcentracaoMagia(magia, nivelSlot = null) {
     iniciadaEm: new Date().toISOString(),
     nivelSlot,
     chave: obterChaveConcentracaoMagia(magia),
+    // Identidade efêmera da ativação; não faz parte do contrato persistente.
+    instanciaId: ++sequenciaInstanciaConcentracao,
   };
   ultimoResultadoConcentracao = null;
 
@@ -2271,6 +2274,7 @@ function abrirTesteConcentracaoPorDano(dano) {
       cd,
       magia: concentracaoAtiva.magia,
       chave: concentracaoAtiva.chave,
+      instanciaId: concentracaoAtiva.instanciaId,
     },
   });
 }

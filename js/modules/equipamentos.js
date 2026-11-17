@@ -1051,6 +1051,7 @@
         // 🛡️ ESCUDOS (somente slot 2)
         if (indiceSlot === 2) {
           escudos.forEach((escudo, indiceEscudo) => {
+            if (!ehEscudoEmpunhavel(escudo)) return;
             const nomeEscudo = (
               escudo?.nome ||
               escudo?.escudo_nome ||
@@ -1229,6 +1230,20 @@
         return "uma_mao";
       }
 
+      function ehEscudoEmpunhavel(escudo) {
+        return (
+          String(escudo?.escudo_tipo ?? "").trim() === "Escudo" &&
+          !!String(escudo?.escudo_nome || escudo?.nome || "").trim()
+        );
+      }
+
+      function obterEscudoEquipadoPorValor(valor, escudos = []) {
+        const indice = extrairIndiceSlotEscudo(valor);
+        if (indice === null) return null;
+        const escudo = escudos[indice];
+        return ehEscudoEmpunhavel(escudo) ? escudo : null;
+      }
+
       function podeEquiparNaSecundaria(itemPrincipal, modo) {
         if (!itemPrincipal) return ["qualquer"];
         if (modo === "duas_maos") return [];
@@ -1238,23 +1253,31 @@
         return [];
       }
 
-      function obterTipoItemSecundarioPorValor(valor, armas) {
+      function obterTipoItemSecundarioPorValor(valor, armas, escudos = []) {
         if (!valor) return null;
         const indiceEscudo = extrairIndiceSlotEscudo(valor);
-        if (indiceEscudo !== null) return "escudo";
+        if (indiceEscudo !== null) {
+          return obterEscudoEquipadoPorValor(valor, escudos) ? "escudo" : null;
+        }
 
         const indiceArma = parseInt(valor, 10);
         const arma = Number.isInteger(indiceArma) ? armas[indiceArma] : null;
         return obterTipoItemSecundarioArma(arma);
       }
 
-      function valorSecundarioEhValido(valor, itemPrincipal, modo, armas) {
+      function valorSecundarioEhValido(
+        valor,
+        itemPrincipal,
+        modo,
+        armas,
+        escudos = [],
+      ) {
         if (!valor) return true;
+        const tipoItem = obterTipoItemSecundarioPorValor(valor, armas, escudos);
+        if (!tipoItem) return false;
         const permitidos = podeEquiparNaSecundaria(itemPrincipal, modo);
         if (permitidos.includes("qualquer")) return true;
-        return permitidos.includes(
-          obterTipoItemSecundarioPorValor(valor, armas),
-        );
+        return permitidos.includes(tipoItem);
       }
 
       function limparSelecaoSecundariaEquipamento(indicePrincipal = null) {
@@ -1328,10 +1351,16 @@
           estadoCombate.maoPrincipal.modo !== "duas_maos"
         ) {
           if (indiceEscudoSecundario !== null) {
-            itemSecundario = {
-              tipo: "escudo",
-              item: escudos[indiceEscudoSecundario] || null,
-            };
+            const escudoSecundario = obterEscudoEquipadoPorValor(
+              valorSecundario,
+              escudos,
+            );
+            if (escudoSecundario) {
+              itemSecundario = {
+                tipo: "escudo",
+                item: escudoSecundario,
+              };
+            }
           } else if (Number.isInteger(indiceArmaSecundaria)) {
             itemSecundario = {
               tipo: obterTipoItemSecundarioArma(
@@ -1389,7 +1418,7 @@
         }
       }
 
-      function atualizarUIEmpunhadura(armas) {
+      function atualizarUIEmpunhadura(armas, escudos) {
         const botaoPrincipal = document.getElementById("arma1Empunhadura");
         const botaoSecundario = document.getElementById("arma2Empunhadura");
         const linhaSecundaria = document
@@ -1459,7 +1488,7 @@
               secundariaAtiva &&
               (permitidos.includes("qualquer") ||
                 permitidos.includes(
-                  obterTipoItemSecundarioPorValor(option.value, armas),
+                  obterTipoItemSecundarioPorValor(option.value, armas, escudos),
                 ));
             option.disabled = !permitido;
           });
@@ -1965,6 +1994,7 @@
             itemPrincipal,
             modoPrincipal,
             armas,
+            escudos,
           )
         ) {
           valorSlot2Selecionado = "";
@@ -1999,7 +2029,7 @@
           const indiceEscudoSelecionado = extrairIndiceSlotEscudo(valorSlot);
           const escudoSelecionado =
             indice === 2 && indiceEscudoSelecionado !== null
-              ? escudos[indiceEscudoSelecionado]
+              ? obterEscudoEquipadoPorValor(valorSlot, escudos)
               : null;
           const usandoEscudo = !!escudoSelecionado;
           const textoPropriedade = arma
@@ -2049,10 +2079,10 @@
 
         const valorSlot2Atual =
           document.getElementById("arma2Nome")?.value || "";
-        const indiceEscudoPainel = extrairIndiceSlotEscudo(valorSlot2Atual);
-        const escudoPainel = Number.isInteger(indiceEscudoPainel)
-          ? escudos[indiceEscudoPainel]
-          : null;
+        const escudoPainel = obterEscudoEquipadoPorValor(
+          valorSlot2Atual,
+          escudos,
+        );
         preencherCampo("escudoNome", escudoPainel?.escudo_nome?.trim() || "");
         preencherCampo("escudoCA", escudoPainel?.escudo_ca?.trim() || "");
         aplicarEstiloProficienciaCampos(
@@ -2093,7 +2123,7 @@
         atualizarClasseArmaduraEquipada();
         atualizarSubAbaArmas();
         atualizarEstadoCombate(armas, escudos);
-        atualizarUIEmpunhadura(armas);
+        atualizarUIEmpunhadura(armas, escudos);
         atualizarBloqueioMaosEquipamento();
         if (typeof atualizarResumosArmas === "function") atualizarResumosArmas(armas);
         if (typeof atualizarResumosEscudos === "function") atualizarResumosEscudos(escudos);
