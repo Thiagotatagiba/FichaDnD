@@ -147,6 +147,10 @@ body {
   margin-top: 16px;
 }
 
+.backup-local-acoes [data-acao="importar"] {
+  margin-right: auto;
+}
+
 .backup-local-acoes button:focus-visible,
 #backupLocalDialogo select:focus-visible {
   outline: 3px solid #246d8e;
@@ -6906,7 +6910,9 @@ body {
   outline: 0;
   background: transparent;
   color: var(--cor-texto, #3f2712);
-  font: 13px/1.3 system-ui, sans-serif;
+  font:
+    13px/1.3 system-ui,
+    sans-serif;
 }
 
 .jogador-identificacao input::placeholder {
@@ -6927,8 +6933,14 @@ body {
   padding: 9px 11px 8px;
   border: 1px solid var(--cor-borda-suave, #bda68c);
   border-radius: 8px;
-  background: linear-gradient(180deg, var(--cor-campo, #fffaf2), var(--cor-painel, #f6f2ea));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65), 0 1px 2px rgba(63, 39, 18, 0.12);
+  background: linear-gradient(
+    180deg,
+    var(--cor-campo, #fffaf2),
+    var(--cor-painel, #f6f2ea)
+  );
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 1px 2px rgba(63, 39, 18, 0.12);
 }
 
 .xp-panel-heading {
@@ -6995,7 +7007,9 @@ body {
   background: #332315;
   color: #fffaf2;
   box-shadow: 0 2px 6px rgba(33, 19, 10, 0.24);
-  font: 600 11px/1.35 system-ui, sans-serif;
+  font:
+    600 11px/1.35 system-ui,
+    sans-serif;
   text-align: center;
   white-space: nowrap;
   visibility: hidden;
@@ -7056,9 +7070,13 @@ body {
   border-radius: 5px;
   background: linear-gradient(180deg, #fff9ef, #efe3d1);
   color: #4a2e16;
-  font: 700 11px/1.2 system-ui, sans-serif;
+  font:
+    700 11px/1.2 system-ui,
+    sans-serif;
   white-space: nowrap;
-  transition: background-color 120ms ease, border-color 120ms ease;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
 }
 
 .xp-info #btnAddXP:hover:not(:disabled) {
@@ -7078,7 +7096,9 @@ body {
 }
 
 .xp-add-icon {
-  font: 700 16px/0.8 system-ui, sans-serif;
+  font:
+    700 16px/0.8 system-ui,
+    sans-serif;
 }
 
 .xp-visually-hidden {

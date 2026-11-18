@@ -21,6 +21,7 @@
       "raridade": "comum",
       "nome": "Escudo Comum",
       "nomeOriginal": "Shield",
+      "icone": "../assets/icons/escudos/viking-shield.svg",
       "categoria": "escudo",
       "custo": {
         "valor": 10,
