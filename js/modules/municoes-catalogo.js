@@ -30,9 +30,9 @@ function localizarMunicao(id) { return [...document.querySelectorAll("#listaMuni
 function buscarDadosMunicao(id) { const atual = localizarMunicao(id); if (atual) return obterCamposMunicao(atual); const legado = [...document.querySelectorAll('#listaOutros .item-card[data-tipo="outro"]')].find(c => c.dataset.id === String(id) && String(c.querySelector('[data-campo="outro_tipo"]')?.value || "").toLowerCase() === "municao"); if (!legado) return null; return { id:legado.dataset.id, municao_nome:legado.querySelector('[data-campo="outro_nome"]')?.value || "", municao_quantidade:legado.querySelector('[data-campo="outro_quantidade"]')?.value || "0" }; }
 function formatoPesoMunicao(peso) { return `${Number(peso || 0).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} kg`; }
 function obterApresentacaoPacoteMunicao(dados = {}) {
-  const itemCatalogo = estadoCatalogoMunicoes.itens?.find(item => item.id === dados.municao_catalogo_id);
+  const itemCatalogo = estadoCatalogoMunicoes.itens?.find(item => item.id === dados.municao_catalogo_id || item.idLegado === dados.municao_catalogo_id);
   const nome = dados.municao_nome || "Munição";
-  const nomePacote = itemCatalogo?.nomeCard || (dados.municao_catalogo_id === "virotes" ? "Estojo de Virotes" : dados.municao_catalogo_id === "flechas" ? "Aljava de Flechas" : `Pacote de ${nome}`);
+  const nomePacote = itemCatalogo?.nomeCard || (["crossbow-bolts", "virotes"].includes(dados.municao_catalogo_id) ? "Estojo de Virotes" : ["arrows", "flechas"].includes(dados.municao_catalogo_id) ? "Aljava de Flechas" : `Pacote de ${nome}`);
   const nomeUnidade = itemCatalogo?.nomeUnidade || nome;
   const quantidadePacote = Math.max(1, Number(dados.municao_quantidade_pacote) || itemCatalogo?.quantidadePacote || 1);
   return { nomePacote, nomeUnidade, quantidadePacote, etiquetaPacote: `Pacote de ${quantidadePacote} ${nomeUnidade}` };
@@ -157,10 +157,10 @@ function converterMunicaoLegada(d) {
   const normalize = text => String(text || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const nome = d.outro_nome || d.municao_nome || "Munição"; const key = normalize(nome);
   const presets = [
-    { match:["virote","bolt"], id:"virotes", pack:20, weight:.75, price:1, coin:"po" },
-    { match:["flecha","arrow"], id:"flechas", pack:20, weight:.5, price:1, coin:"po" },
-    { match:["agulha","needle"], id:"agulhas-zarabatana", pack:50, weight:.5, price:1, coin:"po" },
-    { match:["bala de funda","sling bullet"], id:"balas-de-funda", pack:20, weight:.75, price:4, coin:"pc" },
+    { match:["virote","bolt"], id:"crossbow-bolts", pack:20, weight:.75, price:1, coin:"po" },
+    { match:["flecha","arrow"], id:"arrows", pack:20, weight:.5, price:1, coin:"po" },
+    { match:["agulha","needle"], id:"blowgun-needles", pack:50, weight:.5, price:1, coin:"po" },
+    { match:["bala de funda","sling bullet"], id:"sling-bullets", pack:20, weight:.75, price:4, coin:"pc" },
   ].find(p => p.match.some(term => key.includes(normalize(term))));
   return { id:d.id, municao_nome:nome, municao_quantidade:d.outro_quantidade ?? d.municao_quantidade ?? 0, municao_descricao:d.outro_descricao || d.municao_descricao || "", municao_catalogo_id:d.municao_catalogo_id || presets?.id || "", municao_quantidade_pacote:d.municao_quantidade_pacote || presets?.pack || 1, municao_peso_pacote:d.municao_peso_pacote ?? presets?.weight ?? d.outro_peso ?? 0, municao_preco_pacote:d.municao_preco_pacote ?? presets?.price ?? d.outro_preco ?? 0, municao_moeda:d.municao_moeda || presets?.coin || d.outro_moeda || "po", municao_raridade:d.municao_raridade || "comum", municao_magica:d.municao_magica || "false", municao_bonus_ataque:d.municao_bonus_ataque || 0, municao_bonus_dano:d.municao_bonus_dano || "" };
 }

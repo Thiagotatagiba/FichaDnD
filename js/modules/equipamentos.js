@@ -34,8 +34,13 @@
           const quantidade = item.querySelector('[data-campo="municao_quantidade"]')?.value;
           if (!nome) return;
           const municaoDados = typeof obterCamposMunicao === "function" ? obterCamposMunicao(item) : null;
-          const definicaoMunicao = estadoCatalogoMunicoes.itens?.find(def => def.id === municaoDados?.municao_catalogo_id);
-          if (armaCatalogoId && definicaoMunicao && !definicaoMunicao.compatibilidade.includes(armaCatalogoId)) return;
+          const definicaoMunicao = estadoCatalogoMunicoes.itens?.find(def => def.id === municaoDados?.municao_catalogo_id || def.idLegado === municaoDados?.municao_catalogo_id);
+          const definicaoArma = estadoCatalogoArmas.dados?.itens?.find(def => def.id === armaCatalogoId || def.idLegado === armaCatalogoId);
+          const armaCompativel = definicaoMunicao && (
+            definicaoMunicao.compatibilidade.includes(definicaoArma?.id || armaCatalogoId) ||
+            definicaoMunicao.compatibilidadeLegada?.includes(armaCatalogoId)
+          );
+          if (armaCatalogoId && definicaoMunicao && !armaCompativel) return;
           const option = document.createElement("option");
           option.value = item.dataset.id;
           option.textContent = `${quantidade || "0"} ${nome}`;
@@ -1429,19 +1434,35 @@
         const principal = estadoCombate.maoPrincipal.item;
         const secundariaAtiva = estadoCombate.maoSecundaria.ativa;
         const secundariaItem = estadoCombate.maoSecundaria.item;
+        const indiceArmaPrincipal = Number.parseInt(principal?.chaveItem, 10);
+        const armaPrincipal = Number.isInteger(indiceArmaPrincipal)
+          ? armas[indiceArmaPrincipal]
+          : null;
+        const obterIdCatalogoArma = (indice) => {
+          if (!Number.isInteger(indice)) return "";
+          const cards = document.querySelectorAll(
+            '.item-card[data-tipo="arma"]:not(#armaModelo)',
+          );
+          return cards[indice]?.dataset.catalogoArmaId || "";
+        };
+        const iconesCombate = window.FichaDnDCombateIcons;
 
         if (botaoPrincipal) {
-          const emojiPrincipal = !principal
-            ? "🤚"
-            : estadoCombate.maoPrincipal.modo === "duas_maos"
-              ? "👏"
-              : "✊";
           const indicadorVersatil = principal?.versatil
             ? estadoCombate.maoPrincipal.modo === "duas_maos"
               ? "✊"
               : "👏"
             : "";
-          botaoPrincipal.textContent = emojiPrincipal;
+          if (iconesCombate) {
+            iconesCombate.atualizarIconeMao(
+              botaoPrincipal,
+              principal ? "arma" : "livre",
+              obterIdCatalogoArma(indiceArmaPrincipal) ||
+                iconesCombate.obterIdCatalogo(armaPrincipal),
+            );
+          } else {
+            botaoPrincipal.textContent = principal ? "✊" : "🤚";
+          }
           botaoPrincipal.dataset.indicador = indicadorVersatil;
           botaoPrincipal.classList.toggle("clicavel", !!principal);
           botaoPrincipal.disabled = false;
@@ -1453,10 +1474,27 @@
         }
 
         if (botaoSecundario) {
-          let emojiSecundario = "🤚";
-          if (secundariaItem?.tipo === "escudo") emojiSecundario = "🛡️";
-          else if (secundariaItem) emojiSecundario = "✊";
-          botaoSecundario.textContent = emojiSecundario;
+          const tipoIconeSecundario = secundariaItem?.tipo === "escudo"
+            ? "escudo"
+            : secundariaItem
+              ? "arma"
+              : secundariaAtiva
+                ? "livre"
+                : "ocupada";
+          if (iconesCombate) {
+            iconesCombate.atualizarIconeMao(
+              botaoSecundario,
+              tipoIconeSecundario,
+              tipoIconeSecundario === "arma"
+                ? obterIdCatalogoArma(Number.parseInt(selectSecundario?.value, 10)) ||
+                  iconesCombate.obterIdCatalogo(secundariaItem?.item)
+                : iconesCombate.obterIdCatalogo(secundariaItem?.item),
+            );
+          } else {
+            botaoSecundario.textContent = secundariaItem
+              ? secundariaItem.tipo === "escudo" ? "🛡️" : "✊"
+              : "🤚";
+          }
           botaoSecundario.classList.toggle("clicavel", !!secundariaItem);
           botaoSecundario.disabled = false;
           botaoSecundario.title = !secundariaItem

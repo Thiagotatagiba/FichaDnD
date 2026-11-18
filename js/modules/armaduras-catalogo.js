@@ -325,7 +325,7 @@ function renderizarDetalhesArmadura(item, aoAdicionar = null, proficiente = null
 
 function lerDetalhesCardArmadura(card) {
   const campo = nome => card.querySelector('[data-campo="armadura_' + nome + '"]')?.value || "";
-  const origem = estadoCatalogoArmaduras.dados?.itens.find(item => item.id === card.dataset.catalogoId);
+  const origem = estadoCatalogoArmaduras.dados?.itens.find(item => item.id === card.dataset.catalogoId || item.idLegado === card.dataset.catalogoId);
   const bonus = campo("bonus");
   return {
     nome: campo("nome"), nomeOriginal: origem?.nomeOriginal,
@@ -686,7 +686,7 @@ async function restaurarPadraoModalArmadura() {
     const catalogo = await carregarCatalogoArmaduras();
     if ((window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
     if (!editorArmaduraPodeAgir() || estadoModalArmadura.card !== card || !cardArmaduraNaListaAtiva(card)) return;
-    const item = catalogo.itens.find(entrada => entrada.id === card.dataset.catalogoId);
+    const item = catalogo.itens.find(entrada => entrada.id === card.dataset.catalogoId || entrada.idLegado === card.dataset.catalogoId);
     if (!item) { alert("Esta armadura não está disponível no catálogo atual."); return; }
     aplicarCatalogoAoCardArmadura(card, item);
     equiparArmadura(armaduraEquipadaIndice);

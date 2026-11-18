@@ -1,0 +1,338 @@
+/* Combate 2.0: composição inspirada no protótipo e isolada na aba oficial. */
+#combate.combate-v2 {
+  --v2-paper: #f7f0e1;
+  --v2-ink: #352b24;
+  --v2-muted: #786b5c;
+  --v2-bronze: #956332;
+  --v2-line: #cfb994;
+  --v2-wash: #eee3ce;
+  color: var(--v2-ink);
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+#combate.combate-v2 > .combate-grid { display:block; min-width:0; margin:0; }
+#combate.combate-v2 .combat-v2-shell,
+#combate.combate-v2 .combat-v2-shell * { box-sizing:border-box; }
+#combate.combate-v2 .combat-v2-shell { width:100%; max-width:1310px; min-width:0; margin:0 auto; color:var(--v2-ink); }
+#combate.combate-v2 .combat-v2-intro { display:flex; justify-content:space-between; align-items:end; gap:12px; margin:0 0 14px; padding:0 2px; }
+#combate.combate-v2 .combat-v2-intro-copy { min-width:0; }
+#combate.combate-v2 .combat-v2-eyebrow { display:block; color:var(--v2-bronze); font-size:10px; font-weight:700; letter-spacing:1.6px; text-transform:uppercase; }
+#combate.combate-v2 .combat-v2-lede { margin:2px 0 0; color:var(--v2-muted); font-size:12px; }
+#combate.combate-v2 .combat-v2-live-label { flex:0 0 auto; padding:4px 9px; border:1px solid var(--v2-line); border-radius:20px; background:#f7efdf; color:var(--v2-muted); font-size:10px; }
+#combate.combate-v2 .combat-v2-summary { display:grid; grid-template-columns:minmax(160px,1fr) minmax(250px,1.4fr) minmax(145px,.9fr) minmax(220px,1.25fr); gap:12px; margin-bottom:14px; }
+#combate.combate-v2 .combat-v2-panel { min-width:0; padding:14px; border:1px solid var(--v2-line); border-radius:11px; background:var(--v2-paper); box-shadow:0 3px 9px #6040190a; }
+#combate.combate-v2 .combat-v2-panel-head { display:flex; align-items:center; gap:7px; min-width:0; margin:0 0 10px; }
+#combate.combate-v2 .combat-v2-title { min-width:0; margin:0; color:var(--v2-ink); font:normal 17px/1.25 Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-step { flex:0 0 auto; color:var(--v2-bronze); font:11px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-hp { border-top:3px solid #9b4137; }
+#combate.combate-v2 .combat-v2-hp .ataque-pv-bloco { display:block; width:100%; margin:0; }
+
+/* Mantém os quatro indicadores superiores lado a lado no espaço real da aba. */
+@media (min-width:901px) {
+  #combate.combate-v2 .combat-v2-summary {
+    grid-template-columns:minmax(0,1.15fr) minmax(0,1.45fr) minmax(0,1fr) minmax(0,1.3fr);
+  }
+  #combate.combate-v2 .combat-v2-conditions { grid-column:auto; }
+}
+
+/* Estados vazios devem seguir o acabamento leve do protótipo, sem moldura legada. */
+#combate.combate-v2 .combat-v2-actions .subaba-vazia {
+  padding:8px 0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  text-align:left;
+}
+#combate.combate-v2 .combat-v2-quick-actions .ataque-botao { min-height:0; }
+#combate.combate-v2 .combat-v2-hp .ataque-pv-valor { display:flex; align-items:center; justify-content:flex-start; flex-wrap:wrap; gap:8px; min-width:0; padding:3px 0; border:0; background:none; color:var(--v2-ink); font:22px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-hp .ataque-pv-coracoes { display:flex; order:1; flex:0 0 100%; align-items:center; gap:4px; min-width:0; margin-top:1px; }
+#combate.combate-v2 .combat-v2-hp .ataque-pv-coracoes .pv-heart { width:19px; height:19px; flex:0 1 19px; }
+#combate.combate-v2 .combat-v2-hp .ataque-contra-morte { max-width:100%; margin:10px 0 0; }
+#combate.combate-v2 .combat-v2-defense-value { display:grid; grid-template-columns:72px minmax(0,1fr); align-items:center; gap:10px; min-width:0; }
+#combate.combate-v2 .ataque-mini-escudo { width:72px; min-width:0; margin:0; }
+#combate.combate-v2 .ataque-mini-escudo .shield { width:66px; height:76px; margin:0 auto; background:#e8dcc3; clip-path:polygon(0 0,100% 0,94% 70%,50% 100%,6% 70%); font:34px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .ataque-mini-escudo .shield input { width:100%; height:100%; padding:0; border:0; background:transparent; color:var(--v2-ink); text-align:center; font:34px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-armor-controls { min-width:0; }
+#combate.combate-v2 .combat-v2-armor-details { display:grid; grid-template-columns:minmax(0,1fr); gap:6px; margin-top:6px; }
+#combate.combate-v2 .combat-v2-field { display:grid; gap:3px; min-width:0; color:var(--v2-muted); font-size:10px; }
+#combate.combate-v2 .combat-v2-armor-controls select,
+#combate.combate-v2 .combat-v2-armor-controls input { width:100%; min-width:0; max-width:100%; padding:6px; border:1px solid var(--v2-line); border-radius:6px; background:#fffbf3; color:var(--v2-ink); font:12px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-hud { display:flex; flex-direction:column; gap:7px; min-width:0; padding:0; border:0; background:transparent; }
+#combate.combate-v2 .combat-v2-hud .ataque-status-caixa { min-width:0; padding:4px; border-color:var(--v2-line); background:#fffbf3; }
+#combate.combate-v2 .combat-v2-hud .ataque-botao { max-width:100%; min-width:0; white-space:normal; }
+#combate.combate-v2 .combat-v2-condition-body { display:grid; grid-template-columns:auto minmax(0,1fr); align-items:start; gap:7px; min-width:0; }
+#combate.combate-v2 .combat-v2-condition-body .combate-condicao-caixa { display:flex; flex-direction:column; gap:4px; min-width:0; }
+#combate.combate-v2 .combat-v2-condition-body .combate-condicao-caixa label { color:var(--v2-muted); font-size:10px; }
+#combate.combate-v2 #ataqueCondicao { width:100%; min-width:0; max-width:100%; min-height:42px; padding:7px; resize:vertical; border:1px solid var(--v2-line); border-radius:6px; background:#fffbf3; color:var(--v2-ink); font:12px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-add-condition { align-self:start; padding:6px 8px; border:1px solid var(--v2-line); border-radius:7px; background:#fffbf3; color:var(--v2-ink); font-size:11px; white-space:nowrap; }
+#combate.combate-v2 .combat-v2-note { display:block; margin:7px 0 0; color:var(--v2-muted); font-size:10px; }
+#combate.combate-v2 .combat-v2-layout { display:grid; grid-template-columns:minmax(250px,.76fr) minmax(0,1.45fr); align-items:start; gap:14px; min-width:0; }
+#combate.combate-v2 .combat-v2-aside,
+#combate.combate-v2 .combat-v2-main { display:grid; align-content:start; gap:14px; min-width:0; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-armas-bloco { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; min-width:0; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-armas-item { min-width:0; padding:9px; border:1px solid var(--v2-line); border-radius:8px; background:#fbf6eb; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-grid.armas { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); align-items:center; gap:6px; min-width:0; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-grid.armas > .equipados-subtitulo,
+#combate.combate-v2 .combat-v2-hands-panel .equipados-grid.armas > .equipados-grid-cabecalho-centro { display:none; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-slot-com-emoji { display:grid; justify-items:stretch; gap:5px; min-width:0; grid-column:1/-1; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-slot-com-emoji .equipados-mao-emoji { justify-self:center; width:42px; height:42px; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-slot-com-emoji select,
+#combate.combate-v2 .combat-v2-hands-panel .equipados-grid.armas > select,
+#combate.combate-v2 .combat-v2-hands-panel .equipados-grid.armas > input { width:100%; min-width:0; max-width:100%; padding:7px; border:1px solid var(--v2-line); border-radius:6px; background:#fffbf3; color:var(--v2-ink); font:12px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .equipados-mao-emoji { display:grid; place-items:center; flex:0 0 36px; width:36px; height:36px; padding:4px; border:1px solid var(--v2-line); border-radius:8px; background:#fffbf3; }
+#combate.combate-v2 .equipados-mao-emoji img,
+#combate.combate-v2 .combate-icone-mao,
+#combate.combate-v2 .combate-icone-arma { display:block; width:100%; height:100%; max-width:29px; max-height:29px; object-fit:contain; }
+#combate.combate-v2 .combat-v2-hand-icon--secondary .equipados-mao-emoji img { transform:scaleX(-1); }
+#combate.combate-v2 .equipados-municao-linha { display:flex; gap:6px; min-width:0; margin-top:6px; }
+#combate.combate-v2 .equipados-municao-select { width:100%; min-width:0; }
+#combate.combate-v2 .combat-v2-resources .equipados-secao { min-width:0; padding-top:8px; border-top:1px solid #dfd2ba; }
+#combate.combate-v2 .combat-v2-resources .equipados-secao:first-of-type { padding-top:0; border-top:0; }
+#combate.combate-v2 .combat-v2-resources .equipados-subtitulo { margin:0 0 5px; color:var(--v2-muted); font:14px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-resources .equipados-grid.outros { display:grid; grid-template-columns:minmax(0,1fr) 58px; gap:6px; min-width:0; }
+#combate.combate-v2 .combat-v2-resources .equipados-grid.outros .equipados-grid-cabecalho,
+#combate.combate-v2 .combat-v2-resources .equipados-grid.outros .equipados-grid-cabecalho-centro { display:none; }
+#combate.combate-v2 .combat-v2-resources .equipados-grid.outros input { width:100%; min-width:0; max-width:100%; }
+#combate.combate-v2 .combat-v2-actions { padding-bottom:16px; }
+#combate.combate-v2 .combat-v2-turn-status { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:0 0 9px; }
+#combate.combate-v2 .combat-v2-turn-status .combat-v2-note { margin:0; }
+#combate.combate-v2 .combat-v2-actions .subabas-combate { display:block; min-width:0; padding:0; border:0; border-radius:0; background:transparent; box-shadow:none; }
+#combate.combate-v2 .combat-v2-actions .subabas-botoes { display:flex; flex-wrap:wrap; gap:17px; margin:8px 0 12px; border-bottom:1px solid var(--v2-line); }
+#combate.combate-v2 .combat-v2-actions .subaba-botao { min-height:36px; padding:7px 0; border:0; border-radius:0; background:transparent; color:var(--v2-muted); font:13px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-actions .subaba-botao.ativa { border-bottom:2px solid var(--v2-bronze); color:var(--v2-bronze); font-weight:700; }
+#combate.combate-v2 .combat-v2-actions .subaba-combate { min-width:0; padding:0; border:0; background:transparent; }
+#combate.combate-v2 .combat-v2-actions .arma-resumo-lista { display:grid; gap:8px; }
+#combate.combate-v2 .combat-v2-actions .arma-resumo-item { min-width:0; padding:12px; border:1px solid var(--v2-line); border-radius:8px; background:#fdf8ee; }
+#combate.combate-v2 .combat-v2-actions .arma-resumo-detalhes { overflow-wrap:anywhere; color:var(--v2-muted); font-size:12px; }
+#combate.combate-v2 .arma-resumo-topo { display:flex; align-items:center; gap:9px; min-width:0; margin-bottom:5px; color:var(--v2-bronze); }
+#combate.combate-v2 .arma-resumo-nome { min-width:0; overflow-wrap:anywhere; font:17px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .arma-resumo-municao { margin-left:auto; color:var(--v2-muted); font-size:11px; }
+#combate.combate-v2 .arma-resumo-topo img { width:28px; height:28px; object-fit:contain; }
+#combate.combate-v2 .subaba-vazia { padding:24px 10px; border:1px dashed var(--v2-line); border-radius:8px; color:var(--v2-muted); text-align:center; }
+#combate.combate-v2 .combat-v2-quick-wrap { margin-top:14px; padding-top:12px; border-top:1px solid var(--v2-line); }
+#combate.combate-v2 .combat-v2-subtitle { margin:0 0 8px; color:var(--v2-muted); font:15px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-quick-actions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+#combate.combate-v2 .combat-v2-quick-actions .ataque-botao { min-width:0; padding:9px 6px; border:1px solid var(--v2-line); border-radius:8px; background:#fffaf0; color:var(--v2-ink); font-size:12px; }
+#combate.combate-v2 .combat-v2-log { min-width:0; }
+#combate.combate-v2 .combat-v2-log #subabaCombateHistorico { display:block; }
+#combate.combate-v2 .combat-v2-log .historico-tabela { min-width:0; overflow-x:auto; }
+#combate.combate-v2 .combat-v2-inventory { min-width:0; margin-top:14px; padding:0 14px; border:1px solid var(--v2-line); border-radius:11px; background:var(--v2-paper); }
+#combate.combate-v2 .combat-v2-inventory-head { display:flex; align-items:center; gap:7px; min-height:45px; cursor:pointer; list-style:disclosure-closed; }
+#combate.combate-v2 .combat-v2-inventory[open] .combat-v2-inventory-head { margin-bottom:10px; padding-top:10px; border-bottom:1px solid var(--v2-line); list-style:disclosure-open; }
+#combate.combate-v2 .combat-v2-inventory-hint { margin-left:auto; color:var(--v2-muted); font-size:11px; }
+#combate.combate-v2 .combat-v2-inventory-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; min-width:0; }
+#combate.combate-v2 .combat-v2-item-card { padding:11px; }
+#combate.combate-v2 .combat-v2-item-card .combat-v2-panel-head { margin-bottom:7px; }
+#combate.combate-v2 .combat-v2-item-card .combat-v2-title { font-size:15px; }
+#combate.combate-v2 .combat-v2-item-card .proficiencia-subtitulo { margin:0 0 6px; color:var(--v2-muted); font:13px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-item-card :where(input,select,button) { max-width:100%; }
+#combate.combate-v2 :where(button,input,select,textarea,[tabindex="0"]):focus-visible { outline:2px solid #3c756b; outline-offset:2px; }
+#combate.combate-v2 :where(input,select,textarea) { min-width:0; max-width:100%; }
+@media(max-width:1050px) {
+  #combate.combate-v2 .combat-v2-summary { grid-template-columns:minmax(0,1.5fr) minmax(220px,1fr) minmax(180px,1fr); }
+  #combate.combate-v2 .combat-v2-conditions { grid-column:1/-1; display:grid; grid-template-columns:max-content minmax(0,1fr); align-items:center; gap:8px 12px; }
+  #combate.combate-v2 .combat-v2-conditions .combat-v2-panel-head { margin:0; }
+  #combate.combate-v2 .combat-v2-conditions .combat-v2-note { grid-column:1/-1; margin:0; }
+  #combate.combate-v2 .combat-v2-inventory-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:900px) {
+  #combate.combate-v2 .combat-v2-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #combate.combate-v2 .combat-v2-conditions { grid-column:auto; display:block; }
+  #combate.combate-v2 .combat-v2-conditions .combat-v2-panel-head { margin:0 0 10px; }
+  #combate.combate-v2 .combat-v2-conditions .combat-v2-note { margin:7px 0 0; }
+  #combate.combate-v2 .combat-v2-layout { grid-template-columns:minmax(230px,.8fr) minmax(0,1.3fr); }
+}
+@media(max-width:760px) {
+  #combate.combate-v2 .combat-v2-layout { grid-template-columns:minmax(0,1fr); }
+  #combate.combate-v2 .combat-v2-aside { grid-template-columns:minmax(0,1fr); align-items:start; }
+}
+@media(max-width:520px) {
+  #combate.combate-v2 .combat-v2-intro { align-items:start; flex-direction:column; }
+  #combate.combate-v2 .combat-v2-summary { grid-template-columns:minmax(0,1fr); }
+  #combate.combate-v2 .combat-v2-aside,
+  #combate.combate-v2 .combat-v2-inventory-grid { grid-template-columns:minmax(0,1fr); }
+  #combate.combate-v2 .combat-v2-panel,
+  #combate.combate-v2 .combat-v2-inventory { padding:0 10px; }
+  #combate.combate-v2 .combat-v2-inventory-hint { display:none; }
+  #combate.combate-v2 .combat-v2-hands-panel .equipados-armas-bloco { grid-template-columns:minmax(0,1fr); }
+  #combate.combate-v2 .combat-v2-condition-body { grid-template-columns:minmax(0,1fr); }
+  #combate.combate-v2 .combat-v2-add-condition { justify-self:start; }
+  #combate.combate-v2 .combat-v2-quick-actions { grid-template-columns:minmax(0,1fr); }
+}
+
+/* Composição alinhada ao protótipo aprovado; todos os seletores ficam na aba Combate. */
+#combate.combate-v2 .combat-v2-shell { max-width:none; }
+#combate.combate-v2 .combat-v2-intro { margin-bottom:12px; padding:0; }
+#combate.combate-v2 .combat-v2-summary { grid-template-columns:minmax(0,1.5fr) minmax(0,1.05fr) minmax(0,1fr) minmax(0,1.3fr); gap:10px; margin-bottom:12px; }
+#combate.combate-v2 .combat-v2-panel { padding:14px; border-radius:10px; box-shadow:none; }
+#combate.combate-v2 .combat-v2-panel-head { margin-bottom:8px; }
+#combate.combate-v2 .combat-v2-title { font-size:16px; }
+#combate.combate-v2 .combat-v2-hp-line { display:grid; grid-template-columns:minmax(0,1fr); gap:3px; min-width:0; }
+#combate.combate-v2 .combat-v2-hp .ataque-pv-valor { display:flex; align-items:center; flex-wrap:wrap; gap:7px; padding:0; border:0; background:transparent; color:var(--v2-red,#9b4137); font:26px/1.15 Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-hp .ataque-pv-valor > span { font-weight:600; }
+#combate.combate-v2 .combat-v2-hp .ataque-pv-coracoes { display:flex; align-items:center; gap:4px; }
+#combate.combate-v2 .combat-v2-hp .ataque-pv-coracoes .pv-heart { width:17px; height:17px; flex:0 0 17px; }
+#combate.combate-v2 .combat-v2-hp-temporary { color:var(--v2-bronze); font:600 12px/1.1 "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-hp-total { color:var(--v2-muted); font:12px/1.2 "Segoe UI",Arial,sans-serif; white-space:nowrap; }
+#combate.combate-v2 .combat-v2-hp-controls { display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
+#combate.combate-v2 .combat-v2-hp-controls .ataque-botao { min-height:29px; padding:4px 8px; border:1px solid var(--v2-line); border-radius:7px; background:#fffaf0; color:var(--v2-ink); font:11px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-defense-value { grid-template-columns:minmax(0,1fr); justify-items:center; gap:7px; }
+#combate.combate-v2 .combat-v2-shield { width:100%; min-width:0; }
+#combate.combate-v2 .combat-v2-shield .ataque-mini-escudo { width:70px; }
+#combate.combate-v2 .combat-v2-shield .shield { position:relative; isolation:isolate; width:68px; height:78px; overflow:visible; border:0; border-radius:0; background:transparent; box-shadow:none; clip-path:none; }
+#combate.combate-v2 .combat-v2-shield .combat-v2-ac-shield-art { position:absolute; inset:0; z-index:-1; display:block; width:100%; height:100%; filter:drop-shadow(0 3px 2px #60401935); pointer-events:none; }
+#combate.combate-v2 .combat-v2-shield .shield input { position:relative; z-index:1; width:100%; height:100%; padding:0 0 5px; border:0; border-radius:0; background:transparent; color:var(--v2-ink); text-align:center; font:700 29px/1 Palatino,"Book Antiqua",Georgia,serif; text-shadow:0 1px 0 #f7f0e1,1px 0 0 #f7f0e1,-1px 0 0 #f7f0e1; }
+#combate.combate-v2 .combat-v2-armor-controls { width:100%; min-width:0; }
+#combate.combate-v2 .combat-v2-armor-controls select { display:block; width:100%; min-width:0; max-width:100%; margin:0; padding:7px 6px; font:12px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-initiative-summary { display:flex; flex:1 1 auto; align-items:center; justify-content:center; min-height:0; margin:0; }
+#combate.combate-v2 .combat-v2-turn { display:flex; flex-direction:column; }
+#combate.combate-v2 .combat-v2-turn .combat-v2-panel-head { justify-content:space-between; margin-bottom:0; }
+#combate.combate-v2 .combat-v2-turn .combat-v2-title { flex:1 1 auto; }
+#combate.combate-v2 .combat-v2-initiative-header-value { display:flex; align-items:baseline; justify-content:flex-start; flex:0 0 auto; min-width:0; margin-left:0; }
+#combate.combate-v2 .combat-v2-initiative-bonus { color:var(--v2-ink); font:18px/1.2 Palatino,"Book Antiqua",Georgia,serif; text-align:center; white-space:nowrap; }
+#combate.combate-v2 .combat-v2-initiative-result { color:var(--v2-muted); font:400 15px/1.2 Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-initiative-result-block { display:flex; align-items:baseline; gap:0; }
+#combate.combate-v2 .combat-v2-initiative-summary[hidden],
+#combate.combate-v2 .combat-v2-initiative-bonus[hidden],
+#combate.combate-v2 .combat-v2-initiative-result-block[hidden] { display:none !important; }
+#combate.combate-v2 .combat-v2-hud { display:grid; grid-template-columns:minmax(0,1fr); gap:7px; align-items:start; margin-top:7px; }
+#combate.combate-v2 .combat-v2-turn-controls { display:flex; align-items:center; flex-wrap:wrap; gap:7px 12px; min-width:0; }
+#combate.combate-v2 .combat-v2-turn:not(.combat-v2-in-combat) .combat-v2-initiative-summary { min-height:0; }
+#combate.combate-v2 .combat-v2-turn:not(.combat-v2-in-combat) .combat-v2-hud { margin-top:0; }
+#combate.combate-v2 .combat-v2-turn:not(.combat-v2-in-combat) .combat-v2-turn-controls { justify-content:center; width:100%; margin-top:auto; padding-top:8px; border-top:1px solid var(--v2-line); }
+#combate.combate-v2 .combat-v2-turn:not(.combat-v2-in-combat) .combat-v2-turn-footer { display:none; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-initiative-summary { display:none; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head { justify-content:flex-start; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-title { flex:0 0 auto; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-initiative-header-value { margin-left:0; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-turn-controls { display:grid; grid-template-columns:minmax(0,1fr); gap:7px; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa,
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combateRodadaCaixa { grid-column:1/-1; width:100%; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa { flex:0 0 auto; flex-flow:row nowrap; justify-content:flex-start; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combateRodadaCaixa { display:grid; align-items:stretch; gap:5px; }
+#combate.combate-v2 .combat-v2-round-value { display:flex; align-items:center; justify-content:flex-start; gap:6px; width:100%; }
+#combate.combate-v2 .combat-v2-round-value > label { color:var(--v2-ink); font:600 14px/1.2 Palatino,"Book Antiqua",Georgia,serif; letter-spacing:normal; text-transform:none; white-space:nowrap; }
+#combate.combate-v2 .combat-v2-next-turn-row { display:flex; justify-content:center; width:100%; }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-turn-footer { justify-content:center; margin-top:2px; }
+#combate.combate-v2 .combat-v2-hud .ataque-status-caixa { display:flex; align-items:center; justify-content:flex-start; gap:5px; width:auto; min-width:0; padding:0; border:0; background:transparent; box-shadow:none; }
+#combate.combate-v2 .combat-v2-hud .ataque-status-caixa > label { margin:0; color:var(--v2-muted); font:11px "Segoe UI",Arial,sans-serif; text-transform:none; white-space:nowrap; }
+#combate.combate-v2 .combat-v2-hud #combateRodadaCaixa > label { color:var(--v2-ink); font:600 14px/1.2 Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-hud .combate-inicio-controle { width:auto; }
+#combate.combate-v2 .combat-v2-hud .ataque-status-input-group,
+#combate.combate-v2 .combat-v2-hud .combate-rodada-grupo { display:flex; align-items:center; justify-content:flex-start; gap:4px; width:auto; }
+#combate.combate-v2 .combat-v2-hud #ataquePosicao,
+#combate.combate-v2 .combat-v2-hud #combateRodada { width:40px; min-width:36px; padding:4px 3px; text-align:center; }
+#combate.combate-v2 .combat-v2-hud #combateRodada { width:46px; min-width:42px; min-height:34px; color:var(--v2-ink); font:600 18px/1 Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-hud #btnProximaRodada { width:auto; min-width:max-content; max-width:100%; flex:0 0 auto; min-height:34px; padding:6px 10px; border:1px solid var(--v2-bronze); border-radius:7px; background:#ead8b8; color:var(--v2-ink); font:600 12px/1.2 "Segoe UI",Arial,sans-serif; white-space:nowrap; }
+#combate.combate-v2 .combat-v2-hud #btnProximaRodada:hover,
+#combate.combate-v2 .combat-v2-hud #btnProximaRodada:focus-visible { background:#dfc79d; }
+#combate.combate-v2 .combat-v2-hud .ataque-status-sufixo { color:var(--v2-muted); font-size:11px; }
+#combate.combate-v2 .combat-v2-turn-footer { display:flex; justify-content:flex-end; margin-top:2px; padding-top:6px; border-top:1px solid var(--v2-line); }
+#combate.combate-v2 .combat-v2-hud .combate-botao-encerrar { padding:4px 8px; border:1px solid transparent; background:transparent; color:var(--v2-muted); font:11px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-hud .combate-botao-encerrar:hover,
+#combate.combate-v2 .combat-v2-hud .combate-botao-encerrar:focus-visible { border-color:var(--v2-line); background:#fffaf0; color:var(--v2-ink); }
+#combate.combate-v2 .combat-v2-turn-controls #combatePosicaoCaixa,
+#combate.combate-v2 .combat-v2-turn-controls #combateRodadaCaixa { flex:0 1 auto; }
+#combate.combate-v2 .combat-v2-hud .combate-botao-iniciativa,
+#combate.combate-v2 .combat-v2-hud .combate-botao-encerrar { width:auto; max-width:100%; margin:0; padding:6px 9px; font:12px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-conditions .combat-v2-panel-head { justify-content:space-between; }
+#combate.combate-v2 .combat-v2-add-condition { padding:5px 8px; font:11px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-condition-chips { display:flex; align-items:center; flex-wrap:wrap; gap:5px; min-height:26px; }
+#combate.combate-v2 .combat-v2-condition-chip { display:inline-flex; max-width:100%; padding:3px 8px; border:1px solid #d5b98f; border-radius:15px; background:#f4e8d1; color:#6e4523; font-size:11px; overflow-wrap:anywhere; }
+#combate.combate-v2 .combat-v2-condition-empty,
+#combate.combate-v2 .combat-v2-concentration-state { color:var(--v2-muted); font-size:10px; }
+#combate.combate-v2 .combat-v2-concentration { display:grid; gap:2px; margin-top:7px; padding-top:6px; border-top:1px solid #dfd2ba; }
+#combate.combate-v2 .combat-v2-concentration-title { font:13px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-layout { grid-template-columns:minmax(260px,.8fr) minmax(0,1.55fr); gap:12px; }
+#combate.combate-v2 .combat-v2-aside,
+#combate.combate-v2 .combat-v2-main { gap:12px; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-armas-bloco { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-armas-item { min-width:0; padding:9px 8px; border:1px solid var(--v2-line); border-radius:8px; background:#fbf6eb; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-grid.armas { display:block; min-width:0; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-slot-com-emoji { display:grid; justify-items:stretch; gap:4px; min-width:0; }
+#combate.combate-v2 .combat-v2-hand-label { display:block; margin-bottom:3px; color:var(--v2-muted); font:10px "Segoe UI",Arial,sans-serif; letter-spacing:.8px; text-transform:uppercase; }
+#combate.combate-v2 .combat-v2-hand-icon { display:grid; place-items:center; min-height:57px; }
+#combate.combate-v2 .combat-v2-hand-icon .equipados-mao-emoji { display:grid; place-items:center; width:55px; height:55px; margin:0 auto; padding:4px; border:0; border-radius:0; background:transparent; box-shadow:none; }
+#combate.combate-v2 .combat-v2-hand-icon .equipados-mao-emoji img { width:47px; height:47px; max-width:47px; max-height:47px; object-fit:contain; }
+#combate.combate-v2 .combat-v2-hand-name { display:block; min-width:0; color:var(--v2-ink); font:15px Palatino,"Book Antiqua",Georgia,serif; overflow-wrap:anywhere; }
+#combate.combate-v2 .combat-v2-hand-state { display:block; min-height:15px; color:#476c59; font-size:10px; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-slot-com-emoji select { margin-top:6px; }
+#combate.combate-v2 .combat-v2-equipment-line { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:9px; padding-top:8px; border-top:1px solid #dfd2ba; }
+#combate.combate-v2 .combat-v2-equipment-label,
+#combate.combate-v2 .combat-v2-accessories-title { color:var(--v2-muted); font:13px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-equipment-value { color:var(--v2-ink); font:14px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-accessories { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+#combate.combate-v2 .combat-v2-accessories-value { padding:3px 7px; border:1px dashed var(--v2-line); border-radius:5px; color:var(--v2-muted); font-size:10px; overflow-wrap:anywhere; }
+#combate.combate-v2 .combat-v2-resources .equipados-secao { padding-top:7px; }
+#combate.combate-v2 .combat-v2-actions .subabas-botoes { gap:20px; margin:8px 0 12px; }
+#combate.combate-v2 .combat-v2-actions .subaba-botao { min-height:32px; font-family:"Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-other-actions > .combat-v2-note { margin:0 0 10px; }
+#combate.combate-v2 .combat-v2-other-actions-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+#combate.combate-v2 .combat-v2-other-action { display:flex; min-width:0; min-height:68px; flex-direction:column; align-items:flex-start; justify-content:center; gap:3px; padding:9px 12px; border:1px solid var(--v2-line); border-radius:7px; background:#f8f0e1; color:var(--v2-ink); text-align:left; }
+#combate.combate-v2 .combat-v2-other-action-title { font:15px Palatino,"Book Antiqua",Georgia,serif; }
+#combate.combate-v2 .combat-v2-other-action-description { color:var(--v2-muted); font:11px/1.35 "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-other-action:hover,
+#combate.combate-v2 .combat-v2-other-action:focus-visible { border-color:var(--v2-bronze); background:var(--v2-wash); }
+#combate.combate-v2 .combat-v2-actions .arma-resumo-item { display:grid; grid-template-columns:minmax(0,1fr) auto; align-items:center; gap:5px 10px; padding:10px 12px; }
+#combate.combate-v2 .combat-v2-actions .arma-resumo-topo { grid-column:1/-1; margin:0; }
+#combate.combate-v2 .combat-v2-actions .arma-resumo-nome { font-size:17px; }
+#combate.combate-v2 .combat-v2-actions .arma-resumo-detalhes { min-width:0; font:12px/1.4 "Segoe UI",Arial,sans-serif; overflow-wrap:anywhere; }
+#combate.combate-v2 .arma-resumo-atributo { display:flex; align-items:center; gap:5px; color:var(--v2-muted); font-size:10px; }
+#combate.combate-v2 .arma-resumo-atributo select { width:auto; max-width:145px; padding:5px 6px; font:11px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .arma-resumo-acao { min-width:82px; padding:7px 10px; font:12px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-quick-wrap { margin-top:11px; padding-top:9px; }
+#combate.combate-v2 .combat-v2-subtitle { font-size:14px; }
+#combate.combate-v2 .combat-v2-quick-actions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+#combate.combate-v2 .combat-v2-quick-action,
+#combate.combate-v2 .combat-v2-quick-actions .ataque-botao { min-width:0; padding:8px 10px; border:1px solid var(--v2-line); border-radius:7px; background:#fffaf0; color:var(--v2-ink); font:12px "Segoe UI",Arial,sans-serif; white-space:normal; }
+#combate.combate-v2 .combat-v2-log { padding:9px 12px; }
+#combate.combate-v2 .combat-v2-log .combat-v2-panel-head { margin:0; }
+#combate.combate-v2 .combat-v2-log .subaba-combate { padding:0; border:0; background:transparent; }
+#combate.combate-v2 .combat-v2-log .historico-tabela { margin:6px 0 0; border:0; border-radius:0; background:transparent; }
+#combate.combate-v2 .combat-v2-log .historico-cabecalho { display:none; }
+#combate.combate-v2 .combat-v2-log .historico-registros:empty { display:none; }
+#combate.combate-v2 .combat-v2-log.combat-v2-log-empty #subabaCombateHistorico,
+#combate.combate-v2 .combat-v2-log.combat-v2-log-empty .historico-tabela { display:none; }
+#combate.combate-v2 .combat-v2-finalize-history { display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto; width:auto; max-width:100%; min-width:0; margin:0 0 0 auto; padding:4px 8px; border:1px solid transparent; background:transparent; color:var(--v2-muted); font:10px "Segoe UI",Arial,sans-serif; }
+#combate.combate-v2 .combat-v2-finalize-history:hover,
+#combate.combate-v2 .combat-v2-finalize-history:focus-visible { border-color:var(--v2-line); background:#fffaf0; color:var(--v2-ink); }
+#combate.combate-v2 .combat-v2-compat { display:none !important; }
+#combate.combate-v2 :where(button,input,select,textarea) { font-family:"Segoe UI",Arial,sans-serif; }
+@media(max-width:900px) {
+  #combate.combate-v2 .combat-v2-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #combate.combate-v2 .combat-v2-layout { grid-template-columns:minmax(0,1fr); }
+  #combate.combate-v2 .combat-v2-conditions { grid-column:auto; display:block; }
+}
+@media(max-width:520px) {
+  #combate.combate-v2 .combat-v2-summary { grid-template-columns:minmax(0,1fr); }
+  #combate.combate-v2 .combat-v2-other-actions-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #combate.combate-v2 .combat-v2-hands-panel .equipados-armas-bloco { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #combate.combate-v2 .combat-v2-actions .arma-resumo-item { grid-template-columns:minmax(0,1fr); }
+  #combate.combate-v2 .combat-v2-actions .arma-resumo-topo { grid-column:auto; }
+  #combate.combate-v2 .arma-resumo-acao { justify-self:start; }
+}
+
+
+/* Corrige a regra responsiva legada que estendia Condições por toda a linha em desktop. */
+@media (min-width:901px) {
+  #combate.combate-v2 .combat-v2-conditions { grid-column:auto; display:block; }
+  #combate.combate-v2 .combat-v2-conditions .combat-v2-panel-head { margin:0 0 8px; }
+  #combate.combate-v2 .combat-v2-conditions .combat-v2-note { margin:7px 0 0; }
+}
+
+/* Estados vazios e munição respeitam a elegibilidade do equipamento real. */
+#combate.combate-v2 .combat-v2-actions .subaba-vazia {
+  min-height:0;
+  display:block;
+  padding:8px 0;
+  text-align:left;
+}
+#combate.combate-v2 .equipados-municao-linha.oculto { display:none; }
+#combate.combate-v2 .combat-v2-hands-panel .equipados-armas-item select[aria-label*="Arma"] {
+  padding-left:4px;
+  padding-right:2px;
+  font-size:10px;
+}
+#combate.combate-v2 .combat-v2-hp-controls .ataque-botao,
+#combate.combate-v2 .combat-v2-quick-actions .ataque-botao { white-space:nowrap; }

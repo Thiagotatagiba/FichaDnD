@@ -17,7 +17,7 @@ test("catálogo de escudos contém o Escudo Comum com bônus, custo e peso em kg
   const ctx = contexto({ catalogo });
   assert.equal(vm.runInContext("validarCatalogoEscudos(catalogo).itens.length", ctx), 1);
   const item = catalogo.itens[0];
-  assert.equal(item.id, "escudo-comum");
+  assert.equal(item.id, "shield");
   assert.equal(item.nome, "Escudo Comum");
   assert.equal(item.ca.bonus, 2);
   assert.equal(item.pesoKg, 3);

@@ -4,7 +4,7 @@
 
 - Referência visual preservada: [`FichaDnD-Combate-2.0.html`](../FichaDnD-Combate-2.0.html).
 - Experimento separado: [`Combate 2.0 - referencia fiel.html`](../../ficha/Codigos%20testes/Combate%202.0%20-%20referencia%20fiel.html).
-- A aba oficial continua em `#combate` no HTML da ficha. Este mapeamento não estabelece uma integração de produção, contrato JSON nem uma nova fonte de estado.
+- A aba oficial permanece em `#combate` no HTML da ficha. A apresentação Combate 2.0 agora usa seus controles e dados canônicos; este mapeamento continua sem estabelecer contrato JSON nem uma nova fonte de estado.
 - O adaptador `window.FichaDnDCombate20` do experimento é apenas uma fronteira de apresentação transitória: recebe uma projeção calculada pela ficha e encaminha solicitações ao host. Não persiste dados, calcula regras ou atualiza estado por conta própria. O mapa `capacidades` da projeção controla quais ações o host aceita; sem capacidade explícita, o controle permanece desativado. Essa forma é específica do protótipo e não é um contrato de produção.
 
 ## Correspondência de componentes
@@ -29,16 +29,28 @@ O protótipo pode receber uma projeção efêmera em `window.FichaDnDCombate20.a
 
 ### Ícones individuais de armas
 
-O bloco JSON `#combatIconManifest` do HTML experimental associa somente o ID de catálogo `espada-longa` ao SVG Two Handed Sword. O adaptador visual experimental deve fornecer esse ID em `catalogoId` para os itens de mão e os ataques correspondentes. O mesmo recurso é então exibido nas duas mãos e no card de ataque. Armas sem associação usam `mao-ocupada.svg`; se esse recurso também falhar, o protótipo conserva a adaga vetorial como último recurso. Mãos livres usam `mao-vazia.svg`; escudos mantêm seu símbolo próprio. Não há inferência por nome nem alteração da elegibilidade do equipamento. Crédito, licença CC BY 3.0 e modificações do SVG da Espada Longa constam em [`ATTRIBUTION.md`](../../assets/icons/ATTRIBUTION.md).
+O HTML experimental mantém seu bloco JSON `#combatIconManifest`. Na ficha oficial, `js/modules/combate-icons.js` associa somente o ID de catálogo `espada-longa` ao SVG Two Handed Sword; os dados de equipamentos e o view model transitório dos ataques fornecem esse ID aos espaços de mão e ao card de ataque. O mesmo recurso é exibido nos dois pontos. Armas sem associação ou com falha de carregamento usam `mao-ocupada.svg`; se o próprio fallback falhar, a imagem é removida. Mãos livres usam `mao-vazia.svg`; escudos mantêm seu símbolo próprio. Não há inferência por nome nem alteração da elegibilidade do equipamento. Crédito, licença CC BY 3.0 e modificações do SVG da Espada Longa constam em [`ATTRIBUTION.md`](../../assets/icons/ATTRIBUTION.md).
 
 Sem host, os valores ficam vazios e os controles que poderiam alterar o personagem permanecem desativados. A navegação entre abas é apenas interação local de visualização. A remoção de qualquer handler que faça rolagens ou mutações demonstrativas impede que dados fictícios sejam confundidos com o estado real.
 
-## Pendências para integração futura
+## Estado e pendências após a integração visual
 
-1. Definir, em etapa autorizada, um adaptador dentro da ficha que construa a projeção a partir de funções e DOM oficiais sem duplicar cálculo.
-2. Definir encaminhamento para os handlers oficiais sem expor ou substituir estado lexical interno, especialmente iniciativa, empunhadura, ataques, magias, PV, concentração e histórico.
-3. Preservar a filtragem recente de escudos e as regras atuais de ocupação das mãos.
-4. Resolver separadamente os bloqueios E2 conhecidos antes de ligar cálculos de PV/dano ao armazenamento.
-5. Testar importação/rollback, acessibilidade, teclado e responsividade com dados sintéticos antes de qualquer substituição da aba oficial.
+1. A aba oficial mantém os próprios controles, coletores e handlers canônicos. O módulo de layout move os nós canônicos para painéis novos, sem cloná-los, importar o adaptador experimental ou criar projeção/estado paralelo; os cartões visuais antigos não permanecem duplicados na tela.
+2. O mapa central de ícones da ficha recebe IDs de catálogo reais nos espaços de mão e no view model transitório de ataques. Não acrescenta campos persistentes nem altera os dados exportados.
+3. A filtragem de escudos e as regras atuais de ocupação foram preservadas; testes sintéticos em navegador confirmaram o escudo legítimo e o bloqueio do espaço secundário com Malho.
+4. O modelo persistente de PV temporários continua fora desta integração. Cálculos e aplicação de dano/cura continuam nos fluxos existentes, sem conectar os calculadores parciais de E2 a um novo estado.
+5. Ainda faltam cenários integrados de magias/concentração, ataques com consumo de munição, começo/fim e avanço de combate, além de round-trip de exportação/importação e falha/rollback. A validação visual anexável e a operação física por teclado não foram comprovadas nesta sessão.
 
-Nenhum item desta lista autoriza migrar o protótipo para produção. E2 permanece parcial e a aba Combate oficial não foi alterada nesta atividade.
+Esta lista descreve o estado da integração autorizada e não amplia seu escopo. O conteúdo interno de `#combate` foi reorganizado; o cabeçalho, a navegação e as demais abas permaneceram inalterados. E2 continua parcial e seus gates não foram aprovados por esta mudança visual.
+
+### Correção de fidelidade visual na retomada (2026-11-17)
+
+A primeira renderização oficial ainda mostrava a organização antiga porque o CSS inicial apenas achatava os cartões legados com `display: contents`. Recursos carregavam com HTTP 200; portanto, a causa não era apenas cache. A composição foi então substituída por uma montagem explícita de painéis em `js/modules/combate-layout-v2.js`, reparentando controles oficiais e removendo do DOM visível os cartões-contêiner antigos. O inventário administrativo ficou em um disclosure recolhido para não duplicar os painéis de combate.
+
+No viewport comum de **1024 × 768 px**, com conteúdo de ficha equivalente (8/8 PV, CA 10, sem armadura/equipamento/condições), a referência e a ficha oficial foram renderizadas no Chromium integrado. Para comparar só o escopo autorizado, o cabeçalho e a navegação demonstrativos da página independente foram ocultados por CSS temporário de teste; a área de conteúdo foi limitada aos mesmos 899 px da ficha. A renderização final oficial usa três cartões superiores e a linha completa de condições nessa largura; as duas mãos são cartões lado a lado. Os seletores e campos da armadura, o botão de condição e a área de texto permaneceram dentro dos respectivos cartões. A captura de cada renderização foi exibida durante a sessão, mas não foi gravada como arquivo do projeto.
+
+**Verificações no navegador:** a folha `combate-2.0.css?v=combate-v2-4` e o módulo de montagem retornaram HTTP 200; nenhum erro `pageerror` foi observado. Foram conferidos 54 IDs únicos dentro de `#combate`, abertura/fechamento pelo fluxo oficial do modal de condições e alternância da subaba Magias. `#combate` não apresentou overflow horizontal no viewport observado. O documento ainda tem 8 px de overflow global atribuídos ao rodapé `.meu-rodape`, fora de `#combate`; ele foi preservado para não modificar a área superior ou outras abas. A comparação visual final em celular não pôde ser concluída porque o host de automação deixou de resolver as páginas isoladas por ID; os breakpoints CSS foram revisados, mas não são declarados como validação visual móvel.
+
+**Diferenças restantes em relação ao protótipo:** a ficha oficial não tem um fluxo de ataque desarmado equivalente no estado sem armas, por isso mantém a mensagem oficial de lista vazia em vez de inventar um ataque. A ficha usa o controle legado de condição e a concentração segue sua apresentação oficial; não foram criados dados estruturados ou persistentes demonstrativos. As ações rápidas continuam sendo Teste de Resistência, Tomar Dano e Curar Dano, e o inventário administrativo fica recolhido. Cabeçalho/nav do protótipo não foram importados.
+
+**Resultado automatizado desta correção:** teste focado `node --test tests/combate-2.0-integracao.test.cjs` — 9/9; suíte completa `node --test tests/*.test.cjs` — 276/276; `node --check` nos módulos JavaScript e teste de integração — aprovado; `git diff --check` — aprovado, com avisos Git preexistentes de conversão LF/CRLF. Nenhum JSON foi modificado. Nenhum commit, push, merge ou deploy foi realizado; E2 permanece parcial e o gate continua pendente de avaliação humana.

@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../css/responsivo.css" />
     <link rel="stylesheet" href="../css/xp-modal.css" />
     <link rel="stylesheet" href="../css/card-itens.css?v=card-itens-5" />
+    <link rel="stylesheet" href="../css/combate-2.0.css?v=combate-v2-27" />
   </head>
 
   <body class="tema-padrao">
@@ -2365,11 +2366,11 @@
           </div>
         </div>
 
-        <div id="combate" class="aba">
+        <div id="combate" class="aba combate-v2">
           <div class="combate-grid">
             <div class="combate-linha">
               <div class="combate-card">
-                <div class="status-titulo">Itens Equipados</div>
+                <div class="status-titulo">Mãos e Equipamentos</div>
                 <div class="equipados-secoes">
                   <div class="equipados-secao">
                     <div class="equipados-armas-bloco">
@@ -2532,7 +2533,7 @@
               </div>
 
               <div class="combate-card">
-                <div class="status-titulo">Ataques e Conjuração</div>
+                <div class="status-titulo">Combate</div>
                 <div class="ataque-topo">
                   <!-- LINHA 1 -->
                   <div class="linha-status ataque-status-linha" id="combateHud">
@@ -2620,6 +2621,10 @@
                   <div class="linha-pv-alinhada">
                     <div class="ataque-mini-escudo">
                       <div class="shield">
+                        <svg class="combat-v2-ac-shield-art" viewBox="0 0 100 112" aria-hidden="true" focusable="false">
+                          <path d="M8 7H92V48c0 26-19 46-42 58C27 94 8 74 8 48Z" fill="#956332" stroke="#5d391c" stroke-width="4" />
+                          <path d="M16 15H84V48c0 21-15 38-34 48-19-10-34-27-34-48Z" fill="#f7f0e1" stroke="#cfb994" stroke-width="2" />
+                        </svg>
                         <input
                           id="ataqueCaTotal"
                           value="0"
@@ -4133,7 +4138,7 @@
     <!-- ========================= -->
     <!-- COMBATE -->
     <!-- ========================= -->
-    <script src="../js/modules/combate-armas.js"></script>
+    <script src="../js/modules/combate-armas.js?v=combate-v2-1"></script>
 
     <!-- ========================= -->
     <!-- CORE / ESTADO GLOBAL -->
@@ -4162,11 +4167,12 @@
     <!-- ========================= -->
     <script src="../js/core/helpers.js"></script>
     <script src="../js/modules/historico.js?v=modal-backdrop-policy-1"></script>
+    <script src="../js/modules/combate-icons.js?v=combate-v2-1"></script>
 
     <!-- ========================= -->
     <!-- INVENTÁRIO / EQUIPAMENTOS -->
     <!-- ========================= -->
-    <script src="../js/modules/equipamentos.js?v=outros-catalogo-2"></script>
+    <script src="../js/modules/equipamentos.js?v=outros-catalogo-2&combate-v2-1"></script>
     <script src="../js/modules/municoes-catalogo.js?v=municoes-card-12"></script>
     <script src="../js/modules/armas-catalogo.js?v=municoes-3"></script>
     <script src="../js/modules/armaduras-catalogo.js?v=modal-backdrop-policy-1"></script>
@@ -4199,7 +4205,8 @@
     <!-- ========================= -->
     <!-- COMBATE -->
     <!-- ========================= -->
-    <script src="../js/modules/combate.js?v=municoes-3"></script>
+    <script src="../js/modules/combate.js?v=municoes-3&combate-v2-2"></script>
+    <script src="../js/modules/combate-layout-v2.js?v=combate-v2-12"></script>
 
     <!-- ========================= -->
     <!-- UI / MODAIS / TABS -->

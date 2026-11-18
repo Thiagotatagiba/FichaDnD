@@ -313,7 +313,7 @@ function renderizarDetalhesEscudo(item, aoAdicionar = null, proficiente = null, 
 }
 
 function dadosEscudoDoCatalogo(card) {
-  const origem = estadoCatalogoEscudos.dados?.itens.find(item => item.id === card.dataset.catalogoEscudoId);
+  const origem = estadoCatalogoEscudos.dados?.itens.find(item => item.id === card.dataset.catalogoEscudoId || item.idLegado === card.dataset.catalogoEscudoId);
   const campo = nome => card.querySelector('[data-campo="escudo_' + nome + '"]')?.value || "";
   const parseBonus = texto => Math.max(0, Number(String(texto).replace(/[^\d.-]/g, "")) || 0);
   const indice = [...document.querySelectorAll('#listaEscudos .item-card[data-tipo="escudo"]')].indexOf(card);
@@ -604,7 +604,7 @@ async function restaurarPadraoModalEscudo() {
     const catalogo = await carregarCatalogoEscudos();
     if ((window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
     if (!editorEscudoPodeAgir() || estadoModalEscudo.card !== card || !cardEscudoNaListaAtiva(card)) return;
-    const item = catalogo.itens.find(entrada => entrada.id === card.dataset.catalogoEscudoId);
+    const item = catalogo.itens.find(entrada => entrada.id === card.dataset.catalogoEscudoId || entrada.idLegado === card.dataset.catalogoEscudoId);
     if (!item) { alert("Este escudo não está disponível no catálogo atual."); return; }
     aplicarCatalogoAoCardEscudo(card, item, true); renderizarModalEscudo();
     document.querySelector('#escudoModalOverlay [data-acao="editar"]').focus();

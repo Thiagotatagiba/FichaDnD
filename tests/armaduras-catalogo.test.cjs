@@ -26,7 +26,7 @@ test("catálogo básico: 12 armaduras, preços, Força, furtividade e kg", () =>
   assert.deepEqual(catalogo.itens.map(i => i.custo.valor), [5,10,45,10,50,50,400,750,30,75,200,1500]);
   assert.deepEqual(catalogo.itens.map(i => i.forcaMinima), [null,null,null,null,null,null,null,null,null,13,15,15]);
   assert.deepEqual(catalogo.itens.filter(i => i.desvantagemFurtividade).map(i => i.id),
-    ["armadura-acolchoada","armadura-brunea","armadura-meia-armadura","armadura-cota-de-aneis","armadura-cota-de-malha","armadura-cota-de-talas","armadura-placas"]);
+    ["padded","scale-mail","half-plate","ring-mail","chain-mail","splint","plate"]);
 });
 test("validação rejeita IDs duplicados, unidades, números e regras incoerentes", () => {
   for (const alterar of [
@@ -49,9 +49,9 @@ test("validação rejeita IDs duplicados, unidades, números e regras incoerente
 test("adaptador usa valores reais dos selects; CA preserva DES negativo e teto positivo", () => {
   const ctx = contexto();
   for (const [id, esperado] of [
-    ["armadura-couro-batido", [11,12,16]],
-    ["armadura-peitoral", [13,14,16]],
-    ["armadura-placas", [18,18,18]],
+    ["studded-leather", [11,12,16]],
+    ["breastplate", [13,14,16]],
+    ["plate", [18,18,18]],
   ]) {
     ctx.item = catalogo.itens.find(i => i.id === id);
     const campos = vm.runInContext("camposArmaduraDoCatalogo(item)", ctx);

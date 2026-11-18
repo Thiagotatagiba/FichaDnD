@@ -17,10 +17,10 @@ function loadManifest() {
 test("ícone da Espada Longa usa o ID do catálogo e não modifica suas regras", () => {
   const manifest = loadManifest();
   const catalog = JSON.parse(fs.readFileSync(path.join(root, "assets/data/itens/armas.json"), "utf8"));
-  const sword = catalog.itens.find(item => item.id === "espada-longa");
+  const sword = catalog.itens.find(item => item.id === "longsword");
 
-  assert.equal(manifest.weapons["espada-longa"].path, "assets/icons/armas/two-handed-sword.svg");
-  assert.deepEqual(Object.keys(manifest.weapons), ["espada-longa"]);
+  assert.equal(manifest.weapons["longsword"].path, "assets/icons/armas/two-handed-sword.svg");
+  assert.deepEqual(Object.keys(manifest.weapons), ["longsword"]);
   assert.equal(sword.nome, "Espada Longa");
   assert.equal(sword.dano.base, "1d8");
   assert.equal(sword.dano.versatil, "1d10");
@@ -45,11 +45,11 @@ test("armas sem SVG próprio usam mao-ocupada sem substituir a mão vazia nem í
   assert.ok(fs.existsSync(path.join(root, manifest.fallback.weapon)), "SVG de fallback deve existir");
 });
 
-test("SVG preserva viewBox, transparência do fundo e adaptação bronze", () => {
+test("SVG preserva viewBox, transparência do fundo e glifo preto", () => {
   const svg = fs.readFileSync(path.join(root, "assets/icons/armas/two-handed-sword.svg"), "utf8");
 
   assert.match(svg, /viewBox="0 0 512 512"/);
-  assert.match(svg, /fill="#956332"/);
+  assert.match(svg, /fill="#000"/);
   assert.match(svg, /<title>Two Handed Sword<\/title>/);
   assert.ok(!svg.includes("M0 0h512v512H0z"), "o fundo opaco original deve permanecer removido");
   assert.ok(!svg.includes("<script"));

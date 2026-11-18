@@ -1,6 +1,6 @@
 {
   "versaoSchema": 1,
-  "versaoCatalogo": 3,
+  "versaoCatalogo": 4,
   "sistema": "dnd5e-2014",
   "status": "ativo",
   "fonte": {
@@ -20,7 +20,8 @@
   },
   "itens": [
     {
-      "id": "armadura-acolchoada",
+      "id": "padded",
+      "idLegado": "armadura-acolchoada",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Armadura Acolchoada",
@@ -43,7 +44,8 @@
       "descricao": "Camadas acolchoadas de tecido e enchimento formam esta proteção simples."
     },
     {
-      "id": "armadura-couro",
+      "id": "leather",
+      "idLegado": "armadura-couro",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Armadura de Couro",
@@ -66,7 +68,8 @@
       "descricao": "Peito e ombros de couro endurecido, combinados com partes mais flexíveis."
     },
     {
-      "id": "armadura-couro-batido",
+      "id": "studded-leather",
+      "idLegado": "armadura-couro-batido",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Armadura de Couro Batido",
@@ -89,7 +92,8 @@
       "descricao": "Couro flexível e resistente, reforçado por rebites ou pequenas pontas metálicas."
     },
     {
-      "id": "armadura-gibao-de-peles",
+      "id": "hide",
+      "idLegado": "armadura-gibao-de-peles",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Gibão de peles",
@@ -112,7 +116,8 @@
       "descricao": "Peles espessas sobrepostas compõem esta armadura de construção rústica."
     },
     {
-      "id": "armadura-camisao-de-malha",
+      "id": "chain-shirt",
+      "idLegado": "armadura-camisao-de-malha",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Camisão de malha",
@@ -135,7 +140,8 @@
       "descricao": "Anéis metálicos entre roupas protegem o tronco e ajudam a abafar o ruído."
     },
     {
-      "id": "armadura-brunea",
+      "id": "scale-mail",
+      "idLegado": "armadura-brunea",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Brunea",
@@ -158,7 +164,8 @@
       "descricao": "Escamas metálicas sobrepostas recobrem uma base de couro; o conjunto inclui manoplas."
     },
     {
-      "id": "armadura-peitoral",
+      "id": "breastplate",
+      "idLegado": "armadura-peitoral",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Peitoral",
@@ -181,7 +188,8 @@
       "descricao": "Uma peça metálica ajustada protege o peito, deixando braços e pernas mais livres."
     },
     {
-      "id": "armadura-meia-armadura",
+      "id": "half-plate",
+      "idLegado": "armadura-meia-armadura",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Meia armadura",
@@ -204,7 +212,8 @@
       "descricao": "Placas moldadas cobrem grande parte do corpo; grevas simples protegem as pernas."
     },
     {
-      "id": "armadura-cota-de-aneis",
+      "id": "ring-mail",
+      "idLegado": "armadura-cota-de-aneis",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Cota de anéis",
@@ -227,7 +236,8 @@
       "descricao": "Anéis pesados costurados ao couro reforçam a proteção desta armadura."
     },
     {
-      "id": "armadura-cota-de-malha",
+      "id": "chain-mail",
+      "idLegado": "armadura-cota-de-malha",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Cota de malha",
@@ -250,7 +260,8 @@
       "descricao": "Malha de anéis com forro acolchoado para amortecer golpes; inclui manoplas."
     },
     {
-      "id": "armadura-cota-de-talas",
+      "id": "splint",
+      "idLegado": "armadura-cota-de-talas",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Cota de talas",
@@ -273,7 +284,8 @@
       "descricao": "Tiras metálicas verticais sobre couro e acolchoamento; malha flexível protege as articulações."
     },
     {
-      "id": "armadura-placas",
+      "id": "plate",
+      "idLegado": "armadura-placas",
       "tipo": "armadura",
       "raridade": "comum",
       "nome": "Placas",

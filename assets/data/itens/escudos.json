@@ -1,6 +1,6 @@
 {
   "versaoSchema": 1,
-  "versaoCatalogo": 2,
+  "versaoCatalogo": 3,
   "sistema": "dnd5e-2014",
   "status": "ativo",
   "fonte": {
@@ -15,7 +15,8 @@
   },
   "itens": [
     {
-      "id": "escudo-comum",
+      "id": "shield",
+      "idLegado": "escudo-comum",
       "tipo": "escudo",
       "raridade": "comum",
       "nome": "Escudo Comum",

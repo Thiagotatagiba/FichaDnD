@@ -1005,6 +1005,7 @@ function registrarHistoricoMagia(magia, nivelSlot = null) {
 }
 
 function abrirHistoricoCombateMagia() {
+  // Mantém a navegação principal de retorno ao combate sem trocar para o histórico.
   const abaCombate = [...document.querySelectorAll(".tab")].find((tab) =>
     String(tab.textContent || "")
       .trim()
@@ -1015,16 +1016,6 @@ function abrirHistoricoCombateMagia() {
     trocarAba("combate", abaCombate);
   }
 
-  const botaoHistorico = [...document.querySelectorAll(".subaba-botao")].find(
-    (botao) =>
-      String(botao.textContent || "")
-        .trim()
-        .toLowerCase()
-        .includes("hist"),
-  );
-  if (botaoHistorico instanceof HTMLElement) {
-    trocarSubAbaCombate("historico", botaoHistorico);
-  }
 }
 
 function conjurarTruque(magia) {
@@ -2129,6 +2120,7 @@ function sincronizarCondicaoConcentracao() {
   campo.value = [outras, rotulo].filter(Boolean).join(", ");
   campo.style.height = "20px";
   campo.style.height = `${Math.min(campo.scrollHeight, 120)}px`;
+  if (typeof window !== "undefined") window.FichaDnDCombateLayoutV2?.atualizar();
 }
 
 function iniciarConcentracaoMagia(magia, nivelSlot = null) {

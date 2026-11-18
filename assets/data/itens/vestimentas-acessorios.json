@@ -1,13 +1,15 @@
 {
   "versaoSchema": 1,
-  "versaoCatalogo": 2,
+  "versaoCatalogo": 3,
   "sistema": "dnd5e-2014",
   "status": "ativo",
   "unidadePeso": "kg",
   "itens": [
     {
-      "id": "roupas-comuns",
+      "id": "common-clothes",
+      "idLegado": "roupas-comuns",
       "nome": "Roupas Comuns",
+      "nomeOriginal": "Common clothes",
       "categoria": "Vestuário",
       "raridade": "comum",
       "caBonus": 0,
@@ -17,8 +19,10 @@
       "pesoKg": 1.4
     },
     {
-      "id": "roupas-finas",
+      "id": "fine-clothes",
+      "idLegado": "roupas-finas",
       "nome": "Roupas Finas",
+      "nomeOriginal": "Fine clothes",
       "categoria": "Vestuário",
       "raridade": "comum",
       "caBonus": 0,
@@ -28,8 +32,10 @@
       "pesoKg": 2.7
     },
     {
-      "id": "traje-de-fantasia",
+      "id": "costume-clothes",
+      "idLegado": "traje-de-fantasia",
       "nome": "Traje de Fantasia",
+      "nomeOriginal": "Costume clothes",
       "categoria": "Vestuário",
       "raridade": "comum",
       "caBonus": 0,
@@ -39,8 +45,10 @@
       "pesoKg": 1.8
     },
     {
-      "id": "roupas-de-viajante",
+      "id": "travelers-clothes",
+      "idLegado": "roupas-de-viajante",
       "nome": "Roupas de Viajante",
+      "nomeOriginal": "Traveler's clothes",
       "categoria": "Vestuário",
       "raridade": "comum",
       "caBonus": 0,
@@ -50,8 +58,10 @@
       "pesoKg": 1.8
     },
     {
-      "id": "vestes-religiosas",
+      "id": "vestments",
+      "idLegado": "vestes-religiosas",
       "nome": "Vestes Religiosas",
+      "nomeOriginal": "Vestments",
       "categoria": "Vestuário",
       "raridade": "comum",
       "caBonus": 0,
@@ -61,8 +71,10 @@
       "pesoKg": 1.8
     },
     {
-      "id": "anel-de-sinete",
+      "id": "signet-ring",
+      "idLegado": "anel-de-sinete",
       "nome": "Anel de Sinete",
+      "nomeOriginal": "Signet ring",
       "categoria": "Anel",
       "raridade": "comum",
       "caBonus": 0,
@@ -72,8 +84,10 @@
       "pesoKg": 0
     },
     {
-      "id": "amuleto-simbolo-sagrado",
+      "id": "holy-symbol-amulet",
+      "idLegado": "amuleto-simbolo-sagrado",
       "nome": "Amuleto do Símbolo Sagrado",
+      "nomeOriginal": "Holy symbol amulet",
       "categoria": "Colar",
       "raridade": "comum",
       "caBonus": 0,
@@ -83,8 +97,10 @@
       "pesoKg": 0.5
     },
     {
-      "id": "insignia-de-patente",
+      "id": "rank-insignia",
+      "idLegado": "insignia-de-patente",
       "nome": "Insígnia de Patente",
+      "nomeOriginal": "Rank insignia",
       "categoria": "Outro acessório",
       "raridade": "comum",
       "caBonus": 0,
@@ -94,8 +110,10 @@
       "pesoKg": 0
     },
     {
-      "id": "chapeu-de-palha",
+      "id": "straw-hat",
+      "idLegado": "chapeu-de-palha",
       "nome": "Chapéu de Palha",
+      "nomeOriginal": "Straw hat",
       "categoria": "Chapéu ou capacete",
       "raridade": "comum",
       "caBonus": 0,
@@ -105,8 +123,10 @@
       "pesoKg": 0
     },
     {
-      "id": "tunica",
+      "id": "tunic",
+      "idLegado": "tunica",
       "nome": "Túnica",
+      "nomeOriginal": "Tunic",
       "categoria": "Vestuário",
       "raridade": "comum",
       "caBonus": 0,
@@ -116,8 +136,10 @@
       "pesoKg": 0
     },
     {
-      "id": "colar-comum",
+      "id": "common-necklace",
+      "idLegado": "colar-comum",
       "nome": "Colar Comum",
+      "nomeOriginal": "Common necklace",
       "categoria": "Colar",
       "raridade": "comum",
       "caBonus": 0,
@@ -127,8 +149,10 @@
       "pesoKg": 0
     },
     {
-      "id": "anel-comum",
+      "id": "common-ring",
+      "idLegado": "anel-comum",
       "nome": "Anel Comum",
+      "nomeOriginal": "Common ring",
       "categoria": "Anel",
       "raridade": "comum",
       "caBonus": 0,
@@ -138,8 +162,10 @@
       "pesoKg": 0
     },
     {
-      "id": "chapeu-comum",
+      "id": "common-hat",
+      "idLegado": "chapeu-comum",
       "nome": "Chapéu Comum",
+      "nomeOriginal": "Common hat",
       "categoria": "Chapéu ou capacete",
       "raridade": "comum",
       "caBonus": 0,
@@ -149,8 +175,10 @@
       "pesoKg": 0
     },
     {
-      "id": "botas-comuns",
+      "id": "common-boots",
+      "idLegado": "botas-comuns",
       "nome": "Botas Comuns",
+      "nomeOriginal": "Common boots",
       "categoria": "Calçado",
       "raridade": "comum",
       "caBonus": 0,
@@ -160,8 +188,10 @@
       "pesoKg": 0
     },
     {
-      "id": "sapatos-comuns",
+      "id": "common-shoes",
+      "idLegado": "sapatos-comuns",
       "nome": "Sapatos Comuns",
+      "nomeOriginal": "Common shoes",
       "categoria": "Calçado",
       "raridade": "comum",
       "caBonus": 0,
@@ -171,8 +201,10 @@
       "pesoKg": 0
     },
     {
-      "id": "cinto-comum",
+      "id": "common-belt",
+      "idLegado": "cinto-comum",
       "nome": "Cinto Comum",
+      "nomeOriginal": "Common belt",
       "categoria": "Outro acessório",
       "raridade": "comum",
       "caBonus": 0,
@@ -182,8 +214,10 @@
       "pesoKg": 0
     },
     {
-      "id": "luvas-comuns",
+      "id": "common-gloves",
+      "idLegado": "luvas-comuns",
       "nome": "Luvas Comuns",
+      "nomeOriginal": "Common gloves",
       "categoria": "Outro acessório",
       "raridade": "comum",
       "caBonus": 0,

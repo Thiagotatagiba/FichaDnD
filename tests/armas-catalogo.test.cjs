@@ -31,7 +31,7 @@ test("catálogo contém as 37 armas comuns oficiais com categorias e modos esper
 });
 
 test("a Besta Leve tem dano perfurante e as armas de distância declaram munição", () => {
-  const besta = catalogo.itens.find(item => item.id === "besta-leve");
+  const besta = catalogo.itens.find(item => item.id === "light-crossbow");
   assert.equal(besta.dano.tipo, "perfurante");
   assert.equal(besta.dano.base, "1d8");
   assert.equal(besta.municao, "virotes");
@@ -51,7 +51,7 @@ test("ficha de referência Waldo corrige o tipo da Besta Leve e preserva o vínc
 
 test("dados do catálogo mapeiam para os campos legados e preservam Versátil", () => {
   const ctx = contexto();
-  ctx.item = catalogo.itens.find(item => item.id === "espada-longa");
+  ctx.item = catalogo.itens.find(item => item.id === "longsword");
   const campos = vm.runInContext("camposArmaDoCatalogo(item)", ctx);
   assert.equal(campos.nome, "Espada Longa");
   assert.equal(campos.arma_tipo, "Marcial");
@@ -61,11 +61,11 @@ test("dados do catálogo mapeiam para os campos legados e preservam Versátil", 
   assert.equal(campos.arma_peso, "1.5");
   assert.equal(campos.arma_municao_id, "");
   assert.equal(campos.arma_alcance_m, "");
-  assert.equal(catalogo.itens.find(item => item.id === "espada-longa").dano.versatil, "1d10");
+  assert.equal(catalogo.itens.find(item => item.id === "longsword").dano.versatil, "1d10");
 });
 
 test("armas com propriedade Alcance mantêm distância corpo a corpo separada do alcance à distância", () => {
-  const ids = ["glaive", "alabarda", "lanca-de-montaria", "pique", "chicote"];
+  const ids = ["glaive", "halberd", "lance", "pike", "whip"];
   for (const id of ids) {
     const item = catalogo.itens.find(arma => arma.id === id);
     assert.ok(item.propriedades.includes("alcance"));
@@ -80,7 +80,7 @@ test("armas com propriedade Alcance mantêm distância corpo a corpo separada do
 test("busca ignora acentos e filtros respeitam categoria, modo e proficiência", () => {
   const ctx = contexto({ getTemProficienciaArma: tipo => tipo === "Simples" });
   ctx.itens = catalogo.itens;
-  assert.equal(vm.runInContext('filtrarCatalogoArmas(itens, "besta leve")[0].id', ctx), "besta-leve");
+  assert.equal(vm.runInContext('filtrarCatalogoArmas(itens, "besta leve")[0].id', ctx), "light-crossbow");
   assert.equal(vm.runInContext('filtrarCatalogoArmas(itens, "longbow")[0].nome', ctx), "Arco Longo");
   assert.equal(vm.runInContext('filtrarCatalogoArmas(itens, "", "marcial", "distancia").length', ctx), 5);
   assert.equal(vm.runInContext('filtrarCatalogoArmas(itens, "", "todas", "todos", true).length', ctx), 14);
@@ -92,7 +92,7 @@ test("validador rejeita IDs duplicados, campos inconsistentes e propriedade sem 
     c => c.unidadePeso = "lb",
     c => c.itens[0].pesoKg = "1",
     c => c.itens[0].raridade = "épico",
-    c => c.itens.find(item => item.id === "besta-leve").municao = null,
+    c => c.itens.find(item => item.id === "light-crossbow").municao = null,
     c => c.itens[0].custo.valor = -1,
   ]) {
     const ctx = contexto();

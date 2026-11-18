@@ -131,6 +131,9 @@
 
             const arma = armas[index];
             if (!arma) return null;
+            const cardArma = document.querySelectorAll(
+              '.item-card[data-tipo="arma"]:not(#armaModelo)',
+            )[index];
 
             const nome = (arma.nome || arma.arma_nome || "").trim();
             if (!nome) return null;
@@ -165,6 +168,7 @@
               usaMunicao: !!arma.propriedades?.municao,
               arma_municao_id: arma.arma_municao_id || null,
               arma_tipo_dano: arma.arma_tipo_dano || "",
+              catalogoId: cardArma?.dataset.catalogoArmaId || "",
               slot,
             };
           })

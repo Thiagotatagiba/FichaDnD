@@ -1,6 +1,6 @@
 {
   "versaoSchema": 1,
-  "versaoCatalogo": 1,
+  "versaoCatalogo": 4,
   "sistema": "dnd5e-2014",
   "status": "proposta",
   "fonte": {
@@ -15,7 +15,7 @@
   },
   "itens": [
     {
-      "id": "armadura-acolchoada",
+      "id": "padded",
       "tipo": "armadura",
       "nome": "Acolchoada",
       "nomeOriginal": "Padded",
@@ -33,10 +33,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": true,
       "vestirMinutos": 1,
-      "retirarMinutos": 1
+      "retirarMinutos": 1,
+      "idLegado": "armadura-acolchoada"
     },
     {
-      "id": "armadura-couro",
+      "id": "leather",
       "tipo": "armadura",
       "nome": "Couro",
       "nomeOriginal": "Leather",
@@ -54,10 +55,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": false,
       "vestirMinutos": 1,
-      "retirarMinutos": 1
+      "retirarMinutos": 1,
+      "idLegado": "armadura-couro"
     },
     {
-      "id": "armadura-couro-batido",
+      "id": "studded-leather",
       "tipo": "armadura",
       "nome": "Couro batido",
       "nomeOriginal": "Studded Leather",
@@ -75,10 +77,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": false,
       "vestirMinutos": 1,
-      "retirarMinutos": 1
+      "retirarMinutos": 1,
+      "idLegado": "armadura-couro-batido"
     },
     {
-      "id": "armadura-gibao-de-peles",
+      "id": "hide",
       "tipo": "armadura",
       "nome": "Gibão de peles",
       "nomeOriginal": "Hide",
@@ -96,10 +99,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": false,
       "vestirMinutos": 5,
-      "retirarMinutos": 1
+      "retirarMinutos": 1,
+      "idLegado": "armadura-gibao-de-peles"
     },
     {
-      "id": "armadura-camisao-de-malha",
+      "id": "chain-shirt",
       "tipo": "armadura",
       "nome": "Camisão de malha",
       "nomeOriginal": "Chain Shirt",
@@ -117,10 +121,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": false,
       "vestirMinutos": 5,
-      "retirarMinutos": 1
+      "retirarMinutos": 1,
+      "idLegado": "armadura-camisao-de-malha"
     },
     {
-      "id": "armadura-brunea",
+      "id": "scale-mail",
       "tipo": "armadura",
       "nome": "Brunea",
       "nomeOriginal": "Scale Mail",
@@ -138,10 +143,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": true,
       "vestirMinutos": 5,
-      "retirarMinutos": 1
+      "retirarMinutos": 1,
+      "idLegado": "armadura-brunea"
     },
     {
-      "id": "armadura-peitoral",
+      "id": "breastplate",
       "tipo": "armadura",
       "nome": "Peitoral",
       "nomeOriginal": "Breastplate",
@@ -159,10 +165,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": false,
       "vestirMinutos": 5,
-      "retirarMinutos": 1
+      "retirarMinutos": 1,
+      "idLegado": "armadura-peitoral"
     },
     {
-      "id": "armadura-meia-armadura",
+      "id": "half-plate",
       "tipo": "armadura",
       "nome": "Meia armadura",
       "nomeOriginal": "Half Plate",
@@ -180,10 +187,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": true,
       "vestirMinutos": 5,
-      "retirarMinutos": 1
+      "retirarMinutos": 1,
+      "idLegado": "armadura-meia-armadura"
     },
     {
-      "id": "armadura-cota-de-aneis",
+      "id": "ring-mail",
       "tipo": "armadura",
       "nome": "Cota de anéis",
       "nomeOriginal": "Ring Mail",
@@ -201,10 +209,11 @@
       "forcaMinima": null,
       "desvantagemFurtividade": true,
       "vestirMinutos": 10,
-      "retirarMinutos": 5
+      "retirarMinutos": 5,
+      "idLegado": "armadura-cota-de-aneis"
     },
     {
-      "id": "armadura-cota-de-malha",
+      "id": "chain-mail",
       "tipo": "armadura",
       "nome": "Cota de malha",
       "nomeOriginal": "Chain Mail",
@@ -222,10 +231,11 @@
       "forcaMinima": 13,
       "desvantagemFurtividade": true,
       "vestirMinutos": 10,
-      "retirarMinutos": 5
+      "retirarMinutos": 5,
+      "idLegado": "armadura-cota-de-malha"
     },
     {
-      "id": "armadura-cota-de-talas",
+      "id": "splint",
       "tipo": "armadura",
       "nome": "Cota de talas",
       "nomeOriginal": "Splint",
@@ -243,10 +253,11 @@
       "forcaMinima": 15,
       "desvantagemFurtividade": true,
       "vestirMinutos": 10,
-      "retirarMinutos": 5
+      "retirarMinutos": 5,
+      "idLegado": "armadura-cota-de-talas"
     },
     {
-      "id": "armadura-placas",
+      "id": "plate",
       "tipo": "armadura",
       "nome": "Placas",
       "nomeOriginal": "Plate",
@@ -264,7 +275,8 @@
       "forcaMinima": 15,
       "desvantagemFurtividade": true,
       "vestirMinutos": 10,
-      "retirarMinutos": 5
+      "retirarMinutos": 5,
+      "idLegado": "armadura-placas"
     }
   ]
 }

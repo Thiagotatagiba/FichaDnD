@@ -169,6 +169,7 @@ function atualizarResumoAtaquesConjuracao() {
     if (textoPV) textoPV.textContent = "PV " + pvAtual;
     else campoAtaquePV.textContent = "PV " + pvAtual;
   }
+  window.FichaDnDCombateLayoutV2?.atualizar();
 }
 
 const estadoAtaqueArma = {
@@ -1088,6 +1089,7 @@ function atualizarInterfaceCombate() {
   if (campoPosicao) campoPosicao.value = ativo ? posicao : 0;
 
   atualizarRodadaModalAtaque();
+  window.FichaDnDCombateLayoutV2?.atualizar();
 }
 
 function abrirModalIniciativa() {
@@ -1566,22 +1568,16 @@ function atualizarSubAbaArmas() {
       item.classList.add("nao-proficiente");
     }
 
-    item.tabIndex = 0;
-    item.setAttribute("role", "button");
-    item.setAttribute("aria-label", `Atacar com ${arma.nome}`);
-
     const topo = document.createElement("div");
     topo.className = "arma-resumo-topo";
 
     const nome = (arma.nome || "").trim();
 
-    const icone = arma.propriedade?.toLowerCase().includes("munição")
-      ? "🏹"
-      : "⚔️";
+    const usaMunicao = arma.propriedade?.toLowerCase().includes("munição");
 
     let municaoTitulo = "";
 
-    if (icone === "🏹") {
+    if (usaMunicao) {
       const idMunicao = arma.arma_municao_id;
 
       if (idMunicao) {
@@ -1595,7 +1591,26 @@ function atualizarSubAbaArmas() {
       }
     }
 
-    topo.textContent = [nome, icone, municaoTitulo].filter(Boolean).join("  ");
+    const iconesCombate = window.FichaDnDCombateIcons;
+    if (iconesCombate) {
+      topo.appendChild(iconesCombate.criarIconeArma(document, arma));
+    } else {
+      const iconeFallback = document.createElement("span");
+      iconeFallback.className = "arma-resumo-icone-fallback";
+      iconeFallback.setAttribute("aria-hidden", "true");
+      iconeFallback.textContent = "⚔️";
+      topo.appendChild(iconeFallback);
+    }
+    const nomeElemento = document.createElement("span");
+    nomeElemento.className = "arma-resumo-nome";
+    nomeElemento.textContent = nome;
+    topo.appendChild(nomeElemento);
+    if (municaoTitulo) {
+      const municao = document.createElement("span");
+      municao.className = "arma-resumo-municao";
+      municao.textContent = `🏹 ${municaoTitulo}`;
+      topo.appendChild(municao);
+    }
 
     const detalhes = document.createElement("div");
     detalhes.className = "arma-resumo-detalhes";
@@ -1608,20 +1623,32 @@ function atualizarSubAbaArmas() {
       `<strong>Ataque: ${textoAtaque} | Dano: ${arma.dano || "-"}</strong>` +
       `<br>Propriedade: ${arma.propriedade || "-"}`;
 
-    item.addEventListener("click", () => abrirModalAtaqueArma(arma));
-    item.addEventListener("keydown", (evento) => {
-      if (evento.key === "Enter" || evento.key === " ") {
-        evento.preventDefault();
-        abrirModalAtaqueArma(arma);
-      }
-    });
-
     item.appendChild(topo);
     item.appendChild(detalhes);
+
+    const atributoAtaque = window.FichaDnDCombateLayoutV2?.atributosAtaque?.[arma.slot];
+    if (atributoAtaque && !atributoAtaque.disabled) {
+      const controle = document.createElement("label");
+      controle.className = "arma-resumo-atributo";
+      const rotulo = document.createElement("span");
+      rotulo.textContent = "Atributo de ataque";
+      controle.append(rotulo, atributoAtaque);
+      atributoAtaque.addEventListener("click", evento => evento.stopPropagation());
+      item.appendChild(controle);
+    }
+
+    const atacar = document.createElement("button");
+    atacar.type = "button";
+    atacar.className = "arma-resumo-acao";
+    atacar.textContent = "Atacar";
+    atacar.setAttribute("aria-label", `Atacar com ${arma.nome}`);
+    atacar.addEventListener("click", () => abrirModalAtaqueArma(arma));
+    item.appendChild(atacar);
     lista.appendChild(item);
   });
 
   container.appendChild(lista);
+  window.FichaDnDCombateLayoutV2?.atualizar();
 }
 
 // ===== Combate, historico e contra a morte =====
@@ -2001,15 +2028,6 @@ function registrarHistoricoAtaqueArma(sucesso, dano) {
   );
 }
 
-function abrirHistoricoAposFinalizar() {
-  const botaoHistorico = document.querySelector(
-    '.subaba-botao[onclick*="historico"]',
-  );
-  if (botaoHistorico) {
-    trocarSubAbaCombate("historico", botaoHistorico);
-  }
-}
-
 function confirmarFracassoAtaque() {
   const dado = obterDadoModalAtaque();
   if (dado === null) return;
@@ -2017,7 +2035,6 @@ function confirmarFracassoAtaque() {
   estadoAtaqueArma.dado = dado;
   registrarHistoricoAtaqueArma(false, 0);
   fecharModalAtaqueArma();
-  abrirHistoricoAposFinalizar();
 }
 
 function confirmarDanoAtaque() {
@@ -2033,7 +2050,6 @@ function confirmarDanoAtaque() {
   const danoTotal = danoRolado + obterBonusDanoEfetivoModalAtaque();
   registrarHistoricoAtaqueArma(true, danoTotal);
   fecharModalAtaqueArma();
-  abrirHistoricoAposFinalizar();
 }
 
 function registrarHistoricoComandoCombate(tipo, valor) {
@@ -2335,6 +2351,7 @@ function normalizarRodadaCombate() {
 }
 
 function trocarSubAbaCombate(tipo, botao) {
+  if (tipo === "historico" || !botao) return;
   document
     .querySelectorAll(".subaba-botao")
     .forEach((el) => el.classList.remove("ativa"));
@@ -2347,8 +2364,8 @@ function trocarSubAbaCombate(tipo, botao) {
   let alvo;
   if (tipo === "magia") {
     alvo = document.getElementById("subabaCombateMagia");
-  } else if (tipo === "historico") {
-    alvo = document.getElementById("subabaCombateHistorico");
+  } else if (tipo === "outras") {
+    alvo = document.getElementById("subabaCombateOutras");
   } else {
     alvo = document.getElementById("subabaCombateArma");
   }

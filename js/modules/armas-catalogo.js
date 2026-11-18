@@ -142,10 +142,11 @@ function atualizarMoedaArmaCard(card) {
 }
 
 function encontrarMunicaoDoTipo(tipo) {
-  const catalogId = { "virotes":"virotes", "flechas":"flechas", "agulhas de zarabatana":"agulhas-zarabatana", "balas de funda":"balas-de-funda" }[tipo];
+  const catalogId = { "virotes":"crossbow-bolts", "flechas":"arrows", "agulhas de zarabatana":"blowgun-needles", "balas de funda":"sling-bullets" }[tipo];
   const itens = [...document.querySelectorAll('#listaMunicoes .item-card[data-tipo="municao"]')].filter(card => {
     const dados = obterCamposMunicao(card);
-    return catalogId ? (dados.municao_catalogo_id === catalogId || textoBuscaArma(dados.municao_nome).includes(textoBuscaArma(tipo))) : textoBuscaArma(dados.municao_nome).includes(textoBuscaArma(tipo));
+    const definicao = estadoCatalogoMunicoes.itens?.find(item => item.id === dados.municao_catalogo_id || item.idLegado === dados.municao_catalogo_id);
+    return catalogId ? (definicao?.id === catalogId || definicao?.idLegado === catalogId || textoBuscaArma(dados.municao_nome).includes(textoBuscaArma(tipo))) : textoBuscaArma(dados.municao_nome).includes(textoBuscaArma(tipo));
   });
   return itens.length === 1 ? itens[0].dataset.id || "" : "";
 }
@@ -363,7 +364,7 @@ function renderizarDetalhesArma(item, aoAdicionar = null, card = null) {
 }
 
 function dadosArmaDoCard(card) {
-  const origem = estadoCatalogoArmas.dados?.itens.find(item => item.id === card.dataset.catalogoArmaId);
+  const origem = estadoCatalogoArmas.dados?.itens.find(item => item.id === card.dataset.catalogoArmaId || item.idLegado === card.dataset.catalogoArmaId);
   const valor = nome => card.querySelector('[data-campo="' + nome + '"]')?.value || "";
   const props = obterPropriedadesArmaCard(card);
   const um = valor("dano_1"), dois = valor("dano_2");
@@ -433,7 +434,7 @@ function atualizarResumosArmas(armas = null) {
     const tags = btn.querySelector(".arma-cartao-tags"); tags.replaceChildren();
     Object.entries(ROTULOS_PROPRIEDADE_ARMA).filter(([k]) => props[k]).forEach(([k,v]) => tags.append(criarElementoArma("span",v,"arma-cartao-tag")));
     if (!props.versatil) {
-      const origem = estadoCatalogoArmas.dados?.itens.find(arma => arma.id === card.dataset.catalogoArmaId);
+      const origem = estadoCatalogoArmas.dados?.itens.find(arma => arma.id === card.dataset.catalogoArmaId || arma.idLegado === card.dataset.catalogoArmaId);
       const modo = item.modo || origem?.modo || (props.municao || props.arremesso ? "distancia" : "corpo-a-corpo");
       const textoModo = modo === "distancia" ? "Distância" : "Corpo a corpo";
       tags.append(adicionarDicaArma(criarElementoArma("span",textoModo,"arma-cartao-tag"),dicaCaracteristicaArma("modo",modo)));
