@@ -124,6 +124,7 @@ test('Mão secundária: descarta seleção antiga de vestimenta e preserva regra
       const match = /^__escudo__(\d+)$/.exec(value || '');
       return match ? Number(match[1]) : null;
     },
+    possuiTalentoAmbidestro: () => false,
   };
   vm.createContext(context);
   vm.runInContext(extract('function obterTipoItemSecundarioArma(', '\nfunction ehEscudoEmpunhavel'), context);
@@ -152,4 +153,19 @@ test('Mão secundária: descarta seleção antiga de vestimenta e preserva regra
   assert.equal(context.valorSecundarioEhValido('0', { tipo: 'leve' }, 'uma_mao', armas, escudos), true);
   assert.equal(context.valorSecundarioEhValido('1', { tipo: 'leve' }, 'uma_mao', armas, escudos), false);
   assert.equal(context.valorSecundarioEhValido('__escudo__1', { tipo: 'duas_maos' }, 'duas_maos', armas, escudos), false);
+});
+
+test('Mão secundária: Ambidestro permite arma corpo a corpo de uma mão sem remover restrições de empunhadura', () => {
+  const context = { possuiTalentoAmbidestro: () => true };
+  vm.createContext(context);
+  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction limparSelecaoSecundariaEquipamento'), context);
+
+  assert.deepEqual(
+    Array.from(context.podeEquiparNaSecundaria({ tipo: 'uma_mao' }, 'uma_mao')),
+    ['leve', 'uma_mao', 'versatil', 'escudo'],
+  );
+  assert.deepEqual(
+    Array.from(context.podeEquiparNaSecundaria({ tipo: 'duas_maos' }, 'duas_maos')),
+    [],
+  );
 });

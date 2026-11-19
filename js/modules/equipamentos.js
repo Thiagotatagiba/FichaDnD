@@ -1318,9 +1318,38 @@ function obterEscudoEquipadoPorValor(valor, escudos = []) {
   return ehEscudoEmpunhavel(escudo) ? escudo : null;
 }
 
+function possuiTalentoAmbidestro() {
+  const nomes = [];
+  const categorias =
+    typeof talentosEstruturados === "object" && talentosEstruturados
+      ? Object.values(talentosEstruturados)
+      : [];
+  categorias.forEach((itens) => {
+    if (!Array.isArray(itens)) return;
+    itens.forEach((item) => {
+      if (typeof item === "string") nomes.push(item);
+      else if (typeof item?.nome === "string") nomes.push(item.nome);
+    });
+  });
+  ["talentoClasse", "talentoOutro"].forEach((id) => {
+    nomes.push(...(document.getElementById(id)?.value || "").split(","));
+  });
+  return nomes.some((nome) => {
+    const normalizado = String(nome)
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .trim()
+      .toLowerCase();
+    return normalizado === "ambidestro" || normalizado === "dual wielder";
+  });
+}
+
 function podeEquiparNaSecundaria(itemPrincipal, modo) {
   if (!itemPrincipal) return ["qualquer"];
   if (modo === "duas_maos") return [];
+  if (possuiTalentoAmbidestro()) {
+    return ["leve", "uma_mao", "versatil", "escudo"];
+  }
   if (itemPrincipal.tipo === "leve") return ["leve", "escudo"];
   if (itemPrincipal.tipo === "uma_mao") return ["escudo"];
   if (itemPrincipal.tipo === "versatil") return ["escudo"];
