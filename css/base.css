@@ -550,7 +550,38 @@ body {
 }
 
 .bonus-escudo-emoji.ativo {
+  display: grid;
+  place-items: center;
+}
+
+.bonus-escudo-emoji.icone-escudo-catalogado {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.bonus-escudo-icone-svg {
   display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: brightness(0) invert(1) drop-shadow(1px 0 0 #352b24)
+    drop-shadow(-1px 0 0 #352b24) drop-shadow(0 1px 0 #352b24)
+    drop-shadow(0 -1px 0 #352b24) drop-shadow(0 2px 2px rgba(53, 43, 36, 0.55));
+}
+
+.bonus-escudo-emoji.glifo-escudo {
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .d20 {

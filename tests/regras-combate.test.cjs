@@ -33,6 +33,107 @@ test("E2.1: total d20 é operação pura e valida entradas", () => {
   assert.equal(rules.calcularTotalD20(12, [Number.NaN]), null);
 });
 
+test("E2.1: elegibilidade de duas armas exige armas corpo a corpo leves e de uma mão", () => {
+  const rules = rulesInContext();
+  const leve = { modo: "corpo-a-corpo", propriedades: { leve: true } };
+  const versatil = { modo: "corpo-a-corpo", propriedades: { versatil: true } };
+  const duasMaos = { modo: "corpo-a-corpo", propriedades: { leve: true, duas_maos: true } };
+  const distanciaLeve = { modo: "distancia", propriedades: { leve: true } };
+  const naoLeve = { modo: "corpo-a-corpo", propriedades: {} };
+  const lancas = { modo: "corpo-a-corpo", propriedades: { especial: true }, descricaoEspecial: "Enquanto não estiver montado, precisa empunhar a lança com as duas mãos." };
+
+  assert.equal(rules.ehArmaElegivelDuasArmas({ armaPrincipal: leve, armaSecundaria: leve }), true);
+  assert.equal(rules.ehArmaElegivelDuasArmas({ armaPrincipal: versatil, armaSecundaria: leve }), false);
+  assert.equal(rules.ehArmaElegivelDuasArmas({ armaPrincipal: duasMaos, armaSecundaria: leve }), false);
+  assert.equal(rules.ehArmaElegivelDuasArmas({ armaPrincipal: distanciaLeve, armaSecundaria: leve }), false);
+  assert.equal(rules.ehArmaElegivelDuasArmas({ armaPrincipal: naoLeve, armaSecundaria: leve, permiteArmasNaoLeves: true }), true);
+  assert.equal(rules.ehArmaElegivelDuasArmas({ armaPrincipal: duasMaos, armaSecundaria: leve, permiteArmasNaoLeves: true }), false);
+  assert.equal(rules.ehArmaElegivelDuasArmas({ armaPrincipal: lancas, armaSecundaria: leve, permiteArmasNaoLeves: true }), false, "regra especial que exige duas mãos continua prevalecendo sobre o talento");
+});
+
+test("E2.1: estilo de luta de duas armas restaura o modificador positivo do dano secundário", () => {
+  const rules = rulesInContext();
+  assert.equal(rules.calcularBonusDanoEfetivo({ modificador: 3, tipoAcao: "Ação bônus", ataqueSecundarioDuasArmas: true }), 0);
+  assert.equal(rules.calcularBonusDanoEfetivo({ modificador: 3, tipoAcao: "Ação bônus", ataqueSecundarioDuasArmas: true, permiteModificadorPositivo: true }), 3);
+  assert.equal(rules.calcularBonusDanoEfetivo({ modificador: -2, tipoAcao: "Ação bônus", ataqueSecundarioDuasArmas: true, permiteModificadorPositivo: true }), -2);
+  assert.equal(rules.calcularBonusDanoEfetivo({ modificador: 3, tipoAcao: "Ação bônus", ataqueSecundarioDuasArmas: false, permiteModificadorPositivo: true }), 0);
+});
+
+test("E2.1: dano da mão secundária em duas armas omite bônus positivo e mantém negativo", () => {
+  const rules = rulesInContext();
+  const combat = source("js/modules/combate.js");
+  const equipment = { arma1Nome: { value: "0" }, arma2Nome: { value: "1" } };
+  const arms = [
+    { nome: "Clava", catalogoId: "club", propriedades: { leve: true } },
+    { nome: "Adaga", catalogoId: "dagger", propriedades: { leve: true } },
+    { nome: "Maça", catalogoId: "mace", propriedades: {} },
+    { nome: "Besta Leve", catalogoId: "light-crossbow", propriedades: { leve: true, duas_maos: true } },
+  ];
+  const context = {
+    RegrasCombate: rules,
+    document: { getElementById: (id) => equipment[id] || null },
+    coletarArmas: () => arms,
+    estadoCatalogoArmas: { dados: { itens: [
+      { id: "club", modo: "corpo-a-corpo" },
+      { id: "dagger", modo: "corpo-a-corpo" },
+      { id: "mace", modo: "corpo-a-corpo" },
+      { id: "light-crossbow", modo: "distancia" },
+    ] } },
+    talentosEstruturados: { classe: [], outros: [] },
+    estadoAtaqueArma: {
+      arma: { slot: 2 },
+      origem: "arma",
+      tipoAcao: "Ação bônus",
+      danoModBase: -2,
+    },
+  };
+  vm.createContext(context);
+  vm.runInContext(
+    extractFunction(
+      combat,
+      "function obterArmaSelecionadaParaDuasArmas(slot)",
+      "\nfunction obterBonusDanoEfetivoModalAtaque",
+    ) + extractFunction(
+      combat,
+      "function obterBonusDanoEfetivoModalAtaque()",
+      "\nfunction atualizarDetalheBonusDanoModal",
+    ) + "\nglobalThis.obterBonusDanoEfetivoModalAtaque = obterBonusDanoEfetivoModalAtaque;",
+    context,
+  );
+
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), -2);
+  context.estadoAtaqueArma.danoModBase = 3;
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 0);
+  equipment.arma1Nome.value = "";
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 0, "sem arma na mão principal não aplica a exceção de duas armas");
+  equipment.arma1Nome.value = "0";
+  equipment.arma2Nome.value = "__escudo__1";
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 0, "escudo na mão secundária não é ataque de duas armas");
+  equipment.arma2Nome.value = "2";
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 0, "duas armas corpo a corpo sem propriedade Leve não se qualificam sem característica específica");
+  equipment.arma2Nome.value = "3";
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 0, "arma à distância ou empunhada com duas mãos não se qualifica");
+  context.talentosEstruturados.outros.push({ nome: "Ambidestro" });
+  equipment.arma2Nome.value = "2";
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 0, "talento Ambidestro permite a exceção de elegibilidade, sem estilo não soma modificador positivo");
+  context.talentosEstruturados.classe.push({ nome: "Ataque com Duas Armas" });
+  context.estadoAtaqueArma.danoModBase = 3;
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 3, "estilo de luta permite somar modificador positivo quando o ataque é elegível");
+  context.estadoAtaqueArma.danoModBase = -2;
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), -2, "estilo de luta também preserva o modificador negativo");
+  context.talentosEstruturados.outros.length = 0;
+  context.talentosEstruturados.classe.length = 0;
+  equipment.arma2Nome.value = "1";
+  context.estadoAtaqueArma.arma.slot = 1;
+  context.estadoAtaqueArma.danoModBase = -2;
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 0, "mantém o comportamento anterior fora do ataque secundário com duas armas");
+  context.estadoAtaqueArma.tipoAcao = "Ação";
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), -2);
+  context.estadoAtaqueArma.origem = "magia";
+  context.estadoAtaqueArma.danoModBase = 4;
+  assert.equal(context.obterBonusDanoEfetivoModalAtaque(), 4);
+});
+
 test("resumo equipado preserva Acuidade da arma", () => {
   const armas = source("js/modules/combate-armas.js");
   const adaga = {
@@ -268,6 +369,57 @@ test("E2.2: cura pura não ultrapassa o máximo regular", () => {
     ),
     { pvAtuais: 10, curaAplicada: 0 },
   );
+});
+
+test("E2.2 integra dano e cura sem restaurar PV temporários", () => {
+  const combat = source("js/modules/combate.js");
+  const events = source("js/core/events.js");
+  const fields = {
+    pvAtual: { value: "10" },
+    pvTotal: { value: "10" },
+    pvTemporario: { value: "5" },
+  };
+  const history = [];
+  const concentrationChecks = [];
+  const context = {
+    document: {
+      getElementById(id) { return fields[id] || null; },
+      querySelectorAll() { return []; },
+    },
+    prompt() { return null; },
+    registrarHistoricoComandoCombate(tipo, valor) { history.push([tipo, valor]); },
+    atualizarResumoAtaquesConjuracao() {},
+    verificarStatusMorte() {},
+    abrirTesteConcentracaoPorDano(valor) { concentrationChecks.push(valor); },
+  };
+  vm.runInNewContext(
+    [
+      source("js/domain/regras-combate.js"),
+      extractFunction(events, "function formatarPvTemporario() {", "function atualizarCoracoesVida()"),
+      extractFunction(events, "function atualizarCoracoesVida() {", "function normalizarPontosDeVida() {"),
+      extractFunction(events, "function normalizarPontosDeVida() {", "function normalizarDadosVida() {"),
+      extractFunction(combat, "function aplicarDanoNoPV(valorInformado = null) {", "function curarPV("),
+      extractFunction(combat, "function curarPV(valorInformado = null) {", "function abrirModalVida("),
+      "globalThis.aplicarDanoNoPV = aplicarDanoNoPV; globalThis.curarPV = curarPV;",
+    ].join("\n"),
+    context,
+  );
+
+  context.aplicarDanoNoPV(3);
+  assert.equal(Number(fields.pvAtual.value), 10);
+  assert.equal(Number(fields.pvTemporario.value), 2);
+  context.curarPV(2);
+  assert.equal(Number(fields.pvAtual.value), 10);
+  assert.equal(Number(fields.pvTemporario.value), 2, "cura não recupera temporários consumidos");
+
+  context.aplicarDanoNoPV(4);
+  assert.equal(Number(fields.pvAtual.value), 8);
+  assert.equal(Number(fields.pvTemporario.value), 0);
+  context.curarPV(4);
+  assert.equal(Number(fields.pvAtual.value), 10);
+  assert.equal(Number(fields.pvTemporario.value), 0);
+  assert.deepEqual(history, [["Dano", 3], ["Cura", 2], ["Dano", 4], ["Cura", 4]]);
+  assert.deepEqual(concentrationChecks, [3, 4]);
 });
 
 test("E2.3: dano tipado aplica imunidade, resistência, vulnerabilidade e cancelamento", () => {

@@ -162,6 +162,7 @@ function criarHarness(options = {}) {
     marcador: 1,
   };
   const context = vm.createContext({
+    FICHA_SCHEMA_VERSION_ATUAL: 2,
     indexedDB: options.storageUnavailable ? undefined : db.indexedDB,
     document,
     window,
@@ -229,6 +230,19 @@ test('cria cópia IndexedDB versionada e mantém o indicador de alterações pen
   assert.match(harness.status.textContent, /Backup local atualizado/);
 });
 
+test('backup da versão atual do esquema continua elegível para recuperação', async () => {
+  const harness = criarHarness();
+  harness.context.setPayload({
+    ...harness.context.getPayload(),
+    fichaSchemaVersion: 2,
+  });
+  await harness.context.window.__gravarBackupLocalFichaAgora();
+
+  const recoverable = await harness.context.window.__obterBackupsLocaisRecuperaveis();
+  assert.equal(recoverable.length, 1);
+  assert.equal(recoverable[0].fichaSchemaVersion, 2);
+});
+
 test('estado repetido não cria backups redundantes; estados distintos ficam separados e recuperáveis', async () => {
   const harness = criarHarness();
   const first = await harness.context.window.__gravarBackupLocalFichaAgora();
@@ -253,6 +267,10 @@ test('personagens com o mesmo nome ficam distinguíveis por raça e referência 
   assert.equal(harness.db.snapshots.size, 2);
   assert.equal(new Set([...harness.db.snapshots.values()].map((item) => item.personagemId)).size, 2);
   assert.equal(harness.context.runTimer(1000), true);
+  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(harness.dialogo.open, false);
+  harness.botaoRecuperacao.click();
   await new Promise((resolve) => setImmediate(resolve));
   await new Promise((resolve) => setImmediate(resolve));
 
@@ -355,6 +373,11 @@ test('recuperação exibe identidade/data e exige confirmação antes de aplicar
   assert.equal(harness.context.runTimer(1000), true);
   await new Promise((resolve) => setImmediate(resolve));
   await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(harness.dialogo.open, false, 'o diálogo não abre automaticamente');
+  assert.equal(harness.botaoRecuperacao.hidden, false, 'a recuperação manual fica disponível');
+  harness.botaoRecuperacao.click();
+  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
   assert.equal(harness.dialogo.open, true);
   assert.equal(harness.seletor.options.length, 1);
   assert.match(harness.detalhes.textContent, /Personagem A/);
@@ -380,6 +403,10 @@ test('recuperação confirmada aplica somente o backup selecionado', async () =>
   assert.equal(reader.context.runTimer(1000), true);
   await new Promise((resolve) => setImmediate(resolve));
   await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(reader.dialogo.open, false);
+  reader.botaoRecuperacao.click();
+  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
   assert.equal(reader.dialogo.open, true);
 
   await reader.context.clickRecovery('restaurar');
@@ -397,6 +424,10 @@ test('falha no aplicador durante recuperação não substitui a ficha atual', as
   const reader = criarHarness({ db: writer.db, applyResult: false });
   reader.context.setPayload(current);
   assert.equal(reader.context.runTimer(1000), true);
+  await new Promise((resolve) => setImmediate(resolve));
+  await new Promise((resolve) => setImmediate(resolve));
+  assert.equal(reader.dialogo.open, false);
+  reader.botaoRecuperacao.click();
   await new Promise((resolve) => setImmediate(resolve));
   await new Promise((resolve) => setImmediate(resolve));
 
@@ -421,6 +452,10 @@ for (const [code, expected] of [
     const reader = criarHarness({ db: writer.db, applyError });
     reader.context.setPayload(current);
     assert.equal(reader.context.runTimer(1000), true);
+    await new Promise((resolve) => setImmediate(resolve));
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.equal(reader.dialogo.open, false);
+    reader.botaoRecuperacao.click();
     await new Promise((resolve) => setImmediate(resolve));
     await new Promise((resolve) => setImmediate(resolve));
 

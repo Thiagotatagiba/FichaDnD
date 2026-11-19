@@ -8,6 +8,39 @@ const RegrasCombate = Object.freeze({
     return dado + valores.reduce((soma, valor) => soma + valor, 0);
   },
 
+  calcularBonusDanoEfetivo({ modificador, origem = "arma", tipoAcao = "Ação", ataqueSecundarioDuasArmas = false, permiteModificadorPositivo = false }) {
+    if (!Number.isFinite(modificador) || typeof origem !== "string" || typeof tipoAcao !== "string") return null;
+    if (origem === "magia") return modificador;
+    if (tipoAcao === "Ação bônus") {
+      // Na regra de luta com duas armas, o modificador positivo não é somado;
+      // um modificador negativo continua sendo aplicado ao dano.
+      return ataqueSecundarioDuasArmas
+        ? permiteModificadorPositivo ? modificador : Math.min(0, modificador)
+        : 0;
+    }
+    return modificador;
+  },
+
+  ehArmaElegivelDuasArmas({ armaPrincipal, armaSecundaria, permiteArmasNaoLeves = false } = {}) {
+    const propriedades = (arma) => arma?.propriedades || {};
+    const modo = (arma) => String(arma?.modo || arma?.arma_modo || arma?.arma_tipo || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+    const ehCorpoACorpo = (arma) => modo(arma).includes("corpo a corpo") || modo(arma).includes("corpo-a-corpo");
+    const ehUmaMao = (arma) => !propriedades(arma).duas_maos;
+    const especialExigeDuasMaos = (arma) => {
+      const descricao = String(arma?.descricaoEspecial || arma?.descricao_especial || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+      return /(?:precisa|deve|requer).{0,70}(?:empunhar|usar).{0,45}duas maos/.test(descricao);
+    };
+    if (!armaPrincipal || !armaSecundaria || !ehCorpoACorpo(armaPrincipal) || !ehCorpoACorpo(armaSecundaria)) return false;
+    if (!ehUmaMao(armaPrincipal) || !ehUmaMao(armaSecundaria) || especialExigeDuasMaos(armaPrincipal) || especialExigeDuasMaos(armaSecundaria)) return false;
+    return permiteArmasNaoLeves || (!!propriedades(armaPrincipal).leve && !!propriedades(armaSecundaria).leve);
+  },
+
   resolverVantagemDesvantagem({ resultados, vantagens = [], desvantagens = [] }) {
     if (!Array.isArray(vantagens) || !Array.isArray(desvantagens)) return null;
     if (!Array.isArray(resultados) || resultados.length < 1 ||

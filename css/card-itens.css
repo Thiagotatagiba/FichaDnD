@@ -1087,6 +1087,22 @@ body.tema-classico
   object-fit: contain;
   filter: drop-shadow(0 2px 2px rgba(96, 64, 25, 0.55));
 }
+.armadura-modal-icone-com-svg {
+  width: 42px;
+  height: 42px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+.armadura-modal-icone-svg {
+  display: block;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 2px rgba(96, 64, 25, 0.55));
+}
 .armadura-modal-titulo-linha .magia-modal-titulo {
   min-width: 0;
   overflow-wrap: anywhere;

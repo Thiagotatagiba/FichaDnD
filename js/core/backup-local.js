@@ -174,7 +174,9 @@
       !dados ||
       typeof dados !== "object" ||
       Array.isArray(dados) ||
-      dados.fichaSchemaVersion !== 1 ||
+      !Number.isSafeInteger(dados.fichaSchemaVersion) ||
+      dados.fichaSchemaVersion < 1 ||
+      dados.fichaSchemaVersion > FICHA_SCHEMA_VERSION_ATUAL ||
       obterIdentidade(dados)?.personagemId !== registro.personagemId
     ) {
       return { ok: false, motivo: "Dados ou identidade do backup inválidos." };
@@ -401,6 +403,30 @@
     return metadata;
   }
 
+  async function verificarDisponibilidadeRecuperacao() {
+    try {
+      const backups = await obterBackupsRecuperaveis();
+      definirRecuperacaoDisponivel(backups.length > 0);
+      const identidadeAtual = obterIdentidade(
+        coletarSnapshotPersistenteFicha(),
+      );
+      const ultimoDaFicha = backups.find(
+        (item) => item.personagemId === identidadeAtual?.personagemId,
+      );
+      window.__registrarUltimoBackupLocalFicha?.(
+        ultimoDaFicha
+          ? {
+              personagemId: ultimoDaFicha.personagemId,
+              criadoEm: ultimoDaFicha.criadoEm,
+              backupId: ultimoDaFicha.backupId,
+            }
+          : null,
+      );
+    } catch (erro) {
+      console.warn("Não foi possível verificar backups locais:", erro);
+    }
+  }
+
   function preencherSeletor(backups) {
     const seletor = document.getElementById("backupLocalSelecionado");
     const detalhes = document.getElementById("backupLocalDetalhes");
@@ -601,7 +627,7 @@
 
   function iniciar() {
     setTimeout(() => {
-      void abrirDialogoRecuperacao();
+      void verificarDisponibilidadeRecuperacao();
     }, 1000);
   }
   if (document.readyState === "complete") iniciar();

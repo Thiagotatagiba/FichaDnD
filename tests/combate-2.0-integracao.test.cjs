@@ -61,6 +61,7 @@ test("manifest visual associa somente o ID oficial da Espada Longa", () => {
     icons.obterFonteArma("mace", { icone: "../assets/icons/armas/mace.svg" }),
     "../assets/icons/armas/mace.svg",
   );
+  assert.equal(icons.obterFonteArma("mace"), "../assets/icons/armas/mace.svg");
   assert.equal(
     icons.obterFonteEscudo("shield"),
     "../assets/icons/escudos/viking-shield.svg",
@@ -132,6 +133,63 @@ test("ícone dos cards de ataque segue o mesmo mapeamento central", () => {
   assert.equal(
     icons.criarIconeArma(documento, { nome: "Espada Longa" }).src,
     icons.caminhos.maoOcupada,
+  );
+});
+
+test("ícone do resumo de ataque usa o campo icone do objeto equipado", () => {
+  const icons = carregarIcones();
+  const documento = documentoSimulado();
+  const fonte = icons.obterFonteArma("mace", {
+    catalogoId: "mace",
+    icone: "../assets/icons/armas/mace.svg",
+  });
+
+  assert.equal(fonte, "../assets/icons/armas/mace.svg");
+  assert.equal(
+    icons.criarIconeArma(documento, {
+      catalogoId: "mace",
+      icone: "../assets/icons/armas/mace.svg",
+    }).src,
+    "../assets/icons/armas/mace.svg",
+  );
+});
+
+test("painel de CA pode substituir o escudo pelo ícone da armadura equipada", () => {
+  const html = ler("ficha/Ficha_DnD_-_Tatagiba_1.0.html");
+  const css = ler("css/combate-2.0.css");
+  const combate = ler("js/modules/combate.js");
+  const catalogo = JSON.parse(ler("assets/data/itens/armaduras.json"));
+
+  assert.match(html, /id="ataqueCaArmaduraArt"/);
+  assert.match(combate, /catalogoIcone/);
+  assert.match(combate, /catalogoId/);
+  assert.match(combate, /ataqueCaArmaduraArt/);
+  assert.match(css, /\.combat-v2-ac-armor-art/);
+  assert.match(css, /text-shadow:/);
+  assert.equal(catalogo.itens.length, 12);
+  assert.equal(new Set(catalogo.itens.map((item) => item.icone)).size, 12);
+  assert.ok(
+    catalogo.itens.every(
+      (item) => typeof item.icone === "string" && item.icone.trim(),
+    ),
+  );
+});
+
+test("escudo equipado pode substituir o emoji pelo ícone catalogado", () => {
+  const html = ler("ficha/Ficha_DnD_-_Tatagiba_1.0.html");
+  const css = ler("css/base.css") + ler("css/combate-2.0.css");
+  const combate = ler("js/modules/combate.js");
+  const escudos = JSON.parse(ler("assets/data/itens/escudos.json"));
+
+  assert.match(html, /ataqueCaEscudoEmoji/);
+  assert.match(combate, /catalogoEscudoIcone/);
+  assert.match(combate, /iconeEscudo/);
+  assert.match(css, /\.bonus-escudo-icone/);
+  assert.match(css, /#fffaf0|#ffffff/);
+  assert.ok(
+    escudos.itens.every(
+      (item) => typeof item.icone === "string" && item.icone.trim(),
+    ),
   );
 });
 
@@ -267,6 +325,7 @@ test("escudo de CA usa arte decorativa vetorial com moldura dupla e valor oficia
 
 test("ícone da mão secundária é espelhado no slot, sem espelhar o ícone do ataque", () => {
   const layout = ler("js/modules/combate-layout-v2.js");
+  const equipment = ler("js/modules/equipamentos.js");
   const css = ler("css/combate-2.0.css");
   assert.match(
     layout,
@@ -274,7 +333,25 @@ test("ícone da mão secundária é espelhado no slot, sem espelhar o ícone do 
   );
   assert.match(
     layout,
-    /selectedName\.textContent = handSelect\.value[\s\S]*?"—"/,
+    /selectedName\.textContent = slot === 2 && duasMaos \? "Duas mãos" : "Mão Livre"/,
+  );
+  assert.match(layout, /"Mão Principal" : "Mão Secundária"/);
+  assert.match(layout, /estadoCombate\?\.maoPrincipal\?\.modo === "duas_maos"/);
+  assert.match(layout, /slot === 2 && duasMaos \? "Duas mãos" : "Mão Livre"/);
+  assert.match(layout, /slot === 1 && duasMaos \? "Duas mãos" : ""/);
+  assert.match(
+    layout,
+    /slotControl\.replaceChildren\(label, icon, selectedName, state, handSelect\)/,
+  );
+  const handUiStart = equipment.indexOf("function atualizarUIEmpunhadura(");
+  const handUiEnd = equipment.indexOf(
+    "\nfunction obterMenuEmpunhadura(",
+    handUiStart,
+  );
+  assert.ok(handUiStart >= 0 && handUiEnd > handUiStart);
+  assert.match(
+    equipment.slice(handUiStart, handUiEnd),
+    /FichaDnDCombateLayoutV2\?\.atualizar\(\)/,
   );
   assert.match(layout, /emptyOption\.textContent = "Selecionar equipamento"/);
   assert.match(
@@ -282,6 +359,17 @@ test("ícone da mão secundária é espelhado no slot, sem espelhar o ícone do 
     /combat-v2-hand-icon--secondary \.equipados-mao-emoji img \{ transform:scaleX\(-1\); \}/,
   );
   assert.doesNotMatch(css, /combat-v2-attack[^}]*scaleX\(-1\)/);
+});
+
+test("cards de mãos mantêm nome centralizado e seletor compacto", () => {
+  const css = ler("css/combate-2.0.css");
+  assert.match(css, /combat-v2-hand-name \{[^}]*text-align:center/);
+  assert.match(css, /combat-v2-hand-state:empty \{ display:none; \}/);
+  assert.match(
+    css,
+    /combat-v2-hands-panel \.equipados-slot-com-emoji select \{[^}]*margin-top:2/,
+  );
+  assert.match(css, /combat-v2-hand-icon \{[^}]*min-height:53px/);
 });
 
 test("PV destaca o valor atual, reduz o máximo e só mostra temporários quando positivos", () => {
@@ -380,7 +468,7 @@ test("card de iniciativa usa controles oficiais em cabeçalho e linha compacta s
   );
   assert.match(
     css,
-    /combat-v2-round-value \{ display:flex; align-items:center; justify-content:flex-start; gap:6px/,
+    /combat-v2-round-value \{ display:flex; align-items:center; gap:6px/,
   );
   assert.match(
     css,
@@ -562,12 +650,12 @@ test("manifest visual carrega antes dos módulos que atualizam mãos e ataques",
     html.indexOf("js/modules/combate-layout-v2.js") >
       html.indexOf("js/modules/combate.js"),
   );
-  assert.match(html, /css\/combate-2\.0\.css\?v=combate-v2-27/);
-  assert.match(html, /js\/modules\/combate-armas\.js\?v=combate-v2-1/);
+  assert.match(html, /css\/combate-2\.0\.css\?v=combate-v2-28/);
+  assert.match(html, /js\/modules\/combate-armas\.js\?v=icone-json-20261119/);
   assert.match(
     html,
-    /js\/modules\/equipamentos\.js\?v=outros-catalogo-2&combate-v2-1/,
+    /js\/modules\/equipamentos\.js\?v=outros-catalogo-2&combate-v2-3/,
   );
   assert.match(html, /js\/modules\/combate\.js\?v=municoes-3&combate-v2-2/);
-  assert.match(html, /js\/modules\/combate-layout-v2\.js\?v=combate-v2-12/);
+  assert.match(html, /js\/modules\/combate-layout-v2\.js\?v=combate-v2-13/);
 });

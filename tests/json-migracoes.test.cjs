@@ -111,7 +111,7 @@ function migrate(context, data) {
   return JSON.parse(vm.runInContext('JSON.stringify(migrarDadosFicha(inputData))', context));
 }
 
-test('migra ficha v0 sem marcador para v1 e mantém aliases e metadados legados intactos', () => {
+test('migra ficha v0 sem marcador para v2 e mantém aliases e metadados legados intactos', () => {
   const { context } = storageContext();
   const legacy = {
     nomePlayer: 'Jogadora legada',
@@ -125,7 +125,7 @@ test('migra ficha v0 sem marcador para v1 e mantém aliases e metadados legados 
   };
   const migrated = migrate(context, legacy);
 
-  assert.equal(migrated.fichaSchemaVersion, 1);
+  assert.equal(migrated.fichaSchemaVersion, 2);
   assert.equal(migrated.nomePlayer, legacy.nomePlayer);
   assert.equal(migrated.classeNome, legacy.classeNome);
   assert.deepEqual(migrated.schema_version, legacy.schema_version);
@@ -152,7 +152,7 @@ test('migração v0 é idempotente e round-trip JSON conserva campos desconhecid
 
   assert.deepEqual(twice, once);
   assert.deepEqual(roundTrip, once);
-  assert.equal(once.fichaSchemaVersion, 1);
+  assert.equal(once.fichaSchemaVersion, 2);
   assert.equal(once.forBase, original.forBase);
   assert.deepEqual(once.pluginData, original.pluginData);
   assert.deepEqual(once.colecaoNaoInterpretada, original.colecaoNaoInterpretada);
@@ -160,7 +160,7 @@ test('migração v0 é idempotente e round-trip JSON conserva campos desconhecid
   assert.equal(once.schema_notes, original.schema_notes);
 });
 
-test('versão v1 é um no-op nos dados existentes', () => {
+test('migração v1 → v2 preserva os campos desconhecidos', () => {
   const { context } = storageContext();
   const current = {
     fichaSchemaVersion: 1,
@@ -170,7 +170,40 @@ test('versão v1 é um no-op nos dados existentes', () => {
     schema_version: 'legacy-marker',
   };
 
-  assert.deepEqual(migrate(context, current), current);
+  assert.deepEqual(migrate(context, current), { ...current, fichaSchemaVersion: 2 });
+});
+
+test('migra PV legados para pools separados pela vida efetiva preservada', () => {
+  const { context } = storageContext();
+  const legacyWithTemporary = {
+    fichaSchemaVersion: 1,
+    pvAtual: '13',
+    pvTotal: '10',
+    pvTemporario: '5',
+    customPvMetadata: { source: 'old-sheet' },
+  };
+  const migratedWithTemporary = migrate(context, legacyWithTemporary);
+
+  assert.equal(migratedWithTemporary.fichaSchemaVersion, 2);
+  assert.equal(migratedWithTemporary.pvAtual, '10');
+  assert.equal(migratedWithTemporary.pvTemporario, '3');
+  assert.deepEqual(migratedWithTemporary.customPvMetadata, { source: 'old-sheet' });
+  assert.deepEqual(legacyWithTemporary, {
+    fichaSchemaVersion: 1,
+    pvAtual: '13',
+    pvTotal: '10',
+    pvTemporario: '5',
+    customPvMetadata: { source: 'old-sheet' },
+  });
+
+  const migratedBelowMaximum = migrate(context, {
+    fichaSchemaVersion: 1,
+    pvAtual: '8',
+    pvTotal: '10',
+    pvTemporario: '5',
+  });
+  assert.equal(migratedBelowMaximum.pvAtual, '8');
+  assert.equal(migratedBelowMaximum.pvTemporario, '0');
 });
 
 test('erros de versão usam códigos distintos e estáveis', () => {
@@ -185,7 +218,7 @@ test('erros de versão usam códigos distintos e estáveis', () => {
     `, context);
   };
 
-  assert.equal(errorCode({ fichaSchemaVersion: 2 }), 'UNSUPPORTED_CHARACTER_SHEET_VERSION');
+  assert.equal(errorCode({ fichaSchemaVersion: 3 }), 'UNSUPPORTED_CHARACTER_SHEET_VERSION');
   assert.equal(errorCode({ fichaSchemaVersion: 0 }), 'INVALID_CHARACTER_SHEET_VERSION');
   assert.equal(errorCode({ fichaSchemaVersion: '1' }), 'INVALID_CHARACTER_SHEET_VERSION');
   assert.equal(errorCode({ fichaSchemaVersion: 1.5 }), 'INVALID_CHARACTER_SHEET_VERSION');
@@ -203,7 +236,7 @@ test('ficha incompleta continua aceita e aliases legados permanecem disponíveis
     vm.runInContext('JSON.stringify(normalizarDadosImportacao(inputData))', context),
   );
 
-  assert.equal(normalized.fichaSchemaVersion, 1);
+  assert.equal(normalized.fichaSchemaVersion, 2);
   assert.equal(normalized.nomePlayer, 'Somente nome');
   assert.equal(normalized.jogador, 'Somente nome');
   assert.equal(normalized.forBase, 12);
@@ -213,7 +246,7 @@ test('ficha incompleta continua aceita e aliases legados permanecem disponíveis
 
 test('rejeita versões futuras e malformadas antes de aplicar dados', async (t) => {
   const invalidVersions = [
-    { fichaSchemaVersion: 2 },
+    { fichaSchemaVersion: 3 },
     { fichaSchemaVersion: 0 },
     { fichaSchemaVersion: '1' },
     { fichaSchemaVersion: 1.5 },
@@ -269,7 +302,7 @@ test('exportação grava dados coletados atuais e não reexecuta migração de a
 
   assert.equal(outcome.ok, true);
   assert.equal(harness.downloadClickCount(), 1);
-  assert.equal(exported.fichaSchemaVersion, 1);
+  assert.equal(exported.fichaSchemaVersion, 2);
   assert.equal(exported.bonusProf, 4);
   assert.equal(exported.bonusProficiencia, 4, 'alias exportado reflete o valor canônico atual');
   assert.equal(exported.magia1Rest, 'valor-atual', 'valor atual não é recalculado a partir dos aliases legados');

@@ -178,7 +178,7 @@
         emptyOption.textContent = "Selecionar equipamento";
       }
     }
-    const label = criar("span", "combat-v2-hand-label", slot === 1 ? "Mão principal" : "Mão secundária");
+    const label = criar("span", "combat-v2-hand-label", slot === 1 ? "Mão Principal" : "Mão Secundária");
     const icon = criar("span", "combat-v2-hand-icon");
     if (slot === 2) icon.classList.add("combat-v2-hand-icon--secondary");
     icon.append(handButton);
@@ -188,15 +188,20 @@
       normalizeHandPlaceholder();
       const option = handSelect.selectedOptions[0];
       const name = option?.textContent?.trim() || "";
-      selectedName.textContent = handSelect.value
-        ? name.replace(/^\p{Extended_Pictographic}‍?\s*/u, "")
-        : "—";
-      state.textContent = handSelect.value ? "Equipamento selecionado" : "Mão livre";
+      const duasMaos = typeof estadoCombate !== "undefined" &&
+        estadoCombate?.maoPrincipal?.modo === "duas_maos";
+      if (!handSelect.value) {
+        selectedName.textContent = slot === 2 && duasMaos ? "Duas mãos" : "Mão Livre";
+        state.textContent = "";
+        return;
+      }
+      selectedName.textContent = name.replace(/^\p{Extended_Pictographic}‍?\s*/u, "");
+      state.textContent = slot === 1 && duasMaos ? "Duas mãos" : "";
     };
     handSelect.addEventListener("change", updateHandName);
     handSelect.addEventListener("combatv2render", updateHandName);
     updateHandName();
-    slotControl.replaceChildren(icon, selectedName, state, handSelect);
+    slotControl.replaceChildren(label, icon, selectedName, state, handSelect);
   });
 
   const displacement = document.getElementById("deslocamento");

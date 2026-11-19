@@ -158,7 +158,8 @@ function obterArmasEquipadasAtivas() {
         bruto: arma,
         arma_municao_id: arma.arma_municao_id || null,
         arma_tipo_dano: arma.arma_tipo_dano || "",
-        catalogoId: cardArma?.dataset.catalogoArmaId || "",
+        catalogoId: cardArma?.dataset.catalogoArmaId || arma.catalogoId || "",
+        icone: cardArma?.dataset.catalogoArmaIcone || arma.icone || "",
         slot,
       };
     })

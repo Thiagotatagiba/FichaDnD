@@ -3,6 +3,8 @@
 
 Este arquivo é um espaço de captura para ideias ainda não avaliadas. Uma anotação aqui não é tarefa planejada, compromisso de implementação, prioridade ou prazo. Revise o código e a documentação antes de avaliar uma ideia. Quando aprovada, retire-a daqui e registre-a no `../ROADMAP.md`; bugs confirmados pertencem ao `BUG_REPORT.md`. Remova ideias descartadas, salvo se houver motivo útil para preservar esse histórico.
 
+**Revisão em 2026-11-19:** a auditoria da tela Combate não concluiu nenhum dos rascunhos abaixo. Todos permanecem ideias não priorizadas; nenhum foi promovido ao Roadmap nesta atualização.
+
 ## Ideias para avaliar
 
 - **Vestimentas — integrar vantagens em perícias:** hoje os itens podem guardar a seleção de perícias, mas a ficha ainda não tem um sistema de vantagens aplicável aos testes. Quando esse sistema existir, avaliar como converter os dados do item em vantagem real, tratar múltiplas fontes e exibir a origem do benefício. Não implementar antes de definir a mecânica geral.

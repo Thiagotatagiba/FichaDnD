@@ -37,9 +37,9 @@ test('Mão secundária: lista somente registros categorizados como escudo e mant
     criarValorSlotEscudo: (index) => `__escudo__${index}`,
   };
   vm.createContext(context);
-  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\n      function podeEquiparNaSecundaria'), context);
+  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction podeEquiparNaSecundaria'), context);
   vm.runInContext(
-    extract('function atualizarSelectNomeArmaEquipada(', '\n      function getNomeArmaSeguro'),
+    extract('function atualizarSelectNomeArmaEquipada(', '\nfunction getNomeArmaSeguro'),
     context,
   );
 
@@ -57,6 +57,67 @@ test('Mão secundária: lista somente registros categorizados como escudo e mant
   assert.equal(select.options.find((option) => option.value === '__escudo__2').textContent, '🛡️ Escudo +2 +2');
 });
 
+test('atualizar inventário preenche os seletores de combate em ficha sem armas marcadas', () => {
+  const principal = createSelect();
+  const secundaria = createSelect();
+  const arma = { nome: 'Maça', propriedades: {} };
+  const context = {
+    document: {
+      getElementById: (id) => ({ arma1Nome: principal, arma2Nome: secundaria })[id] || null,
+      querySelector: () => null,
+      createElement: createOption,
+    },
+    coletarArmas: () => [arma],
+    coletarEscudos: () => [],
+    coletarArmaduras: () => [],
+    coletarOutros: () => [],
+    renderizarArmasEquipamento() {},
+    renderizarArmadurasEquipamento() {},
+    renderizarEscudosEquipamento() {},
+    renderizarOutrosEquipamento() {},
+    atualizarTodasMunicoesArmas() {},
+    atualizarSelectNomeArmaduraEquipada() {},
+    atualizarTitulosInventario() {},
+    armaduraEquipadaIndice: null,
+    criarValorSlotEscudo: (index) => `__escudo__${index}`,
+  };
+  vm.createContext(context);
+  vm.runInContext(
+    extract(
+      'function ehEscudoEmpunhavel(',
+      '\nfunction podeEquiparNaSecundaria',
+    ),
+    context,
+  );
+  vm.runInContext(
+    extract(
+      'function atualizarSelectNomeArmaEquipada(',
+      '\nfunction getNomeArmaSeguro',
+    ),
+    context,
+  );
+  vm.runInContext(
+    extract(
+      'function atualizarListaArmasEquipamento()',
+      '\nfunction obterTextoDanoArma',
+    ),
+    context,
+  );
+
+  context.atualizarListaArmasEquipamento();
+
+  assert.deepEqual(principal.options.map((option) => option.textContent), [
+    'Mão Principal',
+    '⚔️ Maça',
+  ]);
+  assert.equal(principal.value, '');
+  assert.equal(
+    secundaria.options.some((option) => option.textContent.includes('Maça')),
+    true,
+  );
+  assert.equal(secundaria.value, '');
+});
+
 test('Mão secundária: descarta seleção antiga de vestimenta e preserva regras atuais de ocupação', () => {
   const context = {
     extrairIndiceSlotEscudo: (value) => {
@@ -65,10 +126,10 @@ test('Mão secundária: descarta seleção antiga de vestimenta e preserva regra
     },
   };
   vm.createContext(context);
-  vm.runInContext(extract('function obterTipoItemSecundarioArma(', '\n      function ehEscudoEmpunhavel'), context);
-  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\n      function podeEquiparNaSecundaria'), context);
-  vm.runInContext(extract('function obterEscudoEquipadoPorValor(', '\n      function podeEquiparNaSecundaria'), context);
-  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\n      function limparSelecaoSecundariaEquipamento'), context);
+  vm.runInContext(extract('function obterTipoItemSecundarioArma(', '\nfunction ehEscudoEmpunhavel'), context);
+  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction podeEquiparNaSecundaria'), context);
+  vm.runInContext(extract('function obterEscudoEquipadoPorValor(', '\nfunction podeEquiparNaSecundaria'), context);
+  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction limparSelecaoSecundariaEquipamento'), context);
 
   const escudos = [
     { escudo_tipo: 'Vestuario', escudo_nome: 'Roupas Finas', escudo_ca: '+1' },

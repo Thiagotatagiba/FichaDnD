@@ -268,6 +268,19 @@ As propostas abaixo vieram do levantamento inicial. Não são tarefas ativas; av
 
 _Relatório gerado automaticamente — revisão manual recomendada antes de criar issues individuais._
 
+## Combate — modificador de dano negativo em ataque de ação bônus (2026-11-19)
+
+- **Prioridade sugerida:** 4/5 — corrigir antes de considerar o fluxo de ataques validado.
+- **Estado:** correção local implementada e coberta por testes puros/adaptador; reprodução funcional no navegador ainda pendente.
+- **Sintoma:** `obterBonusDanoEfetivoModalAtaque()` retorna zero para qualquer ataque marcado como `Ação bônus`, sem preservar modificador de atributo negativo.
+- **Reprodução lógica:** em uma ficha sintética com modificador de FOR −1, selecionar um ataque de duas armas como ação bônus. O resumo do dano remove o −1 do modificador; pelas regras D&D 5e 2014, o ataque adicional de duas armas omite o modificador positivo, mas conserva o negativo. O dano final nunca pode ficar abaixo de zero.
+- **Localização:** cálculo puro em `js/domain/regras-combate.js`, adaptado por `ehAtaqueSecundarioComDuasArmas()` e `obterBonusDanoEfetivoModalAtaque()` em `js/modules/combate.js`.
+- **Correção local:** o modificador positivo continua omitido no ataque bônus da mão secundária; modificador negativo é mantido. A exceção só se aplica quando os dois seletores contêm armas distintas; mão secundária com escudo ou mão principal vazia não ativa a exceção. Ataques bônus fora desse caso mantêm o comportamento anterior.
+- **Risco/limite:** o navegador ainda não foi usado para reproduzir o caso ponta a ponta. O modelo atual também não valida automaticamente a propriedade Leve ou uma característica que permita empunhar armas não leves; essa elegibilidade continua sob escolha/validação existente e não foi ampliada nesta correção.
+- **Referência:** D&D 5e Basic Rules 2014, seção Combat / Two-Weapon Fighting: https://www.dndbeyond.com/sources/dnd/basic-rules-2014/combat.
+- **Validação executada:** `node --test tests/regras-combate.test.cjs` passou 19/19, incluindo modificadores positivo/negativo, arma primária, mão principal vazia, escudo secundário e magia. `node --check` e `git diff --check` nos arquivos tocados passaram.
+- **Próximo passo:** confirmar em navegador sintético dois ataques com armas distintas e modificador negativo/positivo; verificar que ação bônus de outra origem não recebe a regra de duas armas.
+
 ## Proficiência e Expertise das perícias — correção implementada, validação complementar pendente
 
 **Data:** 2026-11-04 a 2026-11-05

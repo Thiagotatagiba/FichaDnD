@@ -1,10 +1,11 @@
 // ===== Persistencia da ficha =====
-const FICHA_SCHEMA_VERSION_ATUAL = 1;
+const FICHA_SCHEMA_VERSION_ATUAL = 2;
 
 /**
  * Valida e migra somente o envelope de versão da ficha.
- * A migração v0 → v1 não interpreta os dados: ela preserva aliases, coleções,
- * metadados legados e propriedades desconhecidas, acrescentando a versão atual.
+ * As migrações preservam aliases, coleções, metadados legados e propriedades
+ * desconhecidas. v1 → v2 separa PV normais e temporários usando a representação
+ * legada, na qual PV atuais acima do máximo indicavam o saldo temporário visível.
  */
 function migrarDadosFicha(dadosOriginais) {
   if (
@@ -53,6 +54,49 @@ function migrarDadosFicha(dadosOriginais) {
   let dados = { ...dadosOriginais };
   const migracoes = {
     0: (origem) => ({ ...origem, fichaSchemaVersion: 1 }),
+    1: (origem) => {
+      const atualizado = { ...origem, fichaSchemaVersion: 2 };
+      const lerInteiroNaoNegativo = (valor) => {
+        if (typeof valor === "number") {
+          return Number.isSafeInteger(valor) && valor >= 0 ? valor : null;
+        }
+        if (typeof valor !== "string" || !/^\d+$/.test(valor.trim())) return null;
+        const numero = Number(valor.trim());
+        return Number.isSafeInteger(numero) ? numero : null;
+      };
+      const pvAtual = lerInteiroNaoNegativo(origem.pvAtual);
+      const pvTotal = lerInteiroNaoNegativo(origem.pvTotal);
+      const pvTemporario = Object.prototype.hasOwnProperty.call(
+        origem,
+        "pvTemporario",
+      )
+        ? lerInteiroNaoNegativo(origem.pvTemporario)
+        : null;
+
+      // Fichas incompletas e valores legados malformados permanecem intactos;
+      // sua validação/restauração continua sob o fluxo já existente.
+      if (pvAtual === null || pvTotal === null ||
+          (Object.prototype.hasOwnProperty.call(origem, "pvTemporario") &&
+            pvTemporario === null)) {
+        return atualizado;
+      }
+
+      const temporariosAtuais = Math.max(
+        0,
+        Math.min(pvTemporario ?? Number.MAX_SAFE_INTEGER, pvAtual - pvTotal),
+      );
+      const pvNormaisAtuais = Math.min(pvAtual, pvTotal);
+      atualizado.pvAtual = typeof origem.pvAtual === "string"
+        ? String(pvNormaisAtuais)
+        : pvNormaisAtuais;
+      if (Object.prototype.hasOwnProperty.call(origem, "pvTemporario") ||
+          temporariosAtuais > 0) {
+        atualizado.pvTemporario = typeof origem.pvTemporario === "string"
+          ? String(temporariosAtuais)
+          : temporariosAtuais;
+      }
+      return atualizado;
+    },
   };
 
   while (versao < FICHA_SCHEMA_VERSION_ATUAL) {

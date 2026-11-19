@@ -68,6 +68,10 @@ test("catálogo associa os SVGs sugeridos às 37 armas", () => {
     catalogo.itens.find((item) => item.id === "blowgun").icone,
     "../assets/icons/armas/blowgun.svg",
   );
+  assert.equal(
+    catalogo.itens.find((item) => item.id === "rapier").icone,
+    "../assets/icons/armas/rapier.svg",
+  );
   assert.match(source, /arma-cartao-nome-linha/);
   assert.match(
     source,
@@ -92,7 +96,8 @@ test("importação restaura os dados visuais das armas catalogadas", () => {
     importSource,
     /novoCard\.dataset\.catalogoArmaIcone = catalogoArmaIcone/,
   );
-  assert.match(importSource, /origemArma\?\.icone/);
+  assert.match(importSource, /const catalogoArmaIcone =\s*\n\s*origemArma\?\.icone/);
+  assert.doesNotMatch(source, /icone: card\.dataset\.catalogoArmaIcone \|\| origem\?\.icone/);
 });
 
 test("a Besta Leve tem dano perfurante e as armas de distância declaram munição", () => {

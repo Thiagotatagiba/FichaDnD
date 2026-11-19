@@ -615,3 +615,55 @@ Atualizados os IDs dos 212 itens nos 14 catálogos não vazios para slugs de `no
 **Validação:** parse dos 16 JSONs de itens; conferência de 212 registros, IDs presentes e únicos, aliases legados distintos, referências de compatibilidade de munições resolvidas e Rapieira correta — sem inconsistências. `node --check` nos seis módulos JS tocados — aprovado. `git diff --check` nos arquivos desta tarefa — aprovado; Git emitiu avisos de conversão LF/CRLF. Testes automatizados não foram executados.
 
 **Estado:** alterações locais, sem commit, push ou deploy.
+
+### Separação dos PV temporários em combate (2026-11-19)
+
+**Diagnóstico:** o teste manual básico podia parecer correto, mas o modelo anterior somava PV temporários a `pvAtual`. Após dano consumir parte desse excesso, uma cura elevava novamente o total combinado e recriava PV temporários já gastos. Isso ocorria no fluxo real de combate porque dano e cura não compartilhavam as operações puras existentes para os dois reservatórios.
+
+**Correção local:** `pvAtual` agora representa somente PV normais até `pvTotal`; `pvTemporario` representa o saldo temporário restante. Dano consome primeiro o saldo temporário e depois PV normais; cura restaura apenas PV normais até o máximo. Descanso longo limpa PV temporários. Os corações agora refletem o saldo temporário separado. A ficha foi avançada para schema v2: migrações v0/v1 preservam os campos desconhecidos e inferem PV temporários legados a partir do excesso visível de `pvAtual` sobre `pvTotal`. Backups v1 existentes continuam recuperáveis e backups da versão atual v2 são aceitos.
+
+**Limitação da migração:** se uma ficha v1 tiver `pvAtual` igual ou inferior ao máximo, o formato antigo não permite distinguir PV temporários ainda ativos de temporários já consumidos; a migração conserva os PV normais e inicializa o saldo temporário como zero. Essa inferência conservadora evita criar PV temporários sem evidência.
+
+**Testes:** `node --test tests/json-migracoes.test.cjs tests/regras-combate.test.cjs tests/importacao-preparacao.test.cjs tests/backup-local.test.cjs` — **112/112 aprovados**. Incluem regressão RED→GREEN para dano seguido de cura, migração v1→v2, preservação do objeto de entrada, importação/exportação e compatibilidade de backup v1/v2. A suíte completa foi executada: **199/208 aprovados; 9 falharam** em expectativas/extrações de testes da interface Combate 2.0, seletores de equipamento e harnesses de rollback (não nos testes de PV/schema). As falhas permanecem pendentes e não foram corrigidas nesta alteração. `node --check` nos módulos JavaScript alterados e `git diff --check` passaram.
+
+**Estado:** mudanças locais sem commit ou push. Nenhum JSON real de personagem foi alterado. A verificação foi automatizada; não foi feita interação no navegador nesta correção.
+
+### Rótulo de estado nos slots de mão (2026-11-19)
+
+Removido o texto redundante “Equipamento selecionado”/“Mão livre” abaixo do nome do item. Quando não há seleção, o nome do slot agora mostra “Mão Livre” no lugar do traço; quando há item, continua mostrando apenas o nome do equipamento. Ícones, seletores canônicos, nomes acessíveis e comportamento de equipamento foram preservados. A versão de cache do módulo visual foi incrementada para `combate-v2-13`.
+
+**Validação:** `node --test --test-name-pattern="mãos livres, ocupadas|manifest visual associa" tests/combate-2.0-integracao.test.cjs` — **2/2 aprovados**; `node --check` no módulo visual e teste de integração — aprovado; `git diff --check` — aprovado. Uma execução completa anterior continua com falhas em outras áreas, conforme registrado acima; não foram reclassificadas como aprovadas por esta alteração.
+
+### Correção da apresentação dos estados das mãos (2026-11-19)
+
+Ajustada a interpretação do pedido: a linha redundante “Equipamento selecionado” deixa de aparecer, mas os rótulos de papel não foram removidos. “Mão Principal” e “Mão Secundária” aparecem no topo de seus slots; o nome vazio exibe “Mão Livre”. Ao empunhar uma arma com as duas mãos, o slot principal indica “Duas mãos” e o slot secundário também deixa de ser apresentado como livre. O estado visual é atualizado pelo renderizador oficial quando a rotina de empunhadura sincroniza o equipamento. Atualizada a versão de cache de `equipamentos.js` para `combate-v2-2`.
+
+**Validação:** teste focado `node --test --test-name-pattern="ícone da mão secundária" tests/combate-2.0-integracao.test.cjs` — **1/1 aprovado**; `node --check` em `combate-layout-v2.js`, `equipamentos.js` e no teste — aprovado; `git diff --check` — aprovado. A verificação foi automatizada; não houve conferência visual no navegador.
+
+### Revisão de bugs e pendências do Combate 2.0 (2026-11-19)
+
+**Escopo:** auditoria somente leitura dos módulos de combate, integração visual, equipamento e testes. O único acesso ao navegador foi leitura do DOM numa página sintética aberta em `127.0.0.1:8000`; não foram executadas interações nesta revisão.
+
+**Bug de regra identificado:** `obterBonusDanoEfetivoModalAtaque()` em `js/modules/combate.js` devolve zero para qualquer ataque marcado como ação bônus. Isso elimina também modificador negativo no ataque adicional da regra de duas armas. Pelo D&D 5e 2014, omite-se o modificador positivo, mas conserva-se o negativo. A regra está registrada em `docs/BUG_REPORT.md`, com correção recomendada que diferencia o caso de duas armas de outros ataques de ação bônus. Reprodução no navegador ainda pendente.
+
+**Lacunas registradas:** ataque desarmado ainda não está ligado como opção quando não há arma equipada; seleção de atributo em armas com Acuidade é automática pelo maior modificador, sem escolha manual; o tipo de ação é registrado, mas a disponibilidade/gasto de ação, ação bônus e reação não é controlado; sucesso/fracasso/cancelamento e consumo de munição carecem de validação ponta a ponta em navegador. A alternância versátil e o estado de duas mãos já possuem lógica; as solicitações restantes são sobretudo visibilidade e acabamento. Botões de ações rápidas e Outras ações registram histórico sem resolver efeitos, conforme o limite visual autorizado anteriormente.
+
+**Testes e estado:** `node --test tests/*.test.cjs` — **203/210 aprovados, 7 falhas**. Uma falha é expectativa CSS do card de iniciativa demasiado dependente da ordem literal das declarações; seis falhas decorrem do harness de rollback não localizar `coletarOutros()` e interromper antes dos casos. Não foram executados testes adicionais nesta revisão nem alterados módulos. Relatório detalhado e prioridades em `docs/propostas/REVISAO_PENDENCIAS_COMBATE_2026-11-19.md`.
+
+**TODO:** nenhum rascunho listado foi concluído ou promovido ao Roadmap nesta revisão; a nota de status foi adicionada sem apagar ou reescrever as ideias.
+
+**Git:** branch `main`, HEAD `ad4eb0166d3cde42065ad5e7ae8f0b9e73e74053`. Alterações de código, JSON de catálogo e SVGs já existentes foram preservados. Esta etapa modificou somente documentação; sem commit, push, merge ou deploy. E2 permanece parcial, G2 não aprovado e E3 não iniciada.
+
+### Continuidade E2.1 — modificador de dano em ataque bônus (2026-11-19)
+
+**Linha de base desta unidade:** branch `main`, HEAD `ad4eb0166d3cde42065ad5e7ae8f0b9e73e74053`, Node `v24.14.0`. A árvore já continha alterações locais extensas de Combate 2.0, persistência, catálogo de armaduras, testes e documentação; não foram descartadas. Nenhuma alteração staged foi identificada. O Combate 2.0 está concluído conforme decisão atual do responsável; esta unidade não reabriu a implementação visual.
+
+**Revisão E2:** E2.1 tinha cálculos puros e adaptadores parciais; E2.2 passou a integrar dano/cura com reservatórios separados no código local, incluindo testes focados reportados anteriormente; E2.3 ainda tem resolver puro sem aplicar resistências estruturadas ao alvo; E2.4 tem proteção do contexto de concentração e regressões em VM, porém falta confirmação integrada no navegador; E2.5 ainda não integra fontes contextuais aos fluxos; E2.6 permanece não iniciada. A E2 não satisfaz o gate G2.
+
+**Implementação desta unidade:** `js/domain/regras-combate.js` agora define `calcularBonusDanoEfetivo()`, operação pura para o modificador de dano. O adaptador em `js/modules/combate.js` identifica ataque bônus da mão secundária somente quando as duas mãos têm seleções distintas de armas. Nesse caso, o modificador positivo não é somado e o negativo é mantido. Mão principal vazia, escudo na mão secundária e ataque da mão principal não recebem essa exceção. O resumo de dano informa quando mantém o modificador negativo. Não houve mudança de dados persistidos, JSON, UI fora do fluxo do modal ou estado de personagem.
+
+**Testes:** `node --test tests/regras-combate.test.cjs` — **19/19 aprovados**; cobre helper de d20, adaptador de salvaguarda, modificadores positivos/negativos, mão vazia, escudo e magia, além das regressões E2.2–E2.4 no mesmo arquivo. `node --check js/domain/regras-combate.js`, `node --check js/modules/combate.js`, `node --check tests/regras-combate.test.cjs` e `git diff --check` restrito aos três arquivos — aprovados. Suíte completa `node --test tests/*.test.cjs` — **203/212 aprovados; 9 falharam**: três expectativas/ordenações de CSS da integração visual e seis falhas do harness de importação/rollback porque não encontra `coletarOutros()` antes de executar os cenários. Essas falhas permanecem sem correção e sem atribuição a regressão desta unidade.
+
+**Ressalvas:** não foi feita validação ponta a ponta em navegador. O adaptador identifica a estrutura de duas armas pelo uso de slots distintos, mas não determina automaticamente elegibilidade pela propriedade Leve nem características que ampliem essa regra; o projeto não possui nesta rota essa validação completa. Não declarar o bug visualmente reproduzido nem o E2.1 completo por esta unidade isolada.
+
+**Próximo passo:** validar em navegador sintético o ataque secundário com modificador negativo/positivo e revisar outros usos do cálculo puro para concluir E2.1. Em paralelo, fechar a validação integrada de E2.4. E2.2 deve seguir sua própria matriz de migração/round-trip; E2.3/E2.5/E2.6 continuam pendentes. G2 não aprovado, E3 não iniciada. Sem commit, push, merge ou deploy.

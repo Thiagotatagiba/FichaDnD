@@ -449,7 +449,7 @@ test('coleções ou itens malformados são recusados antes do aplicador', async 
 
 test('versões futuras e malformadas são rejeitadas antes do aplicador', async (t) => {
   const inputs = [
-    { fichaSchemaVersion: 2 },
+    { fichaSchemaVersion: 3 },
     { fichaSchemaVersion: 0 },
     { fichaSchemaVersion: '1' },
     { fichaSchemaVersion: 1.25 },
@@ -506,7 +506,7 @@ test('preparação profunda preserva aliases, metadados, nulls e estruturas desc
   };
   const prepared = prepare(harness, input);
 
-  assert.equal(prepared.fichaSchemaVersion, 1);
+  assert.equal(prepared.fichaSchemaVersion, 2);
   assert.equal(prepared.nomePlayer, 'Legada');
   assert.equal(prepared.schema_version, '1.0');
   assert.deepEqual(prepared.schema_notes, input.schema_notes);
@@ -558,7 +558,7 @@ test('preparação aceita valores null e estruturas aninhadas em propriedades de
     escudos: [{ escudo_nome: null, extensao: null }],
   };
   const prepared = prepare(harness, input);
-  assert.equal(prepared.fichaSchemaVersion, 1);
+  assert.equal(prepared.fichaSchemaVersion, 2);
   assert.equal(prepared.campoOpcional, null);
   assert.deepEqual(prepared.municoes, input.municoes);
   assert.deepEqual(prepared.escudos, input.escudos);
@@ -674,7 +674,7 @@ test('ficha legada incompleta válida chega uma vez ao aplicador sem herdar valo
   const received = JSON.parse(harness.run('receivedByApplier'));
   assert.equal(harness.run('applyCount'), 1);
   assert.deepEqual(harness.writes, [], 'pipeline de preparação não consulta DOM nem armazenamento');
-  assert.equal(received.fichaSchemaVersion, 1);
+  assert.equal(received.fichaSchemaVersion, 2);
   assert.equal(received.nomePlayer, 'Importada');
   assert.equal(received.jogador, 'Importada');
   assert.equal(Object.hasOwn(received, 'classeNivelID'), false);

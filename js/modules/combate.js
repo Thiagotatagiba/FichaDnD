@@ -24,7 +24,8 @@ function agendarFocoModalCombate(campo) {
       (window.__fichaImportacaoEpoch || 0) !== epochInicial ||
       window.__fichaImportacaoTransacaoAtiva ||
       !campo?.isConnected
-    ) return;
+    )
+      return;
     campo.focus();
   }, 0);
 }
@@ -128,6 +129,81 @@ function atualizarClasseArmaduraEquipada() {
 
   if (campoCA) campoCA.value = armaduraCA + outrosCA + escudoCA;
   if (emojiEscudo) emojiEscudo.classList.toggle("ativo", escudoCA > 0);
+
+  const indiceArmadura =
+    typeof normalizarIndiceEquipamento === "function"
+      ? normalizarIndiceEquipamento(armaduraEquipadaIndice)
+      : null;
+  const cardsArmadura = [
+    ...document.querySelectorAll(
+      '#listaArmaduras .item-card[data-tipo="armadura"]',
+    ),
+  ];
+  const cardArmadura =
+    indiceArmadura !== null ? cardsArmadura[indiceArmadura] : null;
+  let iconeArmadura = cardArmadura?.dataset.catalogoIcone?.trim() || "";
+  const catalogoIdArmadura = cardArmadura?.dataset.catalogoId?.trim() || "";
+
+  if (!iconeArmadura && catalogoIdArmadura) {
+    const catalogoArmaduras =
+      typeof estadoCatalogoArmaduras === "object"
+        ? estadoCatalogoArmaduras.dados
+        : null;
+    const origemArmadura = catalogoArmaduras?.itens?.find(
+      (item) =>
+        item.id === catalogoIdArmadura || item.idLegado === catalogoIdArmadura,
+    );
+    iconeArmadura =
+      typeof origemArmadura?.icone === "string"
+        ? origemArmadura.icone.trim()
+        : "";
+
+    if (iconeArmadura) {
+      cardArmadura.dataset.catalogoIcone = iconeArmadura;
+    } else if (typeof carregarCatalogoArmaduras === "function") {
+      carregarCatalogoArmaduras()
+        .then((dados) => {
+          const itemCatalogado = dados?.itens?.find(
+            (item) =>
+              item.id === catalogoIdArmadura ||
+              item.idLegado === catalogoIdArmadura,
+          );
+          if (
+            typeof itemCatalogado?.icone === "string" &&
+            itemCatalogado.icone.trim()
+          ) {
+            cardArmadura.dataset.catalogoIcone = itemCatalogado.icone;
+            atualizarClasseArmaduraEquipada();
+          }
+        })
+        .catch(() => {});
+    }
+  }
+
+  const imagemArmadura = document.getElementById("ataqueCaArmaduraArt");
+  const desenhoEscudo = document.querySelector(
+    "#combate .combat-v2-ac-shield-art",
+  );
+  const moldeEscudo = imagemArmadura?.closest(".shield");
+  if (imagemArmadura) {
+    if (iconeArmadura) {
+      imagemArmadura.hidden = false;
+      imagemArmadura.src = iconeArmadura;
+      if (desenhoEscudo) desenhoEscudo.hidden = true;
+      moldeEscudo?.classList.add("input-armadura");
+      imagemArmadura.onerror = () => {
+        imagemArmadura.hidden = true;
+        if (desenhoEscudo) desenhoEscudo.hidden = false;
+        moldeEscudo?.classList.remove("input-armadura");
+      };
+    } else {
+      imagemArmadura.hidden = true;
+      imagemArmadura.removeAttribute("src");
+      if (desenhoEscudo) desenhoEscudo.hidden = false;
+      moldeEscudo?.classList.remove("input-armadura");
+    }
+  }
+
   atualizarResumoAtaquesConjuracao();
 }
 
@@ -162,8 +238,94 @@ function atualizarResumoAtaquesConjuracao() {
 
   if (campoAtaqueCA) campoAtaqueCA.value = caBase;
   if (campoAtaqueEscudo) campoAtaqueEscudo.value = formatarCA(caEscudo);
-  if (emojiAtaqueEscudo)
+  if (emojiAtaqueEscudo) {
     emojiAtaqueEscudo.classList.toggle("ativo", caEscudo > 0);
+
+    let iconeEscudo = "";
+    const cardsEscudo = [
+      ...document.querySelectorAll(
+        '#listaEscudos .item-card[data-tipo="escudo"]',
+      ),
+    ];
+    const checkboxAtivo = document.querySelector(
+      "#lista-escudos-equipamento input:checked",
+    );
+    const indiceCheckbox = Number(checkboxAtivo?.dataset.index);
+    const valorSlotSecundario =
+      document.getElementById("arma2Nome")?.value || "";
+    const indiceSlot =
+      typeof extrairIndiceSlotEscudo === "function"
+        ? extrairIndiceSlotEscudo(valorSlotSecundario)
+        : null;
+    const indiceEscudo =
+      indiceSlot !== null
+        ? indiceSlot
+        : Number.isInteger(indiceCheckbox)
+          ? indiceCheckbox
+          : null;
+    const cardEscudo = indiceEscudo !== null ? cardsEscudo[indiceEscudo] : null;
+
+    if (cardEscudo) {
+      iconeEscudo = cardEscudo.dataset.catalogoEscudoIcone?.trim() || "";
+      if (!iconeEscudo) {
+        iconeEscudo =
+          cardEscudo
+            .querySelector('[data-campo="escudo_icone"]')
+            ?.value?.trim() || "";
+      }
+
+      if (!iconeEscudo) {
+        const catalogoId = cardEscudo.dataset.catalogoEscudoId?.trim() || "";
+        if (catalogoId && typeof estadoCatalogoEscudos === "object") {
+          const origem = estadoCatalogoEscudos.dados?.itens?.find(
+            (item) => item.id === catalogoId || item.idLegado === catalogoId,
+          );
+          iconeEscudo = origem?.icone?.trim() || "";
+        }
+        if (
+          !iconeEscudo &&
+          catalogoId &&
+          typeof carregarCatalogoEscudos === "function"
+        ) {
+          carregarCatalogoEscudos()
+            .then((dados) => {
+              const origem = dados?.itens?.find(
+                (item) =>
+                  item.id === catalogoId || item.idLegado === catalogoId,
+              );
+              if (origem?.icone) {
+                cardEscudo.dataset.catalogoEscudoIcone = origem.icone;
+                atualizarResumoAtaquesConjuracao();
+              }
+            })
+            .catch(() => {});
+        }
+      }
+    }
+
+    const imagemEscudo = emojiAtaqueEscudo.querySelector("img");
+    if (iconeEscudo) {
+      if (imagemEscudo) {
+        imagemEscudo.src = iconeEscudo;
+      } else {
+        const novaImagem = document.createElement("img");
+        novaImagem.className = "bonus-escudo-icone-svg";
+        novaImagem.alt = "";
+        novaImagem.setAttribute("aria-hidden", "true");
+        novaImagem.src = iconeEscudo;
+        novaImagem.onerror = () => {
+          emojiAtaqueEscudo.replaceChildren("🛡️");
+        };
+        emojiAtaqueEscudo.replaceChildren(novaImagem);
+      }
+      emojiAtaqueEscudo.classList.remove("glifo-escudo");
+      emojiAtaqueEscudo.classList.add("icone-escudo-catalogado");
+    } else {
+      emojiAtaqueEscudo.replaceChildren("🛡️");
+      emojiAtaqueEscudo.classList.remove("icone-escudo-catalogado");
+      emojiAtaqueEscudo.classList.add("glifo-escudo");
+    }
+  }
   if (campoAtaquePV) {
     const textoPV = campoAtaquePV.querySelector("span");
     if (textoPV) textoPV.textContent = "PV " + pvAtual;
@@ -221,7 +383,9 @@ const estadoTesteResistencia = {
   contextoConcentracao: null,
   filaConcentracao: [],
 };
-const tokenFechamentoResolvidoTesteResistencia = Symbol("resistencia-resolvida");
+const tokenFechamentoResolvidoTesteResistencia = Symbol(
+  "resistencia-resolvida",
+);
 
 function obterBonusTesteResistencia(chaveAtributo) {
   const chave = String(chaveAtributo || "").toLowerCase();
@@ -354,7 +518,8 @@ function abrirModalTesteResistencia(opcoes = {}) {
 
   const novoContexto = opcoes.contextoConcentracao || null;
   if (estadoTesteResistencia.contextoConcentracao) {
-    if (novoContexto) estadoTesteResistencia.filaConcentracao.push(novoContexto);
+    if (novoContexto)
+      estadoTesteResistencia.filaConcentracao.push(novoContexto);
     return false;
   }
 
@@ -374,7 +539,9 @@ function abrirModalTesteResistencia(opcoes = {}) {
   overlay.classList.add("ativo");
   overlay.setAttribute("aria-hidden", "false");
 
-  const botaoAbandonar = document.getElementById("modalTesteResistenciaAbandonar");
+  const botaoAbandonar = document.getElementById(
+    "modalTesteResistenciaAbandonar",
+  );
   const botaoVoltar = document.getElementById("modalTesteResistenciaCancelar");
   const concentracaoPendente = !!estadoTesteResistencia.contextoConcentracao;
   if (botaoAbandonar) {
@@ -382,7 +549,9 @@ function abrirModalTesteResistencia(opcoes = {}) {
     botaoAbandonar.classList.toggle("oculto", !concentracaoPendente);
   }
   if (botaoVoltar) {
-    botaoVoltar.textContent = concentracaoPendente ? "Continuar teste" : "Cancelar";
+    botaoVoltar.textContent = concentracaoPendente
+      ? "Continuar teste"
+      : "Cancelar";
   }
 
   document.getElementById("modalTesteResistenciaDado")?.focus();
@@ -392,8 +561,10 @@ function fecharModalTesteResistencia(opcoes = {}) {
   const overlay = document.getElementById("modalTesteResistenciaOverlay");
   if (!overlay) return;
 
-  if (estadoTesteResistencia.contextoConcentracao &&
-      opcoes.tokenResolucao !== tokenFechamentoResolvidoTesteResistencia) {
+  if (
+    estadoTesteResistencia.contextoConcentracao &&
+    opcoes.tokenResolucao !== tokenFechamentoResolvidoTesteResistencia
+  ) {
     document.getElementById("modalTesteResistenciaDado")?.focus();
     return false;
   }
@@ -404,7 +575,9 @@ function fecharModalTesteResistencia(opcoes = {}) {
   estadoTesteResistencia.contextoConcentracao = null;
   estadoTesteResistencia.filaConcentracao.length = 0;
 
-  const botaoAbandonar = document.getElementById("modalTesteResistenciaAbandonar");
+  const botaoAbandonar = document.getElementById(
+    "modalTesteResistenciaAbandonar",
+  );
   const botaoVoltar = document.getElementById("modalTesteResistenciaCancelar");
   if (botaoAbandonar) {
     botaoAbandonar.hidden = true;
@@ -421,7 +594,8 @@ function abandonarConcentracaoPendente() {
   const contexto = estadoTesteResistencia.contextoConcentracao;
   if (!contexto) return;
 
-  const concentracaoCorrespondente = concentracaoAtiva?.chave === contexto.chave &&
+  const concentracaoCorrespondente =
+    concentracaoAtiva?.chave === contexto.chave &&
     concentracaoAtiva?.instanciaId === contexto.instanciaId;
   const nome = obterNomeConcentracao(contexto.magia);
   adicionarRegistroHistoricoCombate(
@@ -446,15 +620,19 @@ function abandonarConcentracaoPendente() {
   } else if (avancarTesteConcentracaoNaFila()) {
     return;
   }
-  fecharModalTesteResistencia({ tokenResolucao: tokenFechamentoResolvidoTesteResistencia });
+  fecharModalTesteResistencia({
+    tokenResolucao: tokenFechamentoResolvidoTesteResistencia,
+  });
 }
 
 function avancarTesteConcentracaoNaFila() {
   let proximo = null;
   while (estadoTesteResistencia.filaConcentracao.length) {
     const candidato = estadoTesteResistencia.filaConcentracao.shift();
-    if (concentracaoAtiva?.chave === candidato.chave &&
-        concentracaoAtiva?.instanciaId === candidato.instanciaId) {
+    if (
+      concentracaoAtiva?.chave === candidato.chave &&
+      concentracaoAtiva?.instanciaId === candidato.instanciaId
+    ) {
       proximo = candidato;
       break;
     }
@@ -465,7 +643,9 @@ function avancarTesteConcentracaoNaFila() {
     );
   }
   if (!proximo) {
-    fecharModalTesteResistencia({ tokenResolucao: tokenFechamentoResolvidoTesteResistencia });
+    fecharModalTesteResistencia({
+      tokenResolucao: tokenFechamentoResolvidoTesteResistencia,
+    });
     return true;
   }
 
@@ -499,8 +679,10 @@ function confirmarTesteResistencia() {
   const contextoConcentracao = estadoTesteResistencia.contextoConcentracao;
 
   if (contextoConcentracao) {
-    if (concentracaoAtiva?.chave !== contextoConcentracao.chave ||
-        concentracaoAtiva?.instanciaId !== contextoConcentracao.instanciaId) {
+    if (
+      concentracaoAtiva?.chave !== contextoConcentracao.chave ||
+      concentracaoAtiva?.instanciaId !== contextoConcentracao.instanciaId
+    ) {
       adicionarRegistroHistoricoCombate(
         "Concentração",
         `teste pendente descartado: ${obterNomeConcentracao(contextoConcentracao.magia)} já não está em concentração ativa`,
@@ -537,7 +719,9 @@ function confirmarTesteResistencia() {
       estadoTesteResistencia.filaConcentracao.length = 0;
     }
 
-    fecharModalTesteResistencia({ tokenResolucao: tokenFechamentoResolvidoTesteResistencia });
+    fecharModalTesteResistencia({
+      tokenResolucao: tokenFechamentoResolvidoTesteResistencia,
+    });
     return;
   }
 
@@ -555,7 +739,9 @@ function confirmarTesteResistencia() {
     },
   );
 
-  fecharModalTesteResistencia({ tokenResolucao: tokenFechamentoResolvidoTesteResistencia });
+  fecharModalTesteResistencia({
+    tokenResolucao: tokenFechamentoResolvidoTesteResistencia,
+  });
 }
 
 function abrirItemCard(card) {
@@ -581,8 +767,8 @@ function fecharItemCard(card) {
 
 function atualizarTitulosInventario() {
   const contarItensPreenchidos = (seletor, campoNome, incluir = () => true) =>
-    Array.from(document.querySelectorAll(seletor)).filter((card) =>
-      card.querySelector(campoNome)?.value?.trim() && incluir(card),
+    Array.from(document.querySelectorAll(seletor)).filter(
+      (card) => card.querySelector(campoNome)?.value?.trim() && incluir(card),
     ).length;
 
   const contagens = {
@@ -608,7 +794,9 @@ function atualizarTitulosInventario() {
       total: contarItensPreenchidos(
         '#listaEscudos .item-card[data-tipo="escudo"]',
         '[data-campo="escudo_nome"]',
-        (card) => (card.querySelector('[data-campo="escudo_tipo"]')?.value || "Escudo") === "Escudo",
+        (card) =>
+          (card.querySelector('[data-campo="escudo_tipo"]')?.value ||
+            "Escudo") === "Escudo",
       ),
     },
     inventarioTituloVestimentas: {
@@ -617,7 +805,9 @@ function atualizarTitulosInventario() {
       total: contarItensPreenchidos(
         '#listaEscudos .item-card[data-tipo="escudo"]',
         '[data-campo="escudo_nome"]',
-        (card) => (card.querySelector('[data-campo="escudo_tipo"]')?.value || "Escudo") !== "Escudo",
+        (card) =>
+          (card.querySelector('[data-campo="escudo_tipo"]')?.value ||
+            "Escudo") !== "Escudo",
       ),
     },
     inventarioTituloOutros: {
@@ -637,7 +827,10 @@ function atualizarTitulosInventario() {
     const contador = titulo.querySelector(".armadura-titulo-contagem");
     if (nome && contador) {
       contador.textContent = String(info.total);
-      contador.setAttribute("aria-label", `Quantidade de ${info.nome.toLowerCase()}: ${info.total}`);
+      contador.setAttribute(
+        "aria-label",
+        `Quantidade de ${info.nome.toLowerCase()}: ${info.total}`,
+      );
       return;
     }
     titulo.textContent = `${info.emoji} ${info.nome} ${info.total}`;
@@ -788,13 +981,108 @@ function atualizarDetalheDadoDanoModal() {
   campoDetalhe.textContent = estadoAtaqueArma.danoFormula || "dano";
 }
 
+function obterArmaSelecionadaParaDuasArmas(slot) {
+  const valor = document.getElementById(`arma${slot}Nome`)?.value ?? "";
+  if (!/^\d+$/.test(valor)) return null;
+  const arma = coletarArmas?.()[Number(valor)];
+  if (!arma) return null;
+  const catalogoId = arma.catalogoId || "";
+  const definicao =
+    typeof estadoCatalogoArmas !== "undefined" &&
+    Array.isArray(estadoCatalogoArmas?.dados?.itens)
+      ? estadoCatalogoArmas.dados.itens.find(
+          (item) => item.id === catalogoId || item.idLegado === catalogoId,
+        )
+      : null;
+  return {
+    ...arma,
+    modo: arma.modo || arma.arma_modo || definicao?.modo || "",
+    descricaoEspecial:
+      arma.descricaoEspecial ||
+      arma.descricao_especial ||
+      definicao?.descricaoEspecial ||
+      "",
+  };
+}
+
+function obterNomesCaracteristicasDuasArmas() {
+  const nomes = [];
+  const categorias =
+    typeof talentosEstruturados === "object" && talentosEstruturados
+      ? Object.values(talentosEstruturados)
+      : [];
+  categorias.forEach((itens) => {
+    if (!Array.isArray(itens)) return;
+    itens.forEach((item) => {
+      if (typeof item === "string") nomes.push(item);
+      else if (typeof item?.nome === "string") nomes.push(item.nome);
+    });
+  });
+  ["talentoClasse", "talentoOutro"].forEach((id) => {
+    const texto = document.getElementById(id)?.value || "";
+    nomes.push(...texto.split(","));
+  });
+  return nomes
+    .map((nome) =>
+      String(nome)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim()
+        .toLowerCase(),
+    )
+    .filter(Boolean);
+}
+
+function possuiCaracteristicaDuasArmas(tipo) {
+  const nomes = obterNomesCaracteristicasDuasArmas();
+  const aliases =
+    tipo === "ambidestro"
+      ? ["ambidestro", "dual wielder"]
+      : [
+          "ataque com duas armas",
+          "ataque duas armas",
+          "luta com duas armas",
+          "combate com duas armas",
+          "two-weapon fighting",
+        ];
+  return nomes.some((nome) => aliases.includes(nome));
+}
+
+function ehAtaqueSecundarioComDuasArmas() {
+  if (estadoAtaqueArma.origem !== "arma" || estadoAtaqueArma.arma?.slot !== 2)
+    return false;
+  const valorPrincipal = document.getElementById("arma1Nome")?.value ?? "";
+  const valorSecundario = document.getElementById("arma2Nome")?.value ?? "";
+  if (
+    !/^\d+$/.test(valorPrincipal) ||
+    !/^\d+$/.test(valorSecundario) ||
+    valorPrincipal === valorSecundario
+  )
+    return false;
+  return RegrasCombate.ehArmaElegivelDuasArmas({
+    armaPrincipal: obterArmaSelecionadaParaDuasArmas(1),
+    armaSecundaria: obterArmaSelecionadaParaDuasArmas(2),
+    permiteArmasNaoLeves: possuiCaracteristicaDuasArmas("ambidestro"),
+  });
+}
+
+function permiteModificadorPositivoAtaqueSecundario() {
+  return (
+    ehAtaqueSecundarioComDuasArmas() && possuiCaracteristicaDuasArmas("estilo")
+  );
+}
+
 function obterBonusDanoEfetivoModalAtaque() {
-  if (estadoAtaqueArma.origem === "magia") {
-    return estadoAtaqueArma.danoModBase || 0;
-  }
-  return estadoAtaqueArma.tipoAcao === "Ação bônus"
-    ? 0
-    : estadoAtaqueArma.danoModBase || 0;
+  if (typeof RegrasCombate === "undefined") return 0;
+  return (
+    RegrasCombate.calcularBonusDanoEfetivo({
+      modificador: estadoAtaqueArma.danoModBase || 0,
+      origem: estadoAtaqueArma.origem,
+      tipoAcao: estadoAtaqueArma.tipoAcao,
+      ataqueSecundarioDuasArmas: ehAtaqueSecundarioComDuasArmas(),
+      permiteModificadorPositivo: permiteModificadorPositivoAtaqueSecundario(),
+    }) ?? 0
+  );
 }
 
 function atualizarDetalheBonusDanoModal() {
@@ -812,7 +1100,9 @@ function atualizarDetalheBonusDanoModal() {
     estadoAtaqueArma.origem === "magia"
       ? `(${estadoAtaqueArma.arma?.danoBonusRotuloMagia || "magia"})`
       : estadoAtaqueArma.tipoAcao === "Ação bônus"
-        ? "(sem MOD)"
+        ? modBase < 0 && ehAtaqueSecundarioComDuasArmas()
+          ? `(MOD negativo ${iconeAtributo})`
+          : "(sem MOD)"
         : `(${modBase}${iconeAtributo})`;
 }
 
@@ -1137,7 +1427,9 @@ function confirmarIniciativa() {
     return;
   }
 
-  const total = RegrasCombate.calcularTotalD20(dado, [obterBonusIniciativaAtual()]);
+  const total = RegrasCombate.calcularTotalD20(dado, [
+    obterBonusIniciativaAtual(),
+  ]);
   estadoCombateIniciativa.ativo = true;
   estadoCombateIniciativa.rodada = 1;
   estadoCombateIniciativa.posicao = posicao;
@@ -1192,7 +1484,11 @@ function atualizarRodadaModalAtaque() {
 
 function marcarTipoAcaoModalAtaque(tipoSelecionado = "Ação") {
   const ehMagia = estadoAtaqueArma.origem === "magia";
-  if (ehMagia) tipoSelecionado = obterTipoAcaoMagia(estadoAtaqueArma.magia, estadoAtaqueArma.aplicacaoEfeito);
+  if (ehMagia)
+    tipoSelecionado = obterTipoAcaoMagia(
+      estadoAtaqueArma.magia,
+      estadoAtaqueArma.aplicacaoEfeito,
+    );
   const checkboxes = document.querySelectorAll(
     "#modalAtaqueEtapaDado input[data-tipo-acao]",
   );
@@ -1213,7 +1509,10 @@ function marcarTipoAcaoModalAtaque(tipoSelecionado = "Ação") {
 
 function obterTipoAcaoSelecionadoModalAtaque() {
   if (estadoAtaqueArma.origem === "magia") {
-    return obterTipoAcaoMagia(estadoAtaqueArma.magia, estadoAtaqueArma.aplicacaoEfeito);
+    return obterTipoAcaoMagia(
+      estadoAtaqueArma.magia,
+      estadoAtaqueArma.aplicacaoEfeito,
+    );
   }
   const selecionado = document.querySelector(
     "#modalAtaqueEtapaDado input[data-tipo-acao]:checked",
@@ -1300,9 +1599,16 @@ function fecharModalAtaqueArma() {
 
 function abrirModalAtaqueArma(arma) {
   if (arma?.usaMunicao || arma?.propriedades?.municao) {
-    const municao = typeof buscarDadosMunicao === "function" ? buscarDadosMunicao(arma.arma_municao_id) : null;
+    const municao =
+      typeof buscarDadosMunicao === "function"
+        ? buscarDadosMunicao(arma.arma_municao_id)
+        : null;
     if (!municao || Number(municao.municao_quantidade) <= 0) {
-      alert(!municao ? "Selecione uma munição no equipamento de combate antes de atacar." : `Sem munição: ${municao.municao_nome} está com quantidade zero.`);
+      alert(
+        !municao
+          ? "Selecione uma munição no equipamento de combate antes de atacar."
+          : `Sem munição: ${municao.municao_nome} está com quantidade zero.`,
+      );
       return;
     }
   }
@@ -1432,7 +1738,9 @@ function abrirEtapaDanoAtaque() {
     estadoAtaqueArma.origem === "magia"
       ? estadoAtaqueArma.arma?.danoBonusRotuloMagia || "bônus da magia"
       : estadoAtaqueArma.tipoAcao === "Ação bônus"
-        ? "sem modificador em ação bônus"
+        ? bonusDanoEfetivo < 0 && ehAtaqueSecundarioComDuasArmas()
+          ? "modificador negativo mantido no ataque secundário com duas armas"
+          : "sem modificador em ação bônus"
         : tooltipDano;
   const rotuloDano =
     estadoAtaqueArma.origem === "magia" ? "Dano da magia" : "Dano da arma";
@@ -1581,7 +1889,10 @@ function atualizarSubAbaArmas() {
       const idMunicao = arma.arma_municao_id;
 
       if (idMunicao) {
-        const itemMunicao = typeof buscarDadosMunicao === "function" ? buscarDadosMunicao(idMunicao) : null;
+        const itemMunicao =
+          typeof buscarDadosMunicao === "function"
+            ? buscarDadosMunicao(idMunicao)
+            : null;
         const nomeMunicao = itemMunicao?.municao_nome;
         const qtdAtual = itemMunicao?.municao_quantidade;
 
@@ -1626,14 +1937,17 @@ function atualizarSubAbaArmas() {
     item.appendChild(topo);
     item.appendChild(detalhes);
 
-    const atributoAtaque = window.FichaDnDCombateLayoutV2?.atributosAtaque?.[arma.slot];
+    const atributoAtaque =
+      window.FichaDnDCombateLayoutV2?.atributosAtaque?.[arma.slot];
     if (atributoAtaque && !atributoAtaque.disabled) {
       const controle = document.createElement("label");
       controle.className = "arma-resumo-atributo";
       const rotulo = document.createElement("span");
       rotulo.textContent = "Atributo de ataque";
       controle.append(rotulo, atributoAtaque);
-      atributoAtaque.addEventListener("click", evento => evento.stopPropagation());
+      atributoAtaque.addEventListener("click", (evento) =>
+        evento.stopPropagation(),
+      );
       item.appendChild(controle);
     }
 
@@ -1664,10 +1978,19 @@ function aplicarDanoNoPV(valorInformado = null) {
   if (!Number.isFinite(dano) || dano < 0) return;
 
   const campoPV = document.getElementById("pvAtual");
-  if (!campoPV) return;
+  const campoPVTemporario = document.getElementById("pvTemporario");
+  if (!campoPV || typeof RegrasCombate === "undefined") return;
 
-  const atual = parseInt(campoPV.value, 10) || 0;
-  campoPV.value = String(Math.max(0, atual - dano));
+  const resultado = RegrasCombate.calcularPVDepoisDeDano({
+    pvAtuais: parseInt(campoPV.value, 10) || 0,
+    pvTemporarios: parseInt(campoPVTemporario?.value, 10) || 0,
+    dano,
+  });
+  if (!resultado) return;
+  campoPV.value = String(resultado.pvAtuais);
+  if (campoPVTemporario) {
+    campoPVTemporario.value = String(resultado.pvTemporarios);
+  }
   registrarHistoricoComandoCombate("Dano", dano);
   normalizarPontosDeVida();
   abrirTesteConcentracaoPorDano(dano);
@@ -1685,10 +2008,16 @@ function curarPV(valorInformado = null) {
   if (!Number.isFinite(cura) || cura < 0) return;
 
   const campoPV = document.getElementById("pvAtual");
-  if (!campoPV) return;
+  const campoPVTotal = document.getElementById("pvTotal");
+  if (!campoPV || !campoPVTotal || typeof RegrasCombate === "undefined") return;
 
-  const atual = parseInt(campoPV.value, 10) || 0;
-  campoPV.value = String(atual + cura);
+  const resultado = RegrasCombate.calcularPVDepoisDeCura({
+    pvAtuais: parseInt(campoPV.value, 10) || 0,
+    pvMaximos: parseInt(campoPVTotal.value, 10) || 0,
+    cura,
+  });
+  if (!resultado) return;
+  campoPV.value = String(resultado.pvAtuais);
   registrarHistoricoComandoCombate("Cura", cura);
   normalizarPontosDeVida();
 }
@@ -2078,6 +2407,8 @@ function descansoLongo() {
 
   if (campoPV && campoPVTotal) {
     campoPV.value = campoPVTotal.value;
+    const campoPVTemporario = document.getElementById("pvTemporario");
+    if (campoPVTemporario) campoPVTemporario.value = "0";
     normalizarPontosDeVida();
   }
 }
@@ -2144,7 +2475,9 @@ function inicializarModalSalvaguardaMorte() {
     const estavaAberto = !overlay.classList.contains("oculto");
     if (estavaAberto) {
       if (rolar) {
-        rolar.__geracaoRolagemSalvaguarda = Symbol("importacao-invalida-rolagem");
+        rolar.__geracaoRolagemSalvaguarda = Symbol(
+          "importacao-invalida-rolagem",
+        );
         rolar.classList.remove("rolando");
       }
       fechar();
@@ -2180,7 +2513,11 @@ function inicializarModalSalvaguardaMorte() {
     animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then(() => {
       if (rolar.__geracaoRolagemSalvaguarda !== geracaoRolagem) return;
       rolar.classList.remove("rolando");
-      if ((window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
+      if (
+        (window.__fichaImportacaoEpoch || 0) !== epochImportacao ||
+        window.__fichaImportacaoTransacaoAtiva
+      )
+        return;
     });
   });
   confirmar?.addEventListener("click", (evento) => {

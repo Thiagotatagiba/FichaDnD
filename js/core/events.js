@@ -60,8 +60,7 @@ function atualizarCoracoesVida() {
 
     if (vidaTemp > 0) {
       tempHeart.classList.remove("pv-heart-hidden");
-      const excesso = Math.max(0, vidaAtual - vidaMax);
-      const preenchimentoAzul = Math.max(0, Math.min(1, excesso / vidaTemp));
+      const preenchimentoAzul = vidaTemp > 0 ? 1 : 0;
       tempFill.style.clipPath = `inset(0 ${100 - preenchimentoAzul * 100}% 0 0)`;
     } else {
       tempHeart.classList.add("pv-heart-hidden");
@@ -78,13 +77,13 @@ function normalizarPontosDeVida() {
 
   let pvAtual = parseInt(String(campoAtual.value).replace(/[^\d-]/g, "")) || 0;
   let pvTotal = parseInt(String(campoTotal.value).replace(/[^\d-]/g, "")) || 0;
-  const pvTemporario = formatarPvTemporario();
+  formatarPvTemporario();
 
   if (pvAtual < 0) pvAtual = 0;
   if (pvTotal < 0) pvTotal = 0;
 
-  const limiteMaximo = pvTotal + pvTemporario;
-  if (pvAtual > limiteMaximo) pvAtual = limiteMaximo;
+  // PV temporários são um reservatório separado e não elevam o máximo normal.
+  if (pvAtual > pvTotal) pvAtual = pvTotal;
 
   campoAtual.value = pvAtual;
   campoTotal.value = pvTotal;

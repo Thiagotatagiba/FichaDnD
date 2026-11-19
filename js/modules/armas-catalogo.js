@@ -793,7 +793,7 @@ function dadosArmaDoCard(card) {
     id: origem?.id,
     nome: valor("nome") || "Arma",
     nomeOriginal: origem?.nomeOriginal,
-    icone: card.dataset.catalogoArmaIcone || origem?.icone || "",
+    icone: origem?.icone || card.dataset.catalogoArmaIcone || "",
     categoriaProficiencia: valor("arma_tipo"),
     modo:
       origem?.modo ||

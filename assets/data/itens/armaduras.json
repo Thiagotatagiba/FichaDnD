@@ -26,6 +26,7 @@
       "raridade": "comum",
       "nome": "Armadura Acolchoada",
       "nomeOriginal": "Padded",
+      "icone": "../assets/icons/armaduras/padded-armor.svg",
       "categoria": "leve",
       "custo": {
         "valor": 5,
@@ -50,6 +51,7 @@
       "raridade": "comum",
       "nome": "Armadura de Couro",
       "nomeOriginal": "Leather",
+      "icone": "../assets/icons/armaduras/leather-armor.svg",
       "categoria": "leve",
       "custo": {
         "valor": 10,
@@ -74,6 +76,7 @@
       "raridade": "comum",
       "nome": "Armadura de Couro Batido",
       "nomeOriginal": "Studded Leather",
+      "icone": "../assets/icons/armaduras/studded-leather-armor.svg",
       "categoria": "leve",
       "custo": {
         "valor": 45,
@@ -98,6 +101,7 @@
       "raridade": "comum",
       "nome": "Gibão de peles",
       "nomeOriginal": "Hide",
+      "icone": "../assets/icons/armaduras/hide-armor.svg",
       "categoria": "media",
       "custo": {
         "valor": 10,
@@ -122,6 +126,7 @@
       "raridade": "comum",
       "nome": "Camisão de malha",
       "nomeOriginal": "Chain Shirt",
+      "icone": "../assets/icons/armaduras/chain-shirt.svg",
       "categoria": "media",
       "custo": {
         "valor": 50,
@@ -146,6 +151,7 @@
       "raridade": "comum",
       "nome": "Brunea",
       "nomeOriginal": "Scale Mail",
+      "icone": "../assets/icons/armaduras/scale-mail.svg",
       "categoria": "media",
       "custo": {
         "valor": 50,
@@ -170,6 +176,7 @@
       "raridade": "comum",
       "nome": "Peitoral",
       "nomeOriginal": "Breastplate",
+      "icone": "../assets/icons/armaduras/breastplate.svg",
       "categoria": "media",
       "custo": {
         "valor": 400,
@@ -194,6 +201,7 @@
       "raridade": "comum",
       "nome": "Meia armadura",
       "nomeOriginal": "Half Plate",
+      "icone": "../assets/icons/armaduras/half-plate-armor.svg",
       "categoria": "media",
       "custo": {
         "valor": 750,
@@ -218,6 +226,7 @@
       "raridade": "comum",
       "nome": "Cota de anéis",
       "nomeOriginal": "Ring Mail",
+      "icone": "../assets/icons/armaduras/ring-mail.svg",
       "categoria": "pesada",
       "custo": {
         "valor": 30,
@@ -242,6 +251,7 @@
       "raridade": "comum",
       "nome": "Cota de malha",
       "nomeOriginal": "Chain Mail",
+      "icone": "../assets/icons/armaduras/chain-mail.svg",
       "categoria": "pesada",
       "custo": {
         "valor": 75,
@@ -266,6 +276,7 @@
       "raridade": "comum",
       "nome": "Cota de talas",
       "nomeOriginal": "Splint",
+      "icone": "../assets/icons/armaduras/splint-armor.svg",
       "categoria": "pesada",
       "custo": {
         "valor": 200,
@@ -290,6 +301,7 @@
       "raridade": "comum",
       "nome": "Placas",
       "nomeOriginal": "Plate",
+      "icone": "../assets/icons/armaduras/plate-armor.svg",
       "categoria": "pesada",
       "custo": {
         "valor": 1500,

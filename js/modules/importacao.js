@@ -1704,11 +1704,12 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
                 )
               : null;
           const catalogoArmaIcone =
-            typeof dadosArma.icone === "string"
-              ? dadosArma.icone
-              : typeof dadosArma.arma_icone === "string"
-                ? dadosArma.arma_icone
-                : origemArma?.icone || "";
+            origemArma?.icone ||
+            (typeof dadosArma.icone === "string" ? dadosArma.icone : "") ||
+            (typeof dadosArma.arma_icone === "string"
+              ? dadosArma.arma_icone
+              : "") ||
+            "";
           if (catalogoArmaIcone)
             novoCard.dataset.catalogoArmaIcone = catalogoArmaIcone;
 
@@ -1796,6 +1797,12 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
                 ? dadosArmadura.catalogoVersao
                 : 1,
             );
+            if (
+              typeof dadosArmadura.catalogoIcone === "string" &&
+              dadosArmadura.catalogoIcone.trim()
+            ) {
+              novoCard.dataset.catalogoIcone = dadosArmadura.catalogoIcone;
+            }
           }
           ["vestirMinutos", "retirarMinutos"].forEach((campo) => {
             const minutos = dadosArmadura[campo];

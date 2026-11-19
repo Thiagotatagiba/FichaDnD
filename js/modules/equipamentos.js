@@ -260,13 +260,36 @@ function atualizarPesoAtualInventario() {
 
 function atualizarListaArmasEquipamento() {
   const armasAtuais = coletarArmas();
+  const escudosAtuais = coletarEscudos();
+  const existemArmasMarcadas = document.querySelector(
+    "#lista-armas-equipamento input:checked",
+  );
+
+  // Em fichas sem armas marcadas, renderizarArmasEquipamento não chama a
+  // sincronização de combate. Atualiza as opções sem equipar nada e preserva
+  // qualquer valor atual que ainda exista no inventário.
+  if (!existemArmasMarcadas) {
+    atualizarSelectNomeArmaEquipada(
+      1,
+      armasAtuais,
+      document.getElementById("arma1Nome")?.value || "",
+      [],
+    );
+    atualizarSelectNomeArmaEquipada(
+      2,
+      armasAtuais,
+      document.getElementById("arma2Nome")?.value || "",
+      escudosAtuais,
+    );
+  }
+
   renderizarArmasEquipamento(armasAtuais);
   if (typeof atualizarResumosArmas === "function")
     atualizarResumosArmas(armasAtuais);
   renderizarArmadurasEquipamento(coletarArmaduras());
-  renderizarEscudosEquipamento(coletarEscudos());
+  renderizarEscudosEquipamento(escudosAtuais);
   if (typeof atualizarResumosEscudos === "function")
-    atualizarResumosEscudos(coletarEscudos());
+    atualizarResumosEscudos(escudosAtuais);
   if (typeof atualizarResumosVestimentas === "function")
     atualizarResumosVestimentas();
   renderizarOutrosEquipamento(coletarOutros());
@@ -1576,6 +1599,8 @@ function atualizarUIEmpunhadura(armas, escudos) {
   }
 
   reposicionarMenuEmpunhadura();
+  // Atualiza também os rótulos visuais da Combat 2.0 quando muda a empunhadura.
+  window.FichaDnDCombateLayoutV2?.atualizar();
 }
 
 function obterMenuEmpunhadura() {
@@ -2495,7 +2520,16 @@ function coletarArmas() {
     coletarFlagsCompartilhadasItem(card, arma, "arma");
 
     arma.catalogoId = card.dataset.catalogoArmaId || "";
-    arma.icone = card.dataset.catalogoArmaIcone || "";
+    const origemCatalogo =
+      arma.catalogoId &&
+      typeof estadoCatalogoArmas !== "undefined" &&
+      Array.isArray(estadoCatalogoArmas?.dados?.itens)
+        ? estadoCatalogoArmas.dados.itens.find(
+            (item) =>
+              item.id === arma.catalogoId || item.idLegado === arma.catalogoId,
+          )
+        : null;
+    arma.icone = origemCatalogo?.icone || card.dataset.catalogoArmaIcone || "";
 
     // Proficiencia
     arma.proficiente = indicadorProficiencia
@@ -2626,6 +2660,12 @@ function coletarArmaduras() {
     if (card.dataset.catalogoId) {
       armadura.catalogoId = card.dataset.catalogoId;
       armadura.catalogoVersao = Number(card.dataset.catalogoVersao) || 1;
+      if (
+        typeof card.dataset.catalogoIcone === "string" &&
+        card.dataset.catalogoIcone.trim()
+      ) {
+        armadura.catalogoIcone = card.dataset.catalogoIcone;
+      }
     }
     ["vestirMinutos", "retirarMinutos"].forEach((campo) => {
       const minutos = Number(card.dataset[campo]);
