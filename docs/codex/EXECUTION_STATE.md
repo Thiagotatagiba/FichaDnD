@@ -687,3 +687,11 @@ Ajustada a interpretação do pedido: a linha redundante “Equipamento selecion
 - git diff --check: aprovado após as atualizações documentais.
 
 **Gate:** E2.1 parcial; E2.4 concluída; E2 incompleta; G2 não aprovado; E3 não iniciada. Não houve push, merge ou deploy. Sem novo commit por mim.
+
+### Seletor estruturado de idiomas (2026-11-23)
+
+O campo livre de idiomas foi substituído por tags sem botão `×` e botão `+` com modal de checkboxes para seleção múltipla. A remoção é feita desmarcando o idioma no modal. “Outros” é o último checkbox e revela a entrada de nomes separados por vírgula. Duplicatas não diferenciam maiúsculas/minúsculas. O `textarea#proficienciaIdiomas` permanece oculto com o mesmo ID e serialização CSV para manter compatibilidade de importação/exportação. O importador chama o renderer depois de preencher os controles, pois atribui valores sem disparar eventos. JSONs originais de personagens não foram alterados.
+
+**Validação:** no navegador integrado, 19 checkboxes apareceram e “Outros” foi o último; Comum, Infernal e dois idiomas personalizados foram adicionados, reabertos com o estado marcado e atualizados após desmarcar Infernal. As tags não exibem controle de remoção e a desmarcação no modal remove a seleção. O modal permaneceu dentro do viewport de 320 px. Uma frase legada (`Comum, Élfico e um idioma adicional, Infernal`) foi exibida em três tags sem alterar o valor armazenado; o coletor classificou o campo como persistível e a deduplicação ignorou diferenças de caixa. `git diff --check` passou. `get_errors` não encontrou erros nos arquivos HTML/JS/teste; apontou somente uma regra CSS vazia preexistente no início de `css/base.css`. `node --test tests/idiomas-proficiencias.test.cjs` não executou porque `node` não está disponível no PATH nem nos caminhos usuais deste ambiente. A validação integrada foi limitada à página estática local; não foi feito round-trip de arquivo JSON.
+
+**Arquivos:** `ficha/Ficha_DnD_-_Tatagiba_1.0.html`, `css/base.css`, `js/modules/idiomas.js`, `js/modules/importacao.js`, `tests/idiomas-proficiencias.test.cjs` e este registro. Sem commit, push, merge ou alteração de dados de personagem.
