@@ -315,3 +315,37 @@ O usuário exportou e importou a ficha de Waldo, conferiu visualmente o resultad
 - A fixture de Waldo não foi modificada. O teste principal descrito acima é evidência manual relatada pelo usuário; os harnesses isolados anteriores não comprovam os cenários complementares pela interface. A validação funcional permanece aberta.
 
 **Arquivos de código alterados nesta correção:** `js/modules/magias.js`, `js/modules/habilidades.js`, `js/modules/importacao.js` e `js/core/storage.js`. Nenhum JSON original foi modificado. Nenhum commit ou push foi feito.
+
+## E2.1 — elegibilidade de duas armas e ataque bônus (2026-11-19)
+
+**Estado:** cálculo e adaptação local implementados; testes focados aprovados; validação sintética no Chromium concluída para modificadores positivo/negativo e seleção com Ambidestro explícito. E2.1 ainda parcial até cumprir a matriz inteira do plano.
+
+- **Regra coberta:** combate com duas armas requer armas corpo a corpo distintas, usadas com uma mão, e Leves; Ambidestro explicitamente registrado permite a exceção de arma de uma mão não Leve. Arma à distância e arma que exige duas mãos não se qualificam. Estilo de luta Ataque com Duas Armas só afeta o bônus positivo no dano, não a elegibilidade. O modificador positivo é omitido no ataque bônus secundário sem o estilo; o negativo é preservado.
+- **Evidência:** Chromium integrado com ficha sintética, Clava e Maça nos seletores oficiais. Com modificador +3, o resumo do ataque bônus mostrou +0/sem modificador; com modificador −2, manteve −2. Maça foi desabilitada na mão secundária sem Ambidestro e habilitada com a característica sintética; Ataque Duas Armas explicitamente registrado habilitou +3 no dano. Nenhum JSON de personagem real foi usado.
+- **Testes:** node --test tests/regras-combate.test.cjs tests/seletor-equipamentos.test.cjs — 26/26; node --check nos módulos/testes alterados — aprovado.
+- **Limites:** o projeto não expõe estado de montaria; regras de equipamento que dependam disso não são inferidas. A leitura da característica é por nome explícito nos campos existentes, sem seleção automática de classe/subclasse. Não foi alterado esquema persistido.
+
+## E2.4 — concentração após dano: validação integrada parcial (2026-11-19)
+
+- **Confirmado no navegador:** com PV regulares 7 e PV temporários 3, concentração sintética ativa, o fluxo oficial “Registrar dano” e “Aplicar dano” reduziu temporários 3→2, preservou PV regulares em 7, registrou dano e abriu a salvaguarda oficial de CON. Total 15 manteve a concentração; em teste anterior um total insuficiente encerrou e removeu a concentração.
+- **Confirmado em testes/casos anteriores desta execução:** resultado bem-sucedido mantém concentração; falha encerra a concentração e remove a condição associada; Escape não descarta teste pendente; fontes de dano formam fila separada; recast e respostas obsoletas não afetam a nova concentração.
+- **Estado:** os critérios específicos de E2.4 no plano (CD por fonte, sucesso/falha/abandono, registro, PV temporários, fila de fontes, troca de concentração e fechamento seguro do modal) estão verificados por testes focados e cenários sintéticos no Chromium. E2.4 concluída nesta rodada. A conjuração iniciada pela interface/catálogo pode ser coberta em integração mais ampla, mas não é pendência para o aceite desta subetapa. G2 continua não aprovado.
+
+## Triagem atual da suíte — 2026-11-19
+
+- **Estado atual:** 203/217 aprovados; 14 falhos.
+- **Seis falhas de harness preexistentes:** tests/importacao-rollback.test.cjs e cinco cenários em tests/importacao-f1-f2.test.cjs param ao tentar extrair function coletarOutros(), ausente/sem o delimitador esperado no código atual. Comparação com a linha de base limpa também tinha essas seis falhas. Não foi alterado o harness nesta tarefa.
+- **Uma falha de integração visual preexistente:** teste de ordem do manifest SVG em tests/combate-2.0-integracao.test.cjs. Já falhava na linha de base limpa.
+- **Duas falhas antigas do seletor foram corrigidas:** testes de exclusão de vestimentas e elegibilidade de Ambidestro agora passam na suíte focada e na suíte total.
+- **Sete expectativas visuais adicionais atuais:** escudo/CA, espelhamento da mão secundária, cards de mãos, PV, card de iniciativa, isolamento de estilos, campos compatíveis. Elas não falhavam na linha de base limpa comparada; são divergências atuais dos testes de integração da apresentação Combate 2.0. Não foram alteradas neste trabalho de regras e exigem inspeção separada antes de qualificá-las como bug de runtime.
+- **Próximo diagnóstico:** atualizar ou corrigir as expectativas visuais com evidência renderizada; revisar o contrato do extractor de rollback separadamente. Não reduzir/remover testes para fazer a suíte passar.
+
+Sem alterações em JSON protegido, sem commit/push/merge/deploy. Não declarar E2 ou G2 concluído.
+
+### Pendência normativa E2.1 — ação Ataque precedente (2026-11-19)
+
+- **Achado por inspeção:** `ehAtaqueSecundarioComDuasArmas()` verifica origem arma, slot secundário, seleções numéricas distintas e elegibilidade das duas armas; o modificador é tratado conforme o tipo “Ação bônus”. Não há registro confiável de que o personagem já tenha executado a ação Ataque com a arma leve elegível no mesmo turno.
+- **Impacto:** escolher “Ação bônus” para a arma secundária pode receber o cálculo de duas armas mesmo sem a ação Ataque precedente. A validade sequencial do ataque não pode ser demonstrada pela UI atual. Isso é um limite funcional confirmado por inspeção, embora não tenha sido reproduzido como fluxo bloqueado porque o controle de ações ainda não mantém esse estado.
+- **Prioridade sugerida:** 4/5 para a correção de regras antes de considerar E2.1/G2 completos.
+- **Correção recomendada:** integrar ao modelo de consumo de ações do turno (E2.6), validar que a ação Ataque anterior usou arma elegível e reiniciar o estado no avanço/fim do turno. Não criar persistência nem contador independente sem contrato.
+- **Referência normativa:** [D&D 5e Basic Rules 2014 — Combat, Two-Weapon Fighting](https://www.dndbeyond.com/sources/dnd/basic-rules-2014/combat), [Classes, Fighting Style: Two-Weapon Fighting](https://www.dndbeyond.com/sources/dnd/basic-rules-2014/classes).

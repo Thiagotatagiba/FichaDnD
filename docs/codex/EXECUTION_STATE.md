@@ -667,3 +667,23 @@ Ajustada a interpretação do pedido: a linha redundante “Equipamento selecion
 **Ressalvas:** não foi feita validação ponta a ponta em navegador. O adaptador identifica a estrutura de duas armas pelo uso de slots distintos, mas não determina automaticamente elegibilidade pela propriedade Leve nem características que ampliem essa regra; o projeto não possui nesta rota essa validação completa. Não declarar o bug visualmente reproduzido nem o E2.1 completo por esta unidade isolada.
 
 **Próximo passo:** validar em navegador sintético o ataque secundário com modificador negativo/positivo e revisar outros usos do cálculo puro para concluir E2.1. Em paralelo, fechar a validação integrada de E2.4. E2.2 deve seguir sua própria matriz de migração/round-trip; E2.3/E2.5/E2.6 continuam pendentes. G2 não aprovado, E3 não iniciada. Sem commit, push, merge ou deploy.
+
+### Retomada E2.1 / E2.4 — evidências 2026-11-19
+
+**Ponto de retomada:** branch main; HEAD observado eeb809abeb5f489f2331b77b5ffb720172c7e737. Trabalho local preexistente preservado, com tests/seletor-equipamentos.test.cjs modificado e não staged. O HEAD avançou durante a execução; nenhum comando de commit foi executado por mim.
+
+**E2.1 — ataque bônus da mão secundária:**
+- No Chromium integrado, com personagem sintético, Clava e Maça equipadas pelos controles de inventário oficiais, modificador positivo (+3) não foi adicionado ao dano do ataque bônus da mão secundária; modificador negativo (−2) permaneceu no dano. Uma origem de ação bônus que não seja o ataque secundário não recebe a exceção, coberta pelos testes de adaptador.
+- Elegibilidade automatizada cobre armas distintas, corpo a corpo, uma mão, propriedade Leve, arma à distância, arma de duas mãos, Ambidestro explícito e requisito textual especial de duas mãos. Sem Ambidestro, Maça não pôde ser selecionada na mão secundária; com a característica sintética nomeada explicitamente, pôde. A característica Ataque Duas Armas restaura somente o modificador positivo de dano.
+- **Pendência normativa:** a implementação não registra se o personagem já realizou a ação Ataque com arma elegível neste turno. O adaptador identifica armas/slot/tipo de ação, mas não valida a sequência exigida pela regra de duas armas. Resolver junto à representação de consumo de ações do turno (E2.6); não criar contador paralelo nesta subetapa.
+- Regras baseadas em montaria não são ativadas: o projeto não fornece estado de montaria para essa decisão. Não há mudança de contrato JSON ou persistência.
+
+**E2.4 — concentração concluída:** pelo fluxo oficial de dano, com PV regulares 7 e PV temporários 3, 1 ponto de dano reduziu somente PV temporários (3→2), preservou PV regulares em 7 e abriu a salvaguarda de CON. Resultado total 15 confirmou e manteve a concentração. Também foram exercitados sucesso, falha, abandono explícito, Escape/fechamento sem descarte, CD por fonte, fila de danos, recast e resposta de contexto obsoleto. Testes focados E2.4 passaram. Esta conclusão é somente da subetapa E2.4; não libera G2 nem conclui E2.
+
+**Verificações desta execução:**
+- node --test tests/regras-combate.test.cjs tests/seletor-equipamentos.test.cjs: 26/26 aprovados.
+- node --check para js/domain/regras-combate.js, js/modules/combate.js, js/modules/equipamentos.js, tests/regras-combate.test.cjs e tests/seletor-equipamentos.test.cjs: aprovado.
+- node --test tests/*.test.cjs: 203/217 aprovados, 14 falhos. Seis falhas do harness E1.4 não encontram function coletarOutros() no helper extraído. Oito expectativas visuais da integração Combate 2.0 falham. Na linha de base limpa (195/204), seis falhas do harness, uma falha de ordem do manifest e duas falhas do seletor já existiam. O seletor passa agora; a falha de manifest permanece; sete expectativas visuais adicionais estão falhando no estado atual e requerem triagem, sem atribuição causal a esta unidade.
+- git diff --check: aprovado após as atualizações documentais.
+
+**Gate:** E2.1 parcial; E2.4 concluída; E2 incompleta; G2 não aprovado; E3 não iniciada. Não houve push, merge ou deploy. Sem novo commit por mim.

@@ -37,7 +37,7 @@ test('Mão secundária: lista somente registros categorizados como escudo e mant
     criarValorSlotEscudo: (index) => `__escudo__${index}`,
   };
   vm.createContext(context);
-  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction podeEquiparNaSecundaria'), context);
+  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction possuiTalentoAmbidestro'), context);
   vm.runInContext(
     extract('function atualizarSelectNomeArmaEquipada(', '\nfunction getNomeArmaSeguro'),
     context,
@@ -128,8 +128,8 @@ test('Mão secundária: descarta seleção antiga de vestimenta e preserva regra
   };
   vm.createContext(context);
   vm.runInContext(extract('function obterTipoItemSecundarioArma(', '\nfunction ehEscudoEmpunhavel'), context);
-  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction podeEquiparNaSecundaria'), context);
-  vm.runInContext(extract('function obterEscudoEquipadoPorValor(', '\nfunction podeEquiparNaSecundaria'), context);
+  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction possuiTalentoAmbidestro'), context);
+  vm.runInContext(extract('function obterEscudoEquipadoPorValor(', '\nfunction possuiTalentoAmbidestro'), context);
   vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction limparSelecaoSecundariaEquipamento'), context);
 
   const escudos = [
@@ -168,4 +168,21 @@ test('Mão secundária: Ambidestro permite arma corpo a corpo de uma mão sem re
     Array.from(context.podeEquiparNaSecundaria({ tipo: 'duas_maos' }, 'duas_maos')),
     [],
   );
+});
+
+test('Ambidestro é reconhecido somente como talento nomeado explicitamente', () => {
+  const fields = { talentoOutro: { value: '' }, talentoClasse: { value: '' } };
+  const context = {
+    document: { getElementById: (id) => fields[id] || null },
+    talentosEstruturados: { classe: [], outros: [] },
+  };
+  vm.createContext(context);
+  vm.runInContext(extract('function possuiTalentoAmbidestro(', '\nfunction podeEquiparNaSecundaria'), context);
+  assert.equal(context.possuiTalentoAmbidestro(), false);
+  fields.talentoOutro.value = 'Ambidestro';
+  assert.equal(context.possuiTalentoAmbidestro(), true);
+  fields.talentoOutro.value = 'Usuário ambidestro em treinamento';
+  assert.equal(context.possuiTalentoAmbidestro(), false);
+  context.talentosEstruturados.outros.push({ nome: 'Dual Wielder' });
+  assert.equal(context.possuiTalentoAmbidestro(), true);
 });
