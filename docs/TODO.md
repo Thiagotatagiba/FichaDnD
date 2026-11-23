@@ -1,4 +1,3 @@
-
 # Banco de ideias — Ficha D&D
 
 Este arquivo é um espaço de captura para ideias ainda não avaliadas. Uma anotação aqui não é tarefa planejada, compromisso de implementação, prioridade ou prazo. Revise o código e a documentação antes de avaliar uma ideia. Quando aprovada, retire-a daqui e registre-a no `../ROADMAP.md`; bugs confirmados pertencem ao `BUG_REPORT.md`. Remova ideias descartadas, salvo se houver motivo útil para preservar esse histórico.
@@ -65,10 +64,12 @@ Ao selecionar um antecedente, apresentar a pergunta:
 A primeira característica cadastrada para cada antecedente será **Itens Iniciais**.
 
 **Primeira versão:**
+
 - Exibir os itens iniciais como texto descritivo.
 - Não adicionar automaticamente equipamentos ao inventário.
 
 **Evolução futura:**
+
 - Permitir selecionar os itens iniciais diretamente no catálogo de equipamentos.
 - Oferecer a possibilidade de adicioná-los ao inventário do personagem.
 
