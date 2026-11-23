@@ -790,6 +790,12 @@ function montarModalEscudo() {
       </form>
     </div>`;
   document.body.append(overlay);
+  overlay
+    .querySelector(".magia-modal-acoes")
+    .prepend(overlay.querySelector('[data-acao="empunhar"]'));
+  overlay
+    .querySelector(".magia-modal-topo")
+    .after(overlay.querySelector("#escudoModalCategoria"));
   overlay.querySelector('[data-acao="fechar"]').onclick = fecharModalEscudo;
   overlay.querySelector('[data-acao="editar"]').onclick = editarModalEscudo;
   overlay.querySelector('[data-acao="empunhar"]').onclick =
@@ -884,6 +890,9 @@ function renderizarModalEscudo() {
     );
   if (tags.childElementCount) categorias.append(tags);
   const visualizacao = document.getElementById("escudoModalVisualizacao");
+  const editar = document.querySelector(
+    '#escudoModalOverlay [data-acao="editar"]',
+  );
   visualizacao.replaceChildren(
     renderizarDetalhesEscudo(
       item,
@@ -909,7 +918,7 @@ function renderizarModalEscudo() {
       .querySelector('#escudoModalFormulario [data-acao="excluir"]')
       .click(),
   );
-  acoesRemocao.append(remover);
+  acoesRemocao.append(editar, remover);
   visualizacao.append(acoesRemocao);
   const formulario = document.getElementById("escudoModalFormulario");
   formulario.hidden = true;

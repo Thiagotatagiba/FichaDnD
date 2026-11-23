@@ -11,14 +11,14 @@
       href="https://fonts.googleapis.com/css2?family=Metamorphous&family=MedievalSharp&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../css/base.css?v=base-escudo-catalogo-5" />
+    <link rel="stylesheet" href="../css/base.css?v=armas-proficiencias-2" />
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/componentes.css" />
     <link rel="stylesheet" href="../css/abas.css" />
     <link rel="stylesheet" href="../css/modal.css" />
     <link rel="stylesheet" href="../css/responsivo.css" />
     <link rel="stylesheet" href="../css/xp-modal.css" />
-    <link rel="stylesheet" href="../css/card-itens.css?v=card-itens-5" />
+    <link rel="stylesheet" href="../css/card-itens.css?v=card-itens-6" />
     <link rel="stylesheet" href="../css/combate-2.0.css?v=combate-v2-32" />
   </head>
 
@@ -2165,8 +2165,19 @@
                 </div>
 
                 <div class="proficiencia-secao">
-                  <div class="proficiencia-subtitulo">Armas</div>
-                  <div class="armas-container">
+                  <div class="armas-individuais-titulo-linha">
+                    <button
+                      type="button"
+                      id="btnAdicionarProficienciaArma"
+                      class="armas-individuais-adicionar"
+                      aria-label="Selecionar proficiências com armas"
+                      aria-haspopup="dialog"
+                      aria-controls="armasProficienciasModal"
+                      title="Selecionar proficiências com armas"
+                    >+</button>
+                    <div class="proficiencia-subtitulo">Armas</div>
+                  </div>
+                  <div class="armas-container" hidden aria-hidden="true">
                     <div class="armas-opcoes">
                       <label
                         ><input
@@ -2185,17 +2196,37 @@
                         Marciais</label
                       >
                     </div>
-
                     <textarea
                       id="proficienciaArmas"
-                      class="proficiencia-texto"
-                      aria-label="Proficiências adicionais de armas"
+                      hidden
+                      aria-hidden="true"
                     ></textarea>
                   </div>
+                  <div
+                    id="armasProficienciasTags"
+                    class="armas-individuais-tags"
+                    aria-label="Proficiências com armas selecionadas"
+                  ></div>
                 </div>
                 <div class="proficiencia-secao">
-                  <div class="proficiencia-subtitulo">Armaduras</div>
-                  <div class="armadura-container">
+                  <div class="armaduras-titulo-linha">
+                    <button
+                      type="button"
+                      id="btnAdicionarProficienciaArmadura"
+                      class="armaduras-adicionar"
+                      aria-label="Adicionar proficiência de armadura ou escudo"
+                      aria-haspopup="dialog"
+                      aria-controls="armadurasModal"
+                      title="Adicionar proficiência de armadura ou escudo"
+                    >+</button>
+                    <div class="proficiencia-subtitulo">Armaduras e Escudos</div>
+                  </div>
+                  <div
+                    id="armadurasTags"
+                    class="armaduras-tags"
+                    aria-label="Proficiências com armaduras e escudos selecionadas"
+                  ></div>
+                  <div class="armadura-container" hidden aria-hidden="true">
                     <div class="armaduras-opcoes">
                       <label
                         ><input
@@ -2238,10 +2269,27 @@
                   </div>
 
                   <div class="proficiencia-secao">
-                    <div class="proficiencia-subtitulo">Ferramentas</div>
+                    <div class="ferramentas-titulo-linha">
+                      <button
+                        type="button"
+                        id="btnAdicionarProficienciaFerramenta"
+                        class="ferramentas-adicionar"
+                        aria-label="Pesquisar ferramentas para selecionar proficiências"
+                        aria-haspopup="dialog"
+                        aria-controls="ferramentasModal"
+                        title="Pesquisar proficiências de ferramentas"
+                      >+</button>
+                      <div class="proficiencia-subtitulo">Ferramentas</div>
+                    </div>
+                    <div
+                      id="ferramentasTags"
+                      class="ferramentas-tags"
+                      aria-label="Proficiências com ferramentas selecionadas"
+                    ></div>
                     <textarea
                       id="proficienciaFerramentas"
-                      class="proficiencia-texto"
+                      hidden
+                      aria-hidden="true"
                       aria-label="Proficiências com ferramentas"
                     ></textarea>
                   </div>
@@ -4235,6 +4283,193 @@
       </div>
     </div>
 
+    <div
+      id="armadurasModal"
+      class="modal-overlay-base armaduras-modal-overlay"
+      aria-hidden="true"
+      style="display: none;"
+    >
+      <div
+        class="modal-base armaduras-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="armadurasModalTitulo"
+        aria-describedby="armadurasModalDescricao"
+      >
+        <div class="modal-header-base">
+          <div>
+            <div id="armadurasModalTitulo" class="config-modal-titulo">Adicionar proficiências</div>
+            <div id="armadurasModalDescricao" class="modal-subtitulo">
+              Selecione armaduras, escudos ou informe outras proficiências.
+            </div>
+          </div>
+          <button
+            type="button"
+            id="btnFecharArmadurasModal"
+            class="modal-close-base"
+            aria-label="Fechar"
+          >×</button>
+        </div>
+        <div class="modal-body-base">
+          <div
+            id="armadurasOpcoes"
+            class="armaduras-seletor-opcoes"
+            role="group"
+            aria-label="Proficiências disponíveis de armaduras e escudos"
+          ></div>
+          <div id="armadurasPersonalizadasWrap" class="armaduras-personalizadas" hidden>
+            <label class="armaduras-modal-rotulo" for="armadurasPersonalizadas">Outras proficiências</label>
+            <input
+              type="text"
+              id="armadurasPersonalizadas"
+              placeholder="Separe os nomes por vírgula"
+              autocomplete="off"
+            />
+          </div>
+          <div class="armaduras-modal-acoes">
+            <button type="button" id="btnCancelarArmaduras" class="armaduras-botao-secundario">Cancelar</button>
+            <button type="button" id="btnConfirmarArmaduras" class="armaduras-botao-confirmar">Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="ferramentasModal"
+      class="modal-overlay-base ferramentas-modal-overlay"
+      aria-hidden="true"
+      style="display: none;"
+    >
+      <div
+        class="modal-base ferramentas-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ferramentasModalTitulo"
+        aria-describedby="ferramentasModalDescricao"
+      >
+        <div class="modal-header-base">
+          <div>
+            <div id="ferramentasModalTitulo" class="config-modal-titulo">Proficiências com ferramentas</div>
+            <div id="ferramentasModalDescricao" class="modal-subtitulo">
+              Pesquise e selecione as ferramentas com que o personagem é proficiente.
+            </div>
+          </div>
+          <button
+            type="button"
+            id="btnFecharFerramentasModal"
+            class="modal-close-base"
+            aria-label="Fechar pesquisa de ferramentas"
+          >×</button>
+        </div>
+        <div class="modal-body-base">
+          <label class="ferramentas-busca-rotulo" for="ferramentasBusca">Pesquisar ferramentas e kits</label>
+          <input
+            type="search"
+            id="ferramentasBusca"
+            class="ferramentas-busca"
+            placeholder="Nome em português ou inglês"
+            autocomplete="off"
+          />
+          <div id="ferramentasStatus" class="ferramentas-status" role="status" aria-live="polite"></div>
+          <div
+            id="ferramentasOpcoes"
+            class="ferramentas-opcoes"
+            role="group"
+            aria-label="Resultados de ferramentas com proficiência"
+          ></div>
+          <div class="ferramentas-personalizadas">
+            <label class="ferramentas-busca-rotulo" for="ferramentasPersonalizadas">Outras proficiências</label>
+            <input
+              type="text"
+              id="ferramentasPersonalizadas"
+              placeholder="Opcional; separe por vírgula"
+              autocomplete="off"
+            />
+          </div>
+          <div class="ferramentas-modal-acoes">
+            <button type="button" id="btnCancelarFerramentas" class="ferramentas-botao-secundario">Cancelar</button>
+            <button type="button" id="btnConfirmarFerramentas" class="ferramentas-botao-confirmar">Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="armasProficienciasModal"
+      class="modal-overlay-base armas-proficiencias-modal-overlay"
+      aria-hidden="true"
+      style="display: none;"
+    >
+      <div
+        class="modal-base armas-proficiencias-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="armasProficienciasModalTitulo"
+        aria-describedby="armasProficienciasModalDescricao"
+      >
+        <div class="modal-header-base">
+          <div>
+            <div id="armasProficienciasModalTitulo" class="config-modal-titulo">Proficiências com armas específicas</div>
+            <div id="armasProficienciasModalDescricao" class="modal-subtitulo">
+              Pesquise e selecione as armas com que o personagem é proficiente.
+            </div>
+          </div>
+          <button
+            type="button"
+            id="btnFecharArmasProficienciasModal"
+            class="modal-close-base"
+            aria-label="Fechar pesquisa de armas"
+          >×</button>
+        </div>
+        <div class="modal-body-base">
+          <div class="armas-proficiencias-categorias-titulo">Categorias</div>
+          <div
+            class="armas-proficiencias-categorias"
+            role="group"
+            aria-label="Proficiências por categoria de arma"
+          >
+            <label for="profArmaSimplesModal">
+              <input type="checkbox" id="profArmaSimplesModal" />
+              Armas simples
+            </label>
+            <label for="profArmaMarciaisModal">
+              <input type="checkbox" id="profArmaMarciaisModal" />
+              Armas marciais
+            </label>
+          </div>
+          <div class="armas-proficiencias-categorias-titulo">Armas específicas</div>
+          <label class="armas-proficiencias-busca-rotulo" for="armasProficienciasBusca">Pesquisar armas</label>
+          <input
+            type="search"
+            id="armasProficienciasBusca"
+            class="armas-proficiencias-busca"
+            placeholder="Nome em português ou inglês"
+            autocomplete="off"
+          />
+          <div id="armasProficienciasStatus" class="armas-proficiencias-status" role="status" aria-live="polite"></div>
+          <div
+            id="armasProficienciasOpcoes"
+            class="armas-proficiencias-opcoes"
+            role="group"
+            aria-label="Resultados de armas específicas"
+          ></div>
+          <div class="armas-proficiencias-personalizadas">
+            <label class="armas-proficiencias-busca-rotulo" for="armasProficienciasPersonalizadas">Outras proficiências</label>
+            <input
+              type="text"
+              id="armasProficienciasPersonalizadas"
+              placeholder="Opcional; separe por vírgula"
+              autocomplete="off"
+            />
+          </div>
+          <div class="armas-proficiencias-modal-acoes">
+            <button type="button" id="btnCancelarArmasProficiencias" class="armas-proficiencias-botao-secundario">Cancelar</button>
+            <button type="button" id="btnConfirmarArmasProficiencias" class="armas-proficiencias-botao-confirmar">Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="../js/core/helpers.js"></script>
     <script src="../js/modules/historico.js?v=modal-backdrop-policy-1"></script>
     <script src="../js/modules/combate-icons.js?v=icone-json-20261119"></script>
@@ -4244,11 +4479,11 @@
     <!-- ========================= -->
     <script src="../js/modules/equipamentos.js?v=outros-catalogo-2&combate-v2-3"></script>
     <script src="../js/modules/municoes-catalogo.js?v=municoes-card-12"></script>
-    <script src="../js/modules/armas-catalogo.js?v=municoes-3"></script>
-    <script src="../js/modules/armaduras-catalogo.js?v=modal-backdrop-policy-1"></script>
-    <script src="../js/modules/escudos-catalogo.js?v=modal-backdrop-policy-1"></script>
+    <script src="../js/modules/armas-catalogo.js?v=tags-abaixo-cabecalho-1"></script>
+    <script src="../js/modules/armaduras-catalogo.js?v=tags-abaixo-cabecalho-1"></script>
+    <script src="../js/modules/escudos-catalogo.js?v=tags-abaixo-cabecalho-1"></script>
     <script src="../js/modules/vestimentas-catalogo.js?v=vestimentas-review-polish-1"></script>
-    <script src="../js/modules/outros-catalogo.js?v=outros-catalogo-5"></script>
+    <script src="../js/modules/outros-catalogo.js?v=tags-abaixo-cabecalho-1"></script>
     <script src="../js/modules/ordenacao-itens.js?v=ordenacao-itens-1"></script>
 
     <!-- ========================= -->
@@ -4256,6 +4491,9 @@
     <!-- ========================= -->
     <script src="../js/core/storage.js?v=municoes-3"></script>
     <script src="../js/modules/idiomas.js?v=idiomas-modal-3"></script>
+    <script src="../js/modules/armaduras-proficiencias.js?v=armaduras-proficiencias-1"></script>
+    <script src="../js/modules/ferramentas-proficiencias.js?v=ferramentas-proficiencias-2"></script>
+    <script src="../js/modules/armas-proficiencias.js?v=armas-proficiencias-2"></script>
 
     <!-- ========================= -->
     <!-- ATRIBUTOS / PROFICIÊNCIAS -->

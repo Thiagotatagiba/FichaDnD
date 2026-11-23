@@ -16,6 +16,18 @@ const importSource = fs.readFileSync(
   path.join(root, "js/modules/importacao.js"),
   "utf8",
 );
+const proficiencySource = fs.readFileSync(
+  path.join(root, "js/modules/armas-proficiencias.js"),
+  "utf8",
+);
+const equipmentSource = fs.readFileSync(
+  path.join(root, "js/modules/equipamentos.js"),
+  "utf8",
+);
+const sheetHtml = fs.readFileSync(
+  path.join(root, "ficha/Ficha_DnD_-_Tatagiba_1.0.html"),
+  "utf8",
+);
 function contexto(extras = {}) {
   const ctx = vm.createContext({ ...extras });
   vm.runInContext(source, ctx);
@@ -96,8 +108,14 @@ test("importação restaura os dados visuais das armas catalogadas", () => {
     importSource,
     /novoCard\.dataset\.catalogoArmaIcone = catalogoArmaIcone/,
   );
-  assert.match(importSource, /const catalogoArmaIcone =\s*\n\s*origemArma\?\.icone/);
-  assert.doesNotMatch(source, /icone: card\.dataset\.catalogoArmaIcone \|\| origem\?\.icone/);
+  assert.match(
+    importSource,
+    /const catalogoArmaIcone =\s*\n\s*origemArma\?\.icone/,
+  );
+  assert.doesNotMatch(
+    source,
+    /icone: card\.dataset\.catalogoArmaIcone \|\| origem\?\.icone/,
+  );
 });
 
 test("a Besta Leve tem dano perfurante e as armas de distância declaram munição", () => {
@@ -194,6 +212,87 @@ test("busca ignora acentos e filtros respeitam categoria, modo e proficiência",
     ),
     14,
   );
+});
+
+test("proficiências específicas pesquisam armas e não substituem Simples/Marciais", () => {
+  const ctx = vm.createContext({
+    document: { getElementById: () => null },
+    window: {},
+  });
+  vm.runInContext(proficiencySource, ctx);
+  assert.equal(
+    vm.runInContext(
+      'temProficienciaArmaIndividual("longsword, custom weapon", "longsword", "Espada Longa")',
+      ctx,
+    ),
+    true,
+  );
+  assert.equal(
+    vm.runInContext(
+      'temProficienciaArmaIndividual("longsword", "pike", "Pique")',
+      ctx,
+    ),
+    false,
+  );
+  assert.match(sheetHtml, /id="profArmaSimples"/);
+  assert.match(sheetHtml, /id="profArmaMarciais"/);
+  assert.match(sheetHtml, /id="btnAdicionarProficienciaArma"/);
+  assert.match(sheetHtml, /Armas específicas/);
+  assert.match(sheetHtml, /<div class="armas-container" hidden/);
+  const modalMarkup = sheetHtml.slice(
+    sheetHtml.indexOf('id="armasProficienciasModal"'),
+    sheetHtml.indexOf(
+      "<script src=",
+      sheetHtml.indexOf('id="armasProficienciasModal"'),
+    ),
+  );
+  assert.match(modalMarkup, /id="profArmaSimplesModal"/);
+  assert.match(modalMarkup, /id="profArmaMarciaisModal"/);
+  assert.match(modalMarkup, /id="armasProficienciasBusca"/);
+  assert.match(proficiencySource, /arma\.icone/);
+  assert.match(proficiencySource, /window\.__temProficienciaArmaIndividual/);
+  const helper = equipmentSource.match(
+    /function getTemProficienciaArma\(tipo, armaId = "", nomeArma = ""\) \{[\s\S]*?\n\}/,
+  )?.[0];
+  assert.ok(
+    helper,
+    "helper deve consultar categoria e proficiência individual",
+  );
+  const verificacoes = {
+    profArmaSimples: { checked: false },
+    profArmaMarciais: { checked: false },
+  };
+  const helperContext = vm.createContext({
+    document: { getElementById: (id) => verificacoes[id] || null },
+    window: {
+      __temProficienciaArmaIndividual: (id, nome) =>
+        id === "pike" || nome === "Pique",
+    },
+  });
+  vm.runInContext(helper, helperContext);
+  assert.equal(
+    vm.runInContext(
+      'getTemProficienciaArma("Marcial", "pike", "Pique")',
+      helperContext,
+    ),
+    true,
+  );
+  assert.equal(
+    vm.runInContext(
+      'getTemProficienciaArma("Marcial", "longsword", "Espada Longa")',
+      helperContext,
+    ),
+    false,
+  );
+  verificacoes.profArmaSimples.checked = true;
+  assert.equal(
+    vm.runInContext(
+      'getTemProficienciaArma("Simples", "longbow", "Arco Longo")',
+      helperContext,
+    ),
+    true,
+  );
+  assert.match(importSource, /window\.__atualizarTagsArmasEspecificas\(\)/);
 });
 
 test("validador rejeita IDs duplicados, campos inconsistentes e propriedade sem munição", () => {

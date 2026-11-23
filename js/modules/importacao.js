@@ -1577,6 +1577,15 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
     if (typeof window.__atualizarTagsIdiomas === "function") {
       window.__atualizarTagsIdiomas();
     }
+    if (typeof window.__atualizarTagsArmaduras === "function") {
+      window.__atualizarTagsArmaduras();
+    }
+    if (typeof window.__atualizarTagsFerramentas === "function") {
+      window.__atualizarTagsFerramentas();
+    }
+    if (typeof window.__atualizarTagsArmasEspecificas === "function") {
+      window.__atualizarTagsArmasEspecificas();
+    }
 
     restaurarEstadosPericiaImportados(dados);
 

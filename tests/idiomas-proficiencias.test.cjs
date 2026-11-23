@@ -96,7 +96,7 @@ test("tags não têm botão X e permanecem editáveis pelo modal", () => {
   assert.doesNotMatch(moduloIdiomas, /idiomas-tag-remover/);
   assert.match(
     moduloIdiomas,
-    /const selecionados = obterCheckboxes\(\)\.filter\(\(checkbox\) => checkbox\.checked\)/,
+    /const selecionados = obterCheckboxes\(\)\.filter\(\s*\(checkbox\) => checkbox\.checked,\s*\)/,
   );
   assert.match(
     moduloIdiomas,
@@ -110,4 +110,47 @@ test("importação sincroniza as tags depois de preencher os campos antigos", ()
     "utf8",
   );
   assert.match(fonteImportacao, /window\.__atualizarTagsIdiomas\(\)/);
+});
+
+test("armaduras e escudos usam seletor visual sem remover os campos legados", () => {
+  assert.match(htmlFicha, /class="armaduras-titulo-linha"/);
+  assert.match(htmlFicha, /id="btnAdicionarProficienciaArmadura"/);
+  assert.match(
+    htmlFicha,
+    /<div class="proficiencia-subtitulo">Armaduras e Escudos<\/div>/,
+  );
+  [
+    "profArmaduraLeves",
+    "profArmaduraMedias",
+    "profArmaduraPesadas",
+    "profEscudos",
+    "proficienciaArmaduras",
+  ].forEach((id) => assert.match(htmlFicha, new RegExp(`id="${id}"`)));
+});
+
+test("armaduras preservam valores legados e importação atualiza as tags", () => {
+  const moduloArmaduras = fs.readFileSync(
+    path.join(raiz, "js/modules/armaduras-proficiencias.js"),
+    "utf8",
+  );
+  const fonteImportacao = fs.readFileSync(
+    path.join(raiz, "js/modules/importacao.js"),
+    "utf8",
+  );
+  const contexto = vm.createContext({
+    document: { getElementById: () => null },
+    window: {},
+  });
+  vm.runInContext(moduloArmaduras, contexto);
+
+  const resultado = JSON.parse(
+    vm.runInContext(
+      'JSON.stringify(separarProficienciasArmadura("Proficiência especial, outra" + String.fromCharCode(10) + "PROFICIÊNCIA ESPECIAL"))',
+      contexto,
+    ),
+  );
+  assert.deepEqual(resultado, ["Proficiência especial", "outra"]);
+  assert.match(fonteImportacao, /window\.__atualizarTagsArmaduras\(\)/);
+  assert.match(htmlFicha, /id="armadurasOpcoes"[^>]*role="group"/);
+  assert.match(htmlFicha, /id="armadurasModal"[\s\S]*?aria-modal="true"/);
 });

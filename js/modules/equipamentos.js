@@ -180,12 +180,17 @@ document.addEventListener("change", (e) => {
 });
 
 // ===== Arsenal cadastrado e inventario de armas =====
-function getTemProficienciaArma(tipo) {
-  if (tipo === "Simples")
-    return !!document.getElementById("profArmaSimples")?.checked;
-  if (tipo === "Marcial")
-    return !!document.getElementById("profArmaMarciais")?.checked;
-  return false;
+function getTemProficienciaArma(tipo, armaId = "", nomeArma = "") {
+  const proficientePorCategoria =
+    (tipo === "Simples" &&
+      !!document.getElementById("profArmaSimples")?.checked) ||
+    (tipo === "Marcial" &&
+      !!document.getElementById("profArmaMarciais")?.checked);
+  return (
+    proficientePorCategoria ||
+    (typeof window.__temProficienciaArmaIndividual === "function" &&
+      window.__temProficienciaArmaIndividual(armaId, nomeArma))
+  );
 }
 
 function getTemProficienciaArmadura(tipo) {
@@ -2238,14 +2243,11 @@ function atualizarProficienciaCard(card) {
 
   if (!selectTipo || !divP) return;
 
-  const tipo = selectTipo.value;
-  const profSimples = document.getElementById("profArmaSimples")?.checked;
-  const profMarcial = document.getElementById("profArmaMarciais")?.checked;
-
-  let temProficiencia = false;
-
-  if (tipo === "Simples" && profSimples) temProficiencia = true;
-  if (tipo === "Marcial" && profMarcial) temProficiencia = true;
+  const temProficiencia = getTemProficienciaArma(
+    selectTipo.value,
+    card.dataset.catalogoArmaId,
+    card.querySelector('[data-campo="nome"]')?.value,
+  );
 
   divP.classList.toggle("ativo", temProficiencia);
   divP.classList.toggle("nao", !temProficiencia);
@@ -2275,13 +2277,11 @@ function inicializarEventosArma(card) {
   function atualizarStatusP() {
     if (!divP || !selectTipo) return;
 
-    const tipo = selectTipo.value; // Pega "Simples" ou "Marcial"
-    const profSimples = document.getElementById("profArmaSimples")?.checked;
-    const profMarciais = document.getElementById("profArmaMarciais")?.checked;
-
-    let temProficiencia = false;
-    if (tipo === "Simples" && profSimples) temProficiencia = true;
-    if (tipo === "Marcial" && profMarciais) temProficiencia = true;
+    const temProficiencia = getTemProficienciaArma(
+      selectTipo.value,
+      card.dataset.catalogoArmaId,
+      card.querySelector('[data-campo="nome"]')?.value,
+    );
 
     // Se tem proficiência, removemos a classe "nao" (tira o X vermelho). Senão, colocamos.
     if (temProficiencia) {
@@ -2447,17 +2447,7 @@ function inicializarEventosArma(card) {
         .querySelectorAll('.item-card[data-tipo="arma"]:not(#armaModelo)')
         .forEach((card) => {
           const selectTipo = card.querySelector('[data-campo="arma_tipo"]');
-          const divP = card.querySelector(".item-proficiencia");
-
-          if (selectTipo && divP && selectTipo.value === tipoAlvo) {
-            if (el.checked) {
-              divP.classList.remove("nao");
-              divP.classList.add("ativo");
-            } else {
-              divP.classList.add("nao");
-              divP.classList.remove("ativo");
-            }
-          }
+          if (selectTipo?.value === tipoAlvo) atualizarProficienciaCard(card);
         });
       atualizarListaArmasEquipamento();
       sincronizarEquipamentosCombate();
@@ -2465,6 +2455,18 @@ function inicializarEventosArma(card) {
     });
   }
 });
+
+const campoProficienciaArmas = document.getElementById("proficienciaArmas");
+if (campoProficienciaArmas) {
+  ["input", "change"].forEach((evento) => {
+    campoProficienciaArmas.addEventListener(evento, () => {
+      document
+        .querySelectorAll('.item-card[data-tipo="arma"]:not(#armaModelo)')
+        .forEach(atualizarProficienciaCard);
+      atualizarListaArmasEquipamento();
+    });
+  });
+}
 
 ["profArmaduraLeves", "profArmaduraMedias", "profArmaduraPesadas"].forEach(
   (id) => {
@@ -2563,7 +2565,11 @@ function coletarArmas() {
     // Proficiencia
     arma.proficiente = indicadorProficiencia
       ? !indicadorProficiencia.classList.contains("nao")
-      : getTemProficienciaArma(arma.arma_tipo?.trim());
+      : getTemProficienciaArma(
+          arma.arma_tipo?.trim(),
+          card.dataset.catalogoArmaId,
+          card.querySelector('[data-campo="nome"]')?.value,
+        );
 
     armas.push(arma);
   });

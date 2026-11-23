@@ -903,6 +903,12 @@ function montarModalArmadura() {
       </form>
     </div>`;
   document.body.append(overlay);
+  overlay
+    .querySelector(".magia-modal-acoes")
+    .prepend(overlay.querySelector('[data-acao="equipar"]'));
+  overlay
+    .querySelector(".magia-modal-topo")
+    .after(overlay.querySelector("#armaduraModalCategoria"));
   overlay.querySelector('[data-acao="fechar"]').onclick = fecharModalArmadura;
   overlay.querySelector('[data-acao="editar"]').onclick = editarModalArmadura;
   overlay.querySelector('[data-acao="equipar"]').onclick = () => {
@@ -1026,6 +1032,9 @@ function renderizarModalArmadura() {
       criarElementoArmadura("span", "Sintonizada", "magia-modal-nivel"),
     );
   const visualizacao = document.getElementById("armaduraModalVisualizacao");
+  const editar = document.querySelector(
+    '#armaduraModalOverlay [data-acao="editar"]',
+  );
   visualizacao.replaceChildren(
     renderizarDetalhesArmadura(
       dados,
@@ -1050,7 +1059,7 @@ function renderizarModalArmadura() {
       .querySelector('#armaduraModalFormulario [data-acao="excluir"]')
       .click(),
   );
-  acoesRemocao.append(remover);
+  acoesRemocao.append(editar, remover);
   visualizacao.append(acoesRemocao);
   visualizacao.hidden = false;
   const form = document.getElementById("armaduraModalFormulario");

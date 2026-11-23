@@ -1030,6 +1030,11 @@ body.tema-classico
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+}
+.armadura-modal-categorias:not(:empty) {
+  margin-bottom: 12px;
 }
 .armadura-modal-categorias .magia-modal-nivel {
   margin-top: 0;
