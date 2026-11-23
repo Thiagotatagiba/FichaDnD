@@ -80,20 +80,22 @@ A primeira característica cadastrada para cada antecedente será **Itens Inicia
 
 Cada categoria terá um botão **+**, responsável por abrir um modal com as opções disponíveis.
 
-#### 2.1. Idiomas — Primeira implementação
+#### 2.1. Idiomas — Implementado (2026-11-23)
+
+**Status:** Implementado. A execução do teste automatizado e o round-trip de arquivo JSON permanecem pendentes.
 
 Na seção **Outras Proficiências — Idiomas**:
 
-- Substituir o campo de texto atual por uma área de **tags editáveis**.
-- Adicionar um botão **+** para abrir o modal de seleção de idiomas.
-- Apresentar uma lista de idiomas disponíveis, permitindo selecionar vários.
-- Incluir a opção **Outros**, com um campo para inserir idiomas personalizados.
-- Permitir informar múltiplos idiomas personalizados separados por vírgula.
-- Converter cada idioma selecionado ou digitado em uma tag individual.
-- Permitir remover qualquer idioma clicando no controle de exclusão da respectiva tag.
-- Impedir duplicações, inclusive quando houver diferenças de maiúsculas e minúsculas.
+- [x] Substituir o campo de texto atual por uma área de **tags**.
+- [x] Adicionar um botão **+** para abrir o modal de seleção de idiomas.
+- [x] Apresentar checkboxes dos idiomas disponíveis, permitindo selecionar vários.
+- [x] Incluir a opção **Outros** por último, com um campo para idiomas personalizados.
+- [x] Permitir informar múltiplos idiomas personalizados separados por vírgula.
+- [x] Converter cada idioma selecionado ou digitado em uma tag individual.
+- [x] Remover idiomas desmarcando-os no modal; as tags não têm botão `×`.
+- [x] Impedir duplicações, inclusive quando houver diferenças de maiúsculas e minúsculas.
 
-**Compatibilidade:** os idiomas já preenchidos nas fichas existentes deverão ser preservados e convertidos para a nova representação estruturada, sem perda de informações.
+**Compatibilidade — concluída:** idiomas já preenchidos nas fichas existentes são exibidos como tags sem alterar o campo CSV persistido. O round-trip completo por arquivo JSON ainda precisa de validação.
 
 #### 2.2. Armas, armaduras e ferramentas — Evolução futura
 

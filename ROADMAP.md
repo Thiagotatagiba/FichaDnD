@@ -65,6 +65,14 @@ A única exceção aprovada é a capacidade de carga: o padrão é Força × 7,5
 - Melhorar experiência de edição de ficha e usabilidade
 - Permitir melhor gestão de campanhas e personagens por perfil
 
+### Proficiências de idiomas — implementação realizada; validação final pendente (Fase 4)
+
+- **Estado:** Em andamento. A interface e a compatibilidade foram implementadas; a execução da suíte automatizada e o round-trip de arquivo JSON ainda não foram validados.
+- **Interface:** a seção Idiomas usa tags sem botão de remoção direta e um botão `+` que abre um modal com 19 checkboxes (18 idiomas catalogados e “Outros”). Desmarcar uma opção no modal remove o idioma; as escolhas atuais são marcadas ao reabrir.
+- **Idiomas personalizados:** “Outros” é a última opção e revela um campo que aceita vários nomes separados por vírgula. Duplicatas são ignoradas sem diferenciar maiúsculas de minúsculas.
+- **Compatibilidade:** `textarea#proficienciaIdiomas` permanece oculto, preservando o ID e a serialização CSV existentes. O importador atualiza as tags depois de preencher esse campo. Nenhum JSON de personagem foi alterado.
+- **Validação:** no navegador integrado, seleção, reabertura, desmarcação, tags, idiomas personalizados e viewport de 320 px foram verificados. `git diff --check` passou. O teste `tests/idiomas-proficiencias.test.cjs` foi criado, mas não executado porque Node não está disponível no ambiente; round-trip de JSON permanece pendente.
+
 ### Em andamento — catálogo próprio de munições
 
 - Separar munições da categoria Outros e posicionar a seção logo abaixo de Armas.
