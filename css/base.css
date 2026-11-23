@@ -1545,6 +1545,158 @@ body {
   box-sizing: border-box;
 }
 
+.idiomas-titulo-linha {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.idiomas-adicionar {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border: 1px solid #9a6b3f;
+  border-radius: 50%;
+  background: #fffaf2;
+  color: #6f3610;
+  font-size: 21px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.idiomas-adicionar:hover,
+.idiomas-adicionar:focus-visible {
+  background: #f3e3c5;
+}
+
+.idiomas-adicionar:focus-visible,
+.idiomas-modal-acoes button:focus-visible,
+.idiomas-opcao input:focus-visible {
+  outline: 2px solid #315f57;
+  outline-offset: 2px;
+}
+
+.idiomas-tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 30px;
+}
+
+.idiomas-vazio {
+  align-self: center;
+  color: #806b56;
+  font-size: 13px;
+}
+
+.idiomas-tag {
+  display: inline-flex;
+  max-width: 100%;
+  padding: 4px 9px;
+  border: 1px solid #c9ad8d;
+  border-radius: 6px;
+  background: #fffaf2;
+  color: #3f2712;
+  overflow-wrap: anywhere;
+}
+
+.idiomas-modal {
+  width: min(100%, 520px);
+}
+
+.idiomas-modal-rotulo {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--modal-title);
+  font-weight: 700;
+}
+
+.idiomas-opcoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 7px 10px;
+}
+
+.idiomas-opcao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 38px;
+  padding: 5px 9px;
+  border: 1px solid #c9ad8d;
+  border-radius: 6px;
+  background: #fffaf2;
+  color: #3f2712;
+  cursor: pointer;
+}
+
+.idiomas-opcao:has(input:checked) {
+  border-color: #315f57;
+  background: #e8f0eb;
+}
+
+.idiomas-opcao input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  margin: 0;
+  accent-color: #315f57;
+}
+
+.idiomas-opcao-outros {
+  grid-column: 1 / -1;
+}
+
+.idiomas-personalizados {
+  margin-top: 14px;
+}
+
+.idiomas-personalizados input {
+  width: 100%;
+  min-height: 40px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid #bda68c;
+  border-radius: 6px;
+  background: #fffaf2;
+  color: #3f2712;
+  font: inherit;
+}
+
+.idiomas-modal-acoes {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.idiomas-modal-acoes button {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid #9a6b3f;
+  border-radius: 6px;
+  background: #fffaf2;
+  color: #6f3610;
+  font: inherit;
+  cursor: pointer;
+}
+
+.idiomas-modal-acoes .idiomas-botao-confirmar {
+  border-color: #315f57;
+  background: #315f57;
+  color: #fff;
+}
+
+.idiomas-modal-acoes button:hover {
+  filter: brightness(0.96);
+}
+
 .talentos-card {
   min-height: 420px;
 }

@@ -1574,6 +1574,10 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
       preencherCampo(campo, dados[key]);
     }
 
+    if (typeof window.__atualizarTagsIdiomas === "function") {
+      window.__atualizarTagsIdiomas();
+    }
+
     restaurarEstadosPericiaImportados(dados);
 
     const nivelSalvoFicha = obterNivelSalvoFicha(dados);

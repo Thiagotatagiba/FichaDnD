@@ -2140,11 +2140,27 @@
 
               <div class="proficiencias-secoes">
                 <div class="proficiencia-secao">
-                  <div class="proficiencia-subtitulo">Idiomas</div>
+                  <div class="idiomas-titulo-linha">
+                    <button
+                      type="button"
+                      id="btnAdicionarIdioma"
+                      class="idiomas-adicionar"
+                      aria-label="Adicionar idioma"
+                      aria-haspopup="dialog"
+                      aria-controls="idiomasModal"
+                      title="Adicionar idioma"
+                    >+</button>
+                    <div class="proficiencia-subtitulo">Idiomas</div>
+                  </div>
+                  <div
+                    id="idiomasTags"
+                    class="idiomas-tags"
+                    aria-label="Idiomas selecionados"
+                  ></div>
                   <textarea
                     id="proficienciaIdiomas"
-                    class="proficiencia-texto"
-                    aria-label="Idiomas e outras proficiências"
+                    hidden
+                    aria-hidden="true"
                   ></textarea>
                 </div>
 
@@ -4166,6 +4182,57 @@
     <!-- ========================= -->
     <!-- UTILITÁRIOS -->
     <!-- ========================= -->
+    <div
+      id="idiomasModal"
+      class="modal-overlay-base idiomas-modal-overlay"
+      aria-hidden="true"
+      style="display: none;"
+    >
+      <div
+        class="modal-base idiomas-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="idiomasModalTitulo"
+        aria-describedby="idiomasModalDescricao"
+      >
+        <div class="modal-header-base">
+          <div>
+            <div id="idiomasModalTitulo" class="config-modal-titulo">Adicionar idiomas</div>
+            <div id="idiomasModalDescricao" class="modal-subtitulo">
+              Selecione um ou mais idiomas. Para nomes personalizados, escolha Outros.
+            </div>
+          </div>
+          <button
+            type="button"
+            id="btnFecharIdiomasModal"
+            class="modal-close-base"
+            aria-label="Fechar"
+          >×</button>
+        </div>
+        <div class="modal-body-base">
+          <div
+            id="idiomasOpcoes"
+            class="idiomas-opcoes"
+            role="group"
+            aria-label="Idiomas disponíveis"
+          ></div>
+          <div id="idiomasPersonalizadosWrap" class="idiomas-personalizados" hidden>
+            <label class="idiomas-modal-rotulo" for="idiomasPersonalizados">Outros idiomas</label>
+            <input
+              type="text"
+              id="idiomasPersonalizados"
+              placeholder="Separe os idiomas por vírgula"
+              autocomplete="off"
+            />
+          </div>
+          <div class="idiomas-modal-acoes">
+            <button type="button" id="btnCancelarIdiomas" class="idiomas-botao-secundario">Cancelar</button>
+            <button type="button" id="btnConfirmarIdiomas" class="idiomas-botao-confirmar">Adicionar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="../js/core/helpers.js"></script>
     <script src="../js/modules/historico.js?v=modal-backdrop-policy-1"></script>
     <script src="../js/modules/combate-icons.js?v=combate-v2-1"></script>
@@ -4186,6 +4253,7 @@
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
     <!-- ========================= -->
     <script src="../js/core/storage.js?v=municoes-3"></script>
+    <script src="../js/modules/idiomas.js?v=idiomas-modal-3"></script>
 
     <!-- ========================= -->
     <!-- ATRIBUTOS / PROFICIÊNCIAS -->
