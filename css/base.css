@@ -7578,7 +7578,8 @@ body {
 }
 
 /* TAGS */
-#cardClasseContainer .tag {
+#cardClasseContainer .tag,
+.consulta-caracteristica-conteudo .tag {
   background: #d6c7a8;
   padding: 3px 6px;
   border-radius: 4px;
@@ -7588,7 +7589,8 @@ body {
   transition: 0.2s;
 }
 
-#cardClasseContainer .tag:hover {
+#cardClasseContainer .tag:hover,
+.consulta-caracteristica-conteudo .tag:hover {
   background: #c0ad88;
 }
 

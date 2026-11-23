@@ -204,8 +204,9 @@ function abrirConsultaCaracteristicaClasse() {
   );
   if (!tabela || !conteudo || !overlay) return;
 
-  conteudo.innerHTML = "";
-  conteudo.appendChild(tabela.cloneNode(true));
+  const tabelaConsulta = tabela.cloneNode(true);
+  tabelaConsulta.querySelector("tbody")?.removeAttribute("id");
+  conteudo.replaceChildren(tabelaConsulta);
   overlay.classList.add("ativo");
   overlay.setAttribute("aria-hidden", "false");
 }
@@ -322,7 +323,7 @@ function importarJSONNoCard(conteudoJSON, origem = "JSON", classe = "") {
   document.getElementById("tituloClasse").textContent =
     data.nome || classe || "Classe";
   document.getElementById("nomeSubclasse").textContent = "";
-  montarTabela();
+  montarTabela("");
   carregarSubclasses();
 
   const subclasseFicha = document.getElementById("subclasse")?.value || "";
@@ -410,7 +411,9 @@ function classeLinhaNivelCard(nivelLinha, nivelAtual) {
   return "linha-futura";
 }
 
-function montarTabela() {
+function montarTabela(
+  subclasse = document.getElementById("selectSubclasse")?.value,
+) {
   const tbody = document.getElementById("tbodyClasse");
   if (!tbody || !dadosClasse) return;
 
@@ -419,14 +422,28 @@ function montarTabela() {
   tbody.innerHTML = "";
 
   const nivelAtual = obterNivelAtualClasseCard();
+  const regrasSubclasse = subclasse && dadosClasse.subclasses?.[subclasse];
   dadosClasse.niveis.forEach((n) => {
     const tr = document.createElement("tr");
     tr.classList.add(classeLinhaNivelCard(n.nivel, nivelAtual));
 
+    let texto = n.caracteristicas || "";
+    if (regrasSubclasse) {
+      texto = texto.replace(dadosClasse.TP_Subclasse, subclasse);
+      const regra = regrasSubclasse[parseInt(n.nivel)];
+      if (regra?.replace && texto.includes(regra.replace)) {
+        texto = texto.replace(regra.replace, regra.value);
+      }
+      if (regra?.add) {
+        const adicoes = regra.add.join(", ");
+        texto = texto ? `${texto}, ${adicoes}` : adicoes;
+      }
+    }
+
     tr.innerHTML = `
             <td>${n.nivel}</td>
             <td>${n.proficiencia}</td>
-            <td>${renderTags(n.caracteristicas)}</td>
+            <td>${renderTags(texto)}</td>
             <td>${n.truques ?? "–"}</td>
             ${renderSlots(n.magias)}
           `;
@@ -484,42 +501,29 @@ function aplicarSubclasse() {
 
   document.getElementById("nomeSubclasse").textContent = subclasse;
 
-  montarTabela();
-
-  if (!subclasse) return;
-
-  const linhas = document.querySelectorAll("#tbodyClasse tr");
-
-  linhas.forEach((tr, i) => {
-    const nivel = parseInt(dadosClasse.niveis[i].nivel);
-    let texto = dadosClasse.niveis[i].caracteristicas || "";
-
-    texto = texto.replace(dadosClasse.TP_Subclasse, subclasse);
-
-    const regra = dadosClasse.subclasses[subclasse][nivel];
-
-    if (regra) {
-      if (regra.replace && texto.includes(regra.replace)) {
-        texto = texto.replace(regra.replace, regra.value);
-      }
-
-      if (regra.add) {
-        if (texto) {
-          texto += ", " + regra.add.join(", ");
-        } else {
-          texto = regra.add.join(", ");
-        }
-      }
-    }
-
-    tr.children[2].innerHTML = renderTags(texto);
-  });
+  montarTabela(subclasse);
 }
 
 function abrirModal(nome) {
-  document.getElementById("modalTitulo").textContent = nome;
-
   const desc = dadosClasse.descricoes?.[nome] || "Sem descrição.";
+  const consulta = document.getElementById("consultaCaracteristicaClasseOverlay");
+  if (consulta?.classList.contains("ativo")) {
+    const dialogo = document.createElement("dialog");
+    dialogo.setAttribute("aria-label", nome);
+    dialogo.innerHTML = `
+      <h3></h3>
+      <p style="white-space: pre-line"></p>
+      <form method="dialog"><button type="submit" autofocus>Fechar</button></form>
+    `;
+    dialogo.querySelector("h3").textContent = nome;
+    dialogo.querySelector("p").textContent = desc;
+    dialogo.addEventListener("close", () => dialogo.remove(), { once: true });
+    consulta.appendChild(dialogo);
+    dialogo.showModal();
+    return;
+  }
+
+  document.getElementById("modalTitulo").textContent = nome;
   document.getElementById("modalTexto").textContent = desc;
 
   document.getElementById("modal").style.display = "flex";
