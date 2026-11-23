@@ -57,6 +57,122 @@ test('Mão secundária: lista somente registros categorizados como escudo e mant
   assert.equal(select.options.find((option) => option.value === '__escudo__2').textContent, '🛡️ Escudo +2 +2');
 });
 
+test('coletor exclui o template oculto para manter índice legado do escudo equipado', () => {
+  const cardModel = criarCardEscudo('', '');
+  cardModel.id = 'escudoModelo';
+  const cardReal = criarCardEscudo('Escudo de Aço', '+2');
+  const select = createSelect();
+  const context = {
+    document: {
+      querySelectorAll: (selector) =>
+        selector.includes(':not(#escudoModelo)')
+          ? [cardReal]
+          : [cardModel, cardReal],
+      getElementById: (id) => (id === 'arma2Nome' ? select : null),
+      createElement: createOption,
+    },
+    coletarFlagsCompartilhadasItem() {},
+    getTemProficienciaEscudo: () => true,
+    criarValorSlotEscudo: (index) => `__escudo__${index}`,
+    getNomeArmaSeguro: (arma) => arma?.nome || arma?.arma_nome || '',
+    extrairIndiceSlotEscudo: (value) => {
+      const match = /^__escudo__(\d+)$/.exec(value || '');
+      return match ? Number(match[1]) : null;
+    },
+  };
+  vm.createContext(context);
+  vm.runInContext(extract('function coletarEscudos() {', '// O card de "outros"'), context);
+  vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction possuiTalentoAmbidestro'), context);
+  vm.runInContext(extract('function obterEscudoEquipadoPorValor(', '\nfunction possuiTalentoAmbidestro'), context);
+  vm.runInContext(extract('function atualizarSelectNomeArmaEquipada(', '\nfunction getNomeArmaSeguro'), context);
+  vm.runInContext(extract('function normalizarNomeEquipadoSalvo(', '\nfunction resolverIndiceArmaSalva'), context);
+  vm.runInContext(extract('function resolverIndiceArmaSalva(', '\nfunction atualizarProficienciaCardArmadura'), context);
+
+  const escudos = context.coletarEscudos();
+  assert.deepEqual(Array.from(escudos, (item) => item.escudo_nome), ['Escudo de Aço']);
+  const valor = context.resolverIndiceArmaSalva(
+    { arma2EquipadaIndice: '__escudo__0', arma2Nome: 'Escudo de Aço' },
+    2,
+    [],
+    escudos,
+  );
+  assert.equal(valor, '__escudo__0');
+  context.atualizarSelectNomeArmaEquipada(2, [], valor, escudos);
+  assert.equal(select.value, '__escudo__0');
+  assert.equal(context.obterEscudoEquipadoPorValor(select.value, escudos).escudo_ca, '+2');
+
+  const armas = [
+    { arma_nome: 'Espada Longa' },
+    { arma_nome: 'Adaga' },
+  ];
+  const valorArmaLegada = context.resolverIndiceArmaSalva(
+    { arma2EquipadaIndice: '1', arma2Nome: 'Adaga' },
+    2,
+    armas,
+    escudos,
+  );
+  assert.equal(valorArmaLegada, 1, 'índice numérico legado de arma secundária permanece compatível');
+  context.atualizarSelectNomeArmaEquipada(2, armas, valorArmaLegada, escudos);
+  assert.equal(select.value, '1');
+
+  const semEquipamento = context.resolverIndiceArmaSalva({}, 2, armas, escudos);
+  assert.equal(semEquipamento, null);
+  context.atualizarSelectNomeArmaEquipada(2, armas, semEquipamento, escudos);
+  assert.equal(select.value, '', 'mão secundária vazia continua vazia sem valor salvo');
+});
+
+test('sincronização de slots reconcilia as marcas de escudo para arma, escudo e mão vazia', () => {
+  const arma1 = { value: '0' };
+  const arma2 = { value: '1' };
+  const weaponChecks = [0, 1].map((index) => ({ dataset: { index: String(index) }, checked: false }));
+  const shieldChecks = [0, 1].map((index) => ({ dataset: { index: String(index) }, checked: index === 0 }));
+  const context = {
+    document: {
+      getElementById: (id) => ({ arma1Nome: arma1, arma2Nome: arma2 })[id] || null,
+      querySelectorAll: (selector) =>
+        selector.includes('#lista-armas-equipamento') ? weaponChecks : shieldChecks,
+    },
+    extrairIndiceSlotEscudo: (value) => {
+      const match = /^__escudo__(\d+)$/.exec(value || '');
+      return match ? Number(match[1]) : null;
+    },
+  };
+  vm.createContext(context);
+  vm.runInContext(
+    extract('function sincronizarMarcacaoArmasPorSlots()', '\nfunction atualizarBloqueioMaosEquipamento'),
+    context,
+  );
+
+  context.sincronizarMarcacaoArmasPorSlots();
+  assert.deepEqual(shieldChecks.map((input) => input.checked), [false, false],
+    'arma secundária limpa a marca obsoleta de escudo');
+  assert.deepEqual(weaponChecks.map((input) => input.checked), [true, true]);
+
+  arma2.value = '__escudo__1';
+  context.sincronizarMarcacaoArmasPorSlots();
+  assert.deepEqual(shieldChecks.map((input) => input.checked), [false, true]);
+
+  arma2.value = '';
+  context.sincronizarMarcacaoArmasPorSlots();
+  assert.deepEqual(shieldChecks.map((input) => input.checked), [false, false],
+    'mão secundária vazia limpa as marcas de escudo');
+});
+
+function criarCardEscudo(nome, ca) {
+  const campos = [
+    { dataset: { campo: 'escudo_nome' }, value: nome },
+    { dataset: { campo: 'escudo_ca' }, value: ca },
+    { dataset: { campo: 'escudo_tipo' }, value: 'Escudo' },
+  ];
+  return {
+    id: '',
+    dataset: {},
+    _dadosOriginais: {},
+    querySelector: () => ({ classList: { contains: () => false } }),
+    querySelectorAll: () => campos,
+  };
+}
+
 test('atualizar inventário preenche os seletores de combate em ficha sem armas marcadas', () => {
   const principal = createSelect();
   const secundaria = createSelect();

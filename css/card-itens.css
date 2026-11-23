@@ -1410,6 +1410,26 @@ body.tema-classico
   padding-bottom: 5px;
   border-bottom: 1px solid rgba(111, 54, 16, 0.2);
 }
+.municao-card-titulo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.municao-icone {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  object-fit: contain;
+  vertical-align: middle;
+}
+.municao-icone-destaque {
+  width: 42px;
+  height: 42px;
+}
+body.tema-escuro .municao-icone {
+  filter: invert(1);
+}
 .municao-card-conteudo {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -1515,9 +1535,22 @@ body.tema-classico
 }
 .inventario-modal-acoes-inferior {
   display: flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 8px;
   width: 100%;
   margin: 12px 0 0;
+}
+.inventario-modal-acoes-inferior > .magia-modal-botao[data-acao="editar"] {
+  min-height: 36px;
+  white-space: nowrap;
+}
+.inventario-modal-acoes-inferior > .magia-modal-botao[data-acao="editar"]:hover {
+  background: var(--modal-button-hover);
+}
+.inventario-modal-acoes-inferior > .magia-modal-botao[data-acao="editar"]:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
 }
 .municao-catalogo-modal {
   width: min(920px, 94vw);

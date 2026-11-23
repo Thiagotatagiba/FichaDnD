@@ -106,10 +106,3 @@
         ctx.lineWidth = 2;
         ctx.stroke();
       }
-
-      window.addEventListener("beforeunload", function (e) {
-        if (!fichaFoiAlterada()) return;
-        e.preventDefault();
-        e.returnValue = "";
-      });
-    

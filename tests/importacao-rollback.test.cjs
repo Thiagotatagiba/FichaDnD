@@ -23,6 +23,8 @@ const ammoCatalogSource = read("js/modules/municoes-catalogo.js");
 const combatSource = read("js/modules/combate.js");
 const otherCatalogSource = read("js/modules/outros-catalogo.js");
 
+// Os demais testes isolam helpers delimitados por assinaturas; manter esse
+// utilitário para eles, mas não extrair os coletores de inventário do módulo.
 function extractFunction(source, signature, nextSignature) {
   const start = source.indexOf(signature);
   const end = source.indexOf(nextSignature, start);
@@ -30,29 +32,6 @@ function extractFunction(source, signature, nextSignature) {
     throw new Error(`Não foi possível extrair ${signature}`);
   return source.slice(start, end);
 }
-
-const equipmentFunctions = [
-  extractFunction(
-    equipmentSource,
-    "function coletarOutros() {",
-    "\n      function toggleArma",
-  ),
-  extractFunction(
-    equipmentSource,
-    "function coletarArmas() {",
-    "function atualizarProficienciaCardArmadura",
-  ),
-  extractFunction(
-    equipmentSource,
-    "function coletarArmaduras() {",
-    "function atualizarProficienciaCardEscudo",
-  ),
-  extractFunction(
-    equipmentSource,
-    "function coletarEscudos() {",
-    '// O card de "outros"',
-  ),
-];
 
 let restorationFailureArmed = false;
 
@@ -421,8 +400,8 @@ function createHarness() {
       if (selector.includes("[data-tema]")) return [];
       return [];
     },
-    querySelector() {
-      return null;
+    querySelector(selector) {
+      return this.querySelectorAll(selector)[0] || null;
     },
     createElement(tag) {
       return fakeElement("", tag);
@@ -531,6 +510,7 @@ function createHarness() {
     },
     setTimeout,
     clearTimeout,
+    setInterval() { return 0; },
     requestAnimationFrame(callback) {
       callback();
     },
@@ -563,11 +543,26 @@ function createHarness() {
   vm.runInContext(historySource, context, {
     filename: "js/modules/historico.js",
   });
-  equipmentFunctions.forEach((source, index) =>
-    vm.runInContext(source, context, {
-      filename: `equipment-collector-${index}`,
-    }),
+  // Execute o módulo real em um realm isolado e injete só os coletores oficiais.
+  // Isso evita extração textual e também evita substituir renderizadores e
+  // callbacks do harness por todo o restante do módulo de equipamentos.
+  const equipmentContext = vm.createContext({
+    document,
+    window,
+    console,
+    gerarId: (...args) => context.gerarId(...args),
+    coletarFlagsCompartilhadasItem: (...args) =>
+      context.coletarFlagsCompartilhadasItem(...args),
+  });
+  vm.runInContext(
+    equipmentSource,
+    equipmentContext,
+    { filename: "js/modules/equipamentos.js#rollback-harness" },
   );
+  context.coletarArmas = equipmentContext.coletarArmas;
+  context.coletarArmaduras = equipmentContext.coletarArmaduras;
+  context.coletarEscudos = equipmentContext.coletarEscudos;
+  context.coletarOutros = equipmentContext.coletarOutros;
   context.run(`
     var lastSnapshotError = null;
     var lastCapturedOther = null;
@@ -1699,6 +1694,11 @@ test("importação restaura identificador e ícone das armas catalogadas", async
       },
     ],
   });
+  assert.equal(
+    harness.run("completionResult.tipo"),
+    "sucesso",
+    JSON.stringify(harness.run("completionResult")),
+  );
   assert.equal(
     harness.run(
       "document.querySelector('#listaArmas .item-card[data-tipo=\\\"arma\\\"]')?.dataset.catalogoArmaId",

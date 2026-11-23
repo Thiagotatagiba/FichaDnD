@@ -1670,6 +1670,10 @@ body {
   overflow-wrap: anywhere;
 }
 
+.armas-proficiencias-modal-overlay {
+  z-index: 1000;
+}
+
 .idiomas-modal,
 .armaduras-modal,
 .ferramentas-modal,

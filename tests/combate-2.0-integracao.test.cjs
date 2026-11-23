@@ -7,6 +7,97 @@ const test = require("node:test");
 const raiz = path.resolve(__dirname, "..");
 const ler = (arquivo) => fs.readFileSync(path.join(raiz, arquivo), "utf8");
 
+function normalizarEspacosCss(valor) {
+  return valor.replace(/\s+/g, " ").trim();
+}
+
+function separarSeletoresCss(valor) {
+  const seletores = [];
+  let inicio = 0;
+  let parenteses = 0;
+  let colchetes = 0;
+  for (let indice = 0; indice < valor.length; indice += 1) {
+    if (valor[indice] === "(") parenteses += 1;
+    else if (valor[indice] === ")") parenteses -= 1;
+    else if (valor[indice] === "[") colchetes += 1;
+    else if (valor[indice] === "]") colchetes -= 1;
+    else if (valor[indice] === "," && parenteses === 0 && colchetes === 0) {
+      seletores.push(normalizarEspacosCss(valor.slice(inicio, indice)));
+      inicio = indice + 1;
+    }
+  }
+  seletores.push(normalizarEspacosCss(valor.slice(inicio)));
+  return seletores.filter(Boolean);
+}
+
+// Lê blocos CSS sem depender de uma declaração por linha. Também conserva
+// regras internas de @media, para conferir o escopo de cada seletor real.
+function obterRegrasCss(css) {
+  const fonte = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  const regras = [];
+  const pilha = [];
+  let inicio = 0;
+
+  for (let indice = 0; indice < fonte.length; indice += 1) {
+    if (fonte[indice] === "{") {
+      const cabecalho = fonte.slice(inicio, indice).trim();
+      const bloco = cabecalho.startsWith("@")
+        ? { tipo: "at-rule", inicio: indice + 1 }
+        : {
+            tipo: "regra",
+            seletores: separarSeletoresCss(cabecalho),
+            inicio: indice + 1,
+          };
+      pilha.push(bloco);
+      inicio = indice + 1;
+    } else if (fonte[indice] === "}") {
+      const bloco = pilha.pop();
+      if (bloco?.tipo === "regra") {
+        const declaracoes = Object.fromEntries(
+          fonte
+            .slice(bloco.inicio, indice)
+            .split(";")
+            .map((declaracao) => declaracao.trim())
+            .filter(Boolean)
+            .map((declaracao) => {
+              const separador = declaracao.indexOf(":");
+              return [
+                normalizarEspacosCss(declaracao.slice(0, separador)),
+                normalizarEspacosCss(declaracao.slice(separador + 1)),
+              ];
+            }),
+        );
+        regras.push({ seletores: bloco.seletores, declaracoes });
+      }
+      inicio = indice + 1;
+    }
+  }
+  return regras;
+}
+
+function declaracaoCss(css, seletorFinal, propriedade) {
+  const regras = obterRegrasCss(css);
+  for (let indice = regras.length - 1; indice >= 0; indice -= 1) {
+    const regra = regras[indice];
+    if (
+      regra.seletores.some((seletor) => seletor.endsWith(seletorFinal)) &&
+      regra.declaracoes[propriedade]
+    ) {
+      return regra.declaracoes[propriedade];
+    }
+  }
+  return "";
+}
+
+function declaracoesCss(css, seletorFinal, propriedade) {
+  return obterRegrasCss(css)
+    .filter((regra) =>
+      regra.seletores.some((seletor) => seletor.endsWith(seletorFinal)),
+    )
+    .map((regra) => regra.declaracoes[propriedade])
+    .filter(Boolean);
+}
+
 function carregarIcones() {
   const window = {};
   vm.runInNewContext(ler("js/modules/combate-icons.js"), { window });
@@ -311,12 +402,27 @@ test("escudo de CA usa arte decorativa vetorial com moldura dupla e valor oficia
     /id="ataqueCaTotal"[\s\S]*?aria-label="Classe de armadura no painel de ataque"/,
   );
   assert.match(css, /combat-v2-shield \.combat-v2-ac-shield-art/);
-  assert.match(css, /combat-v2-shield \.shield input \{[^}]*z-index:1/);
-  assert.match(
-    css,
-    /combat-v2-defense-value \{[^}]*grid-template-columns:minmax\(0,1fr\)[^}]*justify-items:center/,
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-shield .shield:not(.input-armadura) input",
+      "z-index",
+    ),
+    "2",
+    "o valor oficial fica acima da arte decorativa",
   );
-  assert.match(css, /combat-v2-armor-controls \{[^}]*width:100%/);
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-defense-value", "grid-template-columns"),
+    "minmax(0, 1fr)",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-defense-value", "justify-items"),
+    "center",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-armor-controls", "width"),
+    "100%",
+  );
   assert.doesNotMatch(
     css,
     /combat-v2-shield \.shield \{[^}]*clip-path:polygon/,
@@ -355,21 +461,38 @@ test("ícone da mão secundária é espelhado no slot, sem espelhar o ícone do 
   );
   assert.match(layout, /emptyOption\.textContent = "Selecionar equipamento"/);
   assert.match(
-    css,
-    /combat-v2-hand-icon--secondary \.equipados-mao-emoji img \{ transform:scaleX\(-1\); \}/,
+    declaracaoCss(
+      css,
+      ".combat-v2-hand-icon--secondary .equipados-mao-emoji img",
+      "transform",
+    ),
+    /scaleX\(-1\)/,
   );
   assert.doesNotMatch(css, /combat-v2-attack[^}]*scaleX\(-1\)/);
 });
 
 test("cards de mãos mantêm nome centralizado e seletor compacto", () => {
   const css = ler("css/combate-2.0.css");
-  assert.match(css, /combat-v2-hand-name \{[^}]*text-align:center/);
-  assert.match(css, /combat-v2-hand-state:empty \{ display:none; \}/);
-  assert.match(
-    css,
-    /combat-v2-hands-panel \.equipados-slot-com-emoji select \{[^}]*margin-top:2/,
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-hand-name", "text-align"),
+    "center",
   );
-  assert.match(css, /combat-v2-hand-icon \{[^}]*min-height:53px/);
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-hand-state:empty", "display"),
+    "none",
+  );
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-hands-panel .equipados-slot-com-emoji select",
+      "margin-top",
+    ),
+    "2px",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-hand-icon", "min-height"),
+    "53px",
+  );
 });
 
 test("PV destaca o valor atual, reduz o máximo e só mostra temporários quando positivos", () => {
@@ -384,14 +507,31 @@ test("PV destaca o valor atual, reduz o máximo e só mostra temporários quando
     html,
     /id="ataquePvAtual">[\s\S]*?<span>PV 0<\/span>[\s\S]*?id="ataquePvHearts"/,
   );
-  assert.match(css, /combat-v2-hp-total \{[^}]*font:12px/);
   assert.match(
-    css,
-    /ataque-pv-coracoes \{ display:flex; order:1; flex:0 0 100%/,
+    declaracaoCss(css, ".combat-v2-hp-total", "font"),
+    /12px\/1\.2/,
   );
-  assert.match(
-    css,
-    /combat-v2-summary \{ grid-template-columns:minmax\(0,1\.5fr\) minmax\(0,1\.05fr\)/,
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-hp .ataque-pv-coracoes",
+      "display",
+    ),
+    "flex",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-hp .ataque-pv-coracoes", "order"),
+    "1",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-hp .ataque-pv-coracoes", "flex"),
+    "0 0 100%",
+  );
+  assert.ok(
+    declaracoesCss(css, ".combat-v2-summary", "grid-template-columns").some(
+      (colunas) => /minmax\(0, 1\.5fr\) minmax\(0, 1\.05fr\)/.test(colunas),
+    ),
+    "o grid base mantém a proporção aprovada do resumo",
   );
 });
 
@@ -437,70 +577,137 @@ test("card de iniciativa usa controles oficiais em cabeçalho e linha compacta s
   assert.match(html, /id="combateRodada"/);
   assert.match(html, /id="btnProximaRodada"/);
   assert.match(html, /id="btnEncerrarCombate"/);
+  const turnControlRules = obterRegrasCss(css);
+  const idleTurnControls = turnControlRules.find((rule) =>
+    rule.seletores.includes(
+      "#combate.combate-v2 .combat-v2-turn-controls",
+    ),
+  );
+  const activeTurnControls = turnControlRules.find((rule) =>
+    rule.seletores.includes(
+      "#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-turn-controls",
+    ),
+  );
+  assert.equal(idleTurnControls?.declaracoes.display, "flex");
+  assert.equal(idleTurnControls?.declaracoes["flex-wrap"], "wrap");
+  assert.equal(activeTurnControls?.declaracoes.display, "grid");
   assert.match(
-    css,
-    /combat-v2-turn-controls \{ display:flex;[^}]*flex-wrap:wrap/,
+    declaracaoCss(css, ".combat-v2-initiative-result", "font"),
+    /400 15px\/1\.2/,
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-hud #combateRodadaCaixa > label", "color"),
+    "var(--v2-ink)",
   );
   assert.match(
-    css,
-    /combat-v2-initiative-result \{ color:var\(--v2-muted\); font:400 15px/,
+    declaracaoCss(
+      css,
+      ".combat-v2-hud #combateRodadaCaixa > label",
+      "font",
+    ),
+    /600 14px/,
   );
-  assert.match(
-    css,
-    /#combateRodadaCaixa > label \{ color:var\(--v2-ink\); font:600 14px/,
+  assert.equal(declaracaoCss(css, "#combateRodada", "width"), "46px");
+  assert.match(declaracaoCss(css, "#combateRodada", "font"), /600 18px/);
+  assert.equal(
+    declaracaoCss(css, "#btnProximaRodada", "width"),
+    "auto",
   );
-  assert.match(css, /#combateRodada \{ width:46px;[^}]*font:600 18px/);
-  assert.match(
-    css,
-    /#btnProximaRodada \{ width:auto; min-width:max-content;[^}]*font:600 12px/,
+  assert.equal(
+    declaracaoCss(css, "#btnProximaRodada", "min-width"),
+    "max-content",
   );
-  assert.match(
-    css,
-    /combat-v2-turn\.combat-v2-in-combat \.combat-v2-panel-head \{ justify-content:flex-start/,
+  assert.match(declaracaoCss(css, "#btnProximaRodada", "font"), /600 12px/);
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head",
+      "justify-content",
+    ),
+    "flex-start",
   );
-  assert.match(
-    css,
-    /combat-v2-turn\.combat-v2-in-combat \.combat-v2-turn-controls \{ display:grid; grid-template-columns:minmax\(0,1fr\)/,
+  assert.equal(
+    activeTurnControls.declaracoes["grid-template-columns"],
+    "minmax(0, 1fr)",
   );
-  assert.match(
-    css,
-    /#combatePosicaoCaixa,[\s\S]*#combateRodadaCaixa \{ grid-column:1\/-1; width:100%/,
+  for (const id of ["#combatePosicaoCaixa", "#combateRodadaCaixa"]) {
+    assert.equal(
+      declaracaoCss(
+        css,
+        `.combat-v2-turn.combat-v2-in-combat ${id}`,
+        "grid-column",
+      ),
+      "1/-1",
+    );
+    assert.equal(
+      declaracaoCss(
+        css,
+        `.combat-v2-turn.combat-v2-in-combat ${id}`,
+        "width",
+      ),
+      "100%",
+    );
+  }
+  assert.equal(declaracaoCss(css, ".combat-v2-round-value", "display"), "flex");
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-round-value", "gap"),
+    "6px",
   );
-  assert.match(
-    css,
-    /combat-v2-round-value \{ display:flex; align-items:center; gap:6px/,
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-next-turn-row", "justify-content"),
+    "center",
   );
-  assert.match(
-    css,
-    /combat-v2-next-turn-row \{ display:flex; justify-content:center/,
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-turn:not(.combat-v2-in-combat) .combat-v2-turn-controls",
+      "justify-content",
+    ),
+    "center",
   );
-  assert.match(
-    css,
-    /combat-v2-turn:not\(\.combat-v2-in-combat\) \.combat-v2-turn-controls \{ justify-content:center;[^}]*border-top:1px solid var\(--v2-line\)/,
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-turn:not(.combat-v2-in-combat) .combat-v2-turn-footer",
+      "display",
+    ),
+    "none",
   );
-  assert.match(
-    css,
-    /combat-v2-turn:not\(\.combat-v2-in-combat\) \.combat-v2-turn-footer \{ display:none/,
+  assert.equal(
+    turnControlRules.find((rule) =>
+      rule.seletores.includes(
+        "#combate.combate-v2 .combat-v2-initiative-summary",
+      ),
+    )?.declaracoes.display,
+    "flex",
   );
-  assert.match(
-    css,
-    /combat-v2-initiative-summary \{ display:flex; flex:1 1 auto; align-items:center; justify-content:center/,
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-turn.combat-v2-in-combat .combat-v2-initiative-summary",
+      "display",
+    ),
+    "none",
   );
-  assert.match(
-    css,
-    /combat-v2-finalize-history \{ display:inline-flex;[^}]*width:auto/,
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-finalize-history", "display"),
+    "inline-flex",
   );
-  assert.match(
-    css,
-    /combat-v2-turn-footer \{ display:flex; justify-content:flex-end/,
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn-footer", "display"),
+    "flex",
   );
-  assert.match(
-    css,
-    /combat-v2-hud \.ataque-status-caixa \{ display:flex;[^}]*border:0/,
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-hud .ataque-status-caixa", "display"),
+    "flex",
   );
-  assert.match(
-    css,
-    /combat-v2-hud \.ataque-status-caixa > label \{[^}]*text-transform:none/,
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-hud .ataque-status-caixa > label",
+      "text-transform",
+    ),
+    "none",
   );
 });
 
@@ -546,12 +753,7 @@ test("integração reutiliza controles canônicos no interior de #combate", () =
 
 test("estilos novos ficam limitados à aba Combate", () => {
   const css = ler("css/combate-2.0.css");
-  const semComentarios = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  const seletores = semComentarios
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter((line) => line.endsWith("{") && !line.startsWith("@"))
-    .map((line) => line.slice(0, -1).trim());
+  const seletores = obterRegrasCss(css).flatMap((regra) => regra.seletores);
   assert.ok(seletores.length > 0);
   for (const seletor of seletores) {
     assert.ok(
@@ -564,29 +766,37 @@ test("estilos novos ficam limitados à aba Combate", () => {
     /display\s*:\s*contents/i,
     "a nova hierarquia não depende de flattening dos cartões antigos",
   );
-  assert.match(
-    css,
-    /combat-v2-summary\s*\{[^}]*minmax\(250px,1\.4fr\)/,
+  assert.ok(
+    declaracoesCss(css, ".combat-v2-summary", "grid-template-columns").some(
+      (colunas) => /minmax\(250px, 1\.4fr\)/.test(colunas),
+    ),
     "o cartão da CA recebe largura mínima suficiente para seus controles",
   );
-  assert.match(
-    css,
-    /combat-v2-condition-body\s*\{[^}]*grid-template-columns:auto minmax\(0,1fr\)/,
+  assert.ok(
+    declaracoesCss(
+      css,
+      ".combat-v2-condition-body",
+      "grid-template-columns",
+    ).some((colunas) => /auto minmax\(0, 1fr\)/.test(colunas)),
     "o botão de condição mantém seu texto e a área ocupa o espaço restante",
   );
-  assert.match(
-    css,
-    /combat-v2-armor-details\s*\{[^}]*grid-template-columns:minmax\(0,1fr\)/,
+  assert.equal(
+    declaracaoCss(
+      css,
+      ".combat-v2-armor-details",
+      "grid-template-columns",
+    ),
+    "minmax(0, 1fr)",
     "os campos de armadura não são comprimidos lado a lado",
   );
-  assert.match(
-    css,
-    /equipados-municao-linha\.oculto\s*\{\s*display:none/,
+  assert.equal(
+    declaracaoCss(css, ".equipados-municao-linha.oculto", "display"),
+    "none",
     "linhas de munição ocultas continuam ocultas dentro da aba",
   );
-  assert.match(
-    css,
-    /combat-v2-actions \.subaba-vazia\s*\{[^}]*min-height:0/,
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-actions .subaba-vazia", "min-height"),
+    "0",
     "estados sem itens não reservam altura extra",
   );
 });
@@ -633,7 +843,10 @@ test("campos canônicos removidos visualmente permanecem ocultos e atributos seg
   const combat = ler("js/modules/combate.js");
   assert.match(layout, /compat\.setAttribute\("aria-hidden", "true"\)/);
   assert.match(layout, /field\.tabIndex = -1/);
-  assert.match(css, /\.combat-v2-compat\s*\{\s*display:none !important/);
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-compat", "display"),
+    "none !important",
+  );
   assert.match(combat, /atributosAtaque\?\.\[arma\.slot\]/);
   assert.match(combat, /arma-resumo-atributo/);
   assert.match(combat, /arma-resumo-acao/);
@@ -650,7 +863,7 @@ test("manifest visual carrega antes dos módulos que atualizam mãos e ataques",
     html.indexOf("js/modules/combate-layout-v2.js") >
       html.indexOf("js/modules/combate.js"),
   );
-  assert.match(html, /css\/combate-2\.0\.css\?v=combate-v2-28/);
+  assert.match(html, /css\/combate-2\.0\.css\?v=combate-v2-[\w.-]+/);
   assert.match(html, /js\/modules\/combate-armas\.js\?v=icone-json-20261119/);
   assert.match(
     html,

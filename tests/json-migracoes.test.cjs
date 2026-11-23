@@ -11,6 +11,8 @@ function storageContext(options = {}) {
   const serializedDownloads = [];
   let downloadClickCount = 0;
   const scheduledTimers = [];
+  const scheduledIntervals = [];
+  const windowListeners = new Map();
   const revokedObjectUrls = [];
   const elements = new Map();
   const fields = [];
@@ -55,7 +57,13 @@ function storageContext(options = {}) {
   }
   const context = vm.createContext({
     document,
-    window: {},
+    window: {
+      addEventListener(type, handler) {
+        const handlers = windowListeners.get(type) || [];
+        handlers.push(handler);
+        windowListeners.set(type, handlers);
+      },
+    },
     personagem: {},
     armaduraEquipadaIndice: null,
     talentosEstruturados: {},
@@ -79,6 +87,11 @@ function storageContext(options = {}) {
       }
       return timer;
     },
+    setInterval(callback, delay) {
+      const timer = { callback, delay };
+      scheduledIntervals.push(timer);
+      return timer;
+    },
     clearTimeout(timer) {
       const index = scheduledTimers.indexOf(timer);
       if (index >= 0) scheduledTimers.splice(index, 1);
@@ -98,6 +111,8 @@ function storageContext(options = {}) {
     elements,
     status: () => elements.get('exportacaoStatus')?.textContent || '',
     scheduledTimers,
+    scheduledIntervals,
+    windowListeners,
     revokedObjectUrls,
     flushTimers() {
       while (scheduledTimers.length) scheduledTimers.shift().callback();
@@ -312,6 +327,22 @@ test('exportação grava dados coletados atuais e não reexecuta migração de a
   assert.match(harness.status(), /Confirme se o arquivo foi salvo/);
 });
 
+test('coleta de exportação repassa metadados raiz opacos sem sobrescrever campos coletados', () => {
+  const harness = storageContext();
+  const extras = {
+    pluginData: { nested: [null, { preserve: true }] },
+    schema_notes: { source: 'custom', flags: ['keep'] },
+    customNull: null,
+  };
+  harness.run(`personagem = ${JSON.stringify(extras)};`);
+
+  const collected = JSON.parse(harness.run('JSON.stringify(coletarDadosFicha())'));
+
+  assert.deepEqual(collected.pluginData, extras.pluginData);
+  assert.deepEqual(collected.schema_notes, extras.schema_notes);
+  assert.equal(collected.customNull, null);
+});
+
 test('solicitações repetidas de exportação são separadas e não limpam alterações pendentes', () => {
   const harness = storageContext();
   harness.run(`
@@ -424,6 +455,58 @@ test('sem confirmação do diálogo nativo, a exportação permanece apenas soli
   assert.ok(state.ultimaExportacaoSolicitada);
   assert.equal(Object.hasOwn(state, 'exportacaoConfirmada'), false);
   assert.match(harness.status(), /Confirme se o arquivo foi salvo/);
+});
+
+test('lembrete periódico só aparece quando há alterações posteriores à exportação solicitada', () => {
+  const harness = storageContext();
+  harness.run(`
+    document.getElementById('nomePersonagem').value = 'Personagem';
+    document.getElementById('jogador').value = 'Jogador';
+    document.getElementById('classeData').value = '';
+    document.getElementById('subclasseData').value = '';
+    coletarDadosFicha = () => ({ nomePersonagem: document.getElementById('nomePersonagem').value });
+    coletarArmas = coletarArmaduras = coletarEscudos = coletarMunicoes = coletarOutros = () => [];
+    marcarFichaComoSalva();
+    document.getElementById('nomePersonagem').value = 'Alterado';
+  `);
+
+  assert.equal(harness.scheduledIntervals.length, 1, 'um único relógio periódico é instalado');
+  assert.equal(harness.scheduledIntervals[0].delay, 30 * 60 * 1000);
+  harness.scheduledIntervals[0].callback();
+  assert.match(harness.status(), /lembrete.*exportação/i);
+  assert.match(harness.status(), /solicite uma nova exportação/i);
+  assert.equal(harness.run('fichaFoiAlterada()'), true, 'o lembrete não limpa alterações pendentes');
+
+  harness.run('salvarFicha()');
+  const statusApósSolicitação = harness.status();
+  harness.scheduledIntervals[0].callback();
+  assert.equal(harness.status(), statusApósSolicitação, 'não há lembrete sem alterações após a última solicitação');
+
+  harness.run("document.getElementById('nomePersonagem').value = 'Nova edição';");
+  harness.scheduledIntervals[0].callback();
+  assert.match(harness.status(), /lembrete.*exportação/i);
+  assert.equal(harness.run('fichaFoiAlterada()'), true);
+});
+
+test('proteção beforeunload única só solicita confirmação para alterações persistentes', () => {
+  const harness = storageContext();
+  harness.run(`
+    coletarDadosFicha = () => ({ nome: document.getElementById('nomePersonagem').value });
+    marcarFichaComoSalva();
+  `);
+  const handlers = harness.windowListeners.get('beforeunload') || [];
+
+  assert.equal(handlers.length, 1, 'a proteção de saída é registrada uma única vez');
+  const eventoLimpo = { preventDefault() { this.prevented = true; }, returnValue: undefined };
+  handlers[0](eventoLimpo);
+  assert.equal(eventoLimpo.prevented, undefined);
+  assert.equal(eventoLimpo.returnValue, undefined);
+
+  harness.run("document.getElementById('nomePersonagem').value = 'Alterado';");
+  const eventoAlterado = { preventDefault() { this.prevented = true; }, returnValue: undefined };
+  handlers[0](eventoAlterado);
+  assert.equal(eventoAlterado.prevented, true);
+  assert.equal(eventoAlterado.returnValue, '', 'o texto é deixado ao navegador conforme sua limitação');
 });
 
 test('interação apenas com campos transitórios de modal não marca a ficha como alterada', () => {

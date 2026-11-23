@@ -47,7 +47,7 @@ function createHarness() {
   };
   const context = vm.createContext({
     document,
-    window: {},
+    window: { addEventListener() {} },
     personagem: { nome: 'Personagem atual', sentinel: { unchanged: true } },
     configFicha: { custom: 'current' },
     estadoCombateIniciativa: { ativo: true, rodada: 7, posicao: 2, iniciativa: 5 },
@@ -63,6 +63,7 @@ function createHarness() {
     Promise,
     setTimeout,
     clearTimeout,
+    setInterval() { return 0; },
     requestAnimationFrame(callback) { callback(); },
     obterSelecaoArmaEquipada() { return { nome: '', indice: null }; },
     confirm() { return true; },
@@ -190,7 +191,7 @@ function createApplyHarness() {
   };
   const context = vm.createContext({
     document,
-    window: { document, confirm() { return true; } },
+    window: { document, confirm() { return true; }, addEventListener() {} },
     personagem: {},
     configFicha: { custom: {} },
     estadoCombateIniciativa: { ativo: false, rodada: 0, posicao: null, iniciativa: null },
@@ -207,6 +208,7 @@ function createApplyHarness() {
     Event: class { constructor(type) { this.type = type; } },
     setTimeout,
     clearTimeout,
+    setInterval() { return 0; },
     requestAnimationFrame(callback) { callback(); },
     obterSelecaoArmaEquipada() { return { nome: '', indice: null }; },
     confirm() { return true; },
@@ -777,6 +779,35 @@ test('talentos presentes preservam metadados ao passar pela preparação e pelo 
   assert.deepEqual(aplicado.categoriaFutura, [{ raw: true, metadata: { preserve: null } }]);
   assert.equal(harness.fakeFields.get('talentoClasse').value, 'Customizada');
   assert.equal(harness.fakeLists.get('talentoClasseLista').children.some((item) => item.textContent === 'Customizada'), true);
+});
+
+test('importação preserva PV persistidos em vez de recalcular PV máximos no nível 1', async () => {
+  const harness = createApplyHarness();
+  observeRealApplier(harness);
+  harness.run(`
+    atualizarVidaMaxNivelUm = () => {
+      document.getElementById('pvTotal').value = '9';
+      document.getElementById('pvAtual').value = '9';
+    };
+    atualizarFicha = () => {
+      atualizarVidaMaxNivelUm();
+      normalizarPontosDeVida();
+    };
+  `);
+
+  await importThroughRealApplier(harness, {
+    fichaSchemaVersion: 2,
+    nomePersonagem: 'PV sintéticos',
+    classeNivelID: '1',
+    pvTotal: '18',
+    pvAtual: '16',
+    pvTemporario: '4',
+  });
+
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.equal(harness.fakeFields.get('pvTotal').value, '18');
+  assert.equal(harness.fakeFields.get('pvAtual').value, '16');
+  assert.equal(harness.fakeFields.get('pvTemporario').value, '4');
 });
 
 test('eventos do diário sem id preservam ausência e metadados no round-trip; ids presentes mantêm valor', async () => {

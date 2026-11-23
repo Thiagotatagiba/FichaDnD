@@ -1239,6 +1239,7 @@ function atualizarSelectNomeArmaduraEquipada(armaduras, indiceSelecionado) {
 function sincronizarMarcacaoArmasPorSlots() {
   const slot1 = document.getElementById("arma1Nome")?.value || "";
   const slot2 = document.getElementById("arma2Nome")?.value || "";
+  const indiceEscudoSelecionado = extrairIndiceSlotEscudo(slot2);
   const desejados = new Set(
     [slot1, slot2].filter(
       (valor) => valor && extrairIndiceSlotEscudo(valor) === null,
@@ -1249,6 +1250,14 @@ function sincronizarMarcacaoArmasPorSlots() {
     .querySelectorAll("#lista-armas-equipamento input")
     .forEach((input) => {
       input.checked = desejados.has(input.dataset.index);
+    });
+
+  document
+    .querySelectorAll("#lista-escudos-equipamento input")
+    .forEach((input) => {
+      input.checked =
+        indiceEscudoSelecionado !== null &&
+        Number(input.dataset.index) === indiceEscudoSelecionado;
     });
 }
 
@@ -2838,7 +2847,7 @@ function adicionarNovoEscudo(tipo = "Escudo") {
 function coletarEscudos() {
   const escudos = [];
   const lista = document.querySelectorAll(
-    '#listaEscudos .item-card[data-tipo="escudo"], #listaVestimentas .item-card[data-tipo="escudo"]',
+    '#listaEscudos .item-card[data-tipo="escudo"]:not(#escudoModelo), #listaVestimentas .item-card[data-tipo="escudo"]:not(#escudoModelo)',
   );
   lista.forEach((card) => {
     const escudo = { ...(card._dadosOriginais || {}) };

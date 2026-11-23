@@ -737,6 +737,17 @@ function coletarDadosFicha() {
     },
   );
 
+  // O coletor reconstrói os campos conhecidos a partir da interface. Metadados
+  // de extensão e outras propriedades opacas do JSON importado não têm controle
+  // próprio; repasse-as sem sobrescrever os valores atuais coletados acima.
+  if (personagem && typeof personagem === "object" && !Array.isArray(personagem)) {
+    Object.keys(personagem).forEach((chave) => {
+      if (!Object.prototype.hasOwnProperty.call(dados, chave)) {
+        dados[chave] = personagem[chave];
+      }
+    });
+  }
+
   const arma1Equipada = obterSelecaoArmaEquipada(1);
   const arma2Equipada = obterSelecaoArmaEquipada(2);
   dados.arma1Nome = arma1Equipada.nome;
@@ -770,6 +781,7 @@ let ultimoEstadoSalvo = JSON.stringify(coletarDadosFicha());
 // E1.6 implementará o backup local; até lá, null significa que não há backup local.
 let ultimoBackupLocalFicha = null;
 let ultimaExportacaoSolicitadaFicha = null;
+let ultimaExportacaoSnapshotFicha = null;
 
 function registrarUltimoBackupLocalFicha(backup) {
   ultimoBackupLocalFicha = backup && typeof backup === "object"
@@ -895,6 +907,45 @@ function fichaFoiAlterada() {
   return JSON.stringify(coletarDadosFicha()) !== ultimoEstadoSalvo;
 }
 
+function existemAlteracoesNaoExportadasFicha() {
+  if (!fichaFoiAlterada()) return false;
+  if (typeof ultimaExportacaoSnapshotFicha !== "string") return true;
+  try {
+    return JSON.stringify(coletarSnapshotPersistenteFicha()) !== ultimaExportacaoSnapshotFicha;
+  } catch (erro) {
+    // Uma coleta incompleta não deve suprimir o lembrete de segurança.
+    return true;
+  }
+}
+
+function lembrarExportacaoPendenteFicha() {
+  if (!existemAlteracoesNaoExportadasFicha()) return;
+  atualizarStatusExportacao(
+    "Lembrete: há alterações posteriores à última exportação solicitada. Solicite uma nova exportação e confirme se o arquivo foi salvo.",
+  );
+}
+
+const INTERVALO_LEMBRETE_EXPORTACAO_MS = 30 * 60 * 1000;
+if (!window.__fichaLembreteExportacaoAgendado) {
+  window.__fichaLembreteExportacaoInterval = setInterval(
+    lembrarExportacaoPendenteFicha,
+    INTERVALO_LEMBRETE_EXPORTACAO_MS,
+  );
+  window.__fichaLembreteExportacaoAgendado = true;
+}
+
+function protegerSaidaFicha(evento) {
+  if (!fichaFoiAlterada()) return;
+  evento.preventDefault();
+  // Navegadores modernos ignoram texto personalizado e exibem sua mensagem padrão.
+  evento.returnValue = "";
+}
+
+if (!window.__fichaProtecaoSaidaRegistrada) {
+  window.addEventListener("beforeunload", protegerSaidaFicha);
+  window.__fichaProtecaoSaidaRegistrada = true;
+}
+
 function obterEstadoPersistenciaFicha() {
   return {
     alteracoesPendentes: fichaFoiAlterada(),
@@ -920,6 +971,7 @@ function limparStatusExportacaoAposImportacaoValida() {
   // A solicitação anterior pertencia ao personagem substituído. Só chamar após
   // o commit da importação; rollback mantém a mensagem e seu estado intactos.
   ultimaExportacaoSolicitadaFicha = null;
+  ultimaExportacaoSnapshotFicha = null;
   try {
     const status = document.getElementById("exportacaoStatus");
     if (status) {
@@ -967,9 +1019,11 @@ function salvarFicha() {
   let timerRevogacaoUrl = null;
   let cliqueExecutado = false;
   let nomeArquivoSolicitado = null;
+  let snapshotExportacaoSolicitada = null;
   try {
     // Preparar uma única captura: mudanças após esta captura continuam pendentes.
     const dados = coletarSnapshotPersistenteFicha();
+    snapshotExportacaoSolicitada = JSON.stringify(dados);
     const nome = document.getElementById("nomePersonagem").value || "Personagem";
     const jogador = document.getElementById("jogador").value || "Jogador";
     const hoje = new Date();
@@ -1004,6 +1058,7 @@ function salvarFicha() {
       solicitadaEm: new Date().toISOString(),
       nomeArquivo,
     };
+    ultimaExportacaoSnapshotFicha = snapshotExportacaoSolicitada;
     atualizarStatusExportacao(
       "Exportação solicitada ao navegador. Confirme se o arquivo foi salvo.",
     );
@@ -1016,6 +1071,7 @@ function salvarFicha() {
         solicitadaEm: new Date().toISOString(),
         nomeArquivo: nomeArquivoSolicitado,
       };
+      ultimaExportacaoSnapshotFicha = snapshotExportacaoSolicitada;
       try {
         atualizarStatusExportacao(
           "A exportação pode ter sido solicitada ao navegador. Confirme se o arquivo foi salvo.",

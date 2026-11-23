@@ -2036,7 +2036,11 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
     }
     sincronizarCamposMagia();
     atualizarMagias();
-    atualizarVidaMaxNivelUm();
+    // Um máximo persistido pertence ao estado importado. Recalcular nível 1
+    // aqui substituía PV atuais/máximos válidos durante qualquer round-trip.
+    if (!Object.prototype.hasOwnProperty.call(dados, "pvTotal")) {
+      atualizarVidaMaxNivelUm();
+    }
     normalizarPontosDeVida();
     normalizarDadosVida();
     atualizarPesoAtualInventario();
@@ -2055,6 +2059,18 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
     });
 
     atualizarFicha();
+    // `atualizarFicha()` atualiza os defaults de PV do nível 1. Reaplique os
+    // valores fornecidos pelo JSON depois de todos os cálculos derivados para
+    // que uma importação/round-trip não substitua o estado salvo.
+    let pvImportadoAplicado = false;
+    ["pvTotal", "pvAtual", "pvTemporario"].forEach((chave) => {
+      if (!Object.prototype.hasOwnProperty.call(dados, chave)) return;
+      const campo = document.getElementById(chave);
+      if (!campo) return;
+      preencherCampo(campo, dados[chave]);
+      pvImportadoAplicado = true;
+    });
+    if (pvImportadoAplicado) normalizarPontosDeVida();
     // Inicia os callbacks já existentes somente depois da etapa síncrona. Assim,
     // uma exceção síncrona não deixa timers de importação rodando após o erro.
     const resultadosAssincronos = await Promise.allSettled(

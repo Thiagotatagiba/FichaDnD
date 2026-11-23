@@ -36,3 +36,32 @@ test("validador exige metadados de apresentação e rejeita capacidade inválida
     assert.throws(() => vm.runInContext("validarCatalogoMunicoes(dados)", ctx));
   }
 });
+
+test("ícones de projétil e recipiente são opcionais na apresentação e resolvidos por IDs atuais e legados", () => {
+  const ctx = contexto();
+  const recipientes = {
+    arrows: "arrows-quiver",
+    "crossbow-bolts": "crossbow-bolts-case",
+    "sling-bullets": "sling-bullets-pack",
+  };
+  const caminho = nome => `../assets/icons/municoes/${nome}.svg`;
+
+  for (const { id, idLegado } of catalogo.itens) {
+    for (const catalogoId of [id, idLegado]) {
+      ctx.catalogoId = catalogoId;
+      const { icone, iconeRecipiente } = vm.runInContext(
+        "obterApresentacaoPacoteMunicao({ municao_catalogo_id: catalogoId })",
+        ctx,
+      );
+      assert.equal(icone, caminho(id));
+      assert.equal(iconeRecipiente, recipientes[id] ? caminho(recipientes[id]) : undefined);
+      for (const svg of [icone, iconeRecipiente].filter(Boolean)) {
+        assert.ok(fs.existsSync(path.resolve(root, "ficha", svg)), svg);
+      }
+    }
+  }
+
+  const personalizada = vm.runInContext("obterApresentacaoPacoteMunicao({ municao_nome: 'Personalizada' })", ctx);
+  assert.equal(personalizada.icone, undefined);
+  assert.equal(personalizada.iconeRecipiente, undefined);
+});
