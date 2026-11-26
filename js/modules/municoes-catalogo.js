@@ -144,7 +144,7 @@ function abrirDetalhesMunicao(card) {
     }, () => {});
   }
   const title=document.createElement("h2"); title.id="municaoDetalheTitulo"; title.className="magia-modal-titulo"; title.textContent=pacote.nomePacote;
-  const close=document.createElement("button"); close.type="button"; close.className="magia-modal-botao modal-close-base"; close.textContent="Fechar"; close.addEventListener("click",()=>overlay.remove());
+  const close=document.createElement("button"); close.type="button"; close.className="magia-modal-botao modal-fechar-xp"; close.setAttribute("aria-label","Fechar janela"); close.textContent="×"; close.addEventListener("click",()=>overlay.remove());
   const edit=document.createElement("button"); edit.type="button"; edit.className="magia-modal-botao"; edit.textContent="✏️ Editar"; edit.addEventListener("click",()=>{overlay.remove();abrirEditorMunicao(card)});
   const remove=document.createElement("button"); remove.type="button"; remove.className="magia-modal-botao perigo"; remove.textContent="🗑️ Remover"; remove.addEventListener("click",()=>{if(removerCardMunicao(card))overlay.remove();});
   titleLine.append(icon,title); headerInfo.append(titleLine); const chips=document.createElement("div"); chips.className="armadura-modal-categorias"; [item.municao_raridade || "comum","Munição",...(item.municao_magica === "true" ? ["Item mágico"] : [])].forEach(t=>{const tag=document.createElement("span");tag.className="magia-modal-nivel";tag.textContent=t;chips.append(tag)}); headerInfo.append(chips);

@@ -92,6 +92,18 @@ function atualizarOpcoesMunicao(card) {
   if (!encontrou) {
     selectMunicao.selectedIndex = 0;
   }
+
+  const selectResumo = card.querySelector(".arma-cartao-municao-select");
+  if (selectResumo) {
+    const opcoes = Array.from(selectMunicao.options, (option) =>
+      option.cloneNode(true),
+    );
+    selectResumo.replaceChildren(...opcoes);
+    selectResumo.value = selectMunicao.value;
+    selectResumo.title = selectMunicao.value
+      ? "Munição vinculada à arma"
+      : "Escolha a pilha de munição usada por esta arma";
+  }
 }
 
 //CONSUMIR MUNISSÃO AO ATACAR
@@ -192,6 +204,138 @@ function getTemProficienciaArma(tipo, armaId = "", nomeArma = "") {
       window.__temProficienciaArmaIndividual(armaId, nomeArma))
   );
 }
+
+function personagemEhProficienteComArma(arma = {}) {
+  if (arma.origemDesarmada) return true;
+  const tipo = arma.arma_tipo || arma.tipo || "";
+  const catalogoId = arma.catalogoId || arma.catalogo_arma_id || "";
+  const nome = arma.nome || arma.arma_nome || "";
+  return !!getTemProficienciaArma(tipo, catalogoId, nome);
+}
+window.personagemEhProficienteComArma = personagemEhProficienteComArma;
+
+let sequenciaAlertasProficienciaArmas = 0;
+function criarIndicadorProficienciaArma(arma) {
+  const proficiente = personagemEhProficienteComArma(arma);
+  const bonus = typeof getBonusProf === "function"
+    ? getBonusProf()
+    : Number.parseInt(document.getElementById("bonusProf")?.value, 10) || 2;
+  const tituloTexto = proficiente ? "Proficiente com esta arma" : "Sem proficiência!";
+  const explicacao = proficiente
+    ? "Bônus de proficiência aplicado à jogada de ataque."
+    : `Você não recebe o bônus de proficiência de +${bonus} na jogada de ataque com esta arma.`;
+  const mensagem = `${tituloTexto} — ${explicacao}`;
+  const id = `combateAlertaProficienciaArma${++sequenciaAlertasProficienciaArmas}`;
+  const wrapper = document.createElement("span");
+  wrapper.className = "combate-proficiencia-indicador-wrapper";
+
+  const botao = document.createElement("button");
+  botao.type = "button";
+  botao.className = `descanso-curto-info combate-proficiencia-indicador ${proficiente ? "is-proficiente" : "is-nao-proficiente"}`;
+  if (proficiente) {
+    const selo = document.createElement("img");
+    selo.src = "../assets/icons/interface/proficiencia/seal-proficiency-color.svg";
+    selo.alt = "";
+    selo.setAttribute("aria-hidden", "true");
+    botao.appendChild(selo);
+  } else {
+    botao.textContent = "⚠️";
+  }
+  botao.setAttribute("aria-label", mensagem);
+  botao.setAttribute("aria-controls", id);
+  botao.setAttribute("aria-describedby", id);
+  botao.setAttribute("aria-expanded", "false");
+
+  const tooltip = document.createElement("span");
+  tooltip.id = id;
+  tooltip.className = "descanso-curto-info-texto combate-proficiencia-indicador-tooltip";
+  tooltip.setAttribute("role", "tooltip");
+  const titulo = document.createElement("strong");
+  titulo.textContent = tituloTexto;
+  const detalhe = document.createElement("span");
+  detalhe.textContent = explicacao;
+  tooltip.append(titulo, detalhe);
+
+  botao.addEventListener("click", () => {
+    botao.setAttribute(
+      "aria-expanded",
+      botao.getAttribute("aria-expanded") !== "true" ? "true" : "false",
+    );
+  });
+  botao.addEventListener("keydown", (evento) => {
+    if (evento.key !== "Escape") return;
+    botao.setAttribute("aria-expanded", "false");
+    botao.focus();
+  });
+  botao.addEventListener("blur", () => {
+    botao.setAttribute("aria-expanded", "false");
+  });
+
+  wrapper.append(botao, tooltip);
+  return wrapper;
+}
+window.criarIndicadorProficienciaArma = criarIndicadorProficienciaArma;
+
+let sequenciaSelosInventario = 0;
+function criarSeloProficienciaInventario() {
+  const id = `inventarioSeloProficiencia${++sequenciaSelosInventario}`;
+  const wrapper = document.createElement("span");
+  wrapper.className = "inventario-proficiencia-selo";
+  wrapper.hidden = true;
+
+  const trigger = document.createElement("span");
+  trigger.className = "descanso-curto-info inventario-proficiencia-selo-trigger";
+  trigger.tabIndex = 0;
+  trigger.setAttribute("role", "button");
+  trigger.setAttribute("aria-label", "Proficiente com este item.");
+  trigger.setAttribute("title", "");
+  trigger.setAttribute("aria-controls", id);
+  trigger.setAttribute("aria-describedby", id);
+  trigger.setAttribute("aria-expanded", "false");
+
+  const imagem = document.createElement("img");
+  imagem.src = "../assets/icons/interface/proficiencia/seal-proficiency-color.svg";
+  imagem.alt = "";
+  imagem.setAttribute("aria-hidden", "true");
+  trigger.appendChild(imagem);
+
+  const tooltip = document.createElement("span");
+  tooltip.id = id;
+  tooltip.className = "descanso-curto-info-texto inventario-proficiencia-tooltip";
+  tooltip.setAttribute("role", "tooltip");
+  tooltip.textContent = "Proficiente com este item.";
+
+  const alternar = () => {
+    trigger.setAttribute(
+      "aria-expanded",
+      trigger.getAttribute("aria-expanded") !== "true" ? "true" : "false",
+    );
+  };
+  trigger.addEventListener("click", (evento) => {
+    evento.preventDefault();
+    evento.stopPropagation();
+    alternar();
+  });
+  trigger.addEventListener("keydown", (evento) => {
+    if (evento.key === "Escape") {
+      evento.preventDefault();
+      evento.stopPropagation();
+      trigger.setAttribute("aria-expanded", "false");
+      trigger.focus();
+    } else if (evento.key === "Enter" || evento.key === " ") {
+      evento.preventDefault();
+      evento.stopPropagation();
+      alternar();
+    }
+  });
+  trigger.addEventListener("blur", () => {
+    trigger.setAttribute("aria-expanded", "false");
+  });
+
+  wrapper.append(trigger, tooltip);
+  return wrapper;
+}
+window.criarSeloProficienciaInventario = criarSeloProficienciaInventario;
 
 function getTemProficienciaArmadura(tipo) {
   if (tipo === "Leve")
@@ -294,7 +438,7 @@ function atualizarListaArmasEquipamento() {
   renderizarArmadurasEquipamento(coletarArmaduras());
   renderizarEscudosEquipamento(escudosAtuais);
   if (typeof atualizarResumosEscudos === "function")
-    atualizarResumosEscudos(escudosAtuais);
+    atualizarResumosEscudos();
   if (typeof atualizarResumosVestimentas === "function")
     atualizarResumosVestimentas();
   renderizarOutrosEquipamento(coletarOutros());
@@ -472,7 +616,10 @@ function renderizarArmasEquipamento(listaArmas) {
     checkbox.type = "checkbox";
     checkbox.dataset.index = String(index);
     checkbox.setAttribute("aria-label", "Selecionar arma para equipamento");
-    checkbox.checked = selecionados.has(String(index));
+    const arremessada = typeof armaEstaArremessada === "function" && armaEstaArremessada(arma);
+    checkbox.checked = !arremessada && selecionados.has(String(index));
+    checkbox.disabled = arremessada;
+    if (arremessada) checkbox.title = "Arma arremessada. Recupere-a antes de equipar novamente.";
 
     checkbox.addEventListener("change", () => {
       const marcados = Array.from(container.querySelectorAll("input:checked"));
@@ -1105,13 +1252,33 @@ function atualizarSeletoresAtaqueEquipados() {
   });
 }
 
+function obterContextoMaoPrincipalSelecionada(armas = coletarArmas()) {
+  const chave = document.getElementById("arma1Nome")?.value || "";
+  const arma = /^\d+$/.test(chave) ? armas[Number(chave)] : null;
+  const item = arma ? criarItemCombatePrincipal(arma, chave) : null;
+  const estadoPrincipal = typeof estadoCombate !== "undefined" ? estadoCombate.maoPrincipal : null;
+  const modo = estadoPrincipal?.item?.chaveItem === chave
+    ? estadoPrincipal.modo
+    : item?.tipo === "duas_maos" ? "duas_maos" : "uma_mao";
+  return { item, modo };
+}
+
 function obterIndicesArmasMarcadas() {
   return Array.from(
     document.querySelectorAll("#lista-armas-equipamento input:checked"),
   )
     .slice(0, 2)
     .map((input) => parseInt(input.dataset.index, 10))
-    .filter((indice) => Number.isInteger(indice));
+    .filter((indice) => Number.isInteger(indice))
+    .filter((indice) => !armaEstaArremessada(coletarArmas()[indice]));
+}
+
+function armaEstaArremessada(arma) {
+  const instanciaId = String(arma?.instanciaId || "");
+  if (!instanciaId || typeof estadoCombateIniciativa === "undefined") return false;
+  return (estadoCombateIniciativa.armasArremessadas || []).some(
+    (item) => String(item?.instanciaId || "") === instanciaId,
+  );
 }
 
 function atualizarSelectNomeArmaEquipada(
@@ -1145,10 +1312,17 @@ function atualizarSelectNomeArmaEquipada(
       const option = document.createElement("option");
       option.value = criarValorSlotEscudo(indiceEscudo);
       option.dataset.nomeItem = nomeEscudo;
+      const principalAtual = obterContextoMaoPrincipalSelecionada(armas);
+      const resultado = podeEquiparNaSecundaria(principalAtual.item, principalAtual.modo, { tipo: "escudo", item: escudo, chaveItem: option.value });
+      if (!resultado.valido && String(indiceSelecionado) !== option.value) return;
+      if (!resultado.valido) {
+        option.dataset.incompativel = "true";
+        option.dataset.motivo = resultado.motivo;
+      }
 
       const ca = (escudo?.ca || escudo?.escudo_ca || "+0").trim();
 
-      option.textContent = `🛡️ ${nomeEscudo} ${ca}`;
+      option.textContent = resultado.valido ? `🛡️ ${nomeEscudo} ${ca}` : `⚠️ ${nomeEscudo} — incompatível`;
       select.appendChild(option);
     });
   }
@@ -1156,14 +1330,28 @@ function atualizarSelectNomeArmaEquipada(
   // ⚔️ ARMAS
   armas.forEach((arma, indice) => {
     const nome = String(arma?.nome ?? arma?.arma_nome ?? "").trim();
-    if (!nome) return;
+    if (!nome || armaEstaArremessada(arma)) return;
 
     const option = document.createElement("option");
     option.value = String(indice);
     option.dataset.nomeItem = nome;
 
+    if (indiceSlot === 2) {
+      const principalAtual = obterContextoMaoPrincipalSelecionada(armas);
+      const resultado = podeEquiparNaSecundaria(principalAtual.item, principalAtual.modo, { tipo: "arma", item: arma, chaveItem: option.value });
+      if (!resultado.valido && String(indiceSelecionado) !== option.value) return;
+      if (!resultado.valido) {
+        option.dataset.incompativel = "true";
+        option.dataset.motivo = resultado.motivo;
+      }
+    }
+
     const icone = arma?.propriedades?.municao ? "🏹" : "⚔️";
-    option.textContent = `${icone} ${nome}`;
+    const naoProficiente = !personagemEhProficienteComArma(arma);
+    const nomeComProf = naoProficiente ? `⚠️ ${nome}` : `${icone} ${nome}`;
+    option.textContent = option.dataset.incompativel
+      ? `⚠️ ${nome} — incompatível`
+      : nomeComProf;
 
     select.appendChild(option);
   });
@@ -1272,10 +1460,7 @@ function atualizarBloqueioMaosEquipamento() {
   const principalValor = document.getElementById("arma1Nome")?.value || "";
   const principalIndice = parseInt(principalValor, 10);
   const itemPrincipal = estadoCombate.maoPrincipal.item;
-  const permitidosSecundaria = podeEquiparNaSecundaria(
-    itemPrincipal,
-    estadoCombate.maoPrincipal.modo,
-  );
+  const modoPrincipal = estadoCombate.maoPrincipal.modo;
   const maosOcupadas =
     estadoCombate.maoPrincipal.modo === "duas_maos"
       ? 2
@@ -1286,12 +1471,9 @@ function atualizarBloqueioMaosEquipamento() {
   checkboxesArma.forEach((input) => {
     const indice = parseInt(input.dataset.index, 10);
     const itemArma = Number.isInteger(indice) ? armas[indice] : null;
-    const tipoSecundario = obterTipoItemSecundarioArma(itemArma);
     const ePrincipal =
       Number.isInteger(principalIndice) && indice === principalIndice;
-    const permitidoNaSecundaria =
-      permitidosSecundaria.includes("qualquer") ||
-      permitidosSecundaria.includes(tipoSecundario);
+    const permitidoNaSecundaria = podeEquiparNaSecundaria(itemPrincipal, modoPrincipal, { tipo: "arma", item: itemArma, chaveItem: String(indice) }).valido;
     const desabilitarPorRegra =
       !!itemPrincipal && !ePrincipal && !permitidoNaSecundaria;
     input.disabled =
@@ -1299,9 +1481,9 @@ function atualizarBloqueioMaosEquipamento() {
   });
 
   checkboxesEscudo.forEach((input) => {
-    const permitidoNaSecundaria =
-      permitidosSecundaria.includes("qualquer") ||
-      permitidosSecundaria.includes("escudo");
+    const indice = Number.parseInt(input.dataset.index, 10);
+    const escudo = coletarEscudos()[indice];
+    const permitidoNaSecundaria = podeEquiparNaSecundaria(itemPrincipal, modoPrincipal, { tipo: "escudo", item: escudo, chaveItem: criarValorSlotEscudo(indice) }).valido;
     const desabilitarPorRegra = !!itemPrincipal && !permitidoNaSecundaria;
     input.disabled =
       desabilitarPorRegra || (bloquearNovasSelecoes && !input.checked);
@@ -1341,6 +1523,7 @@ function possuiTalentoAmbidestro() {
   categorias.forEach((itens) => {
     if (!Array.isArray(itens)) return;
     itens.forEach((item) => {
+      if (item && typeof item === "object" && item.dualWielderFeat === true) nomes.push("dualwielderfeat");
       if (typeof item === "string") nomes.push(item);
       else if (typeof item?.nome === "string") nomes.push(item.nome);
     });
@@ -1354,20 +1537,45 @@ function possuiTalentoAmbidestro() {
       .replace(/[\u0300-\u036f]/g, "")
       .trim()
       .toLowerCase();
-    return normalizado === "ambidestro" || normalizado === "dual wielder";
+    return normalizado === "ambidestro" || normalizado === "dual wielder" || normalizado === "dualwielderfeat";
   });
 }
 
 function podeEquiparNaSecundaria(itemPrincipal, modo) {
-  if (!itemPrincipal) return ["qualquer"];
-  if (modo === "duas_maos") return [];
-  if (possuiTalentoAmbidestro()) {
-    return ["leve", "uma_mao", "versatil", "escudo"];
+  const equipamentoSecundario = arguments[2] || null;
+  if (typeof RegrasCombate === "undefined" || typeof RegrasCombate.avaliarEquipamentoMaoSecundaria !== "function") return { valido: true, motivo: "" };
+  return RegrasCombate.avaliarEquipamentoMaoSecundaria({
+    armaPrincipal: itemPrincipal,
+    modoMaoPrincipal: modo,
+    equipamentoSecundario,
+    dualWielderFeat: possuiTalentoAmbidestro(),
+  });
+}
+
+function avaliarSelecaoSecundaria(valor, itemPrincipal, modo, armas = coletarArmas(), escudos = coletarEscudos()) {
+  if (!valor) return { valido: true, motivo: "" };
+  const indiceEscudo = extrairIndiceSlotEscudo(valor);
+  if (indiceEscudo !== null) {
+    const escudo = obterEscudoEquipadoPorValor(valor, escudos);
+    return escudo
+      ? podeEquiparNaSecundaria(itemPrincipal, modo, { tipo: "escudo", item: escudo, chaveItem: valor })
+      : { valido: false, motivo: "O escudo selecionado não existe mais no inventário." };
   }
-  if (itemPrincipal.tipo === "leve") return ["leve", "escudo"];
-  if (itemPrincipal.tipo === "uma_mao") return ["escudo"];
-  if (itemPrincipal.tipo === "versatil") return ["escudo"];
-  return [];
+  const indice = Number.parseInt(valor, 10);
+  const arma = Number.isInteger(indice) ? armas[indice] : null;
+  return arma
+    ? podeEquiparNaSecundaria(itemPrincipal, modo, { tipo: "arma", item: arma, chaveItem: String(indice) })
+    : { valido: false, motivo: "A arma selecionada não existe mais no inventário." };
+}
+
+function atualizarAvisoIncompatibilidadeSecundaria(resultado = { valido: true }) {
+  const aviso = document.getElementById("arma2Incompatibilidade");
+  if (!aviso) return;
+  const mostrar = !resultado?.valido;
+  aviso.hidden = !mostrar;
+  aviso.textContent = mostrar
+    ? `Equipamento secundário incompatível: ${resultado.motivo} Escolha outra opção ou “Mão vazia” para corrigir.`
+    : "";
 }
 
 function obterTipoItemSecundarioPorValor(valor, armas, escudos = []) {
@@ -1390,11 +1598,7 @@ function valorSecundarioEhValido(
   escudos = [],
 ) {
   if (!valor) return true;
-  const tipoItem = obterTipoItemSecundarioPorValor(valor, armas, escudos);
-  if (!tipoItem) return false;
-  const permitidos = podeEquiparNaSecundaria(itemPrincipal, modo);
-  if (permitidos.includes("qualquer")) return true;
-  return permitidos.includes(tipoItem);
+  return avaliarSelecaoSecundaria(valor, itemPrincipal, modo, armas, escudos).valido;
 }
 
 function limparSelecaoSecundariaEquipamento(indicePrincipal = null) {
@@ -1443,6 +1647,7 @@ function criarItemCombatePrincipal(arma, chaveItem) {
     tipo,
     versatil: tipo === "versatil",
     propriedades,
+    descricaoEspecial: arma.descricaoEspecial || arma.descricao_especial || "",
   };
 }
 
@@ -1458,9 +1663,9 @@ function atualizarEstadoCombate(armas, escudos) {
 
   let itemSecundario = null;
   if (
-    itemPrincipal &&
-    itemPrincipal.tipo !== "duas_maos" &&
-    estadoCombate.maoPrincipal.modo !== "duas_maos"
+    !itemPrincipal ||
+    (itemPrincipal.tipo !== "duas_maos" &&
+      estadoCombate.maoPrincipal.modo !== "duas_maos")
   ) {
     if (indiceEscudoSecundario !== null) {
       const escudoSecundario = obterEscudoEquipadoPorValor(
@@ -1535,8 +1740,26 @@ function atualizarUIEmpunhadura(armas, escudos) {
   const selectSecundario = document.getElementById("arma2Nome");
   const ataqueSecundario = document.getElementById("arma2Ataque");
   const principal = estadoCombate.maoPrincipal.item;
-  const secundariaAtiva = estadoCombate.maoSecundaria.ativa;
-  const secundariaItem = estadoCombate.maoSecundaria.item;
+  const secundariaAtiva = !principal || estadoCombate.maoSecundaria.ativa;
+  let secundariaItem = estadoCombate.maoSecundaria.item;
+  if (!principal && !secundariaItem && selectSecundario?.value) {
+    const indiceEscudo = extrairIndiceSlotEscudo(selectSecundario.value);
+    if (indiceEscudo !== null) {
+      const escudo = obterEscudoEquipadoPorValor(selectSecundario.value, escudos);
+      if (escudo) secundariaItem = { tipo: "escudo", item: escudo };
+    } else {
+      const indice = Number.parseInt(selectSecundario.value, 10);
+      const arma = Number.isInteger(indice) ? armas[indice] : null;
+      if (arma) {
+        secundariaItem = {
+          tipo: obterTipoItemSecundarioArma(arma),
+          item: arma,
+        };
+      }
+    }
+    estadoCombate.maoSecundaria.item = secundariaItem;
+    estadoCombate.maoSecundaria.ativa = true;
+  }
   const indiceArmaPrincipal = Number.parseInt(principal?.chaveItem, 10);
   const armaPrincipal = Number.isInteger(indiceArmaPrincipal)
     ? armas[indiceArmaPrincipal]
@@ -1617,22 +1840,12 @@ function atualizarUIEmpunhadura(armas, escudos) {
   }
 
   if (selectSecundario) {
-    selectSecundario.disabled = !secundariaAtiva;
-    const permitidos = podeEquiparNaSecundaria(
-      principal,
-      estadoCombate.maoPrincipal.modo,
-    );
     Array.from(selectSecundario.options).forEach((option) => {
       if (!option.value) {
         option.disabled = false;
         return;
       }
-      const permitido =
-        secundariaAtiva &&
-        (permitidos.includes("qualquer") ||
-          permitidos.includes(
-            obterTipoItemSecundarioPorValor(option.value, armas, escudos),
-          ));
+      const permitido = valorSecundarioEhValido(option.value, principal, estadoCombate.maoPrincipal.modo, armas, escudos);
       option.disabled = !permitido;
     });
   }
@@ -1805,11 +2018,6 @@ function alternarModoEmpunhaduraVersatil(modo) {
 
   estadoCombate.maoPrincipal.modo =
     modo === "duas_maos" ? "duas_maos" : "uma_mao";
-  if (estadoCombate.maoPrincipal.modo === "duas_maos") {
-    limparSelecaoSecundariaEquipamento(
-      parseInt(document.getElementById("arma1Nome")?.value || "", 10),
-    );
-  }
   sincronizarMarcacaoArmasPorSlots();
   sincronizarEquipamentosCombate();
 }
@@ -1897,7 +2105,7 @@ function resolverIndiceArmaSalva(dados, indiceSlot, armas, escudos = []) {
 
   if (indiceSlot === 2) {
     const indiceEscudo = extrairIndiceSlotEscudo(valorIndiceBruto);
-    if (indiceEscudo !== null && escudos[indiceEscudo]) {
+    if (indiceEscudo !== null && ehEscudoEmpunhavel(escudos[indiceEscudo])) {
       return criarValorSlotEscudo(indiceEscudo);
     }
   }
@@ -1918,11 +2126,10 @@ function resolverIndiceArmaSalva(dados, indiceSlot, armas, escudos = []) {
   if (!nomeSalvo) return null;
 
   if (indiceSlot === 2) {
-    const indiceEscudoPorNome = escudos.findIndex((escudo) =>
-      nomesEquipadosCoincidem(
-        nomeSalvo,
-        escudo?.escudo_nome || escudo?.nome || "",
-      ),
+    const indiceEscudoPorNome = escudos.findIndex(
+      (escudo) =>
+        ehEscudoEmpunhavel(escudo) &&
+        nomesEquipadosCoincidem(nomeSalvo, escudo.escudo_nome || escudo.nome),
     );
 
     if (indiceEscudoPorNome >= 0) {
@@ -2072,9 +2279,9 @@ function sincronizarEquipamentosCombate() {
 
   const slotsValidos = [slot1Atual, slot2Atual].map((valor) => {
     const indiceEscudo = extrairIndiceSlotEscudo(valor);
-    if (indiceEscudo !== null) return criarValorSlotEscudo(indiceEscudo);
+    if (indiceEscudo !== null) return obterEscudoEquipadoPorValor(valor, escudos) ? criarValorSlotEscudo(indiceEscudo) : null;
     const indice = parseInt(valor, 10);
-    return Number.isInteger(indice) && indicesMarcados.includes(indice)
+    return Number.isInteger(indice) && armas[indice]
       ? indice
       : null;
   });
@@ -2112,26 +2319,11 @@ function sincronizarEquipamentosCombate() {
       ? String(indicesEquipados[1])
       : "";
 
-  if (
-    !valorSecundarioEhValido(
-      valorSlot2Selecionado,
-      itemPrincipal,
-      modoPrincipal,
-      armas,
-      escudos,
-    )
-  ) {
-    valorSlot2Selecionado = "";
-    limparSelecaoSecundariaEquipamento(indicePrincipal);
-  }
-
-  if (modoPrincipal === "duas_maos") {
-    valorSlot2Selecionado = "";
-    limparSelecaoSecundariaEquipamento(indicePrincipal);
-  }
+  const avaliacaoSecundaria = avaliarSelecaoSecundaria(valorSlot2Selecionado, itemPrincipal, modoPrincipal, armas, escudos);
 
   atualizarSelectNomeArmaEquipada(1, armas, indicePrincipal, []);
   atualizarSelectNomeArmaEquipada(2, armas, valorSlot2Selecionado, escudos);
+  atualizarAvisoIncompatibilidadeSecundaria(avaliacaoSecundaria);
 
   const armasSelecionadas = [
     Number.isInteger(indicePrincipal) ? armas[indicePrincipal] : null,
@@ -2242,7 +2434,8 @@ function sincronizarEquipamentosCombate() {
   atualizarBloqueioMaosEquipamento();
   if (typeof atualizarResumosArmas === "function") atualizarResumosArmas(armas);
   if (typeof atualizarResumosEscudos === "function")
-    atualizarResumosEscudos(escudos);
+    atualizarResumosEscudos();
+  if (typeof atualizarInterfaceRecursosTurno === "function") atualizarInterfaceRecursosTurno();
 }
 
 // atualiza o "P" de proficiência quando o tipo de arma muda, verificando os checkboxes de proficiência
@@ -2263,6 +2456,9 @@ function atualizarProficienciaCard(card) {
 }
 
 function inicializarEventosArma(card) {
+  if (!card.dataset.instanciaId) {
+    card.dataset.instanciaId = String(card._dadosOriginais?.instanciaId || globalThis.crypto?.randomUUID?.() || gerarId());
+  }
   // ==========================================
   // 1. LÓGICA DE REMOVER A ARMA
   // ==========================================
@@ -2473,6 +2669,19 @@ if (campoProficienciaArmas) {
         .querySelectorAll('.item-card[data-tipo="arma"]:not(#armaModelo)')
         .forEach(atualizarProficienciaCard);
       atualizarListaArmasEquipamento();
+      sincronizarEquipamentosCombate();
+      atualizarSubAbaArmas();
+    });
+  });
+}
+
+const campoNivelProficienciaCombate = document.getElementById("classeNivelID");
+if (campoNivelProficienciaCombate) {
+  ["input", "change"].forEach((evento) => {
+    campoNivelProficienciaCombate.addEventListener(evento, () => {
+      atualizarListaArmasEquipamento();
+      sincronizarEquipamentosCombate();
+      atualizarSubAbaArmas();
     });
   });
 }
@@ -2535,6 +2744,7 @@ function coletarArmas() {
 
   lista.forEach((card) => {
     const arma = { ...(card._dadosOriginais || {}) };
+    if (card.dataset.instanciaId) arma.instanciaId = card.dataset.instanciaId;
     const indicadorProficiencia = card.querySelector(".item-proficiencia");
 
     // 1. Campos normais
@@ -2686,7 +2896,7 @@ function adicionarNovaArmadura() {
 function coletarArmaduras() {
   const armaduras = [];
   const lista = document.querySelectorAll(
-    '#listaArmaduras .item-card[data-tipo="armadura"]',
+    '#listaArmaduras .item-card[data-tipo="armadura"]:not(#armaduraModelo)',
   );
 
   lista.forEach((card) => {
@@ -2755,7 +2965,7 @@ function inicializarEventosEscudo(card) {
         ) {
           const cardsEscudos = [
             ...document.querySelectorAll(
-              '#listaEscudos .item-card[data-tipo="escudo"]',
+              '#listaEscudosItens > .item-card[data-tipo="escudo"]:not(#escudoModelo)',
             ),
           ];
           const indiceRemovido = cardsEscudos.indexOf(card);

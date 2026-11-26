@@ -92,3 +92,46 @@ test('característica nova recebe defaults da categoria sem inventar metadados',
     origem: 'Raça',
   });
 });
+
+test('E3.4: configuração de característica ativa é opt-in e usos ficam separados da definição', () => {
+  const original = {
+    id: 'traco-ativo', nome: 'Surto', descricao: 'Descrição preservada', tipo: 'Característica', origem: 'Classe',
+    metadataExterno: { manter: true },
+  };
+  const editor = characteristicEditor(original);
+  editor.context.estadoCombateIniciativa = { caracteristicasAtivas: [] };
+  editor.fields.set('talentoAtivacaoHabilitada', { checked: true });
+  editor.fields.set('talentoAtivacaoFormula', { value: '1d8 + 3' });
+  editor.fields.set('talentoAtivacaoEfeitos', { value: 'Cura' });
+  editor.fields.set('talentoAtivacaoUsos', { value: '2' });
+  editor.fields.set('talentoAtivacaoRecarga', { value: 'descanso_curto' });
+  editor.save();
+
+  const item = editor.serialize().raca[0];
+  assert.equal(item.ativacao.habilitada, true);
+  assert.equal(item.ativacao.formula, '1d8 + 3');
+  assert.deepEqual(item.metadataExterno, original.metadataExterno);
+  const estadoUso = JSON.parse(vm.runInContext('JSON.stringify(estadoCombateIniciativa.caracteristicasAtivas)', editor.context));
+  assert.equal(estadoUso.length, 1);
+  assert.equal(estadoUso[0].usosRestantes, 2);
+  const id = estadoUso[0].id;
+  assert.equal(vm.runInContext(`consumirUsoCaracteristica('${id}')`, editor.context), true);
+  assert.equal(vm.runInContext(`recuperarUsosCaracteristicas('descanso_curto')`, editor.context), 1);
+  assert.equal(vm.runInContext('estadoCombateIniciativa.caracteristicasAtivas[0].usosRestantes', editor.context), 2);
+});
+
+test('E3.4: descanso não recupera usos órfãos e preserva o registro após remoção da definição', () => {
+  const context = vm.createContext({ document: { getElementById: () => null } });
+  vm.runInContext(source, context);
+  vm.runInContext(`
+    talentosEstruturados = { raca: [{ nome: 'Surto', ativacao: { id: 'uso-surto', habilitada: true, usosMaximos: 2, recarga: 'descanso_curto' } }] };
+    estadoCombateIniciativa = { caracteristicasAtivas: [] };
+    sincronizarUsosCaracteristicas();
+    consumirUsoCaracteristica('uso-surto');
+    talentosEstruturados.raca = [];
+  `, context);
+  assert.equal(vm.runInContext("contarUsosCaracteristicasRecuperaveis('descanso_curto')", context), 0);
+  assert.equal(vm.runInContext("recuperarUsosCaracteristicas('descanso_curto')", context), 0);
+  assert.equal(vm.runInContext('estadoCombateIniciativa.caracteristicasAtivas[0].usosRestantes', context), 1);
+  assert.equal(vm.runInContext('estadoCombateIniciativa.caracteristicasAtivas.length', context), 1);
+});

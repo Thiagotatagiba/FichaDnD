@@ -1,6 +1,40 @@
 // ===== Persistencia da ficha =====
 const FICHA_SCHEMA_VERSION_ATUAL = 2;
 
+function notificarFichaFlutuante(mensagem, tipo = "info", categoria = "geral") {
+  const texto = String(mensagem || "").trim();
+  if (!texto || !document.body || typeof document.createElement !== "function") return false;
+  let aviso = document.getElementById("fichaNotificacaoFlutuante");
+  if (!aviso) {
+    aviso = document.createElement("div");
+    aviso.id = "fichaNotificacaoFlutuante";
+    aviso.className = "ficha-notificacao-flutuante";
+    document.body.appendChild(aviso);
+  }
+  aviso.textContent = texto;
+  aviso.dataset.tipo = tipo === "erro" ? "erro" : "info";
+  aviso.dataset.categoria = categoria;
+  aviso.setAttribute("role", tipo === "erro" ? "alert" : "status");
+  aviso.setAttribute("aria-live", tipo === "erro" ? "assertive" : "polite");
+  aviso.hidden = false;
+  if (window.__fichaNotificacaoTimer) clearTimeout(window.__fichaNotificacaoTimer);
+  window.__fichaNotificacaoTimer = setTimeout(() => {
+    aviso.hidden = true;
+    aviso.textContent = "";
+  }, tipo === "erro" ? 10000 : 6000);
+  return true;
+}
+window.notificarFichaFlutuante = notificarFichaFlutuante;
+
+function limparNotificacaoFichaFlutuante(categoria = "geral") {
+  const aviso = document.getElementById("fichaNotificacaoFlutuante");
+  if (!aviso || aviso.dataset.categoria !== categoria) return;
+  aviso.hidden = true;
+  aviso.textContent = "";
+  if (window.__fichaNotificacaoTimer) clearTimeout(window.__fichaNotificacaoTimer);
+  window.__fichaNotificacaoTimer = null;
+}
+
 /**
  * Valida e migra somente o envelope de versão da ficha.
  * As migrações preservam aliases, coleções, metadados legados e propriedades
@@ -193,6 +227,166 @@ function validarEstruturaImportacao(dados) {
       "O JSON selecionado não contém um objeto de ficha no nível principal.",
       "INVALID_CHARACTER_SHEET_ROOT",
     );
+  }
+
+  if (dados.estadoCombate && Object.prototype.hasOwnProperty.call(dados.estadoCombate, "recursosTurno")) {
+    const recursos = dados.estadoCombate.recursosTurno;
+    const configuracaoValida = (configuracao) => configuracao && typeof configuracao === "object" && !Array.isArray(configuracao) &&
+      ["acao", "acaoBonus", "reacao", "ataquesPorAcao"].every((tipo) => Number.isInteger(configuracao[tipo]) && configuracao[tipo] >= 1 && configuracao[tipo] <= 20);
+    const valido = recursos && typeof recursos === "object" && !Array.isArray(recursos) &&
+      Number.isInteger(recursos.rodada) && recursos.rodada >= 1 &&
+      ["acaoUsada", "acaoBonusUsada", "reacaoUsada", "ataqueDuasArmasElegivel", "ataqueAcaoIniciado"].every((chave) => typeof recursos[chave] === "boolean") &&
+      [null, 1, 2].includes(recursos.maoAtaqueQualificador) &&
+      (recursos.ataqueDuasArmasElegivel === (recursos.maoAtaqueQualificador !== null)) &&
+      (recursos.maosAtaqueQualificadoras === undefined || (Array.isArray(recursos.maosAtaqueQualificadoras) && recursos.maosAtaqueQualificadoras.every((mao) => mao === 1 || mao === 2) && new Set(recursos.maosAtaqueQualificadoras).size === recursos.maosAtaqueQualificadoras.length && recursos.maoAtaqueQualificador === (recursos.maosAtaqueQualificadoras[0] ?? null) && recursos.ataqueDuasArmasElegivel === (recursos.maosAtaqueQualificadoras.length > 0))) &&
+      (!recursos.ataqueDuasArmasElegivel || (recursos.acaoUsada && recursos.ataqueAcaoIniciado)) &&
+      Number.isInteger(recursos.ataquesAcaoRestantes) && recursos.ataquesAcaoRestantes >= 0 &&
+      Number.isInteger(recursos.movimentoTotal) && recursos.movimentoTotal >= 0 &&
+      Number.isInteger(recursos.movimentoGasto) && recursos.movimentoGasto >= 0 && recursos.movimentoGasto <= recursos.movimentoTotal &&
+      (!recursos.limites || configuracaoValida(recursos.limites)) &&
+      (!recursos.ajustesTemporarios || ["acao", "acaoBonus", "reacao", "ataquesPorAcao"].every((tipo) => Number.isInteger(recursos.ajustesTemporarios[tipo]) && recursos.ajustesTemporarios[tipo] >= -20 && recursos.ajustesTemporarios[tipo] <= 20)) &&
+      (!recursos.gastos || ["acao", "acaoBonus", "reacao"].every((tipo) => Number.isInteger(recursos.gastos[tipo]) && recursos.gastos[tipo] >= 0 && recursos.gastos[tipo] <= 40));
+    if (!valido) {
+      throw erroValidacaoImportacao(
+        'O campo "estadoCombate.recursosTurno" é inválido.',
+        "INVALID_CHARACTER_SHEET_FIELD",
+      );
+    }
+  }
+
+  if (dados.estadoCombate && Object.prototype.hasOwnProperty.call(dados.estadoCombate, "configuracaoRecursosTurno")) {
+    const configuracao = dados.estadoCombate.configuracaoRecursosTurno;
+    if (!configuracao || typeof configuracao !== "object" || Array.isArray(configuracao) ||
+        !["acao", "acaoBonus", "reacao", "ataquesPorAcao"].every((tipo) => Number.isInteger(configuracao[tipo]) && configuracao[tipo] >= 1 && configuracao[tipo] <= 20)) {
+      throw erroValidacaoImportacao('O campo "estadoCombate.configuracaoRecursosTurno" é inválido.', "INVALID_CHARACTER_SHEET_FIELD");
+    }
+  }
+
+  if (Array.isArray(dados.estadoCombate?.fontesVantagemDesvantagem)) {
+    const idsFontes = new Set();
+    const fontesValidas = dados.estadoCombate.fontesVantagemDesvantagem.every((fonte) =>
+      fonte && typeof fonte === "object" && !Array.isArray(fonte) &&
+      typeof fonte.id === "string" && fonte.id.trim() &&
+      typeof fonte.escopo === "string" &&
+      /^(geral|ataque|salvaguarda|pericia:[a-z0-9_-]+)$/i.test(fonte.escopo.trim()) &&
+      typeof fonte.origem === "string" && fonte.origem.trim() &&
+      fonte.duracao === "persistente" &&
+      (!Object.prototype.hasOwnProperty.call(fonte, "ativo") || typeof fonte.ativo === "boolean") &&
+      ["vantagem", "desvantagem"].includes(fonte.tipo) &&
+      typeof fonte.motivo === "string" && fonte.motivo.trim() &&
+      !idsFontes.has(fonte.id) && !!idsFontes.add(fonte.id)
+    );
+    if (!fontesValidas) {
+      throw erroValidacaoImportacao(
+        'Uma fonte em "estadoCombate.fontesVantagemDesvantagem" é inválida.',
+        "INVALID_CHARACTER_SHEET_FIELD",
+      );
+    }
+  } else if (dados.estadoCombate && Object.prototype.hasOwnProperty.call(dados.estadoCombate, "fontesVantagemDesvantagem")) {
+    throw erroValidacaoImportacao(
+      'O campo "estadoCombate.fontesVantagemDesvantagem" deve ser uma lista.',
+      "INVALID_CHARACTER_SHEET_FIELD",
+    );
+  }
+
+  if (Object.prototype.hasOwnProperty.call(dados.estadoCombate || {}, "efeitosAtivos")) {
+    const efeitos = dados.estadoCombate.efeitosAtivos;
+    const ids = new Set();
+    const efeitosValidos = Array.isArray(efeitos) && efeitos.every((efeito) => {
+      const valido = efeito && typeof efeito === "object" && !Array.isArray(efeito) &&
+        typeof efeito.id === "string" && efeito.id.trim() && !ids.has(efeito.id) &&
+        efeito.tipo === "magia" &&
+        efeito.origem && typeof efeito.origem === "object" && typeof efeito.origem.tipo === "string" &&
+        efeito.referenciaDefinicao && typeof efeito.referenciaDefinicao === "object" &&
+        typeof efeito.estado === "string" && ["ativa", "encerrada"].includes(efeito.estado) &&
+        efeito.duracao && typeof efeito.duracao === "object" && typeof efeito.duracao.tipo === "string" &&
+        efeito.gatilho && typeof efeito.gatilho === "object" && typeof efeito.gatilho.tipo === "string" &&
+        efeito.dadosAplicacao && typeof efeito.dadosAplicacao === "object" &&
+        (efeito.concentracaoInstanciaId === null || (typeof efeito.concentracaoInstanciaId === "string" && efeito.concentracaoInstanciaId.trim())) &&
+        typeof efeito.criadaEm === "string";
+      if (valido) ids.add(efeito.id);
+      return valido;
+    });
+    if (!efeitosValidos) {
+      throw erroValidacaoImportacao('O campo "estadoCombate.efeitosAtivos" é inválido.', "INVALID_CHARACTER_SHEET_FIELD");
+    }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(dados.estadoCombate || {}, "concentracaoAtiva")) {
+    const concentracao = dados.estadoCombate.concentracaoAtiva;
+    if (concentracao !== null && (
+      !concentracao || typeof concentracao !== "object" || Array.isArray(concentracao) ||
+      typeof concentracao.instanciaId !== "string" || !concentracao.instanciaId.trim() ||
+      !concentracao.magia || typeof concentracao.magia !== "object" ||
+      typeof concentracao.chave !== "string" || typeof concentracao.iniciadaEm !== "string"
+    )) {
+      throw erroValidacaoImportacao('O campo "estadoCombate.concentracaoAtiva" é inválido.', "INVALID_CHARACTER_SHEET_FIELD");
+    }
+  }
+
+  const concentracaoImportada = dados.estadoCombate?.concentracaoAtiva;
+  const efeitosImportados = dados.estadoCombate?.efeitosAtivos;
+  if (Array.isArray(efeitosImportados) && efeitosImportados.some((efeito) =>
+    efeito?.estado === "ativa" && efeito.concentracaoInstanciaId &&
+    (!concentracaoImportada || efeito.concentracaoInstanciaId !== concentracaoImportada.instanciaId)
+  )) {
+    throw erroValidacaoImportacao('Um efeito ativo aponta para uma concentração que não está ativa.', "INVALID_CHARACTER_SHEET_FIELD");
+  }
+
+  if (Object.prototype.hasOwnProperty.call(dados.estadoCombate || {}, "condicoesAtivas")) {
+    const condicoes = dados.estadoCombate.condicoesAtivas;
+    const ids = new Set();
+    const validas = Array.isArray(condicoes) && condicoes.every((condicao) => {
+      const valida = condicao && typeof condicao === "object" && !Array.isArray(condicao) &&
+        typeof condicao.id === "string" && condicao.id.trim() && !ids.has(condicao.id) &&
+        ["oficial", "personalizada"].includes(condicao.tipo) &&
+        typeof condicao.nome === "string" && condicao.nome.trim() &&
+        condicao.origem && typeof condicao.origem === "object" &&
+        ["ativa", "encerrada"].includes(condicao.estado) &&
+        condicao.duracao && typeof condicao.duracao === "object" && typeof condicao.duracao.tipo === "string" &&
+        (condicao.nivelExaustao === undefined || (Number.isInteger(condicao.nivelExaustao) && condicao.nivelExaustao >= 1 && condicao.nivelExaustao <= 6));
+      if (valida) ids.add(condicao.id);
+      return valida;
+    });
+    if (!validas) {
+      throw erroValidacaoImportacao('O campo "estadoCombate.condicoesAtivas" é inválido.', "INVALID_CHARACTER_SHEET_FIELD");
+    }
+  }
+
+  if (Object.prototype.hasOwnProperty.call(dados.estadoCombate || {}, "historicoEventos")) {
+    const ids = new Set();
+    const eventosValidos = Array.isArray(dados.estadoCombate.historicoEventos) && dados.estadoCombate.historicoEventos.every((evento) => {
+      const valido = evento && typeof evento === "object" && !Array.isArray(evento) &&
+        typeof evento.id === "string" && evento.id.trim() && !ids.has(evento.id) &&
+        typeof evento.criadoEm === "string" && !Number.isNaN(Date.parse(evento.criadoEm)) &&
+        (evento.rodada === null || Number.isInteger(evento.rodada)) &&
+        typeof evento.tipo === "string" && typeof evento.subtipo === "string" &&
+        (evento.origem === null || (evento.origem && typeof evento.origem === "object" && !Array.isArray(evento.origem))) &&
+        (evento.alvo === null || typeof evento.alvo === "string" || (evento.alvo && typeof evento.alvo === "object" && !Array.isArray(evento.alvo))) &&
+        (evento.rolagem === null || (evento.rolagem && typeof evento.rolagem === "object" && !Array.isArray(evento.rolagem))) &&
+        Array.isArray(evento.modificadores) &&
+        evento.efeito && typeof evento.efeito === "object" && ["ativacao", "aplicacao", "acao"].includes(evento.efeito.evento) &&
+        evento.efeito.dados && typeof evento.efeito.dados === "object" && !Array.isArray(evento.efeito.dados) &&
+        (evento.consumo === null || (evento.consumo && typeof evento.consumo === "object" && !Array.isArray(evento.consumo)));
+      if (valido) ids.add(evento.id);
+      return valido;
+    });
+    if (!eventosValidos) throw erroValidacaoImportacao('O campo "estadoCombate.historicoEventos" é inválido.', "INVALID_CHARACTER_SHEET_FIELD");
+  }
+
+  if (Object.prototype.hasOwnProperty.call(dados.estadoCombate || {}, "caracteristicasAtivas")) {
+    const ids = new Set();
+    const recursosValidos = Array.isArray(dados.estadoCombate.caracteristicasAtivas) && dados.estadoCombate.caracteristicasAtivas.every((recurso) => {
+      const valido = recurso && typeof recurso === "object" && !Array.isArray(recurso) &&
+        typeof recurso.id === "string" && recurso.id.trim() && !ids.has(recurso.id) &&
+        recurso.origem && typeof recurso.origem === "object" && !Array.isArray(recurso.origem) &&
+        Number.isInteger(recurso.usosMaximos) && recurso.usosMaximos > 0 &&
+        Number.isInteger(recurso.usosRestantes) && recurso.usosRestantes >= 0 && recurso.usosRestantes <= recurso.usosMaximos &&
+        ["nenhuma", "descanso_curto", "descanso_longo"].includes(recurso.recarga);
+      if (valido) ids.add(recurso.id);
+      return valido;
+    });
+    if (!recursosValidos) throw erroValidacaoImportacao('O campo "estadoCombate.caracteristicasAtivas" é inválido.', "INVALID_CHARACTER_SHEET_FIELD");
   }
 
   // XP é um total inteiro acumulado. Fichas legadas exportam esse valor como
@@ -960,11 +1154,7 @@ function obterEstadoPersistenciaFicha() {
 window.obterEstadoPersistenciaFicha = obterEstadoPersistenciaFicha;
 
 function atualizarStatusExportacao(mensagem) {
-  const status = document.getElementById("exportacaoStatus");
-  if (status) {
-    status.textContent = mensagem;
-    status.hidden = false;
-  }
+  notificarFichaFlutuante(mensagem, "info", "exportacao");
 }
 
 function limparStatusExportacaoAposImportacaoValida() {
@@ -972,6 +1162,7 @@ function limparStatusExportacaoAposImportacaoValida() {
   // o commit da importação; rollback mantém a mensagem e seu estado intactos.
   ultimaExportacaoSolicitadaFicha = null;
   ultimaExportacaoSnapshotFicha = null;
+  limparNotificacaoFichaFlutuante("exportacao");
   try {
     const status = document.getElementById("exportacaoStatus");
     if (status) {
@@ -1012,6 +1203,119 @@ function coletarSnapshotPersistenteFicha() {
   return dados;
 }
 window.coletarSnapshotPersistenteFicha = coletarSnapshotPersistenteFicha;
+
+const CHAVE_RASCUNHO_ATIVO_FICHA = "fichaRascunhoAtivo:v1";
+let timerRascunhoAtivoFicha = null;
+
+function salvarRascunhoAtivoFichaAgora() {
+  try {
+    const envelope = {
+      versao: 1,
+      atualizadoEm: new Date().toISOString(),
+      dados: coletarSnapshotPersistenteFicha(),
+    };
+    localStorage.setItem(CHAVE_RASCUNHO_ATIVO_FICHA, JSON.stringify(envelope));
+    return true;
+  } catch (erro) {
+    console.warn("Não foi possível salvar o rascunho local da ficha:", erro);
+    return false;
+  }
+}
+window.__salvarRascunhoAtivoFichaAgora = salvarRascunhoAtivoFichaAgora;
+
+async function restaurarRascunhoAtivoFicha() {
+  let texto = null;
+  try {
+    texto = localStorage.getItem(CHAVE_RASCUNHO_ATIVO_FICHA);
+  } catch (erro) {
+    console.warn("Não foi possível consultar o rascunho local da ficha:", erro);
+    return { encontrado: false, restaurado: false };
+  }
+
+  if (texto) {
+    try {
+      const envelope = JSON.parse(texto);
+      if (envelope?.versao !== 1 || !envelope.dados || typeof envelope.dados !== "object") {
+        throw new Error("Envelope de rascunho incompatível.");
+      }
+      const preparado = prepararImportacaoFicha(envelope.dados);
+      const aplicado = await aplicarDadosFicha(preparado, {
+        preparado: true,
+        transacional: true,
+      });
+      if (aplicado !== true) throw new Error("A restauração do rascunho não foi concluída.");
+      return { encontrado: true, restaurado: true, origem: "rascunho" };
+    } catch (erro) {
+      console.warn("O rascunho local não pôde ser restaurado:", erro);
+      return { encontrado: true, restaurado: false };
+    }
+  }
+
+  try {
+    const backup = await window.__obterUltimoBackupLocalGlobal?.();
+    if (!backup?.payloadJson) return { encontrado: false, restaurado: false };
+    const preparado = prepararImportacaoFicha(backup.payloadJson);
+    const aplicado = await aplicarDadosFicha(preparado, {
+      preparado: true,
+      transacional: true,
+    });
+    if (aplicado !== true) throw new Error("A restauração do backup não foi concluída.");
+    salvarRascunhoAtivoFichaAgora();
+    return { encontrado: true, restaurado: true, origem: "backup" };
+  } catch (erro) {
+    console.warn("O último backup não pôde ser retomado automaticamente:", erro);
+    return { encontrado: false, restaurado: false };
+  }
+}
+window.__restaurarRascunhoAtivoFicha = restaurarRascunhoAtivoFicha;
+
+async function limparFichaAtual() {
+  if (!window.confirm(
+    "Deseja deixar esta ficha em branco? Seus backups continuam salvos e poderão ser recuperados depois.",
+  )) return false;
+  if (window.__fichaImportacaoTransacaoAtiva) {
+    notificarFichaFlutuante("Aguarde a operação atual terminar antes de limpar a ficha.", "erro", "ficha");
+    return false;
+  }
+  try {
+    const fichaVazia = prepararImportacaoFicha({});
+    const sucesso = await aplicarDadosFicha(fichaVazia, {
+      preparado: true,
+      transacional: true,
+    });
+    if (sucesso !== true) throw new Error("A ficha não foi limpa.");
+    notificarFichaFlutuante("Ficha limpa. Os backups continuam disponíveis.", "info", "ficha");
+    return true;
+  } catch (erro) {
+    console.error("Não foi possível limpar a ficha:", erro);
+    notificarFichaFlutuante(
+      "Não foi possível limpar a ficha. Confira se os dados atuais foram preservados.",
+      "erro",
+      "ficha",
+    );
+    return false;
+  }
+}
+window.limparFichaAtual = limparFichaAtual;
+
+["input", "change", "click"].forEach((tipoEvento) => {
+  document.addEventListener(tipoEvento, (evento) => {
+    if (window.__fichaImportacaoTransacaoAtiva) return;
+    if (tipoEvento === "click") {
+      if (evento.target?.closest?.(".modal-overlay-base, dialog, [role='dialog'], .tabs")) return;
+    } else if (!campoEhPersistenteDaFicha(evento.target)) return;
+    if (timerRascunhoAtivoFicha !== null) clearTimeout(timerRascunhoAtivoFicha);
+    timerRascunhoAtivoFicha = setTimeout(() => {
+      timerRascunhoAtivoFicha = null;
+      salvarRascunhoAtivoFichaAgora();
+    }, 250);
+  }, true);
+});
+window.addEventListener("pagehide", () => {
+  if (timerRascunhoAtivoFicha !== null) clearTimeout(timerRascunhoAtivoFicha);
+  timerRascunhoAtivoFicha = null;
+  salvarRascunhoAtivoFichaAgora();
+});
 
 /* SALVAR Ficha*/
 function salvarFicha() {
@@ -1190,6 +1494,7 @@ function mostrarResultadoImportacao(tipo, mensagemTexto) {
 
 function fecharModalImportacao() {
   if (estadoModalImportacao === "processando") return;
+  const importacaoConcluidaComSucesso = estadoModalImportacao === "sucesso";
 
   const { overlay } = obterElementosModalImportacao();
   if (!overlay) return;
@@ -1215,6 +1520,9 @@ function fecharModalImportacao() {
   }
 
   estadoModalImportacao = "fechado";
+  if (importacaoConcluidaComSucesso) {
+    notificarFichaFlutuante("Ficha importada: dados importantes.", "info", "importacao");
+  }
   const botaoImportar = document.getElementById("btnImportarFicha");
   if (botaoImportar?.isConnected && !botaoImportar.disabled) {
     botaoImportar.focus();

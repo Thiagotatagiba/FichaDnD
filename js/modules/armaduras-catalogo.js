@@ -679,8 +679,17 @@ function inicializarResumoArmadura(card) {
   abrir.type = "button";
   const info = criarElementoArmadura("span", undefined, "armadura-cartao-info");
   const topo = criarElementoArmadura("span", undefined, "armadura-cartao-topo");
-  topo.append(
+  const nomeLinha = criarElementoArmadura(
+    "span",
+    undefined,
+    "armadura-cartao-nome-linha",
+  );
+  nomeLinha.append(
     criarElementoArmadura("strong", "", "magia-item-nome"),
+    criarSeloProficienciaInventario(),
+  );
+  topo.append(
+    nomeLinha,
     criarElementoArmadura("span", "", "armadura-cartao-estado"),
   );
   const linhaDados = criarElementoArmadura(
@@ -765,6 +774,10 @@ function atualizarResumosArmaduras(armaduras = null) {
       formatarKgArmadura(item.armadura_peso);
     const proficiencia = abrir.querySelector(".armadura-cartao-proficiencia");
     const proficiente = item.proficiente !== false;
+    const seloProficiencia = abrir.querySelector(
+      ".inventario-proficiencia-selo",
+    );
+    if (seloProficiencia) seloProficiencia.hidden = item.proficiente !== true;
     proficiencia.textContent = proficiente ? "" : "⚠️ Sem proficiência";
     proficiencia.hidden = proficiente;
     proficiencia.title = proficiente ? "" : "⚠️ Sem proficiência";
@@ -778,6 +791,7 @@ function atualizarResumosArmaduras(armaduras = null) {
       (item.armadura_nome?.trim() || "Nova armadura") +
         ", CA " +
         ca +
+        (item.proficiente === true ? ", proficiente com este item" : "") +
         (proficiente ? "" : ", sem proficiência") +
         (equipada ? ", equipada" : "") +
         ". Abrir detalhes",
@@ -887,7 +901,7 @@ function montarModalArmadura() {
       </div>
         <div class="magia-modal-acoes">
           <button type="button" class="magia-modal-botao modal-close-base" data-acao="editar">✏️ Editar</button>
-          <button type="button" class="magia-modal-botao modal-close-base" data-acao="fechar">Fechar</button>
+          <button type="button" class="magia-modal-botao modal-fechar-xp" data-acao="fechar" aria-label="Fechar janela">×</button>
         </div>
       </div>
       <div id="armaduraModalVisualizacao"></div>

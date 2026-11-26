@@ -100,7 +100,14 @@
   const startControl = hud.querySelector("#combateInicioControle");
   const positionBox = hud.querySelector("#combatePosicaoCaixa");
   const roundBox = hud.querySelector("#combateRodadaCaixa");
+  const turnResources = attackTop?.querySelector("#combateRecursosTurno");
   const endCombat = hud.querySelector("#btnEncerrarCombate");
+  if (endCombat) {
+    endCombat.textContent = "Encerrar";
+    endCombat.setAttribute("aria-label", "Encerrar combate");
+    endCombat.setAttribute("title", "Encerrar combate");
+    turnHead?.append(endCombat);
+  }
   const positionLabel = positionBox?.querySelector("label");
   if (positionLabel) positionLabel.textContent = "Posição:";
   const roundLabel = roundBox?.querySelector("label");
@@ -117,18 +124,18 @@
     nextRound.setAttribute("title", "Próximo turno");
   }
   const roundInput = roundBox?.querySelector("#combateRodada");
+  let nextTurnRow = null;
   if (roundLabel && roundInput && nextRound) {
     const roundValue = criar("div", "combat-v2-round-value");
-    const nextTurnRow = criar("div", "combat-v2-next-turn-row");
+    nextTurnRow = criar("div", "combat-v2-next-turn-row");
     roundValue.append(roundLabel, roundInput);
     nextTurnRow.append(nextRound);
-    roundBox.replaceChildren(roundValue, nextTurnRow);
+    roundBox.replaceChildren(roundValue);
   }
-  if (endCombat) endCombat.textContent = "Encerrar combate";
   const turnControlRow = criar("div", "combat-v2-turn-controls");
   [startControl, positionBox, roundBox].forEach(control => { if (control) turnControlRow.append(control); });
   const turnFooter = criar("div", "combat-v2-turn-footer");
-  if (endCombat) turnFooter.append(endCombat);
+  if (nextTurnRow) turnFooter.append(nextTurnRow);
   hud.replaceChildren(turnControlRow, turnFooter);
   condition.remove();
   turnPanel.append(initiativeSummary, hud);
@@ -162,6 +169,9 @@
     const slotControl = item.querySelector(".equipados-slot-com-emoji");
     const handButton = slotControl?.querySelector(".equipados-mao-emoji");
     const handSelect = slotControl?.querySelector(`#arma${slot}Nome`);
+    const incompatibilidade = slot === 2
+      ? slotControl?.querySelector("#arma2Incompatibilidade")
+      : null;
     if (!slotControl || !handButton || !handSelect) return;
     const normalizeHandPlaceholder = () => {
       if (slot !== 2) return;
@@ -183,6 +193,8 @@
     if (slot === 2) icon.classList.add("combat-v2-hand-icon--secondary");
     icon.append(handButton);
     const selectedName = criar("strong", "combat-v2-hand-name");
+    const selectedNameRow = criar("span", "combat-v2-hand-name-row");
+    selectedNameRow.append(selectedName);
     const state = criar("span", "combat-v2-hand-state");
     const updateHandName = () => {
       normalizeHandPlaceholder();
@@ -192,16 +204,23 @@
         estadoCombate?.maoPrincipal?.modo === "duas_maos";
       if (!handSelect.value) {
         selectedName.textContent = slot === 2 && duasMaos ? "Duas mãos" : "Mão Livre";
+        selectedNameRow.replaceChildren(selectedName);
         state.textContent = "";
         return;
       }
-      selectedName.textContent = name.replace(/^\p{Extended_Pictographic}‍?\s*/u, "");
+      selectedName.textContent = option?.dataset.nomeItem || name.replace(/^\p{Extended_Pictographic}‍?\s*/u, "");
+      const armas = typeof coletarArmas === "function" ? coletarArmas() : [];
+      const arma = armas[Number.parseInt(handSelect.value, 10)];
+      const indicador = arma
+        ? window.criarIndicadorProficienciaArma?.(arma)
+        : null;
+      selectedNameRow.replaceChildren(selectedName, ...(indicador ? [indicador] : []));
       state.textContent = slot === 1 && duasMaos ? "Duas mãos" : "";
     };
     handSelect.addEventListener("change", updateHandName);
     handSelect.addEventListener("combatv2render", updateHandName);
     updateHandName();
-    slotControl.replaceChildren(label, icon, selectedName, state, handSelect);
+    slotControl.replaceChildren(label, icon, selectedNameRow, state, handSelect, ...(incompatibilidade ? [incompatibilidade] : []));
   });
 
   const displacement = document.getElementById("deslocamento");
@@ -225,7 +244,8 @@
   const main = criar("main", "combat-v2-main");
   const actionsPanel = painel("combat-v2-actions", "Ataques e ações", "02");
   const turnStatus = criar("div", "combat-v2-turn-status");
-  turnStatus.append(criar("span", "combat-v2-eyebrow", "TURNO"), criar("span", "combat-v2-note", "Posição e rodada aparecem ao iniciar o combate."));
+  turnStatus.append(criar("span", "combat-v2-eyebrow", "TURNO"));
+  if (turnResources) turnStatus.append(turnResources);
   actionsPanel.append(turnStatus, tabs);
   const actionTabList = tabs.querySelector(".subabas-botoes");
   const optionsTab = criar("button", "subaba-botao", "Outras ações");
@@ -242,6 +262,7 @@
   const optionsGrid = criar("div", "combat-v2-other-actions-grid");
   const registrarAcaoVisual = (label, icon) => {
     if (window.__fichaImportacaoTransacaoAtiva) return;
+    if (typeof consumirAcaoManualTurno === "function" && !consumirAcaoManualTurno("Ação")) return;
     if (typeof window.adicionarRegistroHistoricoCombate === "function") {
       window.adicionarRegistroHistoricoCombate("Ação", `${label} — registrada; sem resolução automática`, icon);
     }

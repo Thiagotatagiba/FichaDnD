@@ -250,8 +250,7 @@ async function carregarJSONClasse(caminho, classe = "") {
     }
   } else {
     const padrao = `caracteristica_${normalizarTextoClasse(classe)}.json`;
-    candidatos.push(`./Classes/${padrao}`);
-    candidatos.push(`Classes/${padrao}`);
+    candidatos.push(`../assets/data/classes/${padrao}`);
   }
 
   // Tenta fetch nos candidatos sequencialmente
@@ -543,7 +542,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const arquivo = obterArquivoCaracteristicaPorClasse(classe);
     const caminhoJson =
       caminhoArquivoCaracteristica(arquivo) ||
-      `Classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
+      `../assets/data/classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
     atualizarStatusCargaClasse(`Classe solicitada: ${classe}`, "info");
     const geracaoCard = iniciarGeracaoCarregamentoCardClasse();
     if (!geracaoCard) return;
@@ -564,7 +563,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const tbody = document.querySelector("#tbodyClasse");
         if (tbody)
           tbody.innerHTML =
-            '<tr><td colspan="13" style="text-align:center; color:#666;">JSON não encontrado: Classes/caracteristica_' +
+            '<tr><td colspan="13" style="text-align:center; color:#666;">JSON não encontrado: assets/data/classes/caracteristica_' +
             classe +
             ".json<br>Carregue manualmente ou adicione o arquivo.</td></tr>";
       });

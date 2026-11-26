@@ -1062,29 +1062,98 @@
 #combate.combate-v2
   .combat-v2-turn.combat-v2-in-combat
   .combat-v2-initiative-header-value {
-  margin-left: 0;
+  margin-left: 7px;
+}
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head #btnEncerrarCombate {
+  flex: 0 0 auto;
+  width: max-content;
+  min-width: 0;
+  min-height: 26px;
+  margin-left: 8px;
+  padding: 4px 7px;
+  border: 1px solid #d8a49a;
+  border-radius: 7px;
+  background: #f4dfda;
+  color: #7d3931;
+  font: 600 10px/1.1 "Segoe UI", Arial, sans-serif;
+  white-space: nowrap;
+}
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head #btnEncerrarCombate:hover,
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head #btnEncerrarCombate:focus-visible {
+  border-color: #b87369;
+  background: #edc9c1;
+  color: #642b25;
+}
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head #btnEncerrarCombate:focus-visible {
+  outline: 2px solid #9b5148;
+  outline-offset: 2px;
 }
 #combate.combate-v2
   .combat-v2-turn.combat-v2-in-combat
   .combat-v2-turn-controls {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 7px;
-}
-#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa,
-#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combateRodadaCaixa {
-  grid-column: 1/-1;
-  width: 100%;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 8px;
 }
 #combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa {
-  flex: 0 0 auto;
-  flex-flow: row nowrap;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   justify-content: flex-start;
+  grid-column: 1;
+  grid-row: 2;
+  gap: 3px;
+  width: 100%;
+  min-height: 62px;
+  padding: 6px 8px;
+  border: 1px solid var(--v2-line);
+  border-radius: 8px;
+  background: #fffbf3;
 }
 #combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combateRodadaCaixa {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   align-items: stretch;
-  gap: 5px;
+  justify-content: flex-start;
+  grid-column: 2;
+  grid-row: 2;
+  width: 100%;
+  min-height: 62px;
+  padding: 6px 8px;
+  border: 1px solid var(--v2-line);
+  border-radius: 8px;
+  background: #fffbf3;
+}
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-round-value {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 3px;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-round-value > label {
+  color: var(--v2-muted);
+  font: 11px/1.2 "Segoe UI", Arial, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa .ataque-status-input-group {
+  gap: 4px;
+}
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa .ataque-status-sufixo {
+  margin-left: -3px;
+}
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #ataquePosicao {
+  width: 34px;
+  min-width: 34px;
+  min-height: 32px;
+  color: var(--v2-ink);
+  font: 600 16px/1 Palatino, "Book Antiqua", Georgia, serif;
+  text-align: right;
 }
 #combate.combate-v2 .combat-v2-round-value {
   display: flex;
@@ -1109,9 +1178,13 @@
   justify-content: center;
   width: 100%;
 }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-next-turn-row {
+  justify-content: stretch;
+}
 #combate.combate-v2 .combat-v2-turn.combat-v2-in-combat .combat-v2-turn-footer {
-  justify-content: center;
-  margin-top: 2px;
+  justify-content: stretch;
+  margin-top: 0;
+  padding-top: 6px;
 }
 #combate.combate-v2 .combat-v2-hud .ataque-status-caixa {
   display: flex;
@@ -1134,14 +1207,6 @@
     sans-serif;
   text-transform: none;
   white-space: nowrap;
-}
-#combate.combate-v2 .combat-v2-hud #combateRodadaCaixa > label {
-  color: var(--v2-ink);
-  font:
-    600 14px/1.2 Palatino,
-    "Book Antiqua",
-    Georgia,
-    serif;
 }
 #combate.combate-v2 .combat-v2-hud .combate-inicio-controle {
   width: auto;
@@ -1172,11 +1237,20 @@
     Georgia,
     serif;
 }
+#combate.combate-v2 .combat-v2-turn.combat-v2-in-combat #combateRodada {
+  width: 46px;
+  min-width: 42px;
+  min-height: 32px;
+  font-size: 16px;
+}
+#combate.combate-v2 .combat-v2-turn:not(.combat-v2-in-combat) #btnProximaRodada {
+  display: none;
+}
 #combate.combate-v2 .combat-v2-hud #btnProximaRodada {
-  width: auto;
-  min-width: max-content;
+  width: 100%;
+  min-width: 0;
   max-width: 100%;
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   min-height: 34px;
   padding: 6px 10px;
   border: 1px solid var(--v2-bronze);
@@ -1350,7 +1424,7 @@
   object-fit: contain;
 }
 #combate.combate-v2 .combat-v2-hand-name {
-  display: block;
+  display: inline;
   min-width: 0;
   margin: 0;
   color: var(--v2-ink);
@@ -1361,6 +1435,62 @@
     serif;
   text-align: center;
   overflow-wrap: anywhere;
+}
+#combate.combate-v2 .combat-v2-hand-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-width: 0;
+}
+#combate.combate-v2 .combate-proficiencia-indicador-wrapper {
+  position: relative;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  margin-block: -3px;
+}
+#combate.combate-v2 .combat-v2-hand-name + .combate-proficiencia-indicador-wrapper {
+  margin-left: -4.5px;
+}
+#combate.combate-v2 .arma-resumo-nome + .combate-proficiencia-indicador-wrapper {
+  margin-left: -10.5px;
+}
+#combate.combate-v2 .combate-proficiencia-indicador {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: inherit;
+  font: 15px/1 "Segoe UI Emoji", "Apple Color Emoji", sans-serif;
+  cursor: help;
+}
+#combate.combate-v2 .combate-proficiencia-indicador:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid #8b4513;
+  outline-offset: 0;
+}
+#combate.combate-v2 .combate-proficiencia-indicador + .combate-proficiencia-indicador-tooltip {
+  z-index: 35;
+  width: min(300px, calc(100vw - 32px));
+}
+#combate.combate-v2 .combate-proficiencia-indicador-tooltip strong {
+  display: block;
+}
+#combate.combate-v2 .combate-proficiencia-indicador img {
+  display: block;
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
 }
 #combate.combate-v2 .combat-v2-hand-state {
   display: block;
@@ -1627,6 +1757,13 @@
   #combate.combate-v2 .combat-v2-actions .arma-resumo-topo {
     grid-column: auto;
   }
+  #combate.combate-v2 .arma-resumo-controles {
+    grid-column: 1;
+    align-items: flex-start;
+  }
+  #combate.combate-v2 .arma-resumo-acoes {
+    justify-content: flex-start;
+  }
   #combate.combate-v2 .arma-resumo-acao {
     justify-self: start;
   }
@@ -1667,4 +1804,262 @@
 #combate.combate-v2 .combat-v2-hp-controls .ataque-botao,
 #combate.combate-v2 .combat-v2-quick-actions .ataque-botao {
   white-space: nowrap;
+}
+
+#combate.combate-v2 .combat-v2-turn-resource-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  min-width: 0;
+  color: var(--v2-ink);
+  font: 12px/1.3 "Segoe UI", Arial, sans-serif;
+}
+#combate.combate-v2 .combat-v2-turn-resource-line > span {
+  white-space: nowrap;
+}
+#combate.combate-v2 .combat-v2-turn-resource-line strong {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+#combate.combate-v2 .combat-v2-turn-resource-line [data-disponibilidade="usada"] {
+  color: var(--v2-muted);
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo button {
+  min-height: 30px;
+  padding: 4px 10px;
+  border: 1px solid var(--v2-line);
+  border-radius: 6px;
+  background: #ead8b8;
+  color: var(--v2-ink);
+  font: 600 12px/1.2 "Segoe UI", Arial, sans-serif;
+  cursor: pointer;
+}
+#combate.combate-v2 #btnEditarRecursosTurno {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  min-width: 20px;
+  min-height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--v2-muted);
+  font: 14px/1 "Segoe UI Symbol", "Segoe UI", sans-serif;
+  cursor: pointer;
+}
+#combate.combate-v2 #btnEditarRecursosTurno:hover,
+#combate.combate-v2 #btnEditarRecursosTurno:focus-visible {
+  background: #ead8b8;
+  color: var(--v2-ink);
+}
+#combate.combate-v2 #btnEditarRecursosTurno:focus-visible {
+  outline: 2px solid var(--v2-accent, #8b5e34);
+  outline-offset: 2px;
+}
+#combate.combate-v2 #combateRecursosTurnoStatus.turno-recursos-status-a11y {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+#combate.combate-v2 .combate-ataques-restantes {
+  display: block;
+  margin: 4px 0 0;
+  color: var(--v2-muted, #766d61);
+  font: 12px/1.35 "Segoe UI", Arial, sans-serif;
+}
+#combate.combate-v2 .ataque-modal-gatilho-reacao {
+  display: grid;
+  gap: 4px;
+  max-width: 100%;
+  margin: 6px 0;
+  color: var(--v2-muted, #766d61);
+  font: 12px/1.35 "Segoe UI", Arial, sans-serif;
+}
+#combate.combate-v2 .ataque-modal-gatilho-reacao[hidden] { display: none; }
+#combate.combate-v2 .ataque-modal-gatilho-reacao input {
+  min-width: 0;
+  width: 100%;
+  padding: 7px 9px;
+  border: 1px solid var(--v2-line, #cfb994);
+  border-radius: 6px;
+  background: #fffdf8;
+  color: var(--v2-ink, #352b24);
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo {
+  width: min(420px, calc(100vw - 32px));
+  padding: 20px;
+  border: 1px solid var(--v2-line, #cfb994);
+  border-radius: 12px;
+  color: var(--v2-ink, #352b24);
+  background: var(--v2-paper, #f7f0e1);
+  box-shadow: 0 14px 42px #24170f55;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo::backdrop {
+  background: #21180f88;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo h2 {
+  margin: 0 0 8px;
+  font: 600 20px/1.25 Palatino, "Book Antiqua", Georgia, serif;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo p {
+  margin: 0 0 16px;
+  color: var(--v2-muted, #766d61);
+  font: 13px/1.5 "Segoe UI", Arial, sans-serif;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor-acoes {
+  display: grid;
+  gap: 8px;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor-acoes button:disabled {
+  color: #77716a;
+  background: #e9e4dc;
+  cursor: not-allowed;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor-fechar {
+  display: block;
+  margin: 14px 0 0 auto;
+  background: transparent;
+}
+
+#combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor fieldset {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+  margin: 0 0 14px;
+  padding: 12px;
+  border: 1px solid var(--v2-border, #d7cec0);
+  border-radius: 10px;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor legend {
+  padding: 0 6px;
+  color: var(--v2-muted, #766d61);
+  font-weight: 700;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 76px;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor input {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  text-align: center;
+}
+#combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor-acoes {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 520px) {
+  #combate.combate-v2 #editarRecursosTurnoDialogo {
+    width: min(94vw, 440px);
+    max-width: 94vw;
+    padding: 16px;
+  }
+  #combate.combate-v2 #editarRecursosTurnoDialogo .turno-recursos-editor fieldset {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 480px) {
+  #combate.combate-v2 .combat-v2-turn-resource-line {
+    gap: 7px 10px;
+    font-size: 11px;
+  }
+}
+#combate .equipamento-incompatibilidade {
+  display: block;
+  max-width: 18rem;
+  color: var(--cor-erro, #a83232);
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+#combate .equipamento-incompatibilidade[hidden] {
+  display: none;
+}
+
+#combate .combate-twf-status {
+  flex-basis: 100%;
+  color: var(--cor-texto-secundario, #5e5b55);
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+#combate .combate-twf-status[data-estado="disponivel"] {
+  color: var(--cor-sucesso, #236b45);
+}
+
+#combate .combate-twf-status[data-estado="utilizado"] {
+  color: var(--cor-texto-secundario, #5e5b55);
+}
+
+#combate .combate-twf-status[hidden] {
+  display: none;
+}
+#combate.combate-v2 .arma-resumo-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+#combate.combate-v2 .arma-resumo-controles {
+  grid-column: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+}
+#combate.combate-v2 .arma-resumo-acoes .arma-resumo-acao {
+  min-width: 0;
+  white-space: nowrap;
+}
+#combate.combate-v2 .combate-armas-arremessadas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 6px 0;
+  padding: 9px 6px;
+  border-top: 1px solid var(--v2-line);
+}
+#combate.combate-v2 .combate-armas-arremessadas-tags,
+#combate.combate-v2 .combate-modal-recuperar-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+#combate.combate-v2 .combate-arma-arremessada-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--v2-line);
+  border-radius: 999px;
+  padding: 4px 9px;
+  background: #fffaf2;
+  color: var(--v2-ink);
+  cursor: pointer;
+}
+#combate.combate-v2 .combate-modal-recuperar-arma {
+  max-width: min(420px, calc(100vw - 32px));
+  border: 1px solid var(--v2-line);
+  border-radius: 10px;
+  color: var(--v2-ink);
+  background: #fffaf2;
+}
+#combate.combate-v2 .ataque-modal-contexto-distancia {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
 }

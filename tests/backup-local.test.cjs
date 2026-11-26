@@ -128,6 +128,7 @@ function criarHarness(options = {}) {
     addEventListener(_nome, callback) { this.callbacks.push(callback); },
     click() { for (const callback of this.callbacks) callback(); },
   };
+  const notifications = [];
   const elements = new Map([
     ['backupLocalStatus', status], ['backupRecuperacaoStatus', recoveryStatus],
     ['backupLocalSelecionado', seletor],
@@ -146,6 +147,7 @@ function criarHarness(options = {}) {
   };
   const window = {
     __registrarUltimoBackupLocalFicha(value) { window.lastBackup = value; },
+    notificarFichaFlutuante(mensagem, tipo) { notifications.push({ mensagem, tipo }); },
     addEventListener(nome, callback) {
       if (!listeners.has(`window:${nome}`)) listeners.set(`window:${nome}`, []);
       listeners.get(`window:${nome}`).push(callback);
@@ -212,7 +214,7 @@ function criarHarness(options = {}) {
   context.timerCount = (delay) => [...timers.values()].filter((item) => item.delay === delay).length;
   context.clickRecovery = async (acao) => eventos.onclick?.({ target: { dataset: { acao } } });
   vm.runInContext(source, context, { filename: 'js/core/backup-local.js' });
-  return { context, db, status, recoveryStatus, seletor, detalhes, dialogo, botaoRecuperacao, timers, get payload() { return payload; } };
+  return { context, db, status, recoveryStatus, notifications, seletor, detalhes, dialogo, botaoRecuperacao, timers, get payload() { return payload; } };
 }
 
 test('cria cópia IndexedDB versionada e mantém o indicador de alterações pendentes', async () => {
@@ -227,7 +229,8 @@ test('cria cópia IndexedDB versionada e mantém o indicador de alterações pen
   assert.equal(harness.context.window.lastBackup.backupId, record.backupId);
   assert.equal(harness.botaoRecuperacao.hidden, false);
   assert.equal(harness.context.fichaFoiAlterada(), true);
-  assert.match(harness.status.textContent, /Backup local atualizado/);
+  assert.equal(harness.status.textContent, "", "backup criado não adiciona aviso à ficha");
+  assert.deepEqual(harness.notifications, [], "backup de rotina é silencioso");
 });
 
 test('backup da versão atual do esquema continua elegível para recuperação', async () => {
@@ -316,7 +319,7 @@ test('quota preserva registros anteriores e informa que nenhum backup foi apagad
   assert.equal(failed.ok, false);
   assert.deepEqual([...harness.db.snapshots.keys()], previous);
   assert.equal(harness.context.window.lastBackup.backupId, previous[0]);
-  assert.match(harness.status.textContent, /backups anteriores foram preservados/);
+  assert.match(harness.notifications.at(-1).mensagem, /backups anteriores foram preservados/);
   assert.equal(harness.context.fichaFoiAlterada(), false, 'a falha não altera o indicador de pendências');
 });
 
@@ -338,7 +341,7 @@ test('armazenamento indisponível não altera personagem nem marca backup como c
   assert.equal(result.ok, false);
   assert.deepEqual(harness.context.getPayload(), antes);
   assert.equal(harness.context.window.lastBackup, undefined);
-  assert.match(harness.status.textContent, /Backup local indisponível/);
+  assert.match(harness.notifications.at(-1).mensagem, /Backup local indisponível/);
   assert.equal(harness.context.fichaFoiAlterada(), true);
 });
 
@@ -353,7 +356,7 @@ test('falha ao abrir o banco não altera a ficha nem registra backup', async () 
   assert.equal(result.ok, false);
   assert.deepEqual(harness.context.getPayload(), antes);
   assert.equal(harness.context.window.lastBackup, undefined);
-  assert.match(harness.status.textContent, /Backup local indisponível/);
+  assert.match(harness.notifications.at(-1).mensagem, /Backup local indisponível/);
   assert.equal(harness.context.fichaFoiAlterada(), true);
 });
 
@@ -414,7 +417,8 @@ test('recuperação confirmada aplica somente o backup selecionado', async () =>
   assert.equal(reader.context.getPayload().nomePersonagem, 'Personagem A');
   assert.equal(reader.context.getPayload().marcador, 1);
   assert.equal(reader.dialogo.open, false);
-  assert.match(reader.status.textContent, /Backup local restaurado/);
+  assert.equal(reader.status.textContent, "");
+  assert.deepEqual(reader.notifications, [], "restauração bem-sucedida não gera notificação");
 });
 
 test('falha no aplicador durante recuperação não substitui a ficha atual', async () => {
@@ -435,8 +439,9 @@ test('falha no aplicador durante recuperação não substitui a ficha atual', as
 
   assert.deepEqual(reader.context.getPayload(), current);
   assert.equal(reader.dialogo.open, true);
-  assert.match(reader.recoveryStatus.textContent, /A recuperação não foi concluída/);
-  assert.match(reader.recoveryStatus.textContent, /Confira o estado atual/);
+  assert.equal(reader.recoveryStatus.textContent, "");
+  assert.match(reader.notifications.at(-1).mensagem, /A recuperação não foi concluída/);
+  assert.match(reader.notifications.at(-1).mensagem, /Confira o estado atual/);
 });
 
 for (const [code, expected] of [
@@ -463,7 +468,7 @@ for (const [code, expected] of [
 
     assert.deepEqual(reader.context.getPayload(), current);
     assert.equal(reader.dialogo.open, true);
-    assert.match(reader.recoveryStatus.textContent, expected);
+    assert.match(reader.notifications.at(-1).mensagem, expected);
     assert.deepEqual([...writer.db.snapshots.keys()], initialBackupIds);
   });
 }
@@ -476,4 +481,21 @@ test('não cria nem anuncia backup sem identificação suficiente do personagem'
   assert.equal(result.ignorado, true);
   assert.equal(harness.db.snapshots.size, 0);
   assert.equal(harness.status.textContent, '');
+});
+
+test('recuperação automática consulta o backup global mais recente validado', async () => {
+  const harness = criarHarness({ dirty: true });
+  await harness.context.window.__gravarBackupLocalFichaAgora();
+  const ultimo = await harness.context.window.__obterUltimoBackupLocalGlobal();
+
+  assert.equal(ultimo.backupId, [...harness.db.snapshots.keys()][0]);
+  assert.equal(JSON.parse(ultimo.payloadJson).nomePersonagem, 'Personagem A');
+});
+
+test('botão Backup permanece disponível e informa quando ainda não há cópias', async () => {
+  const harness = criarHarness();
+  await harness.context.window.__abrirRecuperacaoBackupLocal();
+
+  assert.equal(harness.botaoRecuperacao.hidden, false);
+  assert.match(harness.notifications.at(-1).mensagem, /Nenhum backup local recuperável/);
 });

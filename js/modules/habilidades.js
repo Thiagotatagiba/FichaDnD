@@ -73,6 +73,25 @@ if (typeof inicializarEstadosPericias === "function") {
   inicializarEstadosPericias();
 }
 
+document.querySelectorAll(".pericia-nome").forEach((nome) => {
+  nome.setAttribute("role", "button");
+  nome.setAttribute("tabindex", "0");
+  nome.setAttribute("aria-label", `Rolar teste de ${nome.textContent.replace(/\s*\([^)]*\)\s*$/, "").trim()}`);
+  const abrir = () => abrirTestePericia(nome.closest(".pericia-linha"));
+  nome.addEventListener("click", abrir);
+  nome.addEventListener("keydown", (evento) => {
+    if (evento.key === "Enter" || evento.key === " ") {
+      evento.preventDefault();
+      abrir();
+    }
+  });
+});
+
+document.getElementById("modalTesteResistenciaBonusSituacional")?.addEventListener("input", (evento) => {
+  evento.currentTarget.setCustomValidity("");
+  atualizarBotaoConfirmarTesteResistencia();
+});
+
 // Espelha as salvaguardas no radar
 document.querySelectorAll(".valor-atributo-input").forEach((input) => {
   input.addEventListener("input", () => {
@@ -378,6 +397,9 @@ document
 document
   .getElementById("btnEncerrarCombate")
   ?.addEventListener("click", confirmarEncerrarCombate);
+document.getElementById("btnConsumirAcaoTurno")?.addEventListener("click", () => consumirAcaoManualTurno("Ação"));
+document.getElementById("btnConsumirAcaoBonusTurno")?.addEventListener("click", () => consumirAcaoManualTurno("Ação bônus"));
+document.getElementById("btnConsumirReacaoTurno")?.addEventListener("click", () => consumirAcaoManualTurno("Reação"));
 document
   .getElementById("modalIniciativaConfirmar")
   ?.addEventListener("click", confirmarIniciativa);
@@ -408,10 +430,11 @@ document
     if (!campoDado || !botao) return;
 
     const epochImportacao = window.__fichaImportacaoEpoch || 0;
+    const geracaoRolagem = geracaoRolagemContextual;
     botao.classList.add("rolando");
     animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then((rolagem) => {
       botao.classList.remove("rolando");
-      if (!rolagem || (window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
+      if (!rolagem || (window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva || geracaoRolagemContextual !== geracaoRolagem) return;
       registrarRolagemModalIniciativa(rolagem);
       atualizarTotalModalIniciativa();
       if (rolagem?.resultados?.length) {
@@ -492,10 +515,12 @@ document
   });
 
 document.getElementById("modalAtaqueDado")?.addEventListener("input", () => {
+  estadoAtaqueArma.resolucaoD20 = null;
   atualizarEstadoCriticoModalAtaque();
 });
 
 document.getElementById("modalAtaqueDado")?.addEventListener("change", () => {
+  estadoAtaqueArma.resolucaoD20 = null;
   atualizarEstadoCriticoModalAtaque();
 });
 
@@ -517,20 +542,27 @@ document
     const campoDado = document.getElementById("modalAtaqueDado");
     const botao = document.getElementById("modalAtaqueRolarDado");
     if (!campoDado || !botao) return;
-
     const epochImportacao = window.__fichaImportacaoEpoch || 0;
+    const geracaoRolagem = geracaoRolagemContextual;
     botao.classList.add("rolando");
 
     animarRolagemNoCampo(campoDado, 1, 20, 1000, 60).then((rolagem) => {
       botao.classList.remove("rolando");
-      if (!rolagem || (window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva) return;
-      registrarRolagemModalAtaque(rolagem);
+      if (!rolagem || (window.__fichaImportacaoEpoch || 0) !== epochImportacao || window.__fichaImportacaoTransacaoAtiva || geracaoRolagemContextual !== geracaoRolagem) return;
+      const resolucao = obterResolucaoRolagemD20("", "", rolagem.resultados);
+      if (!resolucao) return;
+      estadoAtaqueArma.resolucaoD20 = resolucao;
+      campoDado.value = String(resolucao.escolhido);
+      campoDado.dispatchEvent(new Event("input", { bubbles: true }));
+      campoDado.dispatchEvent(new Event("change", { bubbles: true }));
+      estadoAtaqueArma.resolucaoD20 = resolucao;
+      registrarRolagemModalAtaque({ resultados: resolucao.resultados });
       atualizarEstadoCriticoModalAtaque();
-      if (rolagem?.resultados?.length) {
-        botao.title = `1d20: ${rolagem.resultados.join(", ")}`;
+      if (resolucao.resultados.length) {
+        botao.title = `1d20: ${resolucao.escolhido}`;
         botao.setAttribute(
           "aria-label",
-          `Rolar 1d20. Último resultado ${rolagem.resultados.join(", ")}`,
+          `Rolar 1d20. Resultado ${resolucao.escolhido}`,
         );
       }
     });

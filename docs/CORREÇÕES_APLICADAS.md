@@ -176,7 +176,7 @@ O servidor HTTP permite testar o carregamento dos arquivos por uma origem HTTP l
 
 ### Dados embutidos
 
-- **Arquivo:** `../ficha/Classes/classes-embutidas.js`, caminho relativo ao diretório `docs/`.
+- **Arquivo:** `../assets/data/classes/classes-embutidas.js`, caminho relativo ao diretório `docs/`.
 - **Variável global documentada:** `window.CLASSES_EMBUTIDAS`.
 - **Formato descrito:** objeto com dados organizados por classe, por exemplo, `{ bardo: {...}, guerreiro: {...} }`.
 - **Vantagem prevista:** acesso aos dados sem precisar buscar um arquivo JSON separado, desde que o script tenha sido carregado corretamente.

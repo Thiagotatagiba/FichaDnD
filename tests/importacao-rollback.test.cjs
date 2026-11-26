@@ -379,6 +379,8 @@ function createHarness() {
     addEventListener() {},
     removeEventListener() {},
     getElementById(id) {
+      if (id === "fichaNotificacaoFlutuante")
+        return body.children.find((field) => field.id === id) || null;
       return getElement(id);
     },
     querySelectorAll(selector) {
@@ -473,6 +475,20 @@ function createHarness() {
       rodada: 5,
       posicao: 1,
       iniciativa: 17,
+      efeitosAtivos: [],
+      concentracaoAtiva: null,
+      condicoesAtivas: [],
+      caracteristicasAtivas: [],
+      historicoEventos: [],
+      recursosTurno: { rodada: 5, acaoUsada: true, acaoBonusUsada: false, reacaoUsada: true, movimentoTotal: 30, movimentoGasto: 10, ataqueDuasArmasElegivel: true, maoAtaqueQualificador: 1, maosAtaqueQualificadoras: [1, 2], ataqueAcaoIniciado: true, ataquesAcaoRestantes: 1 },
+      fontesVantagemDesvantagem: [{
+        id: "fonte-rollback",
+        escopo: "pericia:furtividade",
+        origem: "manual",
+        duracao: "persistente",
+        tipo: "vantagem",
+        motivo: "Fonte persistente pré-importação",
+      }],
     },
     armaduraEquipadaIndice: 0,
     talentosEstruturados: {
@@ -1077,7 +1093,7 @@ function installClassLoaderFromProduction(
     var obterSlugArquivoCaracteristica = value => normalizarTextoClasse(String(value || '').replace(/^caracteristica_/i, '').replace(/\\.(json|js)$/i, ''));
     var obterArquivoCaracteristicaPorClasse = () => 'caracteristica_mago.json';
     var sincronizarArquivoCaracteristicaComClasse = () => 'caracteristica_mago.json';
-    var caminhoArquivoCaracteristica = value => './Classes/' + value;
+    var caminhoArquivoCaracteristica = value => '../assets/data/classes/' + value;
     var mostrarCarregando = show => {
       const spinner = document.getElementById('classeSpinner');
       spinner.style.display = show ? 'block' : 'none';
@@ -1186,7 +1202,7 @@ test("importação válida limpa aviso e solicitação de exportação do person
     harness.run("JSON.stringify(obterEstadoPersistenciaFicha())"),
   );
   const status = harness.run(
-    `({ text: document.getElementById('exportacaoStatus').textContent, hidden: document.getElementById('exportacaoStatus').hidden })`,
+    `({ text: document.getElementById('fichaNotificacaoFlutuante')?.textContent || '', hidden: document.getElementById('fichaNotificacaoFlutuante')?.hidden ?? true })`,
   );
   assert.equal(harness.run("completionResult.tipo"), "sucesso");
   assert.equal(persistence.ultimaExportacaoSolicitada, null);
@@ -1216,7 +1232,7 @@ test("rollback de importação falha preserva aviso e solicitação do personage
     harness.run("JSON.stringify(obterEstadoPersistenciaFicha())"),
   );
   const status = harness.run(
-    `({ text: document.getElementById('exportacaoStatus').textContent, hidden: document.getElementById('exportacaoStatus').hidden })`,
+    `({ text: document.getElementById('fichaNotificacaoFlutuante')?.textContent || '', hidden: document.getElementById('fichaNotificacaoFlutuante')?.hidden ?? true })`,
   );
   assert.equal(harness.run("completionResult.tipo"), "erro");
   assert.equal(
@@ -1600,7 +1616,7 @@ function armFailure(harness, point) {
     );
   } else if (point === "middle-combat") {
     harness.run(
-      `atualizarInterfaceCombate = () => { estadoCombateIniciativa.rodada = 999; throw new Error('injected middle failure'); };`,
+      `atualizarInterfaceCombate = () => { estadoCombateIniciativa.rodada = 999; estadoCombateIniciativa.recursosTurno = { rodada: 999, acaoUsada: false }; throw new Error('injected middle failure'); };`,
     );
   } else if (point === "middle-card") {
     // The card constructor already inserts a new node before throwing.
@@ -1680,6 +1696,35 @@ for (const point of [
     assert.equal(harness.run("bloqueandoLevelUp"), false);
   });
 }
+
+test("E3.1: rollback restaura instâncias de efeito e concentração pelo mesmo snapshot", async () => {
+  const harness = createHarness();
+  observeResult(harness);
+  harness.run(`
+    estadoCombateIniciativa.efeitosAtivos = [{
+      id: 'efeito-preservado', tipo: 'magia', origem: { tipo: 'magia', id: 'hex', nome: 'Hex' },
+      referenciaDefinicao: { tipo: 'magia', id: 'hex', nivel: 1 }, estado: 'ativa',
+      duracao: { tipo: 'descricao', valor: '1 hora' }, gatilho: { tipo: 'manual', descricao: 'posterior' },
+      dadosAplicacao: { magia: { id: 'hex', nome: 'Hex' }, nivelSlot: 1 },
+      concentracaoInstanciaId: 'conc-preservada', criadaEm: '2026-11-24T12:00:00.000Z'
+    }];
+    estadoCombateIniciativa.concentracaoAtiva = {
+      instanciaId: 'conc-preservada', chave: '1::hex', iniciadaEm: '2026-11-24T12:00:00.000Z',
+      magia: { id: 'hex', nome: 'Hex', propriedades: { concentracao: true } }, nivelSlot: 1
+    };
+    estadoCombateIniciativa.condicoesAtivas = [{ id: 'cego-preservado', tipo: 'oficial', nome: 'Cego', origem: { tipo: 'manual' }, estado: 'ativa', duracao: { tipo: 'indefinida' } }];
+    estadoCombateIniciativa.historicoEventos = [{ id: 'evento-preservado', criadoEm: '2026-11-24T12:00:00.000Z', rodada: 1, tipo: 'Teste', subtipo: 'Ação', origem: { tipo: 'manual' }, alvo: null, rolagem: null, modificadores: [], efeito: { evento: 'aplicacao', dados: { simples: true, texto: 'evento preservado' } }, consumo: null }];
+    restaurarInstanciasAtivasMagia(estadoCombateIniciativa);
+  `);
+  armFailure(harness, "middle-combat");
+  const before = snapshot(harness);
+  await importPayload(harness, { estadoCombate: { ativo: false }, tema: "tema-escuro" });
+  restorationFailureArmed = false;
+  assert.equal(harness.run("completionResult.tipo"), "erro");
+  assert.equal(snapshot(harness), before, "estado persistido, projeção e identidade da concentração retornam ao snapshot");
+  assert.deepEqual(JSON.parse(harness.run("JSON.stringify(estadoCombateIniciativa.condicoesAtivas)")), [{ id: 'cego-preservado', tipo: 'oficial', nome: 'Cego', origem: { tipo: 'manual' }, estado: 'ativa', duracao: { tipo: 'indefinida' } }]);
+  assert.equal(harness.run("estadoCombateIniciativa.historicoEventos[0].id"), "evento-preservado");
+});
 
 test("importação restaura identificador e ícone das armas catalogadas", async () => {
   const harness = createHarness();
@@ -3130,8 +3175,10 @@ test("renderer de Outros reconcilia o resumo sem normalizar campos persistidos",
   const visualNode = () => ({
     textContent: "",
     hidden: false,
+    classList: { add() {}, contains() { return false; } },
     setAttribute() {},
     replaceChildren() {},
+    replaceWith() {},
     append() {},
   });
   const visualNodes = new Map();
@@ -3187,6 +3234,9 @@ test("renderer de Outros reconcilia o resumo sem normalizar campos persistidos",
     },
     outroProficienciaAtiva() {
       return false;
+    },
+    criarSeloProficienciaInventario() {
+      return visualNode();
     },
     rotuloCategoriaOutro() {
       return "Poção";
@@ -3577,4 +3627,86 @@ test("bridge Electron mantém entrega antecipada até o carregador transacional 
   );
   assert.equal(harness.run("fichasIntegracaoPendentes.length"), 0);
   assert.deepEqual(harness.errors, []);
+});
+
+test("E1.8 preserva escudo vazio legado e categoria desconhecida no round-trip", async () => {
+  const harness = createHarness();
+  harness.run(`
+    var tiposEscudoImportados = [];
+    var camposTipoEscudoImportados = [];
+    const adicionarEscudoOriginal = adicionarNovoEscudo;
+    adicionarNovoEscudo = (tipo) => {
+      tiposEscudoImportados.push(tipo);
+      const card = adicionarEscudoOriginal(tipo);
+      const campo = document.createElement("select");
+      campo.dataset.campo = "escudo_tipo";
+      campo.value = "Escudo";
+      campo.options = [
+        { value: "Escudo" },
+        { value: "Vestuario" },
+        { value: "Item magico" },
+      ];
+      campo.appendChild = function (opcao) {
+        this.options.push(opcao);
+        return opcao;
+      };
+      const querySelectorOriginal = card.querySelector.bind(card);
+      const querySelectorAllOriginal = card.querySelectorAll.bind(card);
+      card.querySelector = (seletor) =>
+        seletor === '[data-campo="escudo_tipo"]'
+          ? campo
+          : querySelectorOriginal(seletor);
+      card.querySelectorAll = (seletor) =>
+        seletor === "[data-campo]"
+          ? [campo]
+          : querySelectorAllOriginal(seletor);
+      camposTipoEscudoImportados.push(campo);
+      return card;
+    };
+  `);
+  const payload = {
+    nomePersonagem: "Waldo sintético",
+    armas: [], municoes: [], armaduras: [], outros: [],
+    escudos: [
+      {
+        escudo_nome: "", escudo_tipo: "Escudo", escudo_ca: "",
+        escudo_peso: "0", escudo_equipado: "false", legado: { preservar: true },
+      },
+      {
+        escudo_nome: "Broquel customizado", escudo_tipo: "Acessório de campanha",
+        escudo_ca: "+1", escudo_equipado: "false", origem: "personalizada",
+      },
+      {
+        escudo_nome: "Roupa legada", escudo_tipo: "  vestuário ",
+        escudo_ca: "+0", escudo_equipado: "false",
+      },
+    ],
+  };
+
+  await importPayload(harness, payload);
+
+  assert.equal(harness.run("completionResult.tipo"), "sucesso");
+  const exportados = JSON.parse(harness.run("JSON.stringify(coletarEscudos())"));
+  assert.equal(exportados.length, 3, "a coleção não elimina entradas sem nome");
+  assert.equal(exportados[0].escudo_nome, "");
+  assert.equal(exportados[0].escudo_tipo, "Escudo");
+  assert.deepEqual(exportados[0].legado, { preservar: true });
+  assert.equal(exportados[1].escudo_nome, "Broquel customizado");
+  assert.equal(exportados[1].escudo_tipo, "Acessório de campanha");
+  assert.equal(exportados[1].origem, "personalizada");
+  assert.equal(exportados[2].escudo_nome, "Roupa legada");
+  assert.equal(exportados[2].escudo_tipo, "Vestuario");
+  assert.deepEqual(
+    JSON.parse(harness.run("JSON.stringify(tiposEscudoImportados)")),
+    ["Escudo", "Acessório de campanha", "Vestuario"],
+  );
+  assert.deepEqual(
+    JSON.parse(harness.run("JSON.stringify(camposTipoEscudoImportados.map(campo => campo.value))")),
+    ["Escudo", "Acessório de campanha", "Vestuario"],
+  );
+  assert.equal(
+    harness.run("camposTipoEscudoImportados[1].options.some(opcao => opcao.value === 'Acessório de campanha')"),
+    true,
+    "tipo customizado fica selecionável na ficha restaurada",
+  );
 });

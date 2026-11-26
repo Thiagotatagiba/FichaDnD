@@ -14,6 +14,10 @@ FichaDnD/
 ├── DECISOES_DE_ARQUITETURA.md
 ├── css/
 ├── assets/
+│   └── data/
+│       ├── classes/
+│       ├── magias/
+│       └── itens/
 ├── js/
 │   ├── main.js
 │   ├── core/
@@ -25,7 +29,6 @@ FichaDnD/
 │   └── CharacteristicSystemIntegration.js
 ├── ficha/
 │   ├── Ficha_DnD_-_Tatagiba_1.0.html
-│   ├── Classes/
 │   └── Personagens Ficha/
 ├── docs/
 └── agentes/
@@ -54,7 +57,8 @@ A lógica de regras do jogo está espalhada em módulos JavaScript. Isso inclui:
 Os dados de jogo ficam em arquivos de configuração e em JSON de fichas.
 
 - `js/data/` — regras e conteúdos do sistema
-- `ficha/Classes/` — dados de classes e subclasses
+- `assets/data/magias/` — catálogos JSON de magias por nível
+- `assets/data/classes/` — dados JSON e recursos auxiliares de classes
 - `ficha/Personagens Ficha/` — personagens salvos em JSON
 
 ### 4. Camada de persistência

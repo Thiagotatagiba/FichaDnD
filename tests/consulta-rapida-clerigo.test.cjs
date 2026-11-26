@@ -7,7 +7,7 @@ const { test } = require('node:test');
 const root = path.resolve(__dirname, '..');
 const source = fs.readFileSync(path.join(root, 'js/modules/card-classe.js'), 'utf8');
 const catalogo = JSON.parse(fs.readFileSync(
-  path.join(root, 'ficha/Classes/caracteristica_clerigo.json'), 'utf8',
+  path.join(root, 'assets/data/classes/caracteristica_clerigo.json'), 'utf8',
 ));
 
 const niveisDeDominio = [1, 2, 6, 8, 17];

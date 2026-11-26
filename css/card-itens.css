@@ -656,6 +656,16 @@ body.tema-classico .armadura-titulo-contagem {
   font-size: 15px;
   overflow-wrap: anywhere;
 }
+.armadura-cartao-nome-linha {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+}
+.armadura-cartao-nome-linha .magia-item-nome {
+  overflow-wrap: anywhere;
+}
 .armadura-cartao-dados {
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -1693,6 +1703,44 @@ body.tema-escuro .municao-icone {
   gap: 7px;
   min-width: 0;
 }
+.inventario-proficiencia-selo {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  flex: 0 0 24px;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin: -3px 0;
+  vertical-align: middle;
+}
+.inventario-proficiencia-selo[hidden] {
+  display: none !important;
+}
+.inventario-proficiencia-selo-trigger {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: help;
+}
+.inventario-proficiencia-selo-trigger img {
+  display: block;
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+}
+.inventario-proficiencia-tooltip {
+  z-index: 30;
+  width: min(280px, calc(100vw - 32px));
+}
+.arma-cartao-nome-linha > .inventario-proficiencia-selo {
+  margin-left: -4px;
+}
 .arma-cartao-icone {
   width: 24px;
   height: 24px;
@@ -1837,7 +1885,8 @@ body.tema-escuro .municao-icone {
 }
 .outro-cartao-nome {
   min-width: 0;
-  flex: 1 1 auto;
+  flex: 0 1 auto;
+  max-width: 100%;
   padding: 0;
   border: 0;
   background: transparent;
@@ -1848,6 +1897,13 @@ body.tema-escuro .municao-icone {
   text-align: left;
   overflow-wrap: anywhere;
   cursor: pointer;
+}
+.outro-cartao-nome-linha {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
 }
 .outro-cartao-nome:hover,
 .outro-cartao-nome:focus-visible {
@@ -1870,6 +1926,16 @@ body.tema-escuro .municao-icone {
   text-align: center;
   white-space: nowrap;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+}
+.outro-resumo .outro-cartao-proficiencia.inventario-proficiencia-selo:not([hidden]) {
+  flex: 0 0 24px;
+  justify-content: center;
+  margin: -3px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 .outro-cartao-proficiencia[hidden] {
   display: none;

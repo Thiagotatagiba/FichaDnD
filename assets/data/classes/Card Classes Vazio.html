@@ -341,7 +341,7 @@ carregarJSONClasse(caminhoJson, classe)
               'erro'
             );
             document.getElementById('tituloClasse').textContent = 'Classe: ' + classe;
-            document.querySelector('#tbodyClasse').innerHTML = '<tr><td colspan="13" style="text-align:center; color:#666;">JSON não encontrado: Classes/caracteristica_' + classe + '.json<br>Carregue manualmente ou adicione o arquivo.</td></tr>';
+            document.querySelector('#tbodyClasse').innerHTML = '<tr><td colspan="13" style="text-align:center; color:#666;">JSON não encontrado: assets/data/classes/caracteristica_' + classe + '.json<br>Carregue manualmente ou adicione o arquivo.</td></tr>';
           });
       } else {
         atualizarStatusCargaClasse(`Arquivo HTML: ${nomeArquivoAtual()} | URL: ${window.location.href} | Nenhuma classe informada.`, 'info');

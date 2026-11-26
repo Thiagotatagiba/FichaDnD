@@ -117,6 +117,28 @@ body {
   color: #8b2f20;
 }
 
+.ficha-notificacao-flutuante {
+  position: fixed;
+  z-index: 12000;
+  right: 16px;
+  bottom: 16px;
+  width: max-content;
+  max-width: min(680px, calc(100vw - 24px));
+  padding: 11px 16px;
+  border: 1px solid #8b6847;
+  border-radius: 8px;
+  background: #fff8e8;
+  color: #5f2d0c;
+  box-shadow: 0 4px 16px #0003;
+  font: 14px/1.4 "Segoe UI", Arial, sans-serif;
+  text-align: left;
+}
+
+.ficha-notificacao-flutuante[data-tipo="erro"] {
+  border-color: #9b4137;
+  color: #762d25;
+}
+
 #backupLocalDialogo {
   width: min(92vw, 520px);
   max-height: 85vh;
@@ -1025,6 +1047,333 @@ body {
   text-align: center;
 }
 
+.dados-vida-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.dados-vida-container .dados-vida {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.dados-vida-container .dv-container-principal {
+  height: 54px;
+  min-height: 54px;
+}
+
+.descanso-acoes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  justify-items: center;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+}
+
+.descanso-acoes > .campo-titulo {
+  color: #6f3610;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.descanso-acoes-botoes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.descanso-acoes .descanso-longo-botao {
+  width: 100%;
+  min-width: 0;
+  min-height: 36px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  white-space: normal;
+}
+
+.descanso-curto-status:empty {
+  display: none;
+}
+
+#descansoCurtoDialogo {
+  width: min(94vw, 500px);
+  max-height: min(88vh, 720px);
+  max-height: min(88dvh, 720px);
+  padding: 0;
+  overflow: auto;
+  color: var(--modal-text);
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+#descansoCurtoDialogo::backdrop {
+  background: var(--modal-overlay-bg);
+  backdrop-filter: blur(2px);
+}
+
+.descanso-curto-etiqueta {
+  color: var(--modal-subtitle);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .1em;
+}
+
+.descanso-curto-conteudo {
+  display: grid;
+  gap: 9px;
+  padding: 11px 16px 14px;
+}
+
+.descanso-curto-resumo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0 2px 8px;
+  border-bottom: 1px solid var(--modal-header-border);
+  text-align: center;
+}
+
+.descanso-curto-resumo > div {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-width: 0;
+}
+
+.descanso-curto-resumo span {
+  color: var(--modal-subtitle);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.descanso-curto-resumo strong {
+  color: var(--modal-text);
+  font-size: 14px;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.descanso-curto-recursos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 6px;
+  align-items: baseline;
+  padding: 0 2px;
+  color: var(--modal-subtitle);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.descanso-curto-recursos[hidden] { display: none !important; }
+
+.descanso-curto-rolagem {
+  display: grid;
+  gap: 8px;
+  margin: 0 auto;
+  padding: 11px 12px;
+  border: 1px solid var(--modal-header-border);
+  border-radius: 10px;
+  background: rgb(255 255 255 / 40%);
+}
+
+.descanso-curto-rolagem .dado-modal-cabecalho {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  position: relative;
+}
+
+.descanso-curto-info {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  padding: 0;
+  border: 1px solid var(--modal-header-border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--modal-subtitle);
+  cursor: help;
+}
+
+.descanso-curto-icone-info {
+  display: block;
+  width: 19px;
+  height: 19px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.descanso-curto-info:focus-visible {
+  outline: 2px solid #8b4513;
+  outline-offset: 2px;
+}
+
+.descanso-curto-info-texto {
+  position: absolute;
+  z-index: 2;
+  top: calc(100% + 6px);
+  left: 50%;
+  width: min(290px, calc(100vw - 48px));
+  padding: 7px 9px;
+  transform: translateX(-50%);
+  border: 1px solid var(--modal-header-border);
+  border-radius: 7px;
+  background: var(--modal-button-bg);
+  color: var(--modal-text);
+  box-shadow: 0 3px 10px rgb(0 0 0 / 18%);
+  font: 12px/1.35 "Segoe UI", Arial, sans-serif;
+  text-align: center;
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.descanso-curto-info:hover + .descanso-curto-info-texto,
+.descanso-curto-info:focus-visible + .descanso-curto-info-texto,
+.descanso-curto-info[aria-expanded="true"] + .descanso-curto-info-texto {
+  visibility: visible;
+  opacity: 1;
+}
+
+.descanso-curto-resultado-manual input {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 7px 9px;
+  border: 1px solid #bda68c;
+  border-radius: 8px;
+  background: var(--modal-button-bg);
+  color: var(--modal-text);
+  font: inherit;
+}
+
+.descanso-curto-calculo { align-items: center; }
+.descanso-curto-calculo .dado-modal-coluna { width: 100%; }
+.descanso-curto-calculo .dado-modal-grupo-dado { justify-items: center; }
+.descanso-curto-topo .ataque-modal-rodada { font-family: "Segoe UI", Arial, sans-serif; }
+
+.descanso-curto-usar-resultados,
+.descanso-curto-acoes button {
+  min-height: 40px;
+  padding: 8px 13px;
+  border: var(--modal-border);
+  border-width: 1px;
+  border-radius: 8px;
+  background: var(--modal-button-bg);
+  color: var(--modal-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.descanso-curto-usar-linha { display: flex; align-items: center; justify-content: center; }
+
+.descanso-curto-rolagem .ataque-modal-historico {
+  margin-top: 0;
+  padding-top: 6px;
+}
+
+.descanso-curto-usar-resultados:disabled,
+.descanso-curto-rolar:disabled,
+#descansoCurtoConfirmar:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.descanso-curto-total-rolagem {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 8px;
+  padding: 0 4px;
+  text-align: center;
+}
+
+.descanso-curto-total-rolagem > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 3px 6px;
+  min-width: 0;
+}
+
+.descanso-curto-total-rolagem span { color: var(--modal-subtitle); font-size: 11px; }
+.descanso-curto-total-rolagem strong { color: var(--modal-text); font-size: 14px; font-weight: 650; }
+.descanso-curto-conta { color: var(--modal-subtitle); font-size: .72em; font-weight: 500; white-space: nowrap; }
+
+.descanso-curto-previa {
+  padding: 0 4px;
+  color: var(--modal-subtitle);
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.descanso-curto-previa p { margin: 0; }
+
+.descanso-curto-detalhes-rolagem { font-size: 12px; }
+.descanso-curto-detalhes-rolagem ol { margin: 7px 0 0; padding-left: 22px; }
+
+.descanso-curto-acoes {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+.descanso-curto-acoes #descansoCurtoConfirmar {
+  border-color: #8b4513;
+  background: #ead6b6;
+  font-weight: 650;
+}
+
+body.tema-escuro #descansoCurtoDialogo .descanso-curto-rolagem,
+body.tema-escuro #descansoCurtoDialogo .descanso-curto-previa {
+  background: #302b24;
+}
+
+body.tema-escuro #descansoCurtoDialogo input {
+  border-color: #8c765a;
+  background: #302b24;
+  color: #f2e8d7;
+}
+
+@media (max-width: 520px) {
+  #descansoCurtoDialogo { width: min(96vw, 500px); }
+  .descanso-curto-conteudo { gap: 8px; padding: 10px 12px 12px; }
+  .descanso-curto-resumo { gap: 5px; padding-bottom: 7px; }
+  .descanso-curto-resumo span { font-size: 10px; }
+  .descanso-curto-resumo strong { font-size: 12px; }
+  .descanso-curto-total-rolagem { gap: 4px; }
+  .descanso-curto-total-rolagem span { font-size: 9px; }
+  .descanso-curto-total-rolagem strong { font-size: 12px; }
+  .descanso-curto-etiqueta { font-size: 12px; }
+  .descanso-curto-acoes button { flex: 1 1 130px; }
+}
+
 .caixa-salvaguarda {
   border: 2px solid #333;
   border-radius: 12px;
@@ -1519,6 +1868,13 @@ body {
   font-size: 1.5rem;
   line-height: 1;
   font-weight: bold;
+}
+.pericia-prof-indicador img {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  pointer-events: none;
 }
 
 .pericia-valor {
@@ -2367,6 +2723,8 @@ body {
   justify-content: center;
   padding: 24px;
   background: var(--modal-overlay-bg);
+  /* Modal e backdrop devem cobrir abas, orbes e outros elementos da ficha. */
+  z-index: 13000;
 }
 
 .modal-base {
@@ -2428,9 +2786,11 @@ body {
 }
 
 .modal-vida-subtitulo {
-  margin-top: 4px;
+  width: 100%;
+  margin: 0 0 2px;
   font-size: 0.9rem;
   color: var(--modal-subtitle);
+  text-align: center;
 }
 
 .modal-vida-fechar {
@@ -2487,6 +2847,32 @@ body {
   border-color: var(--cor-borda);
   box-shadow: 0 0 0 3px rgba(139, 69, 19, 0.12);
   transform: translateY(-1px);
+}
+
+.modal-dano-tipo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  color: var(--modal-title);
+  font-size: 0.9rem;
+}
+
+.modal-dano-tipo label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.modal-dano-tipo select {
+  min-width: 150px;
+  max-width: 100%;
+  padding: 6px 8px;
+  border: 1px solid var(--cor-borda-suave);
+  border-radius: 7px;
+  background: var(--cor-campo);
+  color: var(--cor-texto);
+  font: inherit;
 }
 
 .modal-vida-acoes {
@@ -4518,6 +4904,25 @@ body {
   font-size: 14px;
 }
 
+.magia-slot-gatilho-reacao {
+  display: grid;
+  gap: 5px;
+  margin: 8px 0 14px;
+  color: #5f2d0c;
+  font-size: 13px;
+}
+.magia-slot-gatilho-reacao[hidden] { display: none; }
+.magia-slot-gatilho-reacao input {
+  width: 100%;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid #cdbb9b;
+  border-radius: 6px;
+  background: #fffdf8;
+  color: #352b24;
+  font: inherit;
+}
+
 .magia-slot-opcoes {
   display: flex;
   flex-direction: column;
@@ -5272,6 +5677,20 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 18px;
+}
+
+.ataque-modal-corpo:has(#modalAtaqueEtapaDado) {
+  align-items: stretch;
+}
+
+#modalAtaqueEtapaDado {
+  width: 100%;
+}
+
+#modalAtaqueEtapaDado .ataque-modal-checklist,
+#modalAtaqueEtapaDado .ataque-modal-acoes,
+#modalAtaqueEtapaDado .ataque-modal-historico {
+  width: 100%;
 }
 
 .ataque-modal-titulo {
@@ -9624,4 +10043,65 @@ body.tema-escuro
   .tema-opcoes {
     grid-template-columns: 1fr;
   }
+}
+
+#combateRecursosTurnoStatus {
+  min-width: 0;
+  color: #6f3610;
+  font-size: 10px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+/* Fechamento padrão de modais: botão compacto em relevo no estilo Windows XP. */
+button.modal-fechar-xp,
+button.magia-selecao-fechar {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  flex: 0 0 26px;
+  width: 26px;
+  min-width: 26px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #7b1d12;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #f7d5c5 0%, #e98d70 38%, #cf442d 42%, #a71f14 100%);
+  color: #fff;
+  box-shadow: inset 1px 1px 0 #fff3e4, inset -1px -1px 0 #8a1a10, 1px 1px 2px rgb(78 47 28 / 40%);
+  font: 0/1 "Segoe UI", Arial, sans-serif;
+  text-shadow: 0 1px 1px #78180f;
+  cursor: pointer;
+}
+
+button.modal-fechar-xp::before,
+button.magia-selecao-fechar::before {
+  content: "✕";
+  font: 700 18px/1 "Segoe UI", Arial, sans-serif;
+  text-shadow: 0 1px 1px #78180f;
+}
+
+button.modal-fechar-xp:hover,
+button.modal-fechar-xp:focus-visible,
+button.magia-selecao-fechar:hover,
+button.magia-selecao-fechar:focus-visible {
+  border-color: #68150d;
+  background: linear-gradient(180deg, #ffe4cf 0%, #f39a79 38%, #df5035 42%, #bd2a1a 100%);
+  color: #fff;
+}
+
+button.modal-fechar-xp:focus-visible,
+button.magia-selecao-fechar:focus-visible {
+  outline: 2px solid #1769aa;
+  outline-offset: 2px;
+}
+
+button.modal-fechar-xp:active,
+button.magia-selecao-fechar:active {
+  box-shadow: inset 1px 1px 2px #72180f, inset -1px -1px 0 #f7c4b2;
+}
+
+.modal-fechar-xp-icone {
+  display: none;
 }

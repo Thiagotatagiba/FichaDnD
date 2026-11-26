@@ -447,7 +447,7 @@ test("ícone da mão secundária é espelhado no slot, sem espelhar o ícone do 
   assert.match(layout, /slot === 1 && duasMaos \? "Duas mãos" : ""/);
   assert.match(
     layout,
-    /slotControl\.replaceChildren\(label, icon, selectedName, state, handSelect\)/,
+    /const indicador = arma[\s\S]*criarIndicadorProficienciaArma[\s\S]*selectedNameRow\.replaceChildren\(selectedName, \.\.\.\(indicador \? \[indicador\] : \[\]\)\)[\s\S]*slotControl\.replaceChildren\(label, icon, selectedNameRow, state, handSelect, \.\.\.\(incompatibilidade \? \[incompatibilidade\] : \[\]\)\)/,
   );
   const handUiStart = equipment.indexOf("function atualizarUIEmpunhadura(");
   const handUiEnd = equipment.indexOf(
@@ -547,16 +547,24 @@ test("card de iniciativa usa controles oficiais em cabeçalho e linha compacta s
   assert.match(layout, /initiativeResultBlock\.append\(initiativeResult\)/);
   assert.match(layout, /initiativeSummary\.append\(initiativeBonus\)/);
   assert.match(layout, /turnHead\?\.append\(initiativeHeaderValue\)/);
+  assert.match(layout, /turnHead\?\.append\(endCombat\)/);
+  assert.match(layout, /endCombat\.textContent = "Encerrar"/);
+  assert.match(layout, /setAttribute\("aria-label", "Encerrar combate"\)/);
   assert.match(layout, /Posição/);
   assert.match(layout, /Rolar iniciativa/);
   assert.match(layout, /roundLabel\) roundLabel\.textContent = "Rodada"/);
   assert.match(layout, /positionLabel\.textContent = "Posição:"/);
   assert.match(layout, /roundValue\.append\(roundLabel, roundInput\)/);
   assert.match(layout, /nextTurnRow\.append\(nextRound\)/);
+  assert.match(layout, /\[startControl, positionBox, roundBox\]/);
   assert.match(layout, /nextRound\.textContent = "Próximo turno"/);
   assert.match(layout, /setAttribute\("aria-label", "Próximo turno"\)/);
   assert.match(layout, /turnControlRow\.append\(control\)/);
-  assert.match(layout, /turnFooter\.append\(endCombat\)/);
+  assert.match(layout, /slotControl\?\.querySelector\("#arma2Incompatibilidade"\)/);
+  assert.match(layout, /handSelect, \.\.\.\(incompatibilidade \? \[incompatibilidade\] : \[\]\)/);
+  assert.match(html, /id="arma2Incompatibilidade"/);
+  assert.match(html, /id="combateAtaqueBonusDuasArmas"/);
+  assert.match(layout, /if \(nextTurnRow\) turnFooter\.append\(nextTurnRow\)/);
   assert.match(
     layout,
     /initiativeResult\.textContent = total == null \? "" : String\(total\)/,
@@ -596,26 +604,23 @@ test("card de iniciativa usa controles oficiais em cabeçalho e linha compacta s
     /400 15px\/1\.2/,
   );
   assert.equal(
-    declaracaoCss(css, ".combat-v2-hud #combateRodadaCaixa > label", "color"),
-    "var(--v2-ink)",
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat .combat-v2-round-value > label", "color"),
+    "var(--v2-muted)",
   );
   assert.match(
-    declaracaoCss(
-      css,
-      ".combat-v2-hud #combateRodadaCaixa > label",
-      "font",
-    ),
-    /600 14px/,
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat .combat-v2-round-value > label", "font"),
+    /11px\/1\.2/,
   );
   assert.equal(declaracaoCss(css, "#combateRodada", "width"), "46px");
   assert.match(declaracaoCss(css, "#combateRodada", "font"), /600 18px/);
+  assert.equal(declaracaoCss(css, "#combateRodada", "font-size"), "16px");
   assert.equal(
     declaracaoCss(css, "#btnProximaRodada", "width"),
-    "auto",
+    "100%",
   );
   assert.equal(
     declaracaoCss(css, "#btnProximaRodada", "min-width"),
-    "max-content",
+    "0",
   );
   assert.match(declaracaoCss(css, "#btnProximaRodada", "font"), /600 12px/);
   assert.equal(
@@ -627,27 +632,73 @@ test("card de iniciativa usa controles oficiais em cabeçalho e linha compacta s
     "flex-start",
   );
   assert.equal(
-    activeTurnControls.declaracoes["grid-template-columns"],
-    "minmax(0, 1fr)",
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat .combat-v2-title", "flex"),
+    "0 0 auto",
   );
-  for (const id of ["#combatePosicaoCaixa", "#combateRodadaCaixa"]) {
-    assert.equal(
-      declaracaoCss(
-        css,
-        `.combat-v2-turn.combat-v2-in-combat ${id}`,
-        "grid-column",
-      ),
-      "1/-1",
-    );
-    assert.equal(
-      declaracaoCss(
-        css,
-        `.combat-v2-turn.combat-v2-in-combat ${id}`,
-        "width",
-      ),
-      "100%",
-    );
-  }
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat .combat-v2-initiative-header-value", "margin-left"),
+    "7px",
+  );
+  assert.equal(
+    activeTurnControls.declaracoes["grid-template-columns"],
+    "repeat(2, minmax(0, 1fr))",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa", "grid-column"),
+    "1",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa", "width"),
+    "100%",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa", "grid-row"),
+    "2",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #combateRodadaCaixa", "grid-column"),
+    "2",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #combateRodadaCaixa", "width"),
+    "100%",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #combateRodadaCaixa", "grid-row"),
+    "2",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #ataquePosicao", "width"),
+    "34px",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #ataquePosicao", "text-align"),
+    "right",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat #combatePosicaoCaixa .ataque-status-sufixo", "margin-left"),
+    "-3px",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat .combat-v2-round-value", "padding"),
+    "0",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn:not(.combat-v2-in-combat) #btnProximaRodada", "display"),
+    "none",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head #btnEncerrarCombate", "white-space"),
+    "nowrap",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head #btnEncerrarCombate", "width"),
+    "max-content",
+  );
+  assert.equal(
+    declaracaoCss(css, ".combat-v2-turn.combat-v2-in-combat .combat-v2-panel-head #btnEncerrarCombate", "background"),
+    "#f4dfda",
+  );
   assert.equal(declaracaoCss(css, ".combat-v2-round-value", "display"), "flex");
   assert.equal(
     declaracaoCss(css, ".combat-v2-round-value", "gap"),
@@ -655,7 +706,7 @@ test("card de iniciativa usa controles oficiais em cabeçalho e linha compacta s
   );
   assert.equal(
     declaracaoCss(css, ".combat-v2-next-turn-row", "justify-content"),
-    "center",
+    "stretch",
   );
   assert.equal(
     declaracaoCss(
@@ -709,6 +760,16 @@ test("card de iniciativa usa controles oficiais em cabeçalho e linha compacta s
     ),
     "none",
   );
+});
+
+test("modal de iniciativa mostra seu título no cabeçalho e preserva o título da salvaguarda contra morte", () => {
+  const html = ler("ficha/Ficha_DnD_-_Tatagiba_1.0.html");
+  const combate = ler("js/modules/combate.js");
+  assert.match(html, /id="modalIniciativaCabecalhoTitulo">Rolar Iniciativa<\/span>/);
+  assert.match(html, /aria-labelledby="modalIniciativaCabecalhoTitulo"/);
+  assert.doesNotMatch(html, /id="modalIniciativaTitulo"/);
+  assert.match(combate, /tituloCabecalho\.textContent = "Rolar Iniciativa"/);
+  assert.match(combate, /tituloCabecalho\.textContent = "Teste contra a Morte"/);
 });
 
 test("integração reutiliza controles canônicos no interior de #combate", () => {
@@ -850,6 +911,12 @@ test("campos canônicos removidos visualmente permanecem ocultos e atributos seg
   assert.match(combat, /atributosAtaque\?\.\[arma\.slot\]/);
   assert.match(combat, /arma-resumo-atributo/);
   assert.match(combat, /arma-resumo-acao/);
+  assert.match(combat, /controles\.className = "arma-resumo-controles"/);
+  assert.match(combat, /controles\.appendChild\(acoes\)/);
+  assert.equal(
+    declaracaoCss(css, ".arma-resumo-controles", "grid-column"),
+    "2",
+  );
   assert.doesNotMatch(layout, /armorCaField|stealthField/);
 });
 

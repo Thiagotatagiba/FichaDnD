@@ -87,6 +87,67 @@ test("vestimentas catalogadas preservam e restauram o ID do catálogo", () => {
   );
 });
 
+test("resumo e editor de escudo usam apenas o card da lista de Escudos", () => {
+  const nodes = () => ({
+    classList: { add() {}, toggle() {}, contains() { return false; } },
+    replaceChildren() {},
+    setAttribute() {},
+  });
+  function criarCard(id, tipo, catalogoId, nome, ca) {
+    const elementos = new Map();
+    const obter = selector => {
+      if (!elementos.has(selector)) elementos.set(selector, nodes());
+      return elementos.get(selector);
+    };
+    const abrir = obter(".escudo-abrir");
+    obter(".escudo-resumo").querySelector = () => abrir;
+    abrir.querySelector = selector => selector === ".arma-cartao-nome-linha" ? null : obter(selector);
+    obter('[data-campo="escudo_tipo"]').value = tipo;
+    obter('[data-campo="escudo_nome"]').value = nome;
+    obter('[data-campo="escudo_ca"]').value = ca;
+    return {
+      id,
+      ...nodes(),
+      dataset: { catalogoEscudoId: catalogoId },
+      isConnected: true,
+      matches: () => true,
+      querySelector: obter,
+      abrir,
+    };
+  }
+  const modelo = criarCard("escudoModelo", "Escudo");
+  const escudo = criarCard("", "Escudo", "shield", "Escudo da guarda", "+2");
+  const vestimenta = criarCard("", "Vestuario", undefined, "Escudo da guarda", "+1");
+  vestimenta.querySelector(".escudo-resumo").remove = () => {};
+  const ctx = contexto({
+    document: {
+      getElementById(id) {
+        if (id === "listaEscudos") return { contains: () => true };
+        if (id === "listaEscudosItens") return { contains: card => card === escudo };
+        if (id === "arma2Nome") return { value: "escudo-0" };
+        return null;
+      },
+      querySelectorAll(selector) {
+        if (selector.startsWith("#listaEscudosItens ")) return [escudo];
+        if (selector.includes(":not(#escudoModelo)")) return [escudo, vestimenta];
+        return [modelo, escudo, vestimenta];
+      },
+    },
+    coletarEscudos: () => [
+      { catalogoId: "shield", escudo_nome: "Escudo da guarda", escudo_ca: "+2" },
+      { catalogoId: "fine-clothes", escudo_nome: "Escudo da guarda", escudo_ca: "+1" },
+    ],
+    extrairIndiceSlotEscudo: value => value === "escudo-0" ? 0 : null,
+  });
+  ctx.atualizarResumosEscudos();
+  assert.equal(escudo.abrir.querySelector(".armadura-cartao-ca").textContent, "+2");
+  assert.equal(escudo.abrir.querySelector(".armadura-cartao-estado").textContent, "Equipado");
+  assert.equal(modelo.abrir.querySelector(".magia-item-nome").textContent, undefined);
+  assert.equal(vestimenta.abrir.querySelector(".magia-item-nome").textContent, undefined);
+  assert.equal(ctx.cardEscudoNaListaAtiva(escudo), true);
+  assert.equal(ctx.cardEscudoNaListaAtiva(vestimenta), false);
+});
+
 test("busca encontra nome em português e inglês sem diferenciar acentos", () => {
   const ctx = contexto({ getTemProficienciaEscudo: () => true });
   ctx.itens = catalogo.itens;

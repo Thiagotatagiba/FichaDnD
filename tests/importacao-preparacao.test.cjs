@@ -483,6 +483,70 @@ test('preparação classifica campos de coleção inválidos com código estáve
   );
 });
 
+test('E2.5: estadoCombate preserva fontes persistentes válidas e rejeita fontes incompletas', () => {
+  const harness = createHarness();
+  const fonte = {
+    id: 'condicao-cego', escopo: 'ataque', origem: 'condicao', duracao: 'persistente',
+    tipo: 'desvantagem', motivo: 'Atacante cego', metadado: { regra: '2014' },
+  };
+  const preparada = prepareRawJson(harness, JSON.stringify({
+    estadoCombate: { ativo: false, rodada: 0, posicao: null, iniciativa: null, fontesVantagemDesvantagem: [fonte] },
+  }));
+  assert.deepEqual(preparada.estadoCombate.fontesVantagemDesvantagem, [fonte]);
+  assert.equal(preparationErrorCode(harness, {
+    estadoCombate: { fontesVantagemDesvantagem: [{ ...fonte, motivo: '' }] },
+  }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, {
+    estadoCombate: { fontesVantagemDesvantagem: [fonte, { ...fonte, motivo: 'Duplicada' }] },
+  }), 'INVALID_CHARACTER_SHEET_FIELD');
+  for (const invalida of [
+    { ...fonte, duracao: 'uma_rolagem' },
+    { ...fonte, duracao: 'turno' },
+    { ...fonte, ativo: 'false' },
+  ]) {
+    assert.equal(preparationErrorCode(harness, { estadoCombate: { fontesVantagemDesvantagem: [invalida] } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  }
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { fontesVantagemDesvantagem: [{ ...fonte, ativo: false }] } }), null);
+});
+
+test('E2.1: estado de recursos do turno opcional é preservado e validado na importação', () => {
+  const harness = createHarness();
+  const recursosTurno = { rodada: 3, acaoUsada: true, acaoBonusUsada: false, reacaoUsada: true, movimentoTotal: 30, movimentoGasto: 10, ataqueDuasArmasElegivel: true, maoAtaqueQualificador: 1, maosAtaqueQualificadoras: [1, 2], ataqueAcaoIniciado: true, ataquesAcaoRestantes: 1 };
+  const preparada = prepare(harness, { estadoCombate: { ativo: true, rodada: 3, recursosTurno } });
+  assert.deepEqual(preparada.estadoCombate.recursosTurno, recursosTurno);
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { recursosTurno: { ...recursosTurno, movimentoGasto: 31 } } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { recursosTurno: { ...recursosTurno, acaoUsada: 1 } } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { recursosTurno: { ...recursosTurno, acaoUsada: false } } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { recursosTurno: { ...recursosTurno, ataqueAcaoIniciado: false } } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { configuracaoRecursosTurno: { acao: 0, acaoBonus: 1, reacao: 1, ataquesPorAcao: 1 } } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  const legado = prepare(harness, { estadoCombate: { ativo: true, rodada: 3 } });
+  assert.equal(legado.estadoCombate.recursosTurno, undefined, 'preparação deixa a decisão de default ao aplicador sem reescrever JSON legado');
+});
+
+test('E3.1: efeitos ativos e concentração são aditivos, validados e preservam metadados desconhecidos', () => {
+  const harness = createHarness();
+  const efeito = {
+    id: 'efeito-ativacao-1', tipo: 'magia',
+    origem: { tipo: 'magia', id: 'hex', nome: 'Hex' },
+    referenciaDefinicao: { tipo: 'magia', id: 'hex', nivel: 1 },
+    estado: 'ativa', duracao: { tipo: 'descricao', valor: '1 hora' },
+    gatilho: { tipo: 'manual', descricao: 'Aplicação posterior' },
+    dadosAplicacao: { magia: { id: 'hex', nome: 'Hex', metadataCustom: { keep: true } }, nivelSlot: 2 },
+    concentracaoInstanciaId: null, criadaEm: '2026-11-24T12:00:00.000Z', plugin: { raw: null },
+  };
+  const concentracao = {
+    instanciaId: 'concentracao-1', chave: '1::hex', iniciadaEm: '2026-11-24T12:00:00.000Z',
+    magia: { id: 'hex', nome: 'Hex', propriedades: { concentracao: true } }, nivelSlot: 1,
+  };
+  const preparada = prepare(harness, { estadoCombate: { efeitosAtivos: [efeito], concentracaoAtiva: concentracao } });
+  assert.deepEqual(preparada.estadoCombate.efeitosAtivos, [efeito]);
+  assert.deepEqual(preparada.estadoCombate.concentracaoAtiva, concentracao);
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { efeitosAtivos: [efeito, efeito] } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { efeitosAtivos: [{ ...efeito, duracao: null }] } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { concentracaoAtiva: { ...concentracao, instanciaId: '' } } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, { estadoCombate: {} }), null, 'snapshot legado sem novos campos permanece válido');
+});
+
 test('preparação profunda preserva aliases, metadados, nulls e estruturas desconhecidas', () => {
   const harness = createHarness();
   const input = {
@@ -744,6 +808,152 @@ test('importação real preenchida seguida de ficha incompleta limpa defaults vi
     'a coleta não reexporta características do personagem anterior');
 });
 
+test('E2.1: importação restaura recursos do turno persistidos e ficha legada ativa inicia turno limpo', async () => {
+  const harness = createApplyHarness();
+  observeRealApplier(harness);
+  const configuracao = { acao: 2, acaoBonus: 1, reacao: 2, ataquesPorAcao: 3 };
+  const recursos = { rodada: 4, acaoUsada: true, acaoBonusUsada: true, reacaoUsada: true, gastos: { acao: 1, acaoBonus: 1, reacao: 1 }, limites: configuracao, ajustesTemporarios: { acao: 1, acaoBonus: 0, reacao: 0, ataquesPorAcao: 0 }, movimentoTotal: 30, movimentoGasto: 15, ataqueDuasArmasElegivel: true, maoAtaqueQualificador: 1, maosAtaqueQualificadoras: [1, 2], ataqueAcaoIniciado: true, ataquesAcaoRestantes: 1 };
+  await importThroughRealApplier(harness, { estadoCombate: { ativo: true, rodada: 4, posicao: 1, iniciativa: 15, configuracaoRecursosTurno: configuracao, recursosTurno: recursos } });
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', `${harness.errors.join('\\n')} ${JSON.stringify(readContextJson(harness, 'lastImportResult'))}`);
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.recursosTurno'), recursos);
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.configuracaoRecursosTurno'), configuracao);
+  const exportado = readContextJson(harness, 'coletarDadosFicha()');
+  assert.deepEqual(exportado.estadoCombate.recursosTurno, recursos);
+  assert.deepEqual(exportado.estadoCombate.configuracaoRecursosTurno, configuracao);
+  await importThroughRealApplier(harness, exportado);
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.recursosTurno'), recursos,
+    'exportação e reimportação mantêm cada recurso consumido');
+  await importThroughRealApplier(harness, { classeNivelID: 5, deslocamento: '7,5m', classeData: JSON.stringify({ nome: 'Guerreiro', niveis: [{ nivel: 5, caracteristicas: 'Ataque Extra' }] }), estadoCombate: { ativo: true, rodada: 2, posicao: 1, iniciativa: 12 } });
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\\n'));
+  const legado = readContextJson(harness, 'estadoCombateIniciativa.recursosTurno');
+  assert.equal(legado.rodada, 2);
+  assert.equal(legado.acaoUsada, false);
+  assert.equal(legado.ataqueDuasArmasElegivel, false);
+  assert.equal(legado.movimentoTotal, 25, 'velocidade legada 7,5m é convertida para 25ft sem truncar frações');
+  assert.equal(legado.ataquesAcaoRestantes, 1, 'dados da classe restauram Extra Attack 2014');
+  const recursosAntigos = { rodada: 7, acaoUsada: true, acaoBonusUsada: false, reacaoUsada: false, movimentoTotal: 30, movimentoGasto: 0, ataqueDuasArmasElegivel: false, maoAtaqueQualificador: null, maosAtaqueQualificadoras: [], ataqueAcaoIniciado: false, ataquesAcaoRestantes: 0 };
+  await importThroughRealApplier(harness, { estadoCombate: { ativo: true, rodada: 7, recursosTurno: recursosAntigos } });
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\\n'));
+  const recursosRestaurados = readContextJson(harness, 'estadoCombateIniciativa.recursosTurno');
+  assert.equal(recursosRestaurados.gastos.acao, 1, 'um uso legado booleano se converte em um gasto sem apagar o contador');
+  assert.deepEqual(recursosRestaurados.limites, { acao: 1, acaoBonus: 1, reacao: 1, ataquesPorAcao: 1 });
+  assert.deepEqual(recursosRestaurados.ajustesTemporarios, { acao: 0, acaoBonus: 0, reacao: 0, ataquesPorAcao: 0 });
+});
+
+test('E3.1: duas instâncias e concentração sobrevivem a importação, exportação e reimportação', async () => {
+  const harness = createApplyHarness();
+  observeRealApplier(harness);
+  const efeitosAtivos = [1, 2].map((nivelSlot) => ({
+    id: `hex-${nivelSlot}`, tipo: 'magia', origem: { tipo: 'magia', id: 'hex', nome: 'Hex' },
+    referenciaDefinicao: { tipo: 'magia', id: 'hex', nivel: 1 }, estado: 'ativa',
+    duracao: { tipo: 'descricao', valor: '1 hora' },
+    gatilho: { tipo: 'manual', descricao: 'Dano posterior confirmado' },
+    dadosAplicacao: { magia: { id: 'hex', nome: 'Hex', efeitos: [{ tipo: 'dano', formula: '1d6' }] }, nivelSlot },
+    concentracaoInstanciaId: 'conc-hex', criadaEm: `2026-11-24T12:0${nivelSlot}:00.000Z`,
+  }));
+  const concentracaoAtiva = {
+    instanciaId: 'conc-hex', chave: '1::hex', iniciadaEm: '2026-11-24T12:00:00.000Z',
+    magia: { id: 'hex', nome: 'Hex', nivel: 1, propriedades: { concentracao: true } }, nivelSlot: 1,
+  };
+  const ficha = { estadoCombate: { ativo: false, rodada: 0, posicao: null, iniciativa: null, efeitosAtivos, concentracaoAtiva } };
+  await importThroughRealApplier(harness, ficha);
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.efeitosAtivos'), efeitosAtivos);
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.concentracaoAtiva'), concentracaoAtiva);
+  const exportado = readContextJson(harness, 'coletarDadosFicha()');
+  assert.deepEqual(exportado.estadoCombate.efeitosAtivos, efeitosAtivos);
+  await importThroughRealApplier(harness, exportado);
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.efeitosAtivos'), efeitosAtivos);
+  await importThroughRealApplier(harness, { nomePersonagem: 'Ficha legada', estadoCombate: { ativo: false } });
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.efeitosAtivos'), []);
+  assert.equal(readContextJson(harness, 'estadoCombateIniciativa.concentracaoAtiva'), null);
+});
+
+test('E3.2: condições estruturadas são canônicas no round-trip e legado migra sem concentração no campo', async () => {
+  const harness = createApplyHarness();
+  const combatSource = fs.readFileSync(path.join(root, 'js/modules/combate.js'), 'utf8');
+  harness.run(fs.readFileSync(path.join(root, 'js/domain/condicoes-combate.js'), 'utf8'));
+  harness.run('const CONDICOES_DND = RegrasCondicoesCombate.condicoesOficiais;');
+  harness.run(extractFunction(combatSource, 'function projetarCondicoesAtivasParaCampo() {', 'function atualizarCondicoesEstruturadas('));
+  harness.run(extractFunction(combatSource, 'function gerarIdCondicaoAtiva() {', 'function migrarCondicoesLegadas('));
+  harness.run(extractFunction(combatSource, 'function migrarCondicoesLegadas(texto) {', 'function projetarCondicoesAtivasParaCampo('));
+  observeRealApplier(harness);
+  const condicoesAtivas = [
+    { id: 'cond-1', tipo: 'oficial', nome: 'Cego', origem: { tipo: 'efeito', id: 'rede' }, estado: 'ativa', duracao: { tipo: 'rodadas', valor: 2 } },
+    { id: 'cond-2', tipo: 'personalizada', nome: 'Marca da mesa', origem: { tipo: 'manual' }, estado: 'ativa', duracao: { tipo: 'indefinida' } },
+  ];
+  await importThroughRealApplier(harness, {
+    ataqueCondicao: 'Paralisado',
+    estadoCombate: { ativo: false, condicoesAtivas, concentracaoAtiva: { instanciaId: 'conc', chave: '1::bless', iniciadaEm: '2026-11-24T12:00:00.000Z', magia: { nome: 'Bless' } } },
+  });
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.condicoesAtivas'), condicoesAtivas);
+  assert.equal(harness.fakeFields.get('ataqueCondicao').value, 'Cego, Marca da mesa');
+  const exportado = readContextJson(harness, 'coletarDadosFicha()');
+  await importThroughRealApplier(harness, exportado);
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.condicoesAtivas'), condicoesAtivas);
+  assert.equal(readContextJson(harness, 'estadoCombateIniciativa.concentracaoAtiva.instanciaId'), 'conc');
+
+  await importThroughRealApplier(harness, { ataqueCondicao: 'Envenenado, Concentrado [Bless]' });
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.condicoesAtivas').map((item) => item.nome), ['Envenenado']);
+  assert.equal(readContextJson(harness, 'estadoCombateIniciativa.concentracaoAtiva.magia.nome'), 'Bless');
+  assert.equal(harness.fakeFields.get('ataqueCondicao').value, 'Envenenado');
+});
+
+test('E3.5: envelopes estruturados do histórico sobrevivem ao round-trip e rejeitam IDs duplicados', async () => {
+  const harness = createApplyHarness();
+  harness.run(`var historicoRenderizado = null; restaurarHistoricoEventosEstruturados = eventos => { historicoRenderizado = JSON.parse(JSON.stringify(eventos)); };`);
+  observeRealApplier(harness);
+  const historicoEventos = [{
+    id: 'evento-1', criadoEm: '2026-11-24T12:00:00.000Z', rodada: 2,
+    tipo: 'Magia NV 1', subtipo: 'Ação', origem: { tipo: 'magia', id: 'hex' }, alvo: null,
+    rolagem: { modo: 'normal', resultados: [14], escolhido: 14 }, modificadores: [],
+    efeito: { evento: 'ativacao', dados: { titulo: 'Magia NV 1', nome: 'Hex' } }, consumo: { nivelSlot: 1 },
+  }];
+  const payload = { estadoCombate: { ativo: false, historicoEventos } };
+  await importThroughRealApplier(harness, payload);
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.historicoEventos'), historicoEventos);
+  const exportado = readContextJson(harness, 'coletarDadosFicha()');
+  assert.deepEqual(exportado.estadoCombate.historicoEventos, historicoEventos);
+  const invalido = JSON.parse(JSON.stringify(payload));
+  invalido.estadoCombate.historicoEventos.push({ ...historicoEventos[0] });
+  assert.equal(preparationErrorCode(harness, invalido), 'INVALID_CHARACTER_SHEET_FIELD');
+
+  await importThroughRealApplier(harness, { nomePersonagem: 'Ficha legada sem histórico', estadoCombate: { ativo: false } });
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.historicoEventos'), []);
+  assert.deepEqual(readContextJson(harness, 'historicoRenderizado'), [], 'importação legada deve limpar eventos visuais da ficha anterior');
+});
+
+test('E3.4: estado de usos de características valida, importa e exporta separado da definição', async () => {
+  const harness = createApplyHarness();
+  observeRealApplier(harness);
+  const usos = [{ id: 'ativacao-surto', origem: { categoria: 'classe', nome: 'Surto' }, usosMaximos: 2, usosRestantes: 1, recarga: 'descanso_curto' }];
+  const payload = {
+    talentosEstruturados: { classe: [{ id: 'surto', nome: 'Surto', descricao: 'Texto preservado', ativacao: { habilitada: true, id: 'ativacao-surto', formula: '1d8', efeitos: 'Cura', usosMaximos: 2, recarga: 'descanso_curto' }, extra: { preservar: true } }] },
+    estadoCombate: { ativo: false, caracteristicasAtivas: usos },
+  };
+  await importThroughRealApplier(harness, payload);
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  assert.deepEqual(readContextJson(harness, 'estadoCombateIniciativa.caracteristicasAtivas'), usos);
+  const exportado = readContextJson(harness, 'coletarDadosFicha()');
+  assert.deepEqual(exportado.estadoCombate.caracteristicasAtivas, usos);
+  assert.deepEqual(exportado.talentosEstruturados.classe[0].extra, { preservar: true });
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { caracteristicasAtivas: [{ ...usos[0], usosRestantes: 3 }] } }), 'INVALID_CHARACTER_SHEET_FIELD');
+});
+
+test('E3.1: efeito ativo não pode apontar para concentração ausente ou diferente', () => {
+  const harness = createHarness();
+  const efeito = { id: 'e', tipo: 'magia', origem: { tipo: 'magia' }, referenciaDefinicao: {}, estado: 'ativa', duracao: { tipo: 'descricao' }, gatilho: { tipo: 'manual' }, dadosAplicacao: {}, concentracaoInstanciaId: 'conc-a', criadaEm: '2026-11-24T12:00:00.000Z' };
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { efeitosAtivos: [efeito], concentracaoAtiva: null } }), 'INVALID_CHARACTER_SHEET_FIELD');
+  assert.equal(preparationErrorCode(harness, { estadoCombate: { efeitosAtivos: [efeito], concentracaoAtiva: { instanciaId: 'conc-b', chave: 'x', iniciadaEm: '2026-11-24T12:00:00.000Z', magia: {} } } }), 'INVALID_CHARACTER_SHEET_FIELD');
+});
+
 test('talentos null explícitos limpam a interface sem perder null no payload', async () => {
   const harness = createApplyHarness();
   observeRealApplier(harness);
@@ -808,6 +1018,37 @@ test('importação preserva PV persistidos em vez de recalcular PV máximos no n
   assert.equal(harness.fakeFields.get('pvTotal').value, '18');
   assert.equal(harness.fakeFields.get('pvAtual').value, '16');
   assert.equal(harness.fakeFields.get('pvTemporario').value, '4');
+});
+
+test('E2.2: pools de PV e metadados sobrevivem ao round-trip de importação e exportação', async () => {
+  const harness = createApplyHarness();
+  observeRealApplier(harness);
+  const original = {
+    fichaSchemaVersion: 2,
+    nomePersonagem: 'PV round-trip sintético',
+    pvTotal: '18',
+    pvAtual: '13',
+    pvTemporario: '4',
+    extensaoPV: { origem: 'mesa', observacao: 'preservar' },
+  };
+
+  await importThroughRealApplier(harness, original);
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  const exportado = readContextJson(harness, 'coletarDadosFicha()');
+
+  assert.equal(exportado.pvTotal, '18');
+  assert.equal(exportado.pvAtual, '13');
+  assert.equal(exportado.pvTemporario, '4');
+  assert.deepEqual(exportado.extensaoPV, original.extensaoPV);
+
+  await importThroughRealApplier(harness, exportado);
+  assert.equal(harness.run('lastImportResult.tipo'), 'sucesso', harness.errors.join('\n'));
+  const reexportado = readContextJson(harness, 'coletarDadosFicha()');
+  assert.deepEqual(
+    [reexportado.pvTotal, reexportado.pvAtual, reexportado.pvTemporario],
+    ['18', '13', '4'],
+  );
+  assert.deepEqual(reexportado.extensaoPV, original.extensaoPV);
 });
 
 test('eventos do diário sem id preservam ausência e metadados no round-trip; ids presentes mantêm valor', async () => {

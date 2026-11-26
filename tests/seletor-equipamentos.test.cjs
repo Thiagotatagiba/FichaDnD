@@ -34,6 +34,7 @@ test('Mão secundária: lista somente registros categorizados como escudo e mant
   const select = createSelect();
   const context = {
     document: { getElementById: () => select, createElement: createOption },
+    personagemEhProficienteComArma: () => true,
     criarValorSlotEscudo: (index) => `__escudo__${index}`,
   };
   vm.createContext(context);
@@ -42,6 +43,8 @@ test('Mão secundária: lista somente registros categorizados como escudo e mant
     extract('function atualizarSelectNomeArmaEquipada(', '\nfunction getNomeArmaSeguro'),
     context,
   );
+  vm.runInContext(extract('function obterContextoMaoPrincipalSelecionada(', '\nfunction atualizarSelectNomeArmaEquipada'), context);
+  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction avaliarSelecaoSecundaria'), context);
 
   const equipamentos = [
     { escudo_tipo: 'Vestuario', escudo_nome: 'Roupas Finas', escudo_ca: '+1' },
@@ -55,6 +58,73 @@ test('Mão secundária: lista somente registros categorizados como escudo e mant
     ['__escudo__2'],
   );
   assert.equal(select.options.find((option) => option.value === '__escudo__2').textContent, '🛡️ Escudo +2 +2');
+});
+
+test('Mão secundária exibe ícone da arma ou escudo quando a mão principal está livre', () => {
+  const casos = [
+    { valor: '1', estadoTipo: 'uma_mao', tipoIcone: 'arma', item: { nome: 'Maça', catalogoId: 'mace' } },
+    { valor: '__escudo__0', estadoTipo: 'escudo', tipoIcone: 'escudo', item: { escudo_nome: 'Escudo', catalogoId: 'shield' } },
+  ];
+
+  casos.forEach(({ valor, estadoTipo, tipoIcone, item }) => {
+    const chamadasIcone = [];
+    const botaoPrincipal = { dataset: {}, classList: { toggle() {} } };
+    const botaoSecundario = { dataset: {}, classList: { toggle() {} } };
+    const selectSecundario = {
+      value: valor,
+      options: [{ value: '' }, { value: valor }],
+      closest: () => null,
+    };
+    const ataqueSecundario = { disabled: false };
+    const elementos = {
+      arma1Nome: { value: '' },
+      arma2Nome: selectSecundario,
+      arma1Empunhadura: botaoPrincipal,
+      arma2Empunhadura: botaoSecundario,
+      arma2Ataque: ataqueSecundario,
+    };
+    const contexto = {
+      document: {
+        getElementById: (id) => elementos[id] || null,
+        querySelectorAll: () => [],
+      },
+      window: {
+        FichaDnDCombateIcons: {
+          atualizarIconeMao: (...args) => chamadasIcone.push(args),
+          obterIdCatalogo: (equipamento) => equipamento?.catalogoId || '',
+        },
+        FichaDnDCombateLayoutV2: { atualizar() {} },
+      },
+      estadoCombate: {
+        maoPrincipal: { item: null, modo: 'vazio' },
+        maoSecundaria: { item: null, ativa: true },
+      },
+      extrairIndiceSlotEscudo: (slot) => slot.startsWith('__escudo__') ? Number(slot.slice(10)) : null,
+      obterEscudoEquipadoPorValor: (_slot, escudos) => escudos[0] || null,
+      criarItemCombatePrincipal: () => null,
+      obterTipoItemSecundarioArma: () => 'uma_mao',
+      valorSecundarioEhValido: () => true,
+      reposicionarMenuEmpunhadura() {},
+    };
+    vm.createContext(contexto);
+    vm.runInContext(
+      extract('function atualizarEstadoCombate(', '\nfunction atualizarUIEmpunhadura'),
+      contexto,
+    );
+    vm.runInContext(
+      extract('function atualizarUIEmpunhadura(', '\nfunction obterMenuEmpunhadura'),
+      contexto,
+    );
+
+    contexto.atualizarUIEmpunhadura([{}, item], estadoTipo === 'escudo' ? [item] : []);
+
+    assert.equal(contexto.estadoCombate.maoSecundaria.item.tipo, estadoTipo);
+    assert.equal(contexto.estadoCombate.maoSecundaria.ativa, true);
+    const chamadaSecundaria = chamadasIcone.find(([botao]) => botao === botaoSecundario);
+    assert.ok(chamadaSecundaria);
+    assert.equal(chamadaSecundaria[1], tipoIcone);
+    assert.equal(botaoSecundario.title, 'Ações da mão secundária');
+  });
 });
 
 test('coletor exclui o template oculto para manter índice legado do escudo equipado', () => {
@@ -75,6 +145,7 @@ test('coletor exclui o template oculto para manter índice legado do escudo equi
     getTemProficienciaEscudo: () => true,
     criarValorSlotEscudo: (index) => `__escudo__${index}`,
     getNomeArmaSeguro: (arma) => arma?.nome || arma?.arma_nome || '',
+    personagemEhProficienteComArma: () => true,
     extrairIndiceSlotEscudo: (value) => {
       const match = /^__escudo__(\d+)$/.exec(value || '');
       return match ? Number(match[1]) : null;
@@ -85,6 +156,8 @@ test('coletor exclui o template oculto para manter índice legado do escudo equi
   vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction possuiTalentoAmbidestro'), context);
   vm.runInContext(extract('function obterEscudoEquipadoPorValor(', '\nfunction possuiTalentoAmbidestro'), context);
   vm.runInContext(extract('function atualizarSelectNomeArmaEquipada(', '\nfunction getNomeArmaSeguro'), context);
+  vm.runInContext(extract('function obterContextoMaoPrincipalSelecionada(', '\nfunction atualizarSelectNomeArmaEquipada'), context);
+  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction avaliarSelecaoSecundaria'), context);
   vm.runInContext(extract('function normalizarNomeEquipadoSalvo(', '\nfunction resolverIndiceArmaSalva'), context);
   vm.runInContext(extract('function resolverIndiceArmaSalva(', '\nfunction atualizarProficienciaCardArmadura'), context);
 
@@ -100,6 +173,17 @@ test('coletor exclui o template oculto para manter índice legado do escudo equi
   context.atualizarSelectNomeArmaEquipada(2, [], valor, escudos);
   assert.equal(select.value, '__escudo__0');
   assert.equal(context.obterEscudoEquipadoPorValor(select.value, escudos).escudo_ca, '+2');
+
+  const vestimenta = { escudo_tipo: 'Vestuario', escudo_nome: 'Anel de Sinete' };
+  const colecaoLegada = [...escudos, vestimenta];
+  assert.equal(context.resolverIndiceArmaSalva(
+    { arma2EquipadaIndice: '__escudo__1', arma2Nome: 'Escudo de Aço' },
+    2, [], colecaoLegada,
+  ), '__escudo__0', 'um índice legado que aponta para vestimenta recupera o escudo salvo pelo nome');
+  assert.equal(context.resolverIndiceArmaSalva(
+    { arma2EquipadaIndice: '__escudo__1', arma2Nome: 'Anel de Sinete' },
+    2, [], colecaoLegada,
+  ), null, 'nem o índice nem o nome podem equipar uma vestimenta como escudo');
 
   const armas = [
     { arma_nome: 'Espada Longa' },
@@ -158,6 +242,35 @@ test('sincronização de slots reconcilia as marcas de escudo para arma, escudo 
     'mão secundária vazia limpa as marcas de escudo');
 });
 
+test('coletor exclui o template oculto de armadura e mantém o índice legado equipado', () => {
+  const cardModelo = criarCardArmadura('', '');
+  cardModelo.id = 'armaduraModelo';
+  const cardReal = criarCardArmadura('Armadura de Couro', '11');
+  const context = {
+    document: {
+      querySelectorAll: (selector) =>
+        selector.includes(':not(#armaduraModelo)')
+          ? [cardReal]
+          : [cardModelo, cardReal],
+    },
+    coletarFlagsCompartilhadasItem() {},
+    getTemProficienciaArmadura: () => true,
+  };
+  vm.createContext(context);
+  vm.runInContext(
+    extract('function coletarArmaduras() {', '\nfunction atualizarProficienciaCardEscudo'),
+    context,
+  );
+
+  const armaduras = context.coletarArmaduras();
+  assert.deepEqual(Array.from(armaduras, (item) => item.armadura_nome), ['Armadura de Couro']);
+  assert.equal(armaduras[0].armadura_ca, '11');
+  assert.equal(armaduras[0].armadura_bonus, 'DES');
+  assert.equal(armaduras[0].proficiente, true);
+  assert.equal(armaduras[0].armadura_nome, 'Armadura de Couro',
+    'o índice legado 0 deve resolver para a armadura real, não para o template');
+});
+
 function criarCardEscudo(nome, ca) {
   const campos = [
     { dataset: { campo: 'escudo_nome' }, value: nome },
@@ -173,6 +286,24 @@ function criarCardEscudo(nome, ca) {
   };
 }
 
+function criarCardArmadura(nome, ca) {
+  const campos = [
+    { dataset: { campo: 'armadura_nome' }, value: nome },
+    { dataset: { campo: 'armadura_ca' }, value: ca },
+    { dataset: { campo: 'armadura_bonus' }, value: 'DES' },
+    { dataset: { campo: 'armadura_tipo' }, value: 'Leve' },
+  ];
+  return {
+    id: '',
+    dataset: {},
+    _dadosOriginais: {},
+    querySelector: (selector) => selector === '.item-proficiencia'
+      ? { classList: { contains: () => false } }
+      : null,
+    querySelectorAll: () => campos,
+  };
+}
+
 test('atualizar inventário preenche os seletores de combate em ficha sem armas marcadas', () => {
   const principal = createSelect();
   const secundaria = createSelect();
@@ -183,6 +314,7 @@ test('atualizar inventário preenche os seletores de combate em ficha sem armas 
       querySelector: () => null,
       createElement: createOption,
     },
+    personagemEhProficienteComArma: () => true,
     coletarArmas: () => [arma],
     coletarEscudos: () => [],
     coletarArmaduras: () => [],
@@ -205,6 +337,7 @@ test('atualizar inventário preenche os seletores de combate em ficha sem armas 
     ),
     context,
   );
+  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction avaliarSelecaoSecundaria'), context);
   vm.runInContext(
     extract(
       'function atualizarSelectNomeArmaEquipada(',
@@ -212,6 +345,7 @@ test('atualizar inventário preenche os seletores de combate em ficha sem armas 
     ),
     context,
   );
+  vm.runInContext(extract('function obterContextoMaoPrincipalSelecionada(', '\nfunction atualizarSelectNomeArmaEquipada'), context);
   vm.runInContext(
     extract(
       'function atualizarListaArmasEquipamento()',
@@ -234,7 +368,7 @@ test('atualizar inventário preenche os seletores de combate em ficha sem armas 
   assert.equal(secundaria.value, '');
 });
 
-test('Mão secundária: descarta seleção antiga de vestimenta e preserva regras atuais de ocupação', () => {
+test('Mão secundária: valida ocupação compartilhada sem confundir leveza com equipabilidade', () => {
   const context = {
     extrairIndiceSlotEscudo: (value) => {
       const match = /^__escudo__(\d+)$/.exec(value || '');
@@ -243,18 +377,25 @@ test('Mão secundária: descarta seleção antiga de vestimenta e preserva regra
     possuiTalentoAmbidestro: () => false,
   };
   vm.createContext(context);
+  const rules = fs.readFileSync(path.join(__dirname, '..', 'js/domain/regras-combate.js'), 'utf8');
+  vm.runInContext(`${rules}\nglobalThis.__rules = RegrasCombate;`, context);
+  context.RegrasCombate = context.__rules;
   vm.runInContext(extract('function obterTipoItemSecundarioArma(', '\nfunction ehEscudoEmpunhavel'), context);
+  vm.runInContext(extract('function obterTipoItemSecundarioPorValor(', '\nfunction valorSecundarioEhValido'), context);
   vm.runInContext(extract('function ehEscudoEmpunhavel(', '\nfunction possuiTalentoAmbidestro'), context);
   vm.runInContext(extract('function obterEscudoEquipadoPorValor(', '\nfunction possuiTalentoAmbidestro'), context);
-  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction limparSelecaoSecundariaEquipamento'), context);
+  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction avaliarSelecaoSecundaria'), context);
+  vm.runInContext(extract('function avaliarSelecaoSecundaria(', '\nfunction atualizarAvisoIncompatibilidadeSecundaria'), context);
+  vm.runInContext(extract('function valorSecundarioEhValido(', '\nfunction limparSelecaoSecundariaEquipamento'), context);
 
   const escudos = [
     { escudo_tipo: 'Vestuario', escudo_nome: 'Roupas Finas', escudo_ca: '+1' },
     { escudo_tipo: 'Escudo', escudo_nome: 'Escudo +2', escudo_ca: '+2' },
   ];
   const armas = [
-    { propriedades: { leve: true } },
-    { propriedades: { duas_maos: true } },
+    { modo: 'corpo-a-corpo', propriedades: { leve: true } },
+    { modo: 'corpo-a-corpo', propriedades: { duas_maos: true } },
+    { modo: 'corpo-a-corpo', propriedades: { finesse: true } },
   ];
   assert.equal(context.obterTipoItemSecundarioPorValor('__escudo__0', armas, escudos), null);
   assert.equal(context.obterTipoItemSecundarioPorValor('__escudo__1', armas, escudos), 'escudo');
@@ -263,27 +404,62 @@ test('Mão secundária: descarta seleção antiga de vestimenta e preserva regra
   assert.equal(context.obterEscudoEquipadoPorValor('__escudo__7', escudos), null);
   assert.equal(context.obterTipoItemSecundarioPorValor('0', armas, escudos), 'leve');
   assert.equal(context.obterTipoItemSecundarioPorValor('1', armas, escudos), 'duas_maos');
-  const armaUmaMao = { tipo: 'uma_mao' };
+  const armaUmaMao = { tipo: 'uma_mao', propriedades: {} };
   assert.equal(context.valorSecundarioEhValido('__escudo__0', armaUmaMao, 'uma_mao', armas, escudos), false);
   assert.equal(context.valorSecundarioEhValido('__escudo__1', armaUmaMao, 'uma_mao', armas, escudos), true);
-  assert.equal(context.valorSecundarioEhValido('0', { tipo: 'leve' }, 'uma_mao', armas, escudos), true);
-  assert.equal(context.valorSecundarioEhValido('1', { tipo: 'leve' }, 'uma_mao', armas, escudos), false);
-  assert.equal(context.valorSecundarioEhValido('__escudo__1', { tipo: 'duas_maos' }, 'duas_maos', armas, escudos), false);
+  assert.equal(context.valorSecundarioEhValido('0', armaUmaMao, 'uma_mao', armas, escudos), true);
+  assert.equal(context.valorSecundarioEhValido('1', armaUmaMao, 'uma_mao', armas, escudos), false);
+  assert.equal(context.valorSecundarioEhValido('2', armaUmaMao, 'uma_mao', armas, escudos), true, 'arma de uma mão não leve é equipável mesmo sem talento');
+  assert.equal(context.valorSecundarioEhValido('__escudo__1', armaUmaMao, 'duas_maos', armas, escudos), false);
+  assert.equal(context.valorSecundarioEhValido('', { tipo: 'duas_maos' }, 'duas_maos', armas, escudos), true, 'mão vazia continua válida');
 });
 
-test('Mão secundária: Ambidestro permite arma corpo a corpo de uma mão sem remover restrições de empunhadura', () => {
-  const context = { possuiTalentoAmbidestro: () => true };
+test('Mão secundária: Dual Wielder não permite arma que exige duas mãos', () => {
+  const context = { possuiTalentoAmbidestro: () => true, RegrasCombate: { avaliarEquipamentoMaoSecundaria: (...args) => regras.avaliarEquipamentoMaoSecundaria(...args) } };
+  const regras = (() => { const c = {}; vm.runInNewContext(`${fs.readFileSync(path.join(__dirname, '..', 'js/domain/regras-combate.js'), 'utf8')}\nglobalThis.__rules=RegrasCombate`, c); return c.__rules; })();
   vm.createContext(context);
-  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction limparSelecaoSecundariaEquipamento'), context);
+  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction avaliarSelecaoSecundaria'), context);
+  assert.equal(context.podeEquiparNaSecundaria({ tipo: 'uma_mao', propriedades: {} }, 'uma_mao', { tipo: 'arma', item: { propriedades: {} } }).valido, true);
+  assert.equal(context.podeEquiparNaSecundaria({ tipo: 'uma_mao', propriedades: {} }, 'uma_mao', { tipo: 'arma', item: { propriedades: { duas_maos: true } } }).valido, false);
+  assert.equal(context.podeEquiparNaSecundaria({ tipo: 'uma_mao', propriedades: {} }, 'duas_maos', { tipo: 'arma', item: { propriedades: {} } }).valido, false);
+});
 
-  assert.deepEqual(
-    Array.from(context.podeEquiparNaSecundaria({ tipo: 'uma_mao' }, 'uma_mao')),
-    ['leve', 'uma_mao', 'versatil', 'escudo'],
-  );
-  assert.deepEqual(
-    Array.from(context.podeEquiparNaSecundaria({ tipo: 'duas_maos' }, 'duas_maos')),
-    [],
-  );
+test('offHand filtra apenas itens impossíveis de empunhar e preserva seleção antiga incompatível', () => {
+  const principal = createSelect();
+  const secundaria = createSelect();
+  principal.value = '0';
+  const armas = [
+    { nome: 'Adaga', modo: 'corpo-a-corpo', propriedades: { leve: true } },
+    { nome: 'Besta de mão', modo: 'distancia', propriedades: { leve: true } },
+    { nome: 'Rapieira', modo: 'corpo-a-corpo', propriedades: { finesse: true } },
+    { nome: 'Besta pesada', modo: 'distancia', propriedades: { duas_maos: true } },
+  ];
+  const context = {
+    document: {
+      getElementById: (id) => ({ arma1Nome: principal, arma2Nome: secundaria })[id] || null,
+      createElement: createOption,
+    },
+    personagemEhProficienteComArma: () => true,
+    estadoCombate: { maoPrincipal: { item: { chaveItem: '0' }, modo: 'uma_mao' } },
+    RegrasCombate: (() => { const c = {}; vm.runInNewContext(`${fs.readFileSync(path.join(__dirname, '..', 'js/domain/regras-combate.js'), 'utf8')}\nglobalThis.__rules=RegrasCombate`, c); return c.__rules; })(),
+    possuiTalentoAmbidestro: () => false,
+    criarItemCombatePrincipal: (arma, chaveItem) => ({ ...arma, chaveItem }),
+  };
+  vm.createContext(context);
+  vm.runInContext(extract('function obterContextoMaoPrincipalSelecionada(', '\nfunction atualizarSelectNomeArmaEquipada'), context);
+  vm.runInContext(extract('function atualizarSelectNomeArmaEquipada(', '\nfunction getNomeArmaSeguro'), context);
+  vm.runInContext(extract('function podeEquiparNaSecundaria(', '\nfunction avaliarSelecaoSecundaria'), context);
+
+  context.atualizarSelectNomeArmaEquipada(2, armas, '', []);
+  assert.deepEqual(secundaria.options.map((option) => option.value), ['', '1', '2']);
+  assert.equal(secundaria.options[0].textContent, 'Mão Secundária / Escudo');
+
+  context.atualizarSelectNomeArmaEquipada(2, armas, '3', []);
+  const incompatibilidade = secundaria.options.find((option) => option.value === '3');
+  assert.ok(incompatibilidade, 'seleção antiga segue visível para permitir correção explícita');
+  assert.equal(incompatibilidade.dataset.incompativel, 'true');
+  assert.match(incompatibilidade.dataset.motivo, /duas mãos/i);
+  assert.equal(secundaria.value, '3');
 });
 
 test('Ambidestro é reconhecido somente como talento nomeado explicitamente', () => {

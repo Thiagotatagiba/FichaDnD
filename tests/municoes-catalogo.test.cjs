@@ -65,3 +65,74 @@ test("ícones de projétil e recipiente são opcionais na apresentação e resol
   assert.equal(personalizada.icone, undefined);
   assert.equal(personalizada.iconeRecipiente, undefined);
 });
+
+test("adicionar munição atualiza o seletor visível da Funda e preserva o ID da pilha selecionada", () => {
+  const ctx = contexto();
+  const criarOpcao = () => ({
+    cloneNode() {
+      return { value: this.value, textContent: this.textContent };
+    },
+  });
+  const campo = {
+    options: [],
+    get value() {
+      return this.options.find(option => option.selected)?.value || "";
+    },
+    set innerHTML(_) {
+      this.options = [Object.assign(criarOpcao(), { value: "", selected: true })];
+    },
+    appendChild(option) {
+      this.options.push(option);
+    },
+  };
+  const seletorVisivel = {
+    options: [],
+    replaceChildren(...options) {
+      this.options = options;
+    },
+  };
+  const funda = {
+    dataset: { catalogoArmaId: "sling" },
+    querySelector(selector) {
+      if (selector === '[data-campo="arma_municao_id"]') return campo;
+      if (selector === ".arma-cartao-municao-select") return seletorVisivel;
+      return null;
+    },
+  };
+  const pilhas = [];
+  ctx.document.querySelectorAll = selector => {
+    if (selector.startsWith("#listaArmas")) return [funda];
+    if (selector.startsWith("#listaMunicoes")) return pilhas;
+    return [];
+  };
+  ctx.document.createElement = criarOpcao;
+  ctx.estadoCatalogoArmas = {
+    dados: JSON.parse(fs.readFileSync(path.join(root, "assets/data/itens/armas.json"), "utf8")),
+  };
+  const equipamentos = fs.readFileSync(path.join(root, "js/modules/equipamentos.js"), "utf8");
+  vm.runInContext(equipamentos.slice(0, equipamentos.indexOf("function consumirMunicao(")), ctx);
+
+  ctx.criarCardMunicao = dados => {
+    const campos = Object.entries(dados).map(([chave, value]) => ({ dataset: { campo: chave }, value }));
+    const card = {
+      dataset: { id: dados.id },
+      querySelector: selector => campos.find(c => selector === `[data-campo="${c.dataset.campo}"]`),
+      querySelectorAll: () => campos,
+    };
+    pilhas.push(card);
+    return card;
+  };
+  ctx.balas = { id: "pilha-1", municao_catalogo_id: "sling-bullets", municao_nome: "Projéteis", municao_quantidade: "20" };
+  ctx.adicionarMunicao({ ...ctx.balas, id: "pilha-virotes", municao_catalogo_id: "crossbow-bolts" });
+  ctx.adicionarMunicao(ctx.balas);
+  assert.deepEqual(campo.options.map(option => option.value), ["", "pilha-1"]);
+  assert.deepEqual(seletorVisivel.options.map(option => option.value), ["", "pilha-1"]);
+  assert.equal(seletorVisivel.value, "");
+
+  campo.options[0].selected = false;
+  campo.options[1].selected = true;
+  funda.dataset.catalogoArmaId = "funda";
+  ctx.adicionarMunicao({ ...ctx.balas, id: "pilha-2", municao_catalogo_id: "balas-de-funda" });
+  assert.deepEqual(seletorVisivel.options.map(option => option.value), ["", "pilha-1", "pilha-2"]);
+  assert.equal(seletorVisivel.value, "pilha-1");
+});

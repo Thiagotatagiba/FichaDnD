@@ -1,4 +1,12 @@
-function trocarAba(nome, el) {
+const ABAS_FICHA = new Set(["status", "combate", "magia", "historia", "itens"]);
+
+function selecionarAbaFicha(nome, el) {
+  if (!ABAS_FICHA.has(nome)) return false;
+  const aba = document.getElementById(nome);
+  const botao = el || Array.from(document.querySelectorAll(".tab")).find((item) =>
+    new RegExp(`trocarAba\\(['\"]${nome}['\"]`).test(item.getAttribute("onclick") || ""),
+  );
+  if (!aba || !botao) return false;
   document.querySelectorAll(".aba").forEach((a) => {
     a.classList.remove("ativa");
   });
@@ -7,8 +15,34 @@ function trocarAba(nome, el) {
     t.classList.remove("active");
   });
 
-  document.getElementById(nome).classList.add("ativa");
-  el.classList.add("active");
+  aba.classList.add("ativa");
+  botao.classList.add("active");
+  return true;
+}
+
+function trocarAba(nome, el) {
+  if (!selecionarAbaFicha(nome, el)) return;
+  const hashDesejado = `#${nome}`;
+  if (window.location.hash !== hashDesejado) {
+    window.history.pushState({ abaFicha: nome }, "", hashDesejado);
+  }
+}
+
+function restaurarAbaDoHash() {
+  const nome = window.location.hash.replace(/^#/, "").toLowerCase();
+  const aba = ABAS_FICHA.has(nome) ? nome : "status";
+  selecionarAbaFicha(aba);
+  if (!ABAS_FICHA.has(nome)) {
+    window.history.replaceState(window.history.state, "", `${window.location.pathname}${window.location.search}#${aba}`);
+  }
+}
+
+window.addEventListener("hashchange", restaurarAbaDoHash);
+window.addEventListener("popstate", restaurarAbaDoHash);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", restaurarAbaDoHash, { once: true });
+} else {
+  restaurarAbaDoHash();
 }
 
 function formatarBonusProf() {

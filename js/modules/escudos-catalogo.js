@@ -22,8 +22,11 @@ const estadoModalEscudo = {
   sessao: 0,
 };
 
+const SELETOR_CARDS_ESCUDOS =
+  '#listaEscudosItens > .item-card[data-tipo="escudo"]:not(#escudoModelo)';
+
 function cardEscudoNaListaAtiva(card) {
-  const lista = document.getElementById("listaEscudos");
+  const lista = document.getElementById("listaEscudosItens");
   return Boolean(
     card &&
     card.isConnected &&
@@ -571,11 +574,7 @@ function dadosEscudoDoCatalogo(card) {
     card.querySelector('[data-campo="escudo_' + nome + '"]')?.value || "";
   const parseBonus = (texto) =>
     Math.max(0, Number(String(texto).replace(/[^\d.-]/g, "")) || 0);
-  const indice = [
-    ...document.querySelectorAll(
-      '#listaEscudos .item-card[data-tipo="escudo"]',
-    ),
-  ].indexOf(card);
+  const indice = Array.from(document.querySelectorAll(SELETOR_CARDS_ESCUDOS)).indexOf(card);
   const valorSlotSecundario = document.getElementById("arma2Nome")?.value || "";
   const indiceEscudoEquipado =
     typeof extrairIndiceSlotEscudo === "function"
@@ -596,7 +595,7 @@ function dadosEscudoDoCatalogo(card) {
     vestirAcoes: Number(card.dataset.vestirAcoes) || 1,
     retirarAcoes: Number(card.dataset.retirarAcoes) || 1,
     desvantagemFurtividade: false,
-    empunhado: indiceEscudoEquipado === indice,
+    empunhado: indice >= 0 && indiceEscudoEquipado === indice,
     magico: !!card.querySelector(".item-flag-magico")?.checked,
     sintonizado: !!card.querySelector(".item-flag-sintonizado")?.checked,
   };
@@ -633,7 +632,10 @@ function inicializarResumoEscudo(card) {
   );
   topo
     .querySelector(".arma-cartao-nome-linha")
-    ?.append(criarElementoEscudo("strong", "", "magia-item-nome"));
+    ?.append(
+      criarElementoEscudo("strong", "", "magia-item-nome"),
+      criarSeloProficienciaInventario(),
+    );
   const dados = criarElementoEscudo("span", undefined, "armadura-cartao-dados");
   const ca = criarElementoEscudo("span", undefined, "escudo-cartao-ca");
   ca.append(
@@ -663,34 +665,28 @@ function inicializarResumoEscudo(card) {
   card.querySelector(".item-header").after(resumo);
 }
 
-function atualizarResumosEscudos(escudos = null) {
-  const todosCards = [
-    ...document.querySelectorAll(
-      '#listaEscudos .item-card[data-tipo="escudo"]',
-    ),
-  ];
-  const todosItens = escudos || coletarEscudos();
-  todosCards.forEach((card, indice) => {
-    const tipo =
-      card.querySelector('[data-campo="escudo_tipo"]')?.value || "Escudo";
-    card.classList.toggle("escudo-catalogo", tipo === "Escudo");
-    if (tipo !== "Escudo") {
-      card.querySelector(".escudo-resumo")?.remove();
-      return;
-    }
-    inicializarResumoEscudo(card);
-    const item = todosItens[indice];
-    if (!item) return;
+function atualizarResumosEscudos() {
+  document.querySelectorAll(SELETOR_CARDS_ESCUDOS).forEach((card) => {
+    atualizarVisibilidadeResumoEscudo(card);
+    const item = dadosEscudoDoCatalogo(card);
     const abrir = card.querySelector(".escudo-abrir");
-    const nome = item.escudo_nome?.trim() || "Novo escudo";
-    const bonus = String(item.escudo_ca || "+0").trim();
-    const proficiente = item.proficiente !== false;
-    const empunhado = dadosEscudoDoCatalogo(card).empunhado;
+    if (!abrir) return;
+    const nome = item.nome.trim() || "Novo escudo";
+    const bonus =
+      card.querySelector('[data-campo="escudo_ca"]')?.value.trim() || "+0";
+    const indicadorProficiencia = card.querySelector(".item-proficiencia");
+    const proficiente = !indicadorProficiencia?.classList.contains("nao");
+    const empunhado = item.empunhado;
     const nomeElemento = abrir.querySelector(".magia-item-nome");
     nomeElemento.textContent = nome;
     const nomeLinha = abrir.querySelector(".arma-cartao-nome-linha");
+    const seloProficiencia = nomeLinha?.querySelector(
+      ".inventario-proficiencia-selo",
+    );
+    if (seloProficiencia)
+      seloProficiencia.hidden = !indicadorProficiencia || !proficiente;
     nomeLinha?.querySelector(".arma-cartao-icone")?.remove();
-    const icone = card.dataset.catalogoEscudoIcone || item.icone || "";
+    const icone = item.icone;
     if (nomeLinha && icone) {
       const imagem = document.createElement("img");
       imagem.className = "arma-cartao-icone";
@@ -707,17 +703,17 @@ function atualizarResumosEscudos(escudos = null) {
       : "+" + bonus;
     const tags = abrir.querySelector(".escudo-cartao-tags");
     tags.replaceChildren();
-    if (card.querySelector(".item-flag-magico")?.checked)
+    if (item.magico)
       tags.append(criarElementoEscudo("span", "Mágico", "escudo-cartao-tag"));
-    if (card.querySelector(".item-flag-sintonizado")?.checked)
+    if (item.sintonizado)
       tags.append(
         criarElementoEscudo("span", "Sintonizado", "escudo-cartao-tag"),
       );
     abrir.querySelector(".armadura-cartao-meta").textContent =
       "🪙 " +
-      (Number(item.escudo_preco) || 0) +
+      (item.custo.valor || 0) +
       " PO   ⚖️ " +
-      formatarKgEscudo(item.escudo_peso);
+      formatarKgEscudo(item.pesoKg);
     const aviso = abrir.querySelector(".armadura-cartao-proficiencia");
     aviso.textContent = proficiente ? "" : "⚠️ Sem proficiência";
     aviso.hidden = proficiente;
@@ -732,6 +728,9 @@ function atualizarResumosEscudos(escudos = null) {
       nome +
         ", bônus de CA " +
         bonus +
+        (indicadorProficiencia && proficiente
+          ? ", proficiente com este item"
+          : "") +
         (proficiente ? "" : ", sem proficiência") +
         (empunhado ? ", empunhado" : "") +
         ". Abrir detalhes",
@@ -774,7 +773,7 @@ function montarModalEscudo() {
         </div>
         <div class="magia-modal-acoes">
           <button type="button" class="magia-modal-botao modal-close-base" data-acao="editar">✏️ Editar</button>
-          <button type="button" class="magia-modal-botao modal-close-base" data-acao="fechar">Fechar</button>
+          <button type="button" class="magia-modal-botao modal-fechar-xp" data-acao="fechar" aria-label="Fechar janela">×</button>
         </div>
       </div>
       <div id="escudoModalVisualizacao"></div>
@@ -942,30 +941,18 @@ function renderizarModalEscudo() {
 function alternarEmpunharEscudo() {
   if (!editorEscudoPodeAgir()) return;
   const card = estadoModalEscudo.card;
-  let checkbox = [
-    ...document.querySelectorAll("#lista-escudos-equipamento input"),
-  ].find(
-    (input) =>
-      Number(input.dataset.index) ===
-      [
-        ...document.querySelectorAll(
-          '#listaEscudos .item-card[data-tipo="escudo"]',
-        ),
-      ].indexOf(card),
-  );
+  const obterCheckbox = () => {
+    const cards = Array.from(document.querySelectorAll(SELETOR_CARDS_ESCUDOS));
+    const indice = cards.indexOf(card);
+    const opcoes = Array.from(
+      document.querySelectorAll("#lista-escudos-equipamento input"),
+    );
+    return opcoes.find((input) => Number(input.dataset.index) === indice);
+  };
+  let checkbox = obterCheckbox();
   if (!checkbox) {
     atualizarListaArmasEquipamento();
-    checkbox = [
-      ...document.querySelectorAll("#lista-escudos-equipamento input"),
-    ].find(
-      (input) =>
-        Number(input.dataset.index) ===
-        [
-          ...document.querySelectorAll(
-            '#listaEscudos .item-card[data-tipo="escudo"]',
-          ),
-        ].indexOf(card),
-    );
+    checkbox = obterCheckbox();
   }
   if (!checkbox) return;
   checkbox.checked = !checkbox.checked;

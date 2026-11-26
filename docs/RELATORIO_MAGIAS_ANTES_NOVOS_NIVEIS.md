@@ -27,7 +27,7 @@ Este relatório registra propostas, não altera o mecanismo nem aprova automatic
 
 **Validação:** conjurar Absorver Elementos ou Hex registra o uso sem abrir dano imediato; aplicar seu bônus depois não gasta espaço. Mísseis Mágicos continua abrindo dano imediatamente.
 
-Referências: [resolverCombateMagia](../js/modules/magias.js), [catálogo de nível 1](../assets/data/magias-nivel-1.json).
+Referências: [resolverCombateMagia](../js/modules/magias.js), [catálogo de nível 1](../assets/data/magias/magias-nivel-1.json).
 
 ### 2. Preservar efeitos ao editar e salvar
 

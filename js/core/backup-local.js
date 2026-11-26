@@ -133,23 +133,25 @@
 
   function atualizarStatus(mensagem, erro = false) {
     const status = document.getElementById("backupLocalStatus");
-    if (!status) return;
-    status.textContent = mensagem;
-    status.hidden = !mensagem;
-    status.dataset.estado = erro ? "erro" : "info";
+    if (status) {
+      status.textContent = "";
+      status.hidden = true;
+    }
+    if (erro && mensagem) window.notificarFichaFlutuante?.(mensagem, "erro", "backup");
   }
 
   function atualizarStatusRecuperacao(mensagem, erro = false) {
     const status = document.getElementById("backupRecuperacaoStatus");
-    if (!status) return;
-    status.textContent = mensagem;
-    status.hidden = !mensagem;
-    status.dataset.estado = erro ? "erro" : "info";
+    if (status) {
+      status.textContent = "";
+      status.hidden = true;
+    }
+    if (erro && mensagem) window.notificarFichaFlutuante?.(mensagem, "erro", "backup");
   }
 
-  function definirRecuperacaoDisponivel(disponivel) {
+  function definirRecuperacaoDisponivel(_disponivel) {
     const botao = document.getElementById("backupLocalAbrir");
-    if (botao) botao.hidden = !disponivel;
+    if (botao) botao.hidden = false;
   }
 
   function validarRegistro(registro) {
@@ -403,6 +405,11 @@
     return metadata;
   }
 
+  async function obterUltimoBackupLocalGlobal() {
+    const backups = await obterBackupsRecuperaveis();
+    return backups[0] || null;
+  }
+
   async function verificarDisponibilidadeRecuperacao() {
     try {
       const backups = await obterBackupsRecuperaveis();
@@ -466,8 +473,13 @@
       const backups = await obterBackupsRecuperaveis();
       if (!backups.length) {
         definirRecuperacaoDisponivel(false);
-        if (informarAusencia)
-          atualizarStatus("Nenhum backup local recuperável foi encontrado.");
+        if (informarAusencia) {
+          window.notificarFichaFlutuante?.(
+            "Nenhum backup local recuperável foi encontrado.",
+            "info",
+            "backup",
+          );
+        }
         return;
       }
       definirRecuperacaoDisponivel(true);
@@ -578,7 +590,7 @@
       dialogo.close();
       dialogoRecuperacaoAberto = false;
       atualizarStatusRecuperacao("");
-      atualizarStatus(`Backup local restaurado: ${descricao} — ${data}`);
+      atualizarStatus("");
     } catch (erro) {
       console.error("Falha na recuperação do backup local:", erro);
       const mensagemRollback =
@@ -599,6 +611,7 @@
   window.__retomarBackupLocalAutomatico = retomarBackup;
   window.__obterBackupsLocaisRecuperaveis = obterBackupsRecuperaveis;
   window.__carregarUltimoBackupLocalFicha = carregarUltimoBackupDaFichaAtual;
+  window.__obterUltimoBackupLocalGlobal = obterUltimoBackupLocalGlobal;
   window.__abrirRecuperacaoBackupLocal = () =>
     abrirDialogoRecuperacao({ informarAusencia: true });
 

@@ -157,7 +157,7 @@
         const nomeArquivo = String(arquivo || "").trim();
         if (!nomeArquivo) return "";
         if (/^(?:\.\/|\/|https?:)/i.test(nomeArquivo)) return nomeArquivo;
-        return `./Classes/${nomeArquivo}`;
+        return `../assets/data/classes/${nomeArquivo}`;
       }
 
       function preencherSelectArquivosCaracteristica() {
@@ -445,7 +445,7 @@
               const arquivo = sincronizarArquivoCaracteristicaComClasse(true);
               const caminhoJson =
                 caminhoArquivoCaracteristica(arquivo) ||
-                `Classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
+                `../assets/data/classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
               if (typeof carregarJSONClasse === "function") {
                 const geracaoCard =
                   window.__iniciarCarregamentoCardClasse?.();
@@ -664,7 +664,7 @@
             obterArquivoCaracteristicaPorClasse(classe);
           const classePath =
             caminhoArquivoCaracteristica(arquivoSelecionado) ||
-            `./Classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
+            `../assets/data/classes/caracteristica_${normalizarTextoClasse(classe)}.json`;
           const classeReferencia =
             obterSlugArquivoCaracteristica(arquivoSelecionado) ||
             normalizarTextoClasse(classe);

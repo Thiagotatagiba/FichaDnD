@@ -29,7 +29,7 @@ class ClassManager {
 
     try {
       const normalizado = className.toLowerCase().replace(/\s+/g, "_");
-      const caminho = `./Classes/caracteristica_${normalizado}.json`;
+      const caminho = `../assets/data/classes/caracteristica_${normalizado}.json`;
 
       const response = await fetch(caminho);
       if (!response.ok) {

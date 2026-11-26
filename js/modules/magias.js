@@ -172,7 +172,8 @@ const estadoModalSelecaoMagia = {
 };
 let concentracaoAtiva = null;
 let sequenciaInstanciaConcentracao = 0;
-const efeitosMagicosPendentes = new Map();
+let sequenciaInstanciaEfeito = 0;
+let efeitosMagicosPendentesVolateis = [];
 let ultimoResultadoConcentracao = null;
 let ultimoFocoModalConcentracao = null;
 const TALENTOS_CONFIG = {
@@ -434,7 +435,7 @@ function montarModalTalento() {
                             <button type="button" class="talento-modal-fechar modal-close-base talento-modal-acao-icone" id="talentoModalEditar" title="Editar">✏️</button>
                             <button type="button" class="talento-modal-fechar modal-close-base talento-modal-acao-icone" id="talentoModalExcluir" title="Excluir">🗑️</button>
                             <button type="button" class="talento-modal-fechar modal-close-base" id="talentoModalSalvar">💾 Salvar</button>
-                            <button type="button" class="talento-modal-fechar modal-close-base" id="talentoModalFechar">Fechar</button>
+                            <button type="button" class="talento-modal-fechar modal-fechar-xp" id="talentoModalFechar" aria-label="Fechar talento">×</button>
                         </div>
                     </div>
                     <div id="talentoModalCorpo" class="talento-modal-corpo modal-body-base"></div>
@@ -514,6 +515,14 @@ function renderizarFormularioTalento(talento) {
                     <label for="talentoModalDescricaoInput">Descricao
                         <textarea id="talentoModalDescricaoInput"></textarea>
                     </label>
+                    <fieldset class="talento-ativacao-config">
+                      <legend>Característica ativa (desligada por padrão)</legend>
+                      <label><input id="talentoAtivacaoHabilitada" type="checkbox"> Habilitar configuração de uso</label>
+                      <label>Fórmula de dano/cura <input id="talentoAtivacaoFormula" type="text" placeholder="Ex.: 1d8 + modificador"></label>
+                      <label>Efeitos <textarea id="talentoAtivacaoEfeitos" placeholder="Descreva os efeitos configurados"></textarea></label>
+                      <label>Usos máximos <input id="talentoAtivacaoUsos" type="number" min="1" step="1" placeholder="Sem limite configurado"></label>
+                      <label>Recarga <select id="talentoAtivacaoRecarga"><option value="nenhuma">Não definida</option><option value="descanso_curto">Descanso curto</option><option value="descanso_longo">Descanso longo</option></select></label>
+                    </fieldset>
                 </div>
             `;
   document.getElementById("talentoModalNomeInput").value = String(
@@ -522,6 +531,12 @@ function renderizarFormularioTalento(talento) {
   document.getElementById("talentoModalDescricaoInput").value = String(
     talento?.descricao || "",
   );
+  const ativacao = talento?.ativacao || {};
+  document.getElementById("talentoAtivacaoHabilitada").checked = ativacao.habilitada === true;
+  document.getElementById("talentoAtivacaoFormula").value = String(ativacao.formula || "");
+  document.getElementById("talentoAtivacaoEfeitos").value = String(ativacao.efeitos || "");
+  document.getElementById("talentoAtivacaoUsos").value = ativacao.usosMaximos == null ? "" : String(ativacao.usosMaximos);
+  document.getElementById("talentoAtivacaoRecarga").value = ["descanso_curto", "descanso_longo"].includes(ativacao.recarga) ? ativacao.recarga : "nenhuma";
 }
 
 function abrirModalTalento(
@@ -575,12 +590,13 @@ function modalTalentoTemAlteracoes() {
   const original = estadoModalTalento.itemOriginal || {};
   const editaveis = obterCamposEditaveisTalento();
   return Object.entries(editaveis).some(([chave, valor]) => {
+    if (chave === "ativacao") return JSON.stringify(valor || null) !== JSON.stringify(original.ativacao || null);
     return valor !== String(original[chave] || "").trim();
   });
 }
 
 function obterCamposEditaveisTalento() {
-  return {
+  const campos = {
     nome: String(
       document.getElementById("talentoModalNomeInput")?.value || "",
     ).trim(),
@@ -588,6 +604,106 @@ function obterCamposEditaveisTalento() {
       document.getElementById("talentoModalDescricaoInput")?.value || "",
     ).trim(),
   };
+  const controleHabilitado = document.getElementById("talentoAtivacaoHabilitada");
+  if (controleHabilitado) {
+    const habilitada = controleHabilitado.checked === true;
+    const maximo = Number.parseInt(document.getElementById("talentoAtivacaoUsos")?.value, 10);
+    campos.ativacao = habilitada ? {
+      ...(estadoModalTalento.itemOriginal?.ativacao || {}),
+      habilitada: true,
+      formula: String(document.getElementById("talentoAtivacaoFormula")?.value || "").trim(),
+      efeitos: String(document.getElementById("talentoAtivacaoEfeitos")?.value || "").trim(),
+      usosMaximos: Number.isInteger(maximo) && maximo > 0 ? maximo : null,
+      recarga: ["descanso_curto", "descanso_longo"].includes(document.getElementById("talentoAtivacaoRecarga")?.value)
+        ? document.getElementById("talentoAtivacaoRecarga").value : "nenhuma",
+    } : estadoModalTalento.itemOriginal?.ativacao
+      ? { ...estadoModalTalento.itemOriginal.ativacao, habilitada: false }
+      : undefined;
+    if (campos.ativacao === undefined) delete campos.ativacao;
+  }
+  return campos;
+}
+
+function garantirEstadoUsosCaracteristicas() {
+  if (typeof estadoCombateIniciativa === "undefined" || !estadoCombateIniciativa) return null;
+  if (!Array.isArray(estadoCombateIniciativa.caracteristicasAtivas)) estadoCombateIniciativa.caracteristicasAtivas = [];
+  return estadoCombateIniciativa.caracteristicasAtivas;
+}
+
+function sincronizarUsosCaracteristicas() {
+  const usos = garantirEstadoUsosCaracteristicas();
+  if (!usos) return;
+  Object.entries(talentosEstruturados || {}).forEach(([categoria, itens]) => {
+    if (!Array.isArray(itens)) return;
+    itens.forEach((item) => {
+      const config = item?.ativacao;
+      if (config?.habilitada !== true || !Number.isInteger(config.usosMaximos) || config.usosMaximos < 1) return;
+      if (!config.id) config.id = globalThis.crypto?.randomUUID?.() || `caracteristica-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      let estado = usos.find((registro) => registro?.id === config.id);
+      if (!estado) {
+        estado = { id: config.id, origem: { categoria, nome: item.nome }, usosRestantes: config.usosMaximos };
+        usos.push(estado);
+      } else {
+        estado.origem = { categoria, nome: item.nome };
+        estado.usosRestantes = Math.min(config.usosMaximos, Math.max(0, Number.parseInt(estado.usosRestantes, 10) || 0));
+      }
+      estado.usosMaximos = config.usosMaximos;
+      estado.recarga = config.recarga || "nenhuma";
+    });
+  });
+}
+
+function consumirUsoCaracteristica(id) {
+  const estado = garantirEstadoUsosCaracteristicas()?.find((item) => item?.id === id);
+  if (!estado || !Number.isInteger(estado.usosRestantes) || estado.usosRestantes < 1) return false;
+  estado.usosRestantes -= 1;
+  return true;
+}
+
+function configuracoesAtivasPorIdCaracteristica() {
+  const configuracoes = new Map();
+  Object.values(talentosEstruturados || {}).forEach((itens) => {
+    if (!Array.isArray(itens)) return;
+    itens.forEach((item) => {
+      const ativacao = item?.ativacao;
+      if (ativacao?.habilitada === true && typeof ativacao.id === "string" && ativacao.id.trim() &&
+          Number.isInteger(ativacao.usosMaximos) && ativacao.usosMaximos > 0) {
+        configuracoes.set(ativacao.id, ativacao);
+      }
+    });
+  });
+  return configuracoes;
+}
+
+function contarUsosCaracteristicasRecuperaveis(tipoDescanso) {
+  if (!["descanso_curto", "descanso_longo"].includes(tipoDescanso)) return 0;
+  const configuracoes = configuracoesAtivasPorIdCaracteristica();
+  return (garantirEstadoUsosCaracteristicas() || []).reduce((total, estado) => {
+    const config = configuracoes.get(estado?.id);
+    if (!config || config.recarga !== tipoDescanso) return total;
+    const restantes = Math.min(config.usosMaximos, Math.max(0, Number.parseInt(estado.usosRestantes, 10) || 0));
+    return total + config.usosMaximos - restantes;
+  }, 0);
+}
+
+function recuperarUsosCaracteristicas(tipoDescanso) {
+  if (!["descanso_curto", "descanso_longo"].includes(tipoDescanso)) return 0;
+  const configuracoes = configuracoesAtivasPorIdCaracteristica();
+  let recuperados = 0;
+  (garantirEstadoUsosCaracteristicas() || []).forEach((estado) => {
+    const config = configuracoes.get(estado?.id);
+    if (!config || config.recarga !== tipoDescanso) return;
+    const restantes = Math.min(config.usosMaximos, Math.max(0, Number.parseInt(estado.usosRestantes, 10) || 0));
+    recuperados += config.usosMaximos - restantes;
+    estado.usosMaximos = config.usosMaximos;
+    estado.usosRestantes = config.usosMaximos;
+    estado.recarga = config.recarga;
+  });
+  return recuperados;
+}
+
+if (typeof window !== "undefined") {
+  window.FichaDnDCaracteristicasAtivas = { consumirUso: consumirUsoCaracteristica, recuperarUsos: recuperarUsosCaracteristicas };
 }
 
 function fecharModalTalento() {
@@ -674,6 +790,7 @@ function salvarModalTalento() {
   }
 
   renderTalentos();
+  sincronizarUsosCaracteristicas();
   estadoModalTalento.itemOriginal = item;
   estadoModalTalento.modo = "visualizar";
   fecharModalTalento();
@@ -725,6 +842,7 @@ function inicializarTalentos(dados = {}, opcoes = {}) {
       talentosEstruturados = montarTalentosEstruturados(dados);
     }
     renderTalentos();
+    sincronizarUsosCaracteristicas();
   } catch (erro) {
     console.error("Falha ao inicializar talentos:", erro);
   }
@@ -798,7 +916,7 @@ function normalizarMagiaRegistro(registro, nivel) {
           ...efeito,
           tipo: efeito?.tipo || "",
           formula: efeito?.formula || "",
-          dano_tipo: efeito?.dano_tipo || "",
+          dano_tipo: efeito?.dano_tipo || efeito?.danoTipo || "",
           regra: efeito?.regra || "",
         }))
         .filter(
@@ -981,7 +1099,27 @@ function obterTipoAcaoMagia(magia, aplicacaoEfeito = false) {
   return "Conjuração";
 }
 
-function registrarHistoricoMagia(magia, nivelSlot = null) {
+function podeConsumirAcaoMagiaNoCombate(magia, origemCombate) {
+  if (!origemCombate || typeof estadoCombateIniciativa === "undefined" || !estadoCombateIniciativa.ativo) return true;
+  const tipoAcao = obterTipoAcaoMagia(magia);
+  if (!["Ação", "Ação bônus", "Reação"].includes(tipoAcao)) return true;
+  return typeof RegrasCombate !== "undefined" && typeof RegrasCombate.consumirAcaoTurno === "function" &&
+    !!RegrasCombate.consumirAcaoTurno(estadoCombateIniciativa.recursosTurno, tipoAcao);
+}
+
+function consumirAcaoMagiaNoCombate(magia, origemCombate) {
+  if (!podeConsumirAcaoMagiaNoCombate(magia, origemCombate)) {
+    const status = document.getElementById("combateRecursosTurnoStatus");
+    if (status) status.textContent = `${obterTipoAcaoMagia(magia)} já foi usada neste turno.`;
+    return false;
+  }
+  if (!origemCombate || typeof estadoCombateIniciativa === "undefined" || !estadoCombateIniciativa.ativo) return true;
+  const tipoAcao = obterTipoAcaoMagia(magia);
+  if (!["Ação", "Ação bônus", "Reação"].includes(tipoAcao)) return true;
+  return typeof consumirAcaoTurnoCombate === "function" && consumirAcaoTurnoCombate(tipoAcao);
+}
+
+function registrarHistoricoMagia(magia, nivelSlot = null, gatilhoReacao = null) {
   const nomeMagiaOriginal = magia?.nome || "Magia";
   const nomeMagia = escaparHtmlMagia(nomeMagiaOriginal);
 
@@ -995,12 +1133,17 @@ function registrarHistoricoMagia(magia, nivelSlot = null) {
 
   // (tipo usa o SLOT UTILIZADO via nivelSlot; truque não consome slot)
   adicionarRegistroHistoricoCombate(tipoHistorico, valorHistorico, "", obterTipoAcaoMagia(magia), {
+    evento: "ativacao",
+    origem: { tipo: "magia", id: magia.id || null, nome: nomeMagiaOriginal },
+    consumo: { nivelSlot: Number.isInteger(nivelSlot) ? nivelSlot : null },
     timeline: {
       titulo: tipoHistorico,
       nome: nomeMagiaOriginal,
       iconeNome: "🪄",
       concentrando: magiaExigeConcentracao(magia),
+      ...(gatilhoReacao ? { gatilhoReacao } : {}),
     },
+    ...(gatilhoReacao ? { gatilhoReacao } : {}),
   });
 }
 
@@ -1020,7 +1163,9 @@ function abrirHistoricoCombateMagia() {
 
 function conjurarTruque(magia) {
   const origemCombate = estadoModalMagia.origemCombate;
-  if (!(origemCombate && magiaPossuiDano(magia) && !magiaTemDanoPosterior(magia))) {
+  const ataqueResolvidoPeloModal = origemCombate && magiaPossuiDano(magia) && !magiaTemDanoPosterior(magia);
+  if (!ataqueResolvidoPeloModal && !consumirAcaoMagiaNoCombate(magia, origemCombate)) return false;
+  if (!ataqueResolvidoPeloModal) {
     registrarHistoricoMagia(magia);
   }
   iniciarConcentracaoMagia(magia);
@@ -1037,23 +1182,115 @@ function magiaPossuiDano(magia) {
 }
 
 function magiaTemDanoPosterior(magia) {
-  return magiaPossuiDano(magia) && magia.momento_dano === "posterior";
+  const gatilho = magia?.gatilho_aplicacao;
+  const gatilhoPosterior = gatilho && ["manual", "rodada", "turno", "condicao"].includes(gatilho.tipo);
+  return magiaPossuiDano(magia) && (gatilhoPosterior || magia.momento_dano === "posterior");
+}
+
+function obterInstanciasEfeitosAtivos() {
+  if (typeof estadoCombateIniciativa !== "undefined" && estadoCombateIniciativa) {
+    if (!Array.isArray(estadoCombateIniciativa.efeitosAtivos)) {
+      estadoCombateIniciativa.efeitosAtivos = [];
+    }
+    return estadoCombateIniciativa.efeitosAtivos;
+  }
+  return efeitosMagicosPendentesVolateis;
+}
+
+function criarIdInstanciaAtiva(prefixo) {
+  sequenciaInstanciaEfeito += 1;
+  const uuid = globalThis.crypto?.randomUUID?.();
+  return uuid || `${prefixo}-${Date.now()}-${sequenciaInstanciaEfeito}-${Math.random().toString(36).slice(2, 10)}`;
+}
+
+function listarEfeitosMagicosPendentes() {
+  return obterInstanciasEfeitosAtivos()
+    .filter((instancia) => instancia?.tipo === "magia" && instancia.estado === "ativa")
+    .map((instancia) => ({
+      id: instancia.id,
+      magia: instancia.dadosAplicacao?.magia,
+      nivelSlot: instancia.dadosAplicacao?.nivelSlot ?? null,
+      instancia,
+    }))
+    .filter((efeito) => efeito.magia && typeof efeito.magia === "object");
 }
 
 function registrarEfeitoMagicoPendente(magia, nivelSlot) {
   if (!magiaTemDanoPosterior(magia)) return;
-  efeitosMagicosPendentes.set(magia.id || obterChaveConcentracaoMagia(magia), {
-    magia: JSON.parse(JSON.stringify(magia)), nivelSlot,
+  const definicao = JSON.parse(JSON.stringify(magia));
+  const concentracaoId = magiaExigeConcentracao(magia)
+    ? concentracaoAtiva?.instanciaId || null
+    : null;
+  obterInstanciasEfeitosAtivos().push({
+    id: criarIdInstanciaAtiva("efeito"),
+    tipo: "magia",
+    origem: { tipo: "magia", id: magia.id || null, nome: String(magia.nome || "Magia") },
+    referenciaDefinicao: { tipo: "magia", id: magia.id || null, nivel: Number(magia.nivel) || 0 },
+    estado: "ativa",
+    duracao: { tipo: "descricao", valor: String(magia.duracao || "") },
+    gatilho: magia.gatilho_aplicacao && ["manual", "rodada", "turno", "condicao"].includes(magia.gatilho_aplicacao.tipo)
+      ? JSON.parse(JSON.stringify(magia.gatilho_aplicacao))
+      : { tipo: "manual", descricao: "Aplicação posterior confirmada pelo usuário" },
+    dadosAplicacao: { magia: definicao, nivelSlot: Number.isInteger(nivelSlot) ? nivelSlot : null },
+    concentracaoInstanciaId: concentracaoId,
+    criadaEm: new Date().toISOString(),
   });
   atualizarSubAbaMagiasCombate();
 }
 
-function removerEfeitosDaConcentracao(chave) {
-  efeitosMagicosPendentes.forEach(({ magia }, id) => {
-    if (magiaExigeConcentracao(magia) && obterChaveConcentracaoMagia(magia) === chave) {
-      efeitosMagicosPendentes.delete(id);
+function removerEfeitosDaConcentracao(concentracao) {
+  const instanciaConcentracao = concentracao && typeof concentracao === "object"
+    ? concentracao
+    : null;
+  const chaveLegada = typeof concentracao === "string" ? concentracao : instanciaConcentracao?.chave;
+  const lista = obterInstanciasEfeitosAtivos();
+  const agora = new Date().toISOString();
+  lista.forEach((instancia) => {
+    if (instancia?.tipo !== "magia" || instancia.estado !== "ativa") return;
+    const vinculada = instanciaConcentracao?.instanciaId && instancia.concentracaoInstanciaId
+      ? instancia.concentracaoInstanciaId === instanciaConcentracao.instanciaId
+      : magiaExigeConcentracao(instancia.dadosAplicacao?.magia) && chaveLegada &&
+        obterChaveConcentracaoMagia(instancia.dadosAplicacao?.magia) === chaveLegada;
+    if (vinculada) {
+      instancia.estado = "encerrada";
+      instancia.encerradaEm = agora;
+      instancia.motivoEncerramento = "Concentração encerrada";
     }
   });
+}
+
+function removerInstanciaEfeitoAtivo(id) {
+  const lista = obterInstanciasEfeitosAtivos();
+  const indice = lista.findIndex((instancia) => instancia?.id === id);
+  if (indice < 0) return false;
+  lista[indice] = {
+    ...lista[indice],
+    estado: "encerrada",
+    encerradaEm: new Date().toISOString(),
+    motivoEncerramento: "Encerrada manualmente",
+  };
+  return true;
+}
+
+function restaurarInstanciasAtivasMagia(estado = {}) {
+  const lista = Array.isArray(estado.efeitosAtivos) ? estado.efeitosAtivos : [];
+  efeitosMagicosPendentesVolateis = lista.map((instancia) => JSON.parse(JSON.stringify(instancia)));
+  concentracaoAtiva = estado.concentracaoAtiva && typeof estado.concentracaoAtiva === "object"
+    ? JSON.parse(JSON.stringify(estado.concentracaoAtiva))
+    : null;
+  if (typeof estadoCombateIniciativa !== "undefined" && estadoCombateIniciativa) {
+    estadoCombateIniciativa.efeitosAtivos = efeitosMagicosPendentesVolateis;
+    estadoCombateIniciativa.concentracaoAtiva = concentracaoAtiva
+      ? JSON.parse(JSON.stringify(concentracaoAtiva))
+      : null;
+  }
+  migrarConcentracaoLegadaDoCampo();
+  if (typeof sincronizarCondicaoConcentracao === "function") sincronizarCondicaoConcentracao();
+  if (
+    typeof atualizarSubAbaMagiasCombate === "function" &&
+    typeof HTMLElement !== "undefined" &&
+    document.getElementById("subabaCombateMagia") instanceof HTMLElement
+  ) atualizarSubAbaMagiasCombate();
 }
 
 function criarListaEfeitosMagicosPendentes() {
@@ -1063,13 +1300,13 @@ function criarListaEfeitosMagicosPendentes() {
   titulo.textContent = "Efeitos disponíveis — aplicação manual";
   lista.appendChild(titulo);
   const aviso = document.createElement("small");
-  aviso.textContent = "Aplique quando o gatilho ocorrer e encerre ao gastar o efeito ou acabar sua duração. Esta lista é reiniciada ao recarregar a página.";
+  aviso.textContent = "Confirme manualmente o gatilho descrito antes de aplicar. Gatilhos por rodada, turno ou condição não são automáticos. As instâncias ativas são salvas na ficha.";
   lista.appendChild(aviso);
-  efeitosMagicosPendentes.forEach(({ magia, nivelSlot }, chave) => {
+  listarEfeitosMagicosPendentes().forEach(({ id, magia, nivelSlot, instancia }) => {
     const linha = document.createElement("div");
     linha.className = "magia-efeito-pendente";
     const nome = document.createElement("span");
-    nome.textContent = `${magia.nome} · ${nivelSlot === null ? "Truque" : `Espaço NV ${nivelSlot}`}`;
+    nome.textContent = `${magia.nome} · ${nivelSlot === null ? "Truque" : `Espaço NV ${nivelSlot}`} · Gatilho: ${instancia.gatilho?.descricao || instancia.gatilho?.tipo || "manual"}`;
     const aplicar = document.createElement("button");
     aplicar.type = "button";
     aplicar.className = "magia-modal-botao";
@@ -1081,7 +1318,7 @@ function criarListaEfeitosMagicosPendentes() {
     encerrar.className = "magia-modal-botao";
     encerrar.textContent = "Encerrar efeito";
     encerrar.addEventListener("click", () => {
-      efeitosMagicosPendentes.delete(chave);
+      removerInstanciaEfeitoAtivo(id);
       atualizarSubAbaMagiasCombate();
     });
     linha.appendChild(nome);
@@ -1392,7 +1629,7 @@ function montarModalMagia() {
                             <button type="button" class="magia-modal-botao modal-close-base" id="magiaModalEditar">Editar</button>
                             <button type="button" class="magia-modal-botao modal-close-base perigo oculto" id="magiaModalExcluir">Excluir magia</button>
                             <button type="button" class="magia-modal-botao modal-close-base primario oculto" id="magiaModalSalvar">💾 Salvar</button>
-                            <button type="button" class="magia-modal-botao modal-close-base" id="magiaModalFechar">Fechar</button>
+                            <button type="button" class="magia-modal-botao modal-fechar-xp" id="magiaModalFechar" aria-label="Fechar magia">×</button>
                         </div>
                     </div>
                     <div id="magiaModalVisualizacao" style="display: block;"></div>
@@ -1458,6 +1695,14 @@ function montarModalMagia() {
                                     <option value="imediato">Na conjuração</option>
                                     <option value="posterior">Depois, ao aplicar o efeito manualmente</option>
                                 </select>
+                                <label for="magiaModalGatilhoTipo">Gatilho posterior (opcional)</label>
+                                <select id="magiaModalGatilhoTipo">
+                                    <option value="">Gatilho manual padrão</option>
+                                    <option value="rodada">Por rodada</option>
+                                    <option value="turno">Por turno</option>
+                                    <option value="condicao">Condição definida</option>
+                                </select>
+                                <input id="magiaModalGatilhoDescricao" type="text" placeholder="Descreva quando o efeito pode ser aplicado">
                             </div>
                             <div class="magia-formulario-campo col-3 oculto" id="magiaModalCampoDanoTipo">
                                 <label for="magiaModalDanoTipo">Tipo de Dano</label>
@@ -1684,7 +1929,7 @@ async function carregarCatalogoMagias() {
   try {
     const respostas = await Promise.all(
       NIVEIS_MAGIA.map((nivel) =>
-        fetch(`../assets/data/magias-nivel-${nivel}.json`),
+        fetch(`../assets/data/magias/magias-nivel-${nivel}.json`),
       ),
     );
     if (!respostas.every((resposta) => resposta.ok)) {
@@ -1790,6 +2035,10 @@ function montarModalUsoMagia() {
                     <div id="magiaSlotModalTitulo" class="magia-slot-modal-titulo">Usar magia</div>
                     <div class="magia-slot-modal-texto">Escolha o espaço utilizado:</div>
                     <div id="magiaSlotModalOpcoes" class="magia-slot-opcoes"></div>
+                    <label id="magiaSlotGatilhoReacaoCampo" class="magia-slot-gatilho-reacao" for="magiaSlotGatilhoReacao" hidden>
+                      Gatilho da reação
+                      <input id="magiaSlotGatilhoReacao" type="text" maxlength="180" autocomplete="off" placeholder="Ex.: você é atingido por um ataque" />
+                    </label>
                     <div class="magia-modal-acoes">
                         <button type="button" class="magia-modal-botao" id="magiaSlotModalCancelar">Cancelar</button>
                         <button type="button" class="magia-modal-botao primario" id="magiaSlotModalConfirmar">Confirmar</button>
@@ -1855,6 +2104,10 @@ function abrirModalUsarMagia(magia, opcoes = {}) {
 
   const titulo = document.getElementById("magiaSlotModalTitulo");
   if (titulo) titulo.textContent = `Usar "${magia.nome || "Magia"}"`;
+  const campoGatilho = document.getElementById("magiaSlotGatilhoReacaoCampo");
+  if (campoGatilho) campoGatilho.hidden = obterTipoAcaoMagia(magia) !== "Reação" || !opcoes.origemCombate;
+  const entradaGatilho = document.getElementById("magiaSlotGatilhoReacao");
+  if (entradaGatilho) entradaGatilho.value = "";
 
   renderizarOpcoesSlotMagia(magia);
 
@@ -1889,6 +2142,8 @@ function fecharModalUsarMagia() {
   }
 
   estadoModalUsoMagia.magia = null;
+  const gatilhoReacao = document.getElementById("magiaSlotGatilhoReacao");
+  if (gatilhoReacao) gatilhoReacao.value = "";
   estadoModalUsoMagia.nivelMinimo = 1;
   estadoModalUsoMagia.ultimoFoco = null;
   estadoModalUsoMagia.origemCombate = false;
@@ -1908,15 +2163,33 @@ function confirmarUsoMagia() {
   if (!magia || !Number.isInteger(nivelSlot)) return;
   if (nivelSlot < estadoModalUsoMagia.nivelMinimo) return;
 
+  const origemCombate = estadoModalUsoMagia.origemCombate;
+  const ataqueResolvidoPeloModal = origemCombate && magiaPossuiDano(magia) && !magiaTemDanoPosterior(magia);
+  const tipoAcao = obterTipoAcaoMagia(magia);
+  const gatilhoReacao = tipoAcao === "Reação" && origemCombate
+    ? String(document.getElementById("magiaSlotGatilhoReacao")?.value || "").trim()
+    : "";
+  if (!ataqueResolvidoPeloModal && tipoAcao === "Reação" && origemCombate && !gatilhoReacao) {
+    const status = document.getElementById("combateRecursosTurnoStatus");
+    if (status) status.textContent = "Descreva o gatilho que permite esta reação antes de confirmar.";
+    document.getElementById("magiaSlotGatilhoReacao")?.focus();
+    return;
+  }
+  if (!ataqueResolvidoPeloModal && !podeConsumirAcaoMagiaNoCombate(magia, origemCombate)) {
+    const status = document.getElementById("combateRecursosTurnoStatus");
+    if (status) status.textContent = `${obterTipoAcaoMagia(magia)} já foi usada neste turno; o espaço de magia foi preservado.`;
+    return;
+  }
+
   const consumiu = consumirEspacoMagia(nivelSlot);
   if (!consumiu) {
     renderizarOpcoesSlotMagia(magia);
     return;
   }
 
-  const origemCombate = estadoModalUsoMagia.origemCombate;
-  if (!(origemCombate && magiaPossuiDano(magia) && !magiaTemDanoPosterior(magia))) {
-    registrarHistoricoMagia(magia, nivelSlot);
+  if (!ataqueResolvidoPeloModal) {
+    if (!consumirAcaoMagiaNoCombate(magia, origemCombate)) return;
+    registrarHistoricoMagia(magia, nivelSlot, gatilhoReacao || null);
   }
   iniciarConcentracaoMagia(magia, nivelSlot);
   registrarEfeitoMagicoPendente(magia, nivelSlot);
@@ -2073,6 +2346,25 @@ function obterChaveConcentracaoMagia(magia) {
   ].join("::");
 }
 
+function migrarConcentracaoLegadaDoCampo() {
+  if (concentracaoAtiva) return;
+  const campo = document.getElementById("ataqueCondicao");
+  const match = String(campo?.value || "").match(/(?:^|,\s*)Concentrado\s*\[([^\]]+)\]/i);
+  if (!match) return;
+  const nome = match[1].trim();
+  const instanciaId = `concentracao-legada-${Date.now()}`;
+  concentracaoAtiva = {
+    instanciaId,
+    chave: obterChaveConcentracaoMagia({ nivel: 0, nome }),
+    iniciadaEm: new Date().toISOString(),
+    nivelSlot: null,
+    magia: { id: null, nome, nivel: 0, propriedades: { concentracao: true }, legadoSemDefinicao: true },
+  };
+  if (typeof estadoCombateIniciativa !== "undefined" && estadoCombateIniciativa) {
+    estadoCombateIniciativa.concentracaoAtiva = JSON.parse(JSON.stringify(concentracaoAtiva));
+  }
+}
+
 function magiaExigeConcentracao(magia) {
   return !!magia?.propriedades?.concentracao;
 }
@@ -2113,29 +2405,25 @@ function removerRotuloConcentracaoCondicoes(texto) {
 }
 
 function sincronizarCondicaoConcentracao() {
-  const campo = document.getElementById("ataqueCondicao");
-  if (!campo) return;
-  const outras = removerRotuloConcentracaoCondicoes(campo.value);
-  const rotulo = concentracaoAtiva ? `Concentrado [${obterNomeConcentracao()}]` : "";
-  campo.value = [outras, rotulo].filter(Boolean).join(", ");
-  campo.style.height = "20px";
-  campo.style.height = `${Math.min(campo.scrollHeight, 120)}px`;
+  if (typeof projetarCondicoesAtivasParaCampo === "function") projetarCondicoesAtivasParaCampo();
   if (typeof window !== "undefined") window.FichaDnDCombateLayoutV2?.atualizar();
 }
 
 function iniciarConcentracaoMagia(magia, nivelSlot = null) {
   if (!magiaExigeConcentracao(magia)) return;
 
-  if (concentracaoAtiva) removerEfeitosDaConcentracao(concentracaoAtiva.chave);
+  if (concentracaoAtiva) removerEfeitosDaConcentracao(concentracaoAtiva);
 
   concentracaoAtiva = {
     magia: { ...magia },
     iniciadaEm: new Date().toISOString(),
     nivelSlot,
     chave: obterChaveConcentracaoMagia(magia),
-    // Identidade efêmera da ativação; não faz parte do contrato persistente.
-    instanciaId: ++sequenciaInstanciaConcentracao,
+    instanciaId: criarIdInstanciaAtiva("concentracao"),
   };
+  if (typeof estadoCombateIniciativa !== "undefined" && estadoCombateIniciativa) {
+    estadoCombateIniciativa.concentracaoAtiva = JSON.parse(JSON.stringify(concentracaoAtiva));
+  }
   ultimoResultadoConcentracao = null;
 
   sincronizarCondicaoConcentracao();
@@ -2146,8 +2434,11 @@ function encerrarConcentracao(motivo = "encerrada", opcoes = {}) {
   if (!concentracaoAtiva) return;
 
   const magia = concentracaoAtiva.magia;
-  removerEfeitosDaConcentracao(concentracaoAtiva.chave);
+  removerEfeitosDaConcentracao(concentracaoAtiva);
   concentracaoAtiva = null;
+  if (typeof estadoCombateIniciativa !== "undefined" && estadoCombateIniciativa) {
+    estadoCombateIniciativa.concentracaoAtiva = null;
+  }
   ultimoResultadoConcentracao = motivo === "perdida" ? "falha" : null;
   sincronizarCondicaoConcentracao();
 
@@ -2460,7 +2751,7 @@ function atualizarSubAbaMagiasCombate() {
   container.appendChild(criarLinhaStatusMagico());
   const hudConcentracao = criarHudConcentracao();
   if (hudConcentracao) container.appendChild(hudConcentracao);
-  if (efeitosMagicosPendentes.size) container.appendChild(criarListaEfeitosMagicosPendentes());
+  if (listarEfeitosMagicosPendentes().length) container.appendChild(criarListaEfeitosMagicosPendentes());
 
   atualizarContadorMagiasPreparadas();
 
@@ -2598,6 +2889,8 @@ function preencherFormularioMagia(magia) {
   document.getElementById("magiaModalDanoFormula").value =
     efeitoDano.formula || "";
   document.getElementById("magiaModalMomentoDano").value = magia.momento_dano || "imediato";
+  document.getElementById("magiaModalGatilhoTipo").value = magia.gatilho_aplicacao?.tipo || "";
+  document.getElementById("magiaModalGatilhoDescricao").value = magia.gatilho_aplicacao?.descricao || "";
   document.getElementById("magiaModalDanoTipo").value =
     efeitoDano.dano_tipo || "";
   document.getElementById("magiaModalCuraRegra").value =
@@ -2612,6 +2905,8 @@ function lerFormularioMagia() {
     .value.trim();
   const danoTipo = document.getElementById("magiaModalDanoTipo").value.trim();
   const curaRegra = document.getElementById("magiaModalCuraRegra").value.trim();
+  const gatilhoTipo = document.getElementById("magiaModalGatilhoTipo").value;
+  const gatilhoDescricao = document.getElementById("magiaModalGatilhoDescricao").value.trim();
   const resolucao = document.getElementById("magiaModalResolucao").value;
   const propriedades = {
     dano: document.getElementById("magiaModalPropDano").checked,
@@ -2669,6 +2964,7 @@ function lerFormularioMagia() {
       componentes,
       resolucao,
       momento_dano: document.getElementById("magiaModalMomentoDano").value,
+      gatilho_aplicacao: gatilhoTipo ? { tipo: gatilhoTipo, descricao: gatilhoDescricao } : null,
       teste_resistencia: document.getElementById("magiaModalTesteResistencia")
         .value,
       efeitos,
@@ -3151,11 +3447,24 @@ function atualizarIndicadorEstadoProficiencia(periciaLinha) {
     "Sem proficiência",
     "Proficiente",
     "Meia proficiência",
-    "Especialista",
+    "Excelência",
   ];
-  const icones = ["◯", "⬤", "◐", "★"];
+  const icones = [
+    "proficiency-none.svg",
+    "proficiency-proficient.svg",
+    "proficiency-half.svg",
+    "proficiency-expertise.svg",
+  ];
   if (indicador) {
-    indicador.textContent = icones[estado] || "◯";
+    let imagem = indicador.querySelector("img");
+    if (!imagem) {
+      imagem = document.createElement("img");
+      imagem.alt = "";
+      imagem.setAttribute("aria-hidden", "true");
+      imagem.draggable = false;
+      indicador.replaceChildren(imagem);
+    }
+    imagem.src = `../assets/icons/interface/proficiencia/${icones[estado] || icones[0]}`;
   }
   const label = periciaLinha.querySelector(".pericia-prof");
   if (label) {

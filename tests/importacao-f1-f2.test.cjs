@@ -192,7 +192,7 @@ function editorSaveHarness(kind, connected = false) {
   const document = {
     getElementById(id) {
       if (id === `${prefix}ModalFormulario`) return form;
-      if (id === (armor ? 'listaArmaduras' : 'listaEscudos')) return list;
+      if (id === (armor ? 'listaArmaduras' : 'listaEscudosItens')) return list;
       if (id === overlayId) return overlay;
       if (id === `${armor ? 'escudo' : 'armadura'}ModalOverlay`) return null;
       return null;
@@ -403,6 +403,7 @@ for (const kind of ['armadura', 'escudo']) {
     });
   }
 }
+
 
 for (const kind of ['armadura', 'escudo']) {
   test(`E1.4-F2: salvar editor de ${kind} não grava por card desconectado`, () => {

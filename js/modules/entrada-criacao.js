@@ -18,6 +18,13 @@ function restaurarNomeAnteriorCriacao(transporte) {
   if (typeof transporte?.previousName === "string") window.name = transporte.previousName;
 }
 
+function consumirModoEntradaCriacao(parametros) {
+  parametros.delete("modo");
+  const busca = parametros.toString();
+  const url = `${window.location.pathname}${busca ? `?${busca}` : ""}${window.location.hash}`;
+  window.history.replaceState(window.history.state, "", url);
+}
+
 function validarPayloadCriacao(personagem) {
   if (!personagem || typeof personagem !== "object" || Array.isArray(personagem)) return "O conteúdo temporário não tem o formato de personagem esperado.";
   const dados = window.DND_PERSONAGEM_OPTIONS;
@@ -49,6 +56,7 @@ async function processarModoEntradaCriacao() {
   const parametros = new URLSearchParams(window.location.search);
   const modo = parametros.get("modo");
   if (modo !== "branco" && modo !== "criacao") return false;
+  consumirModoEntradaCriacao(parametros);
   try { sessionStorage.removeItem(CHAVE_CRIACAO_LEGADA); } catch (erro) {}
 
   if (modo === "branco") {
@@ -67,6 +75,7 @@ async function processarModoEntradaCriacao() {
       try { restaurarNomeAnteriorCriacao(JSON.parse(window.name.slice(PREFIXO_TRANSPORTE_CRIACAO.length))); }
       catch (erro) { console.error("Não foi possível restaurar o nome anterior desta aba.", erro); }
     }
+    window.__salvarRascunhoAtivoFichaAgora?.();
     return true;
   }
 
@@ -101,6 +110,7 @@ async function processarModoEntradaCriacao() {
     if ((await aplicarDadosFicha(transporte.payload)) !== true) {
       throw new Error("A aplicação do personagem não foi concluída.");
     }
+    window.__salvarRascunhoAtivoFichaAgora?.();
     restaurarNomeAnteriorCriacao(transporte);
     return true;
   } catch (erro) {

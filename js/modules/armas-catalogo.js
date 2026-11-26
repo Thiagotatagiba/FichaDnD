@@ -857,7 +857,10 @@ function inicializarResumoArma(card) {
   );
   topo
     .querySelector(".arma-cartao-nome-linha")
-    ?.append(criarElementoArma("strong", "", "magia-item-nome"));
+    ?.append(
+      criarElementoArma("strong", "", "magia-item-nome"),
+      criarSeloProficienciaInventario(),
+    );
   const dados = criarElementoArma("span", undefined, "arma-cartao-dados");
   const danoLinha = criarElementoArma(
     "span",
@@ -926,6 +929,10 @@ function atualizarResumosArmas(armas = null) {
     const nome = btn.querySelector(".magia-item-nome");
     nome.textContent = item.nome?.trim() || "Arma sem nome";
     const nomeLinha = btn.querySelector(".arma-cartao-nome-linha");
+    const seloProficiencia = nomeLinha?.querySelector(
+      ".inventario-proficiencia-selo",
+    );
+    if (seloProficiencia) seloProficiencia.hidden = item.proficiente !== true;
     nomeLinha?.querySelector(".arma-cartao-icone")?.remove();
     const icone = card.dataset.catalogoArmaIcone || item.icone || "";
     if (nomeLinha && icone) {
@@ -971,25 +978,9 @@ function atualizarResumosArmas(armas = null) {
     if (card.querySelector(".item-flag-sintonizado")?.checked)
       tags.append(criarElementoArma("span", "Sintonizado", "arma-cartao-tag"));
     const linhaMunicao = resumo.querySelector(".arma-cartao-municao");
-    const selectMunicaoResumo = resumo.querySelector(
-      ".arma-cartao-municao-select",
-    );
-    const campoMunicao = card.querySelector('[data-campo="arma_municao_id"]');
     const usaMunicao = Boolean(props.municao);
     linhaMunicao.hidden = !usaMunicao;
-    if (usaMunicao && selectMunicaoResumo && campoMunicao) {
-      atualizarOpcoesMunicao(card);
-      const opcoes = [...campoMunicao.options].map((opcao) => {
-        const copia = criarElementoArma("option", opcao.textContent);
-        copia.value = opcao.value;
-        return copia;
-      });
-      selectMunicaoResumo.replaceChildren(...opcoes);
-      selectMunicaoResumo.value = campoMunicao.value;
-      selectMunicaoResumo.title = campoMunicao.value
-        ? "Munição vinculada à arma"
-        : "Escolha a pilha de munição usada por esta arma";
-    }
+    if (usaMunicao) atualizarOpcoesMunicao(card);
     const prof = item.proficiente !== false;
     const aviso = btn.querySelector(".armadura-cartao-proficiencia");
     aviso.textContent = prof ? "" : "⚠️ Sem proficiência";
@@ -1013,7 +1004,8 @@ function atualizarResumosArmas(armas = null) {
         ", " +
         dano +
         ", " +
-        (prof ? "proficiente" : "sem proficiência") +
+        (prof ? "" : "sem proficiência") +
+        (item.proficiente === true ? ", proficiente com este item" : "") +
         ". Abrir detalhes",
     );
   });
@@ -1036,7 +1028,7 @@ function montarModalArma() {
   );
   overlay.id = "armaModalOverlay";
   overlay.setAttribute("aria-hidden", "true");
-  overlay.innerHTML = `<div class="magia-modal modal-base armadura-modal arma-modal" role="dialog" aria-modal="true" aria-labelledby="armaModalTitulo"><div class="magia-modal-topo modal-header-base"><div class="magia-modal-topo-info"><div class="armadura-modal-titulo-linha"><span class="armadura-modal-icone" aria-hidden="true">⚔️</span><h2 id="armaModalTitulo" class="magia-modal-titulo">Arma</h2><button type="button" class="magia-modal-botao armadura-modal-equipar" data-acao="equipar">Equipar</button></div><div id="armaModalTags" class="armadura-modal-categorias"></div></div><div class="magia-modal-acoes"><button type="button" class="magia-modal-botao" data-acao="editar">✏️ Editar</button><button type="button" class="magia-modal-botao" data-acao="fechar">Fechar</button></div></div><div id="armaModalVisualizacao"></div><form id="armaModalFormulario" class="armadura-editor" hidden style="display:none"><div class="arma-editor-identificacao"></div><fieldset class="arma-editor-propriedades"><legend>Propriedades da arma</legend><div class="arma-editor-propriedades-lista"></div></fieldset><div class="arma-editor-campos"></div><div class="armadura-editor-flags"></div><div class="armadura-editor-acoes"><button type="button" class="magia-modal-botao perigo" data-acao="excluir">Excluir arma</button><button type="button" class="magia-modal-botao" data-acao="cancelar">Cancelar</button><button type="submit" class="magia-modal-botao primario">Salvar</button></div></form></div>`;
+  overlay.innerHTML = `<div class="magia-modal modal-base armadura-modal arma-modal" role="dialog" aria-modal="true" aria-labelledby="armaModalTitulo"><div class="magia-modal-topo modal-header-base"><div class="magia-modal-topo-info"><div class="armadura-modal-titulo-linha"><span class="armadura-modal-icone" aria-hidden="true">⚔️</span><h2 id="armaModalTitulo" class="magia-modal-titulo">Arma</h2><button type="button" class="magia-modal-botao armadura-modal-equipar" data-acao="equipar">Equipar</button></div><div id="armaModalTags" class="armadura-modal-categorias"></div></div><div class="magia-modal-acoes"><button type="button" class="magia-modal-botao" data-acao="editar">✏️ Editar</button><button type="button" class="magia-modal-botao modal-fechar-xp" data-acao="fechar" aria-label="Fechar janela">×</button></div></div><div id="armaModalVisualizacao"></div><form id="armaModalFormulario" class="armadura-editor" hidden style="display:none"><div class="arma-editor-identificacao"></div><fieldset class="arma-editor-propriedades"><legend>Propriedades da arma</legend><div class="arma-editor-propriedades-lista"></div></fieldset><div class="arma-editor-campos"></div><div class="armadura-editor-flags"></div><div class="armadura-editor-acoes"><button type="button" class="magia-modal-botao perigo" data-acao="excluir">Excluir arma</button><button type="button" class="magia-modal-botao" data-acao="cancelar">Cancelar</button><button type="submit" class="magia-modal-botao primario">Salvar</button></div></form></div>`;
   document.body.append(overlay);
   overlay
     .querySelector(".magia-modal-acoes")

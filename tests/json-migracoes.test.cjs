@@ -17,11 +17,18 @@ function storageContext(options = {}) {
   const elements = new Map();
   const fields = [];
   const document = {
+    body: {
+      appendChild(element) {
+        if (options.statusError) throw options.statusError;
+        elements.set(element.id, element);
+      },
+    },
     readyState: 'loading',
     addEventListener() {},
     removeEventListener() {},
     querySelectorAll() { return fields; },
     getElementById(id) {
+      if (id === 'fichaNotificacaoFlutuante') return elements.get(id) || null;
       if (!elements.has(id)) {
         const element = { id, value: '', checked: false, textContent: '' };
         if (id === 'exportacaoStatus' && options.statusError) {
@@ -46,7 +53,10 @@ function storageContext(options = {}) {
           },
         };
       }
-      return { style: {}, click() {} };
+      return {
+        style: {}, dataset: {}, hidden: false, textContent: '',
+        setAttribute(name, value) { this[name] = value; }, click() {},
+      };
     },
   };
   class CapturedBlob {
@@ -82,7 +92,7 @@ function storageContext(options = {}) {
       const timer = { callback, delay };
       if (delay === 5000) {
         scheduledTimers.push(timer);
-      } else {
+      } else if (delay !== 6000 && delay !== 10000) {
         callback();
       }
       return timer;
@@ -109,7 +119,7 @@ function storageContext(options = {}) {
     downloadClickCount: () => downloadClickCount,
     fields,
     elements,
-    status: () => elements.get('exportacaoStatus')?.textContent || '',
+    status: () => elements.get('fichaNotificacaoFlutuante')?.textContent || '',
     scheduledTimers,
     scheduledIntervals,
     windowListeners,

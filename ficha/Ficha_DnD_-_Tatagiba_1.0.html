@@ -46,11 +46,11 @@
           </div>
           <button
             type="button"
-            class="modal-close-base"
+            class="modal-close-base modal-fechar-xp"
             id="condicoesModalFechar"
             aria-label="Fechar condições"
           >
-            ✕
+            ×
           </button>
         </div>
         <div class="modal-body-base">
@@ -63,6 +63,10 @@
               placeholder="Digite uma condição"
               autocomplete="off"
             />
+          </label>
+          <label class="condicao-personalizada" for="condicaoExaustaoNivel" id="condicaoExaustaoControle" hidden>
+            Nível de Exaustão (1–6)
+            <input id="condicaoExaustaoNivel" type="number" min="1" max="6" step="1" value="1" inputmode="numeric" />
           </label>
           <div class="condicoes-modal-acoes">
             <button
@@ -108,7 +112,10 @@
             Digite o dado tirado.
           </div>
           <div id="modalAtaqueEtapaDado">
-              <label for="modalAtaqueDado" class="oculto-acessivel">Dado</label>
+            <div class="dado-modal">
+              <div class="dado-modal-cabecalho">
+                <span class="dado-modal-titulo">Rolagem de ataque</span>
+              </div>
               <div class="dado-modal-rolagem dado-modal-calculo">
                 <div class="dado-modal-coluna">
                   <div
@@ -154,6 +161,7 @@
                   <strong>-</strong>
                 </div>
               </div>
+            </div>
 
             <div
               class="ataque-modal-checklist"
@@ -186,6 +194,11 @@
                 <span>REAÇÃO</span>
               </label>
             </div>
+            <label id="modalAtaqueGatilhoReacaoCampo" class="ataque-modal-gatilho-reacao" for="modalAtaqueGatilhoReacao" hidden>
+              Gatilho da reação
+              <input id="modalAtaqueGatilhoReacao" type="text" maxlength="180" autocomplete="off" placeholder="Ex.: a criatura sai do seu alcance" />
+            </label>
+            <output id="combateAtaquesRestantesAcao" class="combate-ataques-restantes" role="status" aria-live="polite" hidden></output>
 
             <div class="ataque-modal-acoes">
               <button
@@ -329,6 +342,8 @@
           <div id="modalTesteResistenciaTitulo" class="ataque-modal-titulo">
             Teste de Resistência
           </div>
+          <label id="modalTesteResistenciaBonusLabel" for="modalTesteResistenciaBonusSituacional" hidden>Bônus situacional</label>
+          <input id="modalTesteResistenciaBonusSituacional" type="number" step="1" value="0" hidden />
           <div
             class="teste-resistencia-atributos"
             role="group"
@@ -447,14 +462,14 @@
         class="ataque-modal modal-base"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="modalIniciativaTitulo"
+        aria-labelledby="modalIniciativaCabecalhoTitulo"
       >
         <div class="ataque-modal-topo">
           <div class="ataque-modal-rodada salva-guarda-modal-rodada">
-            Teste contra a Morte
+            <span id="modalIniciativaCabecalhoTitulo">Rolar Iniciativa</span>
             <button
               type="button"
-              class="modal-close-base"
+              class="modal-close-base modal-fechar-xp"
               id="modalIniciativaFechar"
               aria-label="Fechar rolagem"
             >
@@ -463,9 +478,6 @@
           </div>
         </div>
         <div class="ataque-modal-corpo">
-          <div id="modalIniciativaTitulo" class="ataque-modal-titulo">
-            Rolar Iniciativa
-          </div>
           <div id="modalIniciativaSubtitulo" class="ataque-modal-subtitulo">
             1d20 + 0
           </div>
@@ -630,7 +642,7 @@
             <div id="xpAddModalTitle" class="config-modal-titulo">✨ XP da Aventura</div>
             <div class="modal-subtitulo">Registre quanto XP foi ganho em combate, exploração ou roleplay.</div>
           </div>
-          <button type="button" class="modal-close-base" id="xpAddModalClose" aria-label="Fechar">✕</button>
+          <button type="button" class="modal-close-base modal-fechar-xp" id="xpAddModalClose" aria-label="Fechar XP">×</button>
         </div>
         <div class="modal-body-base">
           <p id="xpAddModalEpicPhrase" class="frase-levelup" style="margin-bottom: 8px;"></p>
@@ -762,13 +774,10 @@
             <div id="modalVidaTitulo" class="config-modal-titulo modal-vida-titulo">
               Tomar dano
             </div>
-            <div id="modalVidaSubtitulo" class="modal-subtitulo modal-vida-subtitulo">
-              Informe a quantidade de dano sofrida.
-            </div>
           </div>
           <button
             type="button"
-            class="modal-close-base modal-vida-fechar"
+            class="modal-close-base modal-vida-fechar modal-fechar-xp"
             aria-label="Fechar modal de vida"
             onclick="fecharModalVida()"
           >
@@ -777,6 +786,9 @@
         </div>
 
         <div class="modal-body-base modal-vida-body">
+          <div id="modalVidaSubtitulo" class="modal-subtitulo modal-vida-subtitulo">
+            Informe a quantidade de dano sofrida.
+          </div>
           <label for="modalVidaInput" class="dado-modal-campo-rotulo modal-vida-label">
             Quantidade
           </label>
@@ -789,6 +801,26 @@
             inputmode="numeric"
             placeholder="Ex: 8"
           />
+
+          <div id="modalDanoTipoContainer" class="modal-dano-tipo" hidden>
+            <label for="modalDanoTipo">Tipo de dano</label>
+            <select id="modalDanoTipo">
+              <option value="">Não especificado</option>
+              <option value="ácido">Ácido</option>
+              <option value="concussão">Concussão</option>
+              <option value="cortante">Cortante</option>
+              <option value="frio">Frio</option>
+              <option value="elétrico">Elétrico</option>
+              <option value="energia">Energia (Force)</option>
+              <option value="fogo">Fogo</option>
+              <option value="necrótico">Necrótico</option>
+              <option value="perfurante">Perfurante</option>
+              <option value="psíquico">Psíquico</option>
+              <option value="radiante">Radiante</option>
+              <option value="trovão">Trovão</option>
+              <option value="veneno">Veneno</option>
+            </select>
+          </div>
 
           <div class="modal-vida-acoes">
             <button
@@ -825,10 +857,11 @@
           </div>
           <button
             id="configFecharBtn"
-            class="config-modal-fechar modal-close-base"
+            class="config-modal-fechar modal-close-base modal-fechar-xp"
             type="button"
+            aria-label="Fechar configurações"
           >
-            Fechar
+            ×
           </button>
         </div>
 
@@ -1029,9 +1062,10 @@
     <div class="ficha">
       <!-- BOTÕES -->
       <div class="acoes">
-        <button type="button" onclick="salvarFicha()">💾 Salvar</button>
+        <button id="backupLocalAbrir" type="button">Backup</button>
+        <button id="btnLimparFicha" type="button" onclick="limparFichaAtual()">🧹 Limpar Ficha</button>
         <button id="btnImportarFicha" type="button" onclick="importarFicha()">📤 Importar</button>
-        <button id="backupLocalAbrir" type="button" hidden>Recuperar backup</button>
+        <button type="button" onclick="salvarFicha()">💾 Salvar</button>
         <button id="configBtn" type="button">⚙️</button>
         <input type="file" id="fileInput" hidden />
         <span id="exportacaoStatus" class="exportacao-status" role="status" aria-live="polite" aria-atomic="true" hidden></span>
@@ -1049,6 +1083,74 @@
           <button type="button" data-acao="importar">📤 Importar ficha</button>
           <button type="button" data-acao="manter">Manter ficha atual</button>
           <button type="button" data-acao="restaurar">Restaurar backup selecionado</button>
+        </div>
+      </dialog>
+
+      <dialog id="descansoCurtoDialogo" class="modal-base descanso-curto-modal" aria-labelledby="descansoCurtoTitulo" aria-describedby="descansoCurtoDescricao">
+        <div class="ataque-modal-topo descanso-curto-topo">
+          <div class="ataque-modal-rodada salva-guarda-modal-rodada">
+            <span class="descanso-curto-etiqueta">DESCANSO CURTO</span>
+            <button id="descansoCurtoFechar" class="modal-close-base modal-fechar-xp" type="button" aria-label="Fechar descanso curto" onclick="cancelarDescansoCurto()">
+              ×
+            </button>
+          </div>
+        </div>
+        <div class="descanso-curto-conteudo">
+          <p id="descansoCurtoDescricao" class="xp-visually-hidden">A mesa confirma um descanso de pelo menos 1 hora. Os Dados de Vida só são consumidos quando o descanso é confirmado.</p>
+          <section class="descanso-curto-resumo" aria-label="Resumo antes do descanso">
+            <div><span>Pontos de vida</span><strong id="descansoCurtoPVResumo">—</strong></div>
+            <div><span>Dados de Vida</span><strong id="descansoCurtoDadosDisponiveis">—</strong></div>
+          </section>
+          <div class="descanso-curto-recursos" hidden><span>Recursos elegíveis</span><strong id="descansoCurtoRecursosResumo">—</strong></div>
+          <section class="dado-modal descanso-curto-rolagem" id="descansoCurtoRolagem" aria-label="Rolagem dos Dados de Vida">
+            <div class="dado-modal-cabecalho">
+              <h2 id="descansoCurtoTitulo" class="dado-modal-titulo">Recuperação de pontos de vida</h2>
+              <button id="descansoCurtoInfo" class="descanso-curto-info" type="button" aria-label="Informações sobre a rolagem" aria-controls="descansoCurtoInfoTexto" aria-describedby="descansoCurtoInfoTexto" aria-expanded="false" title="Role ou informe um resultado e use o dado para adicioná-lo ao descanso.">
+                <svg class="descanso-curto-icone-info" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+              </button>
+              <span id="descansoCurtoInfoTexto" class="descanso-curto-info-texto" role="tooltip">Role ou informe um resultado e use o dado para adicioná-lo ao descanso.</span>
+              <span id="descansoCurtoTipoResumo" class="xp-visually-hidden">d8</span>
+            </div>
+            <div class="dado-modal-rolagem dado-modal-calculo descanso-curto-calculo">
+              <div class="dado-modal-coluna">
+                <div class="dado-modal-campo dado-modal-campo-com-dado dado-modal-grupo-dado">
+                  <span class="dado-modal-campo-rotulo">Dado</span>
+                  <div class="dado-modal-botao-coluna">
+                    <button id="descansoCurtoRolar" class="botao-dado" type="button" onclick="rolarDadosDescansoCurto()" aria-label="Rolar um Dado de Vida" title="Rolar um Dado de Vida">
+                      <span class="botao-dado-icone" aria-hidden="true">🎲</span>
+                    </button>
+                    <span id="descansoCurtoFormula" class="dado-modal-nota">1d8</span>
+                  </div>
+                  <input id="descansoCurtoResultadosManuais" type="number" min="1" max="8" step="1" inputmode="numeric" autocomplete="off" aria-describedby="descansoCurtoInfoTexto" aria-label="Resultado manual do Dado de Vida" />
+                </div>
+              </div>
+              <div class="dado-modal-bonus-bloco">
+                <div id="descansoCurtoBonusConstituicao" class="dado-modal-bonus">+0</div>
+                <div class="dado-modal-bonus-detalhe">Constituição</div>
+              </div>
+              <div class="dado-modal-total" aria-live="polite">Resultado: <strong id="descansoCurtoDadoAtual"><span id="descansoCurtoDadoTotal">—</span> <small id="descansoCurtoDadoConta" class="descanso-curto-conta"></small></strong></div>
+            </div>
+            <div class="descanso-curto-usar-linha">
+              <button id="descansoCurtoUsarDado" class="descanso-curto-usar-resultados" type="button" onclick="usarDadoDescansoCurto()" disabled>Usar dado</button>
+            </div>
+            <div class="dado-modal-historico ataque-modal-historico">
+              <span class="dado-modal-historico-rotulo">Histórico:</span>
+              <span id="descansoCurtoHistorico" class="dado-modal-historico-lista">-</span>
+            </div>
+          </section>
+          <div class="descanso-curto-total-rolagem" aria-live="polite">
+            <div><span>Dados usados:</span><strong id="descansoCurtoDadosEscolhidos">0/0</strong></div>
+            <div><span>Cura total:</span><strong id="descansoCurtoCuraResumo">0 PV</strong></div>
+            <div><span>PV após descanso:</span><strong id="descansoCurtoPVDepois">—</strong></div>
+          </div>
+          <section class="descanso-curto-previa" aria-labelledby="descansoCurtoPreviaTitulo">
+            <h3 id="descansoCurtoPreviaTitulo" class="xp-visually-hidden">Prévia do descanso</h3>
+            <p id="descansoCurtoPrevia" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+          </section>
+          <div class="descanso-curto-acoes">
+            <button id="descansoCurtoCancelar" type="button" onclick="cancelarDescansoCurto()">Cancelar</button>
+            <button id="descansoCurtoConfirmar" type="button" onclick="confirmarDescansoCurto()">Confirmar descanso</button>
+          </div>
         </div>
       </dialog>
 
@@ -1518,13 +1620,13 @@
                   </div>
                 </div>
 
-                <button
-                  type="button"
-                  class="descanso-longo-botao"
-                  onclick="descansoLongo()"
-                >
-                  Descanso Longo
-                </button>
+                <div class="descanso-acoes">
+                  <span class="campo-titulo">DESCANSO</span>
+                  <div class="descanso-acoes-botoes" role="group" aria-label="Descanso">
+                    <button type="button" class="descanso-longo-botao" onclick="descansoCurto()">CURTO</button>
+                    <button type="button" class="descanso-longo-botao" onclick="descansoLongo()">LONGO</button>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -2507,6 +2609,7 @@
                               id="arma2Nome"
                               aria-label="Arma secundária equipada"
                             ></select>
+                            <output id="arma2Incompatibilidade" class="equipamento-incompatibilidade" role="status" aria-live="polite" hidden></output>
                           </div>
                           <select
                             id="arma2Ataque"
@@ -2660,6 +2763,15 @@
                           +
                         </button>
                       </div>
+                    </div>
+
+                    <div class="combat-v2-turn-resource-line oculto-combate" id="combateRecursosTurno" role="group" aria-label="Recursos restantes neste turno">
+                      <span id="combateAcaoSaldo">Ação <strong>1/1</strong></span>
+                      <span id="combateAcaoBonusSaldo">Ação bônus <strong>1/1</strong></span>
+                      <span id="combateReacaoSaldo">Reação <strong>1/1</strong></span>
+                      <button type="button" id="btnEditarRecursosTurno" aria-label="Editar recursos do turno" title="Editar recursos do turno" aria-haspopup="dialog" onclick="abrirEditorRecursosTurno()">✎</button>
+                      <output id="combateRecursosTurnoStatus" class="turno-recursos-status-a11y" aria-live="polite" aria-atomic="true"></output>
+                      <output id="combateAtaqueBonusDuasArmas" class="combate-twf-status" role="status" aria-live="polite" hidden></output>
                     </div>
 
                     <button
@@ -2901,6 +3013,30 @@
               </div>
             </div>
           </div>
+          <dialog id="editarRecursosTurnoDialogo" aria-labelledby="editarRecursosTurnoTitulo" aria-describedby="editarRecursosTurnoDescricao">
+            <form method="dialog" class="turno-recursos-editor" onsubmit="return false">
+              <h2 id="editarRecursosTurnoTitulo">Configurar recursos do turno</h2>
+              <p id="editarRecursosTurnoDescricao">Os limites começam em 1. Ajustes temporários afetam apenas o turno atual e não devolvem recursos já gastos.</p>
+              <fieldset>
+                <legend>Limite padrão</legend>
+                <label>Ações <input id="limiteAcaoTurno" type="number" min="1" max="20" step="1" value="1" /></label>
+                <label>Ações bônus <input id="limiteAcaoBonusTurno" type="number" min="1" max="20" step="1" value="1" /></label>
+                <label>Reações <input id="limiteReacaoTurno" type="number" min="1" max="20" step="1" value="1" /></label>
+                <label>Ataques por ação Atacar <input id="limiteAtaquesPorAcaoTurno" type="number" min="1" max="20" step="1" value="1" /></label>
+              </fieldset>
+              <fieldset>
+                <legend>Só neste turno</legend>
+                <label>Ações <input id="ajusteAcaoTurno" type="number" min="-20" max="20" step="1" value="0" /></label>
+                <label>Ações bônus <input id="ajusteAcaoBonusTurno" type="number" min="-20" max="20" step="1" value="0" /></label>
+                <label>Reações <input id="ajusteReacaoTurno" type="number" min="-20" max="20" step="1" value="0" /></label>
+                <label>Ataques por ação Atacar <input id="ajusteAtaquesPorAcaoTurno" type="number" min="-20" max="20" step="1" value="0" /></label>
+              </fieldset>
+              <div class="turno-recursos-editor-acoes">
+                <button type="button" id="btnCancelarConfiguracaoRecursosTurno" onclick="cancelarEditorRecursosTurno()">Cancelar</button>
+                <button type="button" id="btnSalvarConfiguracaoRecursosTurno" onclick="salvarConfiguracaoRecursosTurno()">Aplicar</button>
+              </div>
+            </form>
+          </dialog>
         </div>
 
         <div id="magia" class="aba">
@@ -4150,7 +4286,7 @@
           </h2>
           <button
             type="button"
-            class="modal-close-base"
+            class="modal-close-base modal-fechar-xp"
             aria-label="Fechar diário de aventura"
             onclick="fecharModalDiarioAventura()"
           >
@@ -4256,7 +4392,7 @@
           <button
             type="button"
             id="btnFecharIdiomasModal"
-            class="modal-close-base"
+            class="modal-close-base modal-fechar-xp"
             aria-label="Fechar"
           >×</button>
         </div>
@@ -4307,7 +4443,7 @@
           <button
             type="button"
             id="btnFecharArmadurasModal"
-            class="modal-close-base"
+            class="modal-close-base modal-fechar-xp"
             aria-label="Fechar"
           >×</button>
         </div>
@@ -4358,7 +4494,7 @@
           <button
             type="button"
             id="btnFecharFerramentasModal"
-            class="modal-close-base"
+            class="modal-close-base modal-fechar-xp"
             aria-label="Fechar pesquisa de ferramentas"
           >×</button>
         </div>
@@ -4418,7 +4554,7 @@
           <button
             type="button"
             id="btnFecharArmasProficienciasModal"
-            class="modal-close-base"
+            class="modal-close-base modal-fechar-xp"
             aria-label="Fechar pesquisa de armas"
           >×</button>
         </div>
@@ -4478,11 +4614,11 @@
     <!-- ========================= -->
     <!-- INVENTÁRIO / EQUIPAMENTOS -->
     <!-- ========================= -->
-    <script src="../js/modules/equipamentos.js?v=outros-catalogo-2&combate-v2-3"></script>
+    <script src="../js/modules/equipamentos.js?v=outros-catalogo-2&combate-v2-3&seletor-municao=1&escudos=1"></script>
     <script src="../js/modules/municoes-catalogo.js?v=municoes-card-14"></script>
-    <script src="../js/modules/armas-catalogo.js?v=tags-abaixo-cabecalho-1"></script>
+    <script src="../js/modules/armas-catalogo.js?v=tags-abaixo-cabecalho-1&seletor-municao=1"></script>
     <script src="../js/modules/armaduras-catalogo.js?v=tags-abaixo-cabecalho-1"></script>
-    <script src="../js/modules/escudos-catalogo.js?v=tags-abaixo-cabecalho-1"></script>
+    <script src="../js/modules/escudos-catalogo.js?v=tags-abaixo-cabecalho-1&escudos=1"></script>
     <script src="../js/modules/vestimentas-catalogo.js?v=vestimentas-review-polish-1"></script>
     <script src="../js/modules/outros-catalogo.js?v=tags-abaixo-cabecalho-1"></script>
     <script src="../js/modules/ordenacao-itens.js?v=ordenacao-itens-1"></script>
@@ -4490,7 +4626,7 @@
     <!-- ========================= -->
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
     <!-- ========================= -->
-    <script src="../js/core/storage.js?v=municoes-3"></script>
+    <script src="../js/core/storage.js?v=municoes-3&rascunho-1"></script>
     <script src="../js/modules/idiomas.js?v=idiomas-modal-3"></script>
     <script src="../js/modules/armaduras-proficiencias.js?v=armaduras-proficiencias-1"></script>
     <script src="../js/modules/ferramentas-proficiencias.js?v=ferramentas-proficiencias-2"></script>
@@ -4505,7 +4641,8 @@
     <!-- UI / MODAIS / TABS -->
     <!-- ========================= -->
     <script src="../js/domain/regras-combate.js"></script>
-    <script src="../js/core/events.js"></script>
+    <script src="../js/domain/condicoes-combate.js"></script>
+    <script src="../js/core/events.js?v=aba-url-1"></script>
 
     <!-- ========================= -->
     <!-- MAGIAS -->
@@ -4515,7 +4652,7 @@
     <!-- ========================= -->
     <!-- COMBATE -->
     <!-- ========================= -->
-    <script src="../js/modules/combate.js?v=municoes-3&combate-v2-2"></script>
+    <script src="../js/modules/combate.js?v=municoes-3&combate-v2-2&escudos=1"></script>
     <script src="../js/modules/combate-layout-v2.js?v=combate-v2-13"></script>
 
     <!-- ========================= -->
@@ -4531,9 +4668,9 @@
     <!-- ========================= -->
     <!-- IMPORTAÇÃO / EXPORTAÇÃO -->
     <!-- ========================= -->
-    <script src="../js/modules/importacao.js?v=outros-catalogo-2"></script>
+    <script src="../js/modules/importacao.js?v=outros-catalogo-2&escudos=1&rascunho-1"></script>
     <script src="../js/modules/entrada-criacao.js"></script>
-    <script src="../js/core/backup-local.js?v=e1-6-3"></script>
+    <script src="../js/core/backup-local.js?v=e1-6-3&retomar-1"></script>
 
     <script>
       const CHAVE_IMPORTACAO_PENDENTE = "fichaImportarPendente";
@@ -4541,7 +4678,10 @@
       async function processarImportacaoPendente() {
         if (await processarModoEntradaCriacao()) return;
         const textoImportado = localStorage.getItem(CHAVE_IMPORTACAO_PENDENTE);
-        if (!textoImportado) return;
+        if (!textoImportado) {
+          await window.__restaurarRascunhoAtivoFicha?.();
+          return;
+        }
 
         try {
           if (typeof importarFicha === "function") {
@@ -4550,6 +4690,7 @@
               aoFinalizar: (resultado) => {
                 if (resultado?.tipo === "sucesso") {
                   localStorage.removeItem(CHAVE_IMPORTACAO_PENDENTE);
+                  window.__salvarRascunhoAtivoFichaAgora?.();
                 }
               },
             });

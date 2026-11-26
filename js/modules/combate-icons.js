@@ -4,6 +4,7 @@
     longsword: "../assets/icons/armas/two-handed-sword.svg",
     "espada-longa": "../assets/icons/armas/two-handed-sword.svg",
     dagger: "../assets/icons/armas/broad-dagger.svg",
+    punch: "../assets/icons/armas/punch.svg",
     club: "../assets/icons/armas/spiked-bat.svg",
     greatclub: "../assets/icons/armas/wood-club.svg",
     sickle: "../assets/icons/armas/sickle.svg",
@@ -23,7 +24,7 @@
     shortsword: "../assets/icons/armas/gladius.svg",
     greatsword: "../assets/icons/armas/pointy-sword.svg",
     glaive: "../assets/icons/armas/glaive.svg",
-    lance: "../assets/icons/armas/noun_lance_440122.svg",
+    lance: "../assets/icons/armas/lance.svg",
     morningstar: "../assets/icons/armas/spiked-ball.svg",
     battleaxe: "../assets/icons/armas/battle-axe.svg",
     greataxe: "../assets/icons/armas/war-axe.svg",
@@ -109,6 +110,15 @@
     container.replaceChildren(imagem);
   }
 
+  function obterFallbackArma(idCatalogo, fonteAtual) {
+    const catalogada = POR_ID_CATALOGO[idCatalogo];
+    if (catalogada && catalogada !== fonteAtual) return catalogada;
+    const fonteDoCatalogo = obterFonteArma(idCatalogo, null);
+    if (fonteDoCatalogo !== MAO_OCUPADA && fonteDoCatalogo !== fonteAtual)
+      return fonteDoCatalogo;
+    return MAO_OCUPADA;
+  }
+
   function atualizarIconeMao(botao, tipo, idCatalogo = "", item = null) {
     if (!botao) return;
     if (tipo === "escudo") {
@@ -122,12 +132,7 @@
         : tipo === "arma"
           ? obterFonteArma(idCatalogo, item)
           : MAO_OCUPADA;
-    substituirPorImagem(
-      botao,
-      fonte,
-      "combate-icone-mao",
-      fonte === MAO_OCUPADA ? null : MAO_OCUPADA,
-    );
+    substituirPorImagem(botao, fonte, "combate-icone-mao", fonte === MAO_OCUPADA ? null : obterFallbackArma(idCatalogo, fonte));
   }
 
   function criarIconeArma(documento, item) {
@@ -135,8 +140,12 @@
     const fonte = obterFonteArma(id, item);
     const imagem = criarImagem(documento, fonte, "combate-icone-arma");
     imagem.addEventListener("error", () => {
-      if (fonte !== MAO_OCUPADA && imagem.dataset.fallback !== "usado") {
-        imagem.dataset.fallback = "usado";
+      const fallback = obterFallbackArma(id, imagem.src);
+      if (fallback !== MAO_OCUPADA && imagem.dataset.fallback !== "catalogo") {
+        imagem.dataset.fallback = "catalogo";
+        imagem.src = fallback;
+      } else if (imagem.src !== MAO_OCUPADA && imagem.dataset.fallback !== "mao") {
+        imagem.dataset.fallback = "mao";
         imagem.src = MAO_OCUPADA;
       } else {
         imagem.remove();

@@ -12,7 +12,7 @@ function obterConfiguracaoAtributoAtaqueArma(arma = {}) {
   if (temAcuidade) {
     return {
       valorPadrao: obterMaiorAtributoAtaque(),
-      podeEscolher: false,
+      podeEscolher: true,
     };
   }
 
@@ -148,6 +148,7 @@ function obterArmasEquipadasAtivas() {
 
       return {
         nome,
+        instanciaId: arma.instanciaId || cardArma?.dataset.instanciaId || "",
         chaveAtributo: atributo,
         ataque: atributo,
         dano,

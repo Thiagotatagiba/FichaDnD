@@ -130,7 +130,12 @@ async function aplicarDadosFicha(dados, opcoes = {}) {
   if (!dados || typeof dados !== "object") return false;
 
   if (!opcoes.transacional) {
-    return aplicarDadosFichaSemTransacao(dados, opcoes);
+    const aplicado = await aplicarDadosFichaSemTransacao(dados, opcoes);
+    if (aplicado === true) {
+      window.__salvarRascunhoAtivoFichaAgora?.();
+      marcarFichaComoSalva();
+    }
+    return aplicado;
   }
 
   if (importacaoTransacionalAtiva) {
@@ -273,6 +278,8 @@ async function aplicarDadosFicha(dados, opcoes = {}) {
         erroBackup,
       );
     }
+    window.__salvarRascunhoAtivoFichaAgora?.();
+    marcarFichaComoSalva();
     return aplicado;
   } catch (erroAplicacao) {
     window.__fichaImportacaoEpoch = (window.__fichaImportacaoEpoch || 0) + 1;
@@ -1394,6 +1401,10 @@ function restaurarSnapshotImportacao(snapshot) {
       delete estadoCombateIniciativa[chave];
     });
     Object.assign(estadoCombateIniciativa, snapshot.estadoCombateIniciativa);
+    if (typeof restaurarInstanciasAtivasMagia === "function") {
+      restaurarInstanciasAtivasMagia(estadoCombateIniciativa);
+    }
+    window.FichaDnDFontesVantagemDesvantagem?.sincronizar?.();
   });
   tentar(() => {
     eventosDiarioAventura = snapshot.eventosDiarioAventura.referencia;
@@ -1599,6 +1610,9 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
 
     if (dados.estadoCombate && typeof dados.estadoCombate === "object") {
       estadoCombateIniciativa.ativo = !!dados.estadoCombate.ativo;
+      estadoCombateIniciativa.configuracaoRecursosTurno = typeof estadoRecursosTurnoConfiguracaoValida === "function" && estadoRecursosTurnoConfiguracaoValida(dados.estadoCombate.configuracaoRecursosTurno)
+        ? { ...dados.estadoCombate.configuracaoRecursosTurno }
+        : { acao: 1, acaoBonus: 1, reacao: 1, ataquesPorAcao: 1 };
       estadoCombateIniciativa.rodada = estadoCombateIniciativa.ativo
         ? Math.max(1, parseInt(dados.estadoCombate.rodada, 10) || 1)
         : 0;
@@ -1608,12 +1622,78 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
       estadoCombateIniciativa.iniciativa = estadoCombateIniciativa.ativo
         ? parseInt(dados.estadoCombate.iniciativa, 10) || 0
         : null;
+      estadoCombateIniciativa.armasArremessadas = Array.isArray(dados.estadoCombate.armasArremessadas)
+        ? dados.estadoCombate.armasArremessadas
+            .filter((item) => item && typeof item.instanciaId === "string" && item.instanciaId.trim())
+            .map((item) => ({ ...item }))
+        : [];
+      const fontes = Array.isArray(dados.estadoCombate.fontesVantagemDesvantagem)
+        ? dados.estadoCombate.fontesVantagemDesvantagem
+        : [];
+      estadoCombateIniciativa.fontesVantagemDesvantagem = fontes.map((fonte) => ({ ...fonte }));
+      estadoCombateIniciativa.efeitosAtivos = Array.isArray(dados.estadoCombate.efeitosAtivos)
+        ? JSON.parse(JSON.stringify(dados.estadoCombate.efeitosAtivos))
+        : [];
+      estadoCombateIniciativa.concentracaoAtiva = dados.estadoCombate.concentracaoAtiva
+        ? JSON.parse(JSON.stringify(dados.estadoCombate.concentracaoAtiva))
+        : null;
+      if (typeof concentracaoAtiva !== "undefined") concentracaoAtiva = estadoCombateIniciativa.concentracaoAtiva;
+      // Captura o marcador antes de projetar condições e sobrescrever o campo legado.
+      if (typeof migrarConcentracaoLegadaDoCampo === "function") migrarConcentracaoLegadaDoCampo();
+      if (typeof concentracaoAtiva !== "undefined") estadoCombateIniciativa.concentracaoAtiva = concentracaoAtiva
+        ? JSON.parse(JSON.stringify(concentracaoAtiva))
+        : null;
+      estadoCombateIniciativa.condicoesAtivas = Array.isArray(dados.estadoCombate.condicoesAtivas)
+        ? JSON.parse(JSON.stringify(dados.estadoCombate.condicoesAtivas))
+        : (typeof migrarCondicoesLegadas === "function"
+          ? migrarCondicoesLegadas(document.getElementById("ataqueCondicao")?.value || "")
+          : []);
+      if (typeof projetarCondicoesAtivasParaCampo === "function") projetarCondicoesAtivasParaCampo();
+      estadoCombateIniciativa.caracteristicasAtivas = Array.isArray(dados.estadoCombate.caracteristicasAtivas)
+        ? JSON.parse(JSON.stringify(dados.estadoCombate.caracteristicasAtivas))
+        : [];
+      if (typeof sincronizarUsosCaracteristicas === "function") sincronizarUsosCaracteristicas();
+      estadoCombateIniciativa.historicoEventos = Array.isArray(dados.estadoCombate.historicoEventos)
+        ? JSON.parse(JSON.stringify(dados.estadoCombate.historicoEventos))
+        : [];
+      if (typeof restaurarHistoricoEventosEstruturados === "function") restaurarHistoricoEventosEstruturados(estadoCombateIniciativa.historicoEventos);
+      if (typeof restaurarInstanciasAtivasMagia === "function") {
+        restaurarInstanciasAtivasMagia(estadoCombateIniciativa);
+      }
+      const recursosSalvos = dados.estadoCombate.recursosTurno;
+      estadoCombateIniciativa.recursosTurno = estadoCombateIniciativa.ativo
+        ? (estadoRecursosTurnoImportadoValido(recursosSalvos, estadoCombateIniciativa.rodada)
+          ? normalizarRecursosTurnoImportados(recursosSalvos, estadoCombateIniciativa.configuracaoRecursosTurno)
+          : criarRecursosTurnoImportacao(estadoCombateIniciativa.rodada, dados))
+        : undefined;
+      if (typeof fontesVantagemDesvantagemAtivas !== "undefined") {
+        fontesVantagemDesvantagemAtivas = estadoCombateIniciativa.fontesVantagemDesvantagem;
+      }
     } else {
       estadoCombateIniciativa.ativo = false;
+      estadoCombateIniciativa.configuracaoRecursosTurno = { acao: 1, acaoBonus: 1, reacao: 1, ataquesPorAcao: 1 };
       estadoCombateIniciativa.rodada = 0;
       estadoCombateIniciativa.posicao = null;
       estadoCombateIniciativa.iniciativa = null;
+      estadoCombateIniciativa.armasArremessadas = [];
+      estadoCombateIniciativa.fontesVantagemDesvantagem = [];
+      estadoCombateIniciativa.efeitosAtivos = [];
+      estadoCombateIniciativa.concentracaoAtiva = null;
+      estadoCombateIniciativa.condicoesAtivas = typeof migrarCondicoesLegadas === "function"
+        ? migrarCondicoesLegadas(document.getElementById("ataqueCondicao")?.value || "")
+        : [];
+      estadoCombateIniciativa.caracteristicasAtivas = [];
+      estadoCombateIniciativa.historicoEventos = [];
+      if (typeof restaurarHistoricoEventosEstruturados === "function") restaurarHistoricoEventosEstruturados([]);
+      delete estadoCombateIniciativa.recursosTurno;
+      if (typeof restaurarInstanciasAtivasMagia === "function") {
+        restaurarInstanciasAtivasMagia(estadoCombateIniciativa);
+      }
+      if (typeof fontesVantagemDesvantagemAtivas !== "undefined") {
+        fontesVantagemDesvantagemAtivas = estadoCombateIniciativa.fontesVantagemDesvantagem;
+      }
     }
+    if (typeof window !== "undefined") window.FichaDnDFontesVantagemDesvantagem?.sincronizar?.();
     atualizarInterfaceCombate();
 
     const campoSubclasse = garantirCampoSubclasseComoSelect();
@@ -1697,6 +1777,9 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
           const novoCard = adicionarNovaArma();
           if (!novoCard) return;
           novoCard._dadosOriginais = { ...dadosArma };
+          if (typeof dadosArma.instanciaId === "string" && dadosArma.instanciaId.trim()) {
+            novoCard.dataset.instanciaId = dadosArma.instanciaId;
+          }
 
           const catalogoArmaId =
             typeof dadosArma.catalogoId === "string"
@@ -1857,10 +1940,25 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
         );
         atuais.forEach((e) => e.remove());
 
+        const tiposLegados = new Map([
+          ["escudo", "Escudo"],
+          ["vestuario", "Vestuario"],
+          ["item magico", "Item magico"],
+        ]);
         escudosAplicados
-          .filter((dadosEscudo) => dadosEscudo?.escudo_nome?.trim())
+          .filter((dadosEscudo) => dadosEscudo && typeof dadosEscudo === "object")
           .forEach((dadosEscudo) => {
-            const novoCard = adicionarNovoEscudo();
+            const tipoOriginal =
+              typeof dadosEscudo.escudo_tipo === "string"
+                ? dadosEscudo.escudo_tipo
+                : "";
+            const tipoSalvo = String(dadosEscudo.escudo_tipo || "")
+              .trim()
+              .toLowerCase()
+              .normalize("NFD")
+              .replace(/\p{M}/gu, "");
+            const tipo = tiposLegados.get(tipoSalvo) || tipoOriginal || "Escudo";
+            const novoCard = adicionarNovoEscudo(tipo);
             if (!novoCard) return;
             novoCard._dadosOriginais = { ...dadosEscudo };
 
@@ -1871,11 +1969,7 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
                   ? dadosEscudo.escudo_catalogo_id
                   : "";
             if (catalogoEscudoId) {
-              if (
-                String(dadosEscudo.escudo_tipo || "")
-                  .trim()
-                  .toLowerCase() === "vestuario"
-              ) {
+              if (tipo !== "Escudo") {
                 novoCard.dataset.catalogoVestimentaId = catalogoEscudoId;
               } else {
                 novoCard.dataset.catalogoEscudoId = catalogoEscudoId;
@@ -1883,6 +1977,7 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
             }
 
             const origemEscudo =
+              tipo === "Escudo" &&
               catalogoEscudoId &&
               typeof estadoCatalogoEscudos !== "undefined" &&
               Array.isArray(estadoCatalogoEscudos?.dados?.itens)
@@ -1902,6 +1997,21 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
               novoCard.dataset.catalogoEscudoIcone = catalogoEscudoIcone;
 
             novoCard.querySelectorAll("[data-campo]").forEach((campo) => {
+              if (campo.dataset.campo === "escudo_tipo") {
+                if (
+                  !Array.from(campo.options || []).some(
+                    (opcao) => opcao.value === tipo,
+                  )
+                ) {
+                  const opcao = document.createElement("option");
+                  opcao.value = tipo;
+                  opcao.textContent = tipo;
+                  campo.appendChild(opcao);
+                }
+                campo.value = tipo;
+                campo.dispatchEvent(new Event("change"));
+                return;
+              }
               const valor = dadosEscudo[campo.dataset.campo];
 
               if (valor !== undefined) {
@@ -2088,4 +2198,75 @@ async function aplicarDadosFichaSemTransacao(dados, opcoes = {}) {
   } finally {
     bloqueandoLevelUp = bloqueioAnteriorLevelUp;
   }
+}
+function criarRecursosTurnoImportacao(rodada, dados = {}) {
+  const movimentoTotal = typeof RegrasCombate !== "undefined"
+    ? RegrasCombate.converterDeslocamentoParaPes(String(dados.deslocamento || dados.deslocamentoAtual || "9m")) ?? 30
+    : Math.round(Number.parseFloat(String(dados.deslocamento || "9").replace(",", ".")) * 3.280839895) || 30;
+  let ataquesAcaoRestantes = 0;
+  try {
+    const classe = typeof dados.classeData === "string" ? JSON.parse(dados.classeData) : dados.classeData;
+    const nivel = Number.parseInt(dados.classeNivelID ?? dados.classeNivel, 10) || 1;
+    const linhas = (classe?.niveis || []).filter((item) => Number.parseInt(item.nivel, 10) <= nivel);
+    const linha = linhas.filter((item) => /Ataque Extra/i.test(String(item.caracteristicas || ""))).at(-1);
+    const extra = String(linha?.caracteristicas || "").match(/Ataque Extra(?:\s*\((\d+)\))?/i);
+    ataquesAcaoRestantes = extra ? Math.max(1, Number.parseInt(extra[1] || "1", 10)) : 0;
+    const classeNormalizada = String(classe?.nome || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    if (classeNormalizada === "guerreiro" && nivel >= 20) ataquesAcaoRestantes = 3;
+  } catch {}
+  const configuracao = estadoRecursosTurnoConfiguracaoValida(dados.estadoCombate?.configuracaoRecursosTurno)
+    ? dados.estadoCombate.configuracaoRecursosTurno
+    : { acao: 1, acaoBonus: 1, reacao: 1, ataquesPorAcao: 1 };
+  const limites = { ...configuracao, ataquesPorAcao: Math.max(configuracao.ataquesPorAcao, 1 + ataquesAcaoRestantes) };
+  return {
+    rodada,
+    acaoUsada: false,
+    acaoBonusUsada: false,
+    reacaoUsada: false,
+    gastos: { acao: 0, acaoBonus: 0, reacao: 0 },
+    limites,
+    ajustesTemporarios: { acao: 0, acaoBonus: 0, reacao: 0, ataquesPorAcao: 0 },
+    movimentoTotal: Number.isInteger(movimentoTotal) && movimentoTotal >= 0 ? movimentoTotal : 30,
+    movimentoGasto: 0,
+    ataqueDuasArmasElegivel: false,
+    maoAtaqueQualificador: null,
+    maosAtaqueQualificadoras: [],
+    ataqueAcaoIniciado: false,
+    ataquesAcaoRestantes,
+  };
+}
+
+function estadoRecursosTurnoImportadoValido(recursos, rodada) {
+  return !!recursos && recursos.rodada === rodada &&
+    ["acaoUsada", "acaoBonusUsada", "reacaoUsada", "ataqueDuasArmasElegivel", "ataqueAcaoIniciado"].every((chave) => typeof recursos[chave] === "boolean") &&
+    [null, 1, 2].includes(recursos.maoAtaqueQualificador) &&
+    recursos.ataqueDuasArmasElegivel === (recursos.maoAtaqueQualificador !== null) &&
+    (recursos.maosAtaqueQualificadoras === undefined || (Array.isArray(recursos.maosAtaqueQualificadoras) && recursos.maosAtaqueQualificadoras.every((mao) => mao === 1 || mao === 2) && new Set(recursos.maosAtaqueQualificadoras).size === recursos.maosAtaqueQualificadoras.length && recursos.maoAtaqueQualificador === (recursos.maosAtaqueQualificadoras[0] ?? null) && recursos.ataqueDuasArmasElegivel === (recursos.maosAtaqueQualificadoras.length > 0))) &&
+    (!recursos.ataqueDuasArmasElegivel || (recursos.acaoUsada && recursos.ataqueAcaoIniciado)) &&
+    Number.isInteger(recursos.ataquesAcaoRestantes) && recursos.ataquesAcaoRestantes >= 0 &&
+    Number.isInteger(recursos.movimentoTotal) && recursos.movimentoTotal >= 0 &&
+    Number.isInteger(recursos.movimentoGasto) && recursos.movimentoGasto >= 0 && recursos.movimentoGasto <= recursos.movimentoTotal &&
+    (!recursos.limites || estadoRecursosTurnoConfiguracaoValida(recursos.limites)) &&
+    (!recursos.ajustesTemporarios || ["acao", "acaoBonus", "reacao", "ataquesPorAcao"].every((tipo) => Number.isInteger(recursos.ajustesTemporarios[tipo]) && recursos.ajustesTemporarios[tipo] >= -20 && recursos.ajustesTemporarios[tipo] <= 20)) &&
+    (!recursos.gastos || ["acao", "acaoBonus", "reacao"].every((tipo) => Number.isInteger(recursos.gastos[tipo]) && recursos.gastos[tipo] >= 0 && recursos.gastos[tipo] <= 40));
+}
+
+function normalizarRecursosTurnoImportados(recursos, configuracao = { acao: 1, acaoBonus: 1, reacao: 1, ataquesPorAcao: 1 }) {
+  const limites = { ...configuracao, ...(recursos.limites || {}) };
+  limites.ataquesPorAcao = Math.max(limites.ataquesPorAcao, recursos.ataquesAcaoRestantes + 1);
+  return {
+    ...recursos,
+    limites,
+    ajustesTemporarios: recursos.ajustesTemporarios || { acao: 0, acaoBonus: 0, reacao: 0, ataquesPorAcao: 0 },
+    gastos: recursos.gastos || {
+      acao: recursos.acaoUsada ? 1 : 0,
+      acaoBonus: recursos.acaoBonusUsada ? 1 : 0,
+      reacao: recursos.reacaoUsada ? 1 : 0,
+    },
+  };
+}
+
+function estadoRecursosTurnoConfiguracaoValida(configuracao) {
+  return configuracao && typeof configuracao === "object" && !Array.isArray(configuracao) &&
+    ["acao", "acaoBonus", "reacao", "ataquesPorAcao"].every((tipo) => Number.isInteger(configuracao[tipo]) && configuracao[tipo] >= 1 && configuracao[tipo] <= 20);
 }

@@ -16,11 +16,12 @@ function editor(spell) {
     document: {
       getElementById(id) {
         if (!fields.has(id)) fields.set(id, {
-          value: '', checked: false, style: {}, classList: { toggle() {} },
+          value: '', checked: false, hidden: false, style: {}, classList: { toggle() {} }, focus() {},
         });
         return fields.get(id);
       },
     },
+    estadoCombateIniciativa: { efeitosAtivos: [], concentracaoAtiva: null },
     spell: plain(spell),
   });
   vm.runInContext(source, context);
@@ -94,8 +95,18 @@ test('habilitar dano em magia sem efeitos cria o primeiro efeito', () => {
   assert.deepEqual(e.save().efeitos, [{ tipo: 'dano', formula: '1d6', dano_tipo: 'Fogo', regra: '' }]);
 });
 
+test('normalizar efeito mágico preserva alias camelCase de tipo de dano', () => {
+  const context = vm.createContext({ gerarId: () => 'teste' });
+  vm.runInContext(source, context);
+  const normalized = plain(vm.runInContext(
+    `normalizarMagiaRegistro({ nome: 'Raio de Fogo', efeitos: [{ tipo: 'dano', formula: '1d10', danoTipo: 'Fogo', regra: '' }] }, 1)`,
+    context,
+  ));
+  assert.equal(normalized.efeitos[0].dano_tipo, 'Fogo');
+});
+
 test('todas as magias de nível 1 preservam seus efeitos ao salvar sem alterações', () => {
-  const spells = JSON.parse(fs.readFileSync(path.join(root, 'assets/data/magias-nivel-1.json'), 'utf8'));
+  const spells = JSON.parse(fs.readFileSync(path.join(root, 'assets/data/magias/magias-nivel-1.json'), 'utf8'));
   for (const spell of spells) {
     const e = editor(spell);
     assert.deepEqual(e.save().efeitos, e.original.efeitos, spell.nome);
@@ -125,17 +136,73 @@ test('dano posterior registra conjuração e permite dano sem novo gasto de espa
   assert.equal(vm.runInContext('gastos', e.context), 1);
   assert.equal(vm.runInContext('registros', e.context), 1);
   assert.equal(vm.runInContext('modais', e.context), 0);
-  assert.equal(vm.runInContext('efeitosMagicosPendentes.size', e.context), 1);
+  assert.equal(vm.runInContext('listarEfeitosMagicosPendentes().length', e.context), 1);
   // A mesma chamada usada pelo botão de aplicar recebe o espaço original.
   vm.runInContext(`
-    const pendente = [...efeitosMagicosPendentes.values()][0];
+    const pendente = listarEfeitosMagicosPendentes()[0];
     abrirModalDanoMagia(pendente.magia, { mostrarCD: false, nivelSlot: pendente.nivelSlot });
   `, e.context);
   assert.equal(vm.runInContext('gastos', e.context), 1);
   assert.equal(vm.runInContext('ultimoSlot', e.context), 2);
 });
 
-test('efeitos de concentração são removidos sem remover os demais', () => {
+function prepararConfirmacaoDeMagia({ tempo = '1 ação', combate = true, saldoDisponivel = true, gatilho = null } = {}) {
+  const spell = { id: 'teste-custo', nome: 'Magia de teste', nivel: 1, tempo_conjuracao: tempo };
+  const e = editor(spell);
+  vm.runInContext(`
+    estadoCombateIniciativa.ativo = ${combate};
+    estadoCombateIniciativa.recursosTurno = { acaoUsada: false, acaoBonusUsada: false, reacaoUsada: false };
+    estadoModalUsoMagia.magia = obterMagiaDoEstadoModal();
+    estadoModalUsoMagia.nivelMinimo = 1;
+    estadoModalUsoMagia.origemCombate = true;
+    document.getElementById('magiaSlotGatilhoReacao').value = ${JSON.stringify(gatilho || '')};
+    var slotsConsumidos = 0, acoesConsumidas = [], registrosMagia = 0;
+    RegrasCombate = { consumirAcaoTurno: (recursos, tipo) => ${saldoDisponivel} && !recursos[({ 'Ação': 'acaoUsada', 'Ação bônus': 'acaoBonusUsada', 'Reação': 'reacaoUsada' })[tipo]] };
+    obterSlotSelecionadoModalMagia = () => 1;
+    consumirEspacoMagia = () => { slotsConsumidos++; return true; };
+    consumirAcaoTurnoCombate = tipo => { acoesConsumidas.push(tipo); return true; };
+    registrarHistoricoMagia = (...args) => { registrosMagia++; ultimoRegistroMagia = args; };
+    iniciarConcentracaoMagia = registrarEfeitoMagicoPendente = atualizarMagias = atualizarSubAbaMagiasCombate = fecharModalUsarMagia = fecharModalMagia = abrirHistoricoCombateMagia = () => {};
+    magiaPossuiDano = () => false;
+    confirmarUsoMagia();
+  `, e.context);
+  return e.context;
+}
+
+test('magia de ação bônus em combate consome somente o saldo bônus e o espaço', () => {
+  const c = prepararConfirmacaoDeMagia({ tempo: '1 ação bônus' });
+  assert.equal(vm.runInContext('slotsConsumidos', c), 1);
+  assert.deepEqual(plain(vm.runInContext('acoesConsumidas', c)), ['Ação bônus']);
+  assert.equal(vm.runInContext('registrosMagia', c), 1);
+});
+
+test('saldo de ação esgotado bloqueia magia e preserva o espaço', () => {
+  const c = prepararConfirmacaoDeMagia({ saldoDisponivel: false });
+  assert.equal(vm.runInContext('slotsConsumidos', c), 0);
+  assert.deepEqual(plain(vm.runInContext('acoesConsumidas', c)), []);
+  assert.equal(vm.runInContext('registrosMagia', c), 0);
+});
+
+test('magia fora de combate não consome contador de turno', () => {
+  const c = prepararConfirmacaoDeMagia({ combate: false });
+  assert.equal(vm.runInContext('slotsConsumidos', c), 1);
+  assert.deepEqual(plain(vm.runInContext('acoesConsumidas', c)), []);
+  assert.equal(vm.runInContext('registrosMagia', c), 1);
+});
+
+test('magia de reação requer e registra o gatilho antes de consumir espaço ou reação', () => {
+  const semGatilho = prepararConfirmacaoDeMagia({ tempo: '1 reação' });
+  assert.equal(vm.runInContext('slotsConsumidos', semGatilho), 0);
+  assert.deepEqual(plain(vm.runInContext('acoesConsumidas', semGatilho)), []);
+  assert.match(semGatilho.document.getElementById('combateRecursosTurnoStatus').textContent, /gatilho/i);
+
+  const comGatilho = prepararConfirmacaoDeMagia({ tempo: '1 reação', gatilho: 'Quando sou atingido por um ataque' });
+  assert.equal(vm.runInContext('slotsConsumidos', comGatilho), 1);
+  assert.deepEqual(plain(vm.runInContext('acoesConsumidas', comGatilho)), ['Reação']);
+  assert.equal(vm.runInContext('ultimoRegistroMagia[2]', comGatilho), 'Quando sou atingido por um ataque');
+});
+
+test('efeitos vinculados à concentração encerrada são removidos sem remover os demais', () => {
   const e = editor(complexSpell());
   vm.runInContext(`
     atualizarSubAbaMagiasCombate = () => {};
@@ -143,7 +210,41 @@ test('efeitos de concentração são removidos sem remover os demais', () => {
     registrarEfeitoMagicoPendente({ id: 'b', nome: 'Agathys', nivel: 1, momento_dano: 'posterior', propriedades: { dano: true } }, 1);
     removerEfeitosDaConcentracao(obterChaveConcentracaoMagia({nome: 'Hex', nivel: 1}));
   `, e.context);
-  assert.deepEqual(plain(vm.runInContext('[...efeitosMagicosPendentes.keys()]', e.context)), ['b']);
+  assert.deepEqual(plain(vm.runInContext('listarEfeitosMagicosPendentes().map(x => x.magia.id)', e.context)), ['b']);
+  const encerrados = plain(vm.runInContext('estadoCombateIniciativa.efeitosAtivos.filter(x => x.estado === "encerrada")', e.context));
+  assert.equal(encerrados.length, 1);
+  assert.equal(encerrados[0].dadosAplicacao.magia.id, 'a');
+  assert.equal(encerrados[0].motivoEncerramento, 'Concentração encerrada');
+});
+
+test('E3.1: ativações da mesma magia coexistem e sobrevivem à restauração serializada', () => {
+  const spell = { id: 'hex', nome: 'Hex', nivel: 1, duracao: '1 hora', momento_dano: 'posterior', propriedades: { dano: true } };
+  const e = editor(spell);
+  vm.runInContext(`
+    atualizarSubAbaMagiasCombate = () => {};
+    registrarEfeitoMagicoPendente(spell, 1);
+    registrarEfeitoMagicoPendente(spell, 2);
+  `, e.context);
+  const ativos = plain(vm.runInContext('listarEfeitosMagicosPendentes()', e.context));
+  assert.equal(ativos.length, 2);
+  assert.notEqual(ativos[0].id, ativos[1].id);
+  assert.deepEqual(ativos.map(x => x.nivelSlot), [1, 2]);
+  assert.equal(ativos[0].instancia.origem.id, 'hex');
+  assert.equal(ativos[0].instancia.duracao.valor, '1 hora');
+  const snapshot = JSON.parse(JSON.stringify(e.context.estadoCombateIniciativa));
+  e.context.estadoCombateIniciativa.efeitosAtivos = [];
+  vm.runInContext('restaurarInstanciasAtivasMagia(snapshotTeste)', Object.assign(e.context, { snapshotTeste: snapshot }));
+  assert.equal(vm.runInContext('listarEfeitosMagicosPendentes().length', e.context), 2);
+});
+
+test('E3.1: instância persistida referencia a ativação de concentração, não apenas a definição', () => {
+  const e = editor(complexSpell());
+  const spell = { id: 'bless', nome: 'Bless', nivel: 1, duracao: '1 minuto', momento_dano: 'posterior', propriedades: { dano: true, concentracao: true } };
+  vm.runInContext(`atualizarSubAbaMagiasCombate = () => {}; iniciarConcentracaoMagia(spell, 1); registrarEfeitoMagicoPendente(spell, 1);`, Object.assign(e.context, { spell }));
+  const state = plain(e.context.estadoCombateIniciativa);
+  assert.equal(state.efeitosAtivos.length, 1);
+  assert.equal(state.efeitosAtivos[0].concentracaoInstanciaId, state.concentracaoAtiva.instanciaId);
+  assert.notEqual(state.concentracaoAtiva.instanciaId, spell.id);
 });
 
 test('dano imediato continua encaminhando ao modal e o momento persiste na edição', () => {
@@ -162,9 +263,22 @@ test('dano imediato continua encaminhando ao modal e o momento persiste na ediç
   assert.equal(vm.runInContext('abriu', e.context), true);
 });
 
+test('E3.3: gatilho manual, por rodada, turno e condição sobrevive à edição da magia', () => {
+  const spell = { ...complexSpell(), momento_dano: 'posterior', gatilho_aplicacao: { tipo: 'turno', descricao: 'Início do turno do alvo' } };
+  const e = editor(spell);
+  assert.equal(e.field('magiaModalGatilhoTipo').value, 'turno');
+  assert.equal(e.field('magiaModalGatilhoDescricao').value, 'Início do turno do alvo');
+  assert.deepEqual(e.save().gatilho_aplicacao, spell.gatilho_aplicacao);
+  e.field('magiaModalGatilhoTipo').value = 'condicao';
+  e.field('magiaModalGatilhoDescricao').value = 'Quando a criatura se mover';
+  assert.deepEqual(e.save().gatilho_aplicacao, { tipo: 'condicao', descricao: 'Quando a criatura se mover' });
+  e.field('magiaModalGatilhoTipo').value = '';
+  assert.equal(e.save().gatilho_aplicacao, null);
+});
+
 test('conjuração registra o tipo de ação real das magias do catálogo', () => {
   const e = editor(complexSpell());
-  const spells = JSON.parse(fs.readFileSync(path.join(root, 'assets/data/magias-nivel-1.json'), 'utf8'));
+  const spells = JSON.parse(fs.readFileSync(path.join(root, 'assets/data/magias/magias-nivel-1.json'), 'utf8'));
   vm.runInContext('var registros = []; adicionarRegistroHistoricoCombate = (...args) => registros.push(args);', e.context);
   for (const [name, expected] of [
     ['(Shield)', 'Reação'], ['(Hellish Rebuke)', 'Reação'],
@@ -181,7 +295,8 @@ test('conjuração registra o tipo de ação real das magias do catálogo', () =
 test('modais e badges usam reação, bônus e efeito sem herdar seleção anterior', () => {
   const e = editor(complexSpell());
   const combat = fs.readFileSync(path.join(root, 'js/modules/combate.js'), 'utf8');
-  vm.runInContext(combat.slice(combat.indexOf('function marcarTipoAcaoModalAtaque('), combat.indexOf('function aplicarHistoricoDadoNoInput(')), e.context);
+  e.context.normalizarContextoAcaoAtaque = contexto => ({ action: 'action', bonusAction: 'bonusAction', reaction: 'reaction', 'Ação': 'action', 'Ação bônus': 'bonusAction', 'Reação': 'reaction' })[contexto] || null;
+  vm.runInContext(combat.slice(combat.indexOf('function tipoAcaoAtaqueDisponivel('), combat.indexOf('function aplicarHistoricoDadoNoInput(')), e.context);
   vm.runInContext(combat.slice(combat.indexOf('function normalizarTipoAcaoHistorico('), combat.indexOf('function obterTituloMagiaHistorico(')), e.context);
   e.context.boxes = ['Ação', 'Ação bônus', 'Reação'].map(tipoAcao => ({ dataset: { tipoAcao }, checked: false }));
   vm.runInContext(`
@@ -205,7 +320,7 @@ test('modais e badges usam reação, bônus e efeito sem herdar seleção anteri
   assert.equal(vm.runInContext('obterTipoAcaoSelecionadoModalAtaque()', e.context), 'Ação bônus');
 });
 
-test('barra de condições acompanha início, troca e fim da concentração', () => {
+test('E3.2: concentração mantém estado separado do campo textual de condições', () => {
   const e = editor(complexSpell());
   vm.runInContext(`
     atualizarSubAbaMagiasCombate = () => {};
@@ -213,17 +328,19 @@ test('barra de condições acompanha início, troca e fim da concentração', ()
     iniciarConcentracaoMagia({nome:'Orientação (Guidance)', nivel:0, propriedades:{concentracao:true}});
   `, e.context);
   const condition = e.field('ataqueCondicao');
-  assert.equal(condition.value, 'Envenenado, Condição personalizada, Concentrado [Orientação (Guidance)]');
+  assert.equal(condition.value, 'Envenenado, Condição personalizada');
+  assert.equal(vm.runInContext('estadoCombateIniciativa.concentracaoAtiva.magia.nome', e.context), 'Orientação (Guidance)');
   vm.runInContext(`
     iniciarConcentracaoMagia({nome:'Bênção (Bless)', nivel:1, propriedades:{concentracao:true}});
     sincronizarCondicaoConcentracao();
   `, e.context);
-  assert.equal(condition.value, 'Envenenado, Condição personalizada, Concentrado [Bênção (Bless)]');
+  assert.equal(condition.value, 'Envenenado, Condição personalizada');
+  assert.equal(vm.runInContext('estadoCombateIniciativa.concentracaoAtiva.magia.nome', e.context), 'Bênção (Bless)');
   vm.runInContext("encerrarConcentracao('perdida', {registrarHistorico:false})", e.context);
   assert.equal(condition.value, 'Envenenado, Condição personalizada');
 });
 
-test('alterar ou limpar condições manuais não remove concentração ativa', () => {
+test('E3.2: limpar condições não encerra a concentração separada', () => {
   const e = editor(complexSpell());
   vm.runInContext(`
     atualizarSubAbaMagiasCombate = () => {};
@@ -231,7 +348,20 @@ test('alterar ou limpar condições manuais não remove concentração ativa', (
     document.getElementById('ataqueCondicao').value = '';
     sincronizarCondicaoConcentracao();
   `, e.context);
-  assert.equal(e.field('ataqueCondicao').value, 'Concentrado [Orientação (Guidance)]');
+  assert.equal(e.field('ataqueCondicao').value, '');
+  assert.equal(vm.runInContext('estadoCombateIniciativa.concentracaoAtiva.magia.nome', e.context), 'Orientação (Guidance)');
   vm.runInContext('encerrarConcentracao("encerrada", {registrarHistorico:false})', e.context);
   assert.equal(e.field('ataqueCondicao').value, '');
+});
+
+test('E3.2: marcador legado de concentração migra para estado próprio e não é condição', () => {
+  const e = editor(complexSpell());
+  vm.runInContext(`
+    document.getElementById('ataqueCondicao').value = 'Cego, Concentrado [Bless]';
+    migrarConcentracaoLegadaDoCampo();
+  `, e.context);
+  const estado = plain(e.context.estadoCombateIniciativa);
+  assert.equal(estado.concentracaoAtiva.magia.nome, 'Bless');
+  assert.equal(estado.concentracaoAtiva.magia.legadoSemDefinicao, true);
+  assert.deepEqual(estado.efeitosAtivos, []);
 });
