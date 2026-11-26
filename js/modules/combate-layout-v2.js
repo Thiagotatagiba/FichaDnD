@@ -73,6 +73,14 @@
     heal.setAttribute("aria-label", "Registrar cura");
     hpControls.append(heal);
   }
+  const temporaryHp = criar("button", "ataque-botao pv-temporary-action", "TEMP");
+  temporaryHp.type = "button";
+  temporaryHp.id = "btnGerenciarPvTemporariosCombate";
+  temporaryHp.setAttribute("aria-label", "Gerenciar PV temporários");
+  temporaryHp.addEventListener("click", () => {
+    document.dispatchEvent(new Event("ficha:gerenciar-pv-temporarios"));
+  });
+  hpControls.append(temporaryHp);
   hpPanel.append(hpLine, hpControls, hp.querySelector(".ataque-contra-morte"));
 
   const defensePanel = painel("combat-v2-defense", "Classe de armadura");

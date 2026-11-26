@@ -140,22 +140,22 @@ Fontes de 2014: [Combate](https://www.dndbeyond.com/sources/dnd/basic-rules-2014
 
 **Objetivo:** mostrar os PV temporários como camadas sobre os cinco corações de vida e aplicar o dano ao escudo antes dos PV atuais.
 
-- [ ] Retirar o sexto coração. Manter cinco corações, cada um representando um quinto dos PV máximos, com preenchimento proporcional para frações.
-- [ ] Mostrar os PV atuais em vermelho. Sobrepor as camadas de PV temporários da esquerda para a direita, cobrindo tanto áreas vermelhas quanto vazias.
-- [ ] Usar azul para a primeira faixa de PV temporários, amarelo-ouro para a segunda e branco brilhante para a terceira. Cada faixa comporta o equivalente aos PV máximos e começa no primeiro coração. Exibir sempre a faixa superior onde houver sobreposição.
-- [ ] Exibir **+** sobre o último coração apenas quando os PV temporários ultrapassarem a capacidade das três faixas. Mostrar o valor exato dos PV temporários em um contador identificado, independentemente da cor ou do limite visual.
-- [ ] Ao conceder PV temporários, manter os PV atuais. Ao aplicar dano, reduzir primeiro os PV temporários e descontar o excedente dos PV atuais na mesma ação. Conforme o valor cai, recalcular a cobertura e revelar as camadas abaixo.
-- [ ] Conferir o caso de 10 PV máximos, 2 atuais e 3 temporários. O visual começa com um coração e meio azul e o restante vazio. Após 2 de dano, o primeiro coração fica metade azul e metade vermelho. Após mais 1 de dano, fica um coração vermelho.
-- [ ] Conferir os limites com 10 PV máximos. Com 10 temporários, mostrar cinco corações azuis. Com 12, mostrar o primeiro dourado e os demais azuis. Com 22, mostrar o primeiro branco e os demais dourados. Com 30, mostrar cinco brancos. Acima de 30, acrescentar **+** no último. Ao voltar para 30, retirar o **+**.
-- [ ] Verificar ganho de PV temporários com vida cheia e parcial, dano que atravessa o escudo, arredondamento visual com PV máximos não divisíveis por cinco, salvamento e importação/exportação.
+- [x] Retirar o sexto coração. Manter cinco corações, cada um representando um quinto dos PV máximos, com preenchimento proporcional para frações.
+- [x] Mostrar os PV atuais em vermelho. Sobrepor as camadas de PV temporários da esquerda para a direita, cobrindo tanto áreas vermelhas quanto vazias.
+- [x] Usar azul para a primeira faixa de PV temporários, amarelo-ouro para a segunda e branco brilhante para a terceira. Cada faixa comporta o equivalente aos PV máximos e começa no primeiro coração. Exibir sempre a faixa superior onde houver sobreposição.
+- [x] Exibir **+** sobre o último coração apenas quando os PV temporários ultrapassarem a capacidade das três faixas. Mostrar o valor exato dos PV temporários em um contador identificado, independentemente da cor ou do limite visual.
+- [x] Ao conceder PV temporários, manter os PV atuais. Ao aplicar dano, reduzir primeiro os PV temporários e descontar o excedente dos PV atuais na mesma ação. Conforme o valor cai, recalcular a cobertura e revelar as camadas abaixo.
+- [x] Conferir o caso de 10 PV máximos, 2 atuais e 3 temporários. O visual começa com um coração e meio azul e o restante vazio. Após 2 de dano, o primeiro coração fica metade azul e metade vermelho. Após mais 1 de dano, fica um coração vermelho.
+- [x] Conferir os limites com 10 PV máximos. Com 10 temporários, mostrar cinco corações azuis. Com 12, mostrar o primeiro dourado e os demais azuis. Com 22, mostrar o primeiro branco e os demais dourados. Com 30, mostrar cinco brancos. Acima de 30, acrescentar **+** no último. Ao voltar para 30, retirar o **+**.
+- [x] Verificar ganho de PV temporários com vida cheia e parcial, dano que atravessa o escudo, arredondamento visual com PV máximos não divisíveis por cinco, salvamento e importação/exportação.
 
 ##### Botão TEMP e modal de PV temporários
 
-- [ ] Transformar toda a área **TEMP** do quadro de Pontos de Vida em um botão, mantendo o valor atual visível. Usar **Gerenciar PV temporários** como nome acessível do botão.
-- [ ] Ao acionar **TEMP**, abrir o modal **PV temporários** com o saldo atual, o campo numérico **PV temporários recebidos** e os botões **Confirmar** e **Cancelar**. Aceitar somente valores inteiros positivos no campo.
-- [ ] Ao confirmar, substituir o saldo atual somente se o valor digitado for maior. Se for menor ou igual, manter o saldo e informar o valor mantido. Exemplo com 4 PV temporários atuais: confirmar 3 mantém 4, confirmar 4 mantém 4 e confirmar 6 troca o saldo para 6.
-- [ ] Incluir a ação **Remover PV temporários** para quando o efeito acabar. A ação zera o saldo temporário e preserva os PV atuais. Desabilitar a ação quando o saldo já estiver zerado.
-- [ ] Atualizar o contador TEMP e as camadas dos corações ao confirmar uma mudança ou remover o saldo. Fechar ou cancelar o modal preserva o saldo. Testar entrada inválida, cancelamento, substituição, remoção e persistência.
+- [x] Transformar toda a área **TEMP** do quadro de Pontos de Vida em um botão, mantendo o valor atual visível. Usar **Gerenciar PV temporários** como nome acessível do botão.
+- [x] Ao acionar **TEMP**, abrir o modal **PV temporários** com o saldo atual, o campo numérico **PV temporários recebidos** e os botões **Confirmar** e **Cancelar**. Aceitar somente valores inteiros positivos no campo.
+- [x] Ao confirmar, substituir o saldo atual somente se o valor digitado for maior. Se for menor ou igual, manter o saldo e informar o valor mantido. Exemplo com 4 PV temporários atuais: confirmar 3 mantém 4, confirmar 4 mantém 4 e confirmar 6 troca o saldo para 6.
+- [x] Incluir a ação **Remover PV temporários** para quando o efeito acabar. A ação zera o saldo temporário e preserva os PV atuais. Desabilitar a ação quando o saldo já estiver zerado.
+- [x] Atualizar o contador TEMP e as camadas dos corações ao confirmar uma mudança ou remover o saldo. Fechar ou cancelar o modal preserva o saldo. Testar entrada inválida, cancelamento, substituição, remoção e persistência.
 
 #### 5. Combate — Botão de descanso curto
 

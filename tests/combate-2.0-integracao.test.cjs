@@ -937,5 +937,5 @@ test("manifest visual carrega antes dos módulos que atualizam mãos e ataques",
     /js\/modules\/equipamentos\.js\?v=outros-catalogo-2&combate-v2-3/,
   );
   assert.match(html, /js\/modules\/combate\.js\?v=municoes-3&combate-v2-2/);
-  assert.match(html, /js\/modules\/combate-layout-v2\.js\?v=combate-v2-13/);
+  assert.match(html, /js\/modules\/combate-layout-v2\.js\?v=combate-v2-14/);
 });

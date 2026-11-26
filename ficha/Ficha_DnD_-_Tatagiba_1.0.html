@@ -12,7 +12,7 @@
       href="https://fonts.googleapis.com/css2?family=Metamorphous&family=MedievalSharp&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="../css/base.css?v=armas-proficiencias-2" />
+    <link rel="stylesheet" href="../css/base.css?v=armas-proficiencias-2&pv-temporarios-visual-1" />
     <link rel="stylesheet" href="../css/layout.css" />
     <link rel="stylesheet" href="../css/componentes.css" />
     <link rel="stylesheet" href="../css/abas.css" />
@@ -1440,18 +1440,11 @@
                       />
                     </div>
                     <div class="pv-ribbon">
-                      <span class="pv-ribbon-label">TEMP</span>
-                      <div class="pv-ribbon-temp-input">
-                        <span class="pv-ribbon-temp-plus">+</span>
-                        <input
-                          id="pvTemporario"
-                          type="number"
-                          min="0"
-                          step="1"
-                          value="0"
-                          aria-label="Pontos de vida temporários"
-                        />
-                      </div>
+                      <button id="btnGerenciarPvTemporarios" class="pv-temp-manager" type="button" aria-label="Gerenciar PV temporários">
+                        <span class="pv-ribbon-label">TEMP</span>
+                        <span class="pv-ribbon-temp-value"><span aria-hidden="true">+</span><span id="pvTemporarioContador">0</span></span>
+                      </button>
+                      <input id="pvTemporario" type="number" min="0" step="1" value="0" aria-label="Pontos de vida temporários" hidden />
                     </div>
                   </div>
 
@@ -1557,18 +1550,6 @@
                         </svg>
                       </div>
 
-                      <div class="pv-heart pv-heart-hidden" id="pvTempHeart">
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path
-                            class="pv-heart-bg"
-                            d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"
-                          />
-                          <path
-                            class="pv-heart-fill-blue"
-                            d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"
-                          />
-                        </svg>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -2845,9 +2826,6 @@
                         </div>
                         <div class="pv-heart">
                           <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pv-heart-bg" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/><path class="pv-heart-fill-red" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/></svg>
-                        </div>
-                        <div class="pv-heart pv-heart-hidden" id="ataquePvTempHeart">
-                          <svg viewBox="0 0 24 24" aria-hidden="true"><path class="pv-heart-bg" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/><path class="pv-heart-fill-blue" d="M12 21s-7-4.35-10-9a6 6 0 0 1 10-6 6 6 0 0 1 10 6c-3 4.65-10 9-10 9z"/></svg>
                         </div>
                         </div>
                       </div>
@@ -4639,10 +4617,26 @@
 
     <!-- ========================= -->
     <!-- UI / MODAIS / TABS -->
+    <dialog id="pvTemporarioDialogo" class="pv-temporario-dialogo" aria-labelledby="pvTemporarioTitulo">
+      <form method="dialog" class="pv-temporario-form" onsubmit="return false">
+        <h2 id="pvTemporarioTitulo">PV temporários</h2>
+        <p>Saldo atual: <strong><span id="pvTemporarioSaldo">0</span> PV</strong></p>
+        <label for="pvTemporariosRecebidos">PV temporários recebidos</label>
+        <input id="pvTemporariosRecebidos" type="number" min="1" step="1" inputmode="numeric" required />
+        <p id="pvTemporarioStatus" role="status" aria-live="polite"></p>
+        <div class="pv-temporario-acoes">
+          <button type="button" id="btnRemoverPvTemporarios">Remover PV temporários</button>
+          <button type="button" id="btnCancelarPvTemporarios">Cancelar</button>
+          <button type="button" id="btnConfirmarPvTemporarios">Confirmar</button>
+        </div>
+      </form>
+    </dialog>
+
     <!-- ========================= -->
     <script src="../js/domain/regras-combate.js"></script>
     <script src="../js/domain/condicoes-combate.js"></script>
-    <script src="../js/core/events.js?v=aba-url-1"></script>
+    <script src="../js/domain/pv-temporarios-visual.js"></script>
+    <script src="../js/core/events.js?v=pv-temporarios-visual-1"></script>
 
     <!-- ========================= -->
     <!-- MAGIAS -->
@@ -4653,7 +4647,7 @@
     <!-- COMBATE -->
     <!-- ========================= -->
     <script src="../js/modules/combate.js?v=municoes-3&combate-v2-2&escudos=1"></script>
-    <script src="../js/modules/combate-layout-v2.js?v=combate-v2-13"></script>
+    <script src="../js/modules/combate-layout-v2.js?v=combate-v2-14"></script>
 
     <!-- ========================= -->
     <!-- UI / MODAIS / TABS -->

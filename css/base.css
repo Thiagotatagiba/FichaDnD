@@ -800,6 +800,54 @@ body {
   transition: clip-path 0.2s ease;
 }
 
+.pv-heart-fill-temporary {
+  clip-path: inset(0 100% 0 0);
+  transition: clip-path 0.2s ease;
+}
+
+.pv-temp-blue { fill: #168be8; }
+.pv-temp-gold { fill: #e6b72e; }
+.pv-temp-white { fill: #fff; stroke: #536171; stroke-width: .65px; }
+
+.pv-heart { position: relative; }
+.pv-heart-temp-overflow {
+  position: absolute;
+  right: -3px;
+  top: -6px;
+  color: #fff;
+  font: 700 13px/1 sans-serif;
+  text-shadow: 0 1px 3px #111, 0 0 3px #111;
+}
+
+.pv-temp-manager {
+  display: grid;
+  gap: 2px;
+  width: 100%;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+.pv-ribbon-temp-value { display: flex; justify-content: center; gap: 3px; font-size: 18px; font-weight: 700; }
+.pv-temporario-dialogo {
+  width: min(440px, calc(100vw - 32px));
+  border: 2px solid #8b4513;
+  border-radius: 14px;
+  padding: 0;
+  color: #3f2712;
+  background: #fffaf2;
+  box-shadow: 0 24px 60px #21130a52;
+}
+.pv-temporario-dialogo::backdrop { background: #21130a8c; }
+.pv-temporario-form { display: grid; gap: 12px; padding: 20px; }
+.pv-temporario-form h2, .pv-temporario-form p { margin: 0; }
+.pv-temporario-form input { min-height: 44px; }
+.pv-temporario-acoes { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.pv-temporario-acoes button { min-height: 42px; padding: 8px 12px; }
+.pv-temporario-acoes button:disabled { opacity: .55; cursor: not-allowed; }
+
 .pv-heart-hidden {
   display: none;
 }

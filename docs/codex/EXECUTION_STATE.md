@@ -1234,3 +1234,15 @@ Por solicitação explícita do responsável, remover também o campo “Distân
 **Verificação:** o teste de regressão reproduz mão principal vazia com Maça selecionada na mão secundária e confirma que o estado mantém o item e a mão ativa. `node --check js/modules/equipamentos.js` passou; `node --test tests/seletor-equipamentos.test.cjs` passou **10/10**; `git diff --check` apontou apenas aviso de conversão LF/CRLF. Não recarreguei a ficha do navegador para preservar o estado de personagem aberto; a correção ficará visível após atualizar a página.
 
 **Extensão da regressão:** agora o teste chama diretamente `atualizarUIEmpunhadura` com estado secundário inicialmente vazio e verifica a seleção de ícone tanto para arma quanto para escudo. A execução desta extensão ficou pendente porque o executor de comandos deixou até comandos curtos sem saída durante a sessão; não declaro essa validação como aprovada.
+
+### TODO 4 — Camadas e gerenciamento de PV temporários — 2026-11-26
+
+Após o responsável confirmar o commit `7df70a4`, `git status --short` e `git diff` estavam limpos. A mudança atual implementa cinco corações proporcionais, três faixas temporárias sobrepostas (azul, ouro e branco), indicador de excedente acima de 3× PV máximos, contador TEMP e diálogo para conceder/substituir/remover PV temporários. O campo canônico `pvTemporario` e os fluxos existentes de dano e persistência foram mantidos.
+
+**Arquivos:** `js/domain/pv-temporarios-visual.js`, `js/core/events.js`, `ficha/Ficha_DnD_-_Tatagiba_1.0.html`, `css/base.css`, `tests/pv-temporarios-visual.test.cjs`.
+
+**Verificação:** novo teste — 3/3; testes focados de round-trip dos pools de PV e consumo de PV temporários — passaram; `node --check` nos dois módulos JS e `git diff --check` passaram. A suíte completa `node --test --test-reporter=dot tests/*.test.cjs` terminou com quatro falhas existentes fora deste escopo: expectativa antiga do SVG de adaga em `tests/armas-catalogo.test.cjs`, fallback de ícone e cor de SVG em `tests/combate-2.0-integracao.test.cjs`, e fixture do evento de dano em `tests/regras-combate.test.cjs`. Os demais testes passaram.
+
+**Aceite do TODO:** em 2026-11-26, o responsável informou “Pronto” e solicitou marcar como concluídos os itens deste bloco. Esse aceite fecha o TODO 4 conforme determinado pelo responsável; os gates gerais de interface (incluindo validação formal de G4 em desktop, móvel, teclado e temas) permanecem separados e não foram alterados. Nenhum JSON de personagem foi editado.
+
+**Complemento de interface — botão TEMP no painel de Combate (2026-11-26):** a partir do elemento `div.combat-v2-hp-controls` apontado pelo responsável, o Combate 2.0 agora cria o botão “TEMP” com nome acessível “Gerenciar PV temporários”. O botão dispara o mesmo evento do botão TEMP do quadro de PV e abre o mesmo diálogo, mantendo um único saldo. A página compartilhada foi inspecionada para confirmar o local; não foi recarregada durante a sessão ativa. `tests/pv-temporarios-visual.test.cjs` passou 3/3; `node --check` passou em `events.js`, `pv-temporarios-visual.js` e `combate-layout-v2.js`; `git diff --check` passou.

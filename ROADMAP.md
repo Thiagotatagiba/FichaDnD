@@ -65,6 +65,12 @@ A única exceção aprovada é a capacidade de carga: o padrão é Força × 7,5
 - Melhorar experiência de edição de ficha e usabilidade
 - Permitir melhor gestão de campanhas e personagens por perfil
 
+### Combate — camadas e gerenciamento de PV temporários — concluído
+
+- Cinco corações proporcionais mostram PV atuais em vermelho e até três faixas sobrepostas de PV temporários (azul, ouro e branco); o indicador **+** aparece acima do limite de 3× PV máximos e o contador TEMP mantém o saldo exato.
+- Os botões TEMP no quadro de PV e nos controles do painel de Combate abrem o mesmo diálogo para receber/substituir ou remover PV temporários. Concessão e remoção preservam PV atuais; o campo canônico `pvTemporario` mantém compatibilidade com dano, salvamento e importação/exportação.
+- **Evidências:** `tests/pv-temporarios-visual.test.cjs` — 3/3; testes direcionados de dano e round-trip dos pools de PV aprovados; `node --check` e `git diff --check` aprovados. A suíte geral foi executada, com quatro falhas em verificações não relacionadas (mapeamento da adaga, fallback de ícone, cor de SVG de proficiência e fixture de evento de dano). Fechamento do TODO solicitado pelo responsável em 2026-11-26.
+
 ### Proficiências de idiomas — implementação realizada; validação final pendente (Fase 4)
 
 - **Estado:** Em andamento. A interface e a compatibilidade foram implementadas; a execução da suíte automatizada e o round-trip de arquivo JSON ainda não foram validados.

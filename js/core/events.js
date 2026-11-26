@@ -75,7 +75,10 @@ function atualizarCoracoesVida() {
   const valorPorCoracao = vidaMax > 0 ? vidaMax / 5 : 0;
 
   document.querySelectorAll(".pv-hearts").forEach((grupo) => {
-    grupo.querySelectorAll(".pv-heart-fill-red").forEach((fill, i) => {
+    const coracoes = [...grupo.querySelectorAll(":scope > .pv-heart")].slice(0, 5);
+    coracoes.forEach((coracao, i) => {
+      const fill = coracao.querySelector(".pv-heart-fill-red");
+      if (!fill) return;
       let preenchimento = 0;
 
       if (valorPorCoracao > 0) {
@@ -85,23 +88,102 @@ function atualizarCoracoesVida() {
 
       preenchimento = Math.max(0, Math.min(1, preenchimento));
       fill.style.clipPath = `inset(0 ${100 - preenchimento * 100}% 0 0)`;
+
+      const svg = coracao.querySelector("svg");
+      if (!svg) return;
+      svg.querySelectorAll(".pv-heart-fill-temporary").forEach((layer) => layer.remove());
+      const tiers = ["pv-temp-blue", "pv-temp-gold", "pv-temp-white"];
+      tiers.forEach((className, faixa) => {
+        const cobertura = window.PvTemporariosVisual?.calcularCoberturaCamadaPvTemporario(
+          vidaTemp, vidaMax, faixa, i,
+        ) || 0;
+        if (cobertura <= 0) return;
+        const layer = fill.cloneNode(false);
+        layer.removeAttribute("style");
+        layer.setAttribute("class", `pv-heart-fill-temporary ${className}`);
+        layer.style.clipPath = `inset(0 ${100 - cobertura * 100}% 0 0)`;
+        svg.appendChild(layer);
+      });
     });
-
-    const tempHeart = grupo.querySelector(".pv-heart-fill-blue")?.parentElement
-      ?.parentElement;
-    const tempFill = tempHeart?.querySelector(".pv-heart-fill-blue");
-    if (!tempHeart || !tempFill) return;
-
-    if (vidaTemp > 0) {
-      tempHeart.classList.remove("pv-heart-hidden");
-      const preenchimentoAzul = vidaTemp > 0 ? 1 : 0;
-      tempFill.style.clipPath = `inset(0 ${100 - preenchimentoAzul * 100}% 0 0)`;
-    } else {
-      tempHeart.classList.add("pv-heart-hidden");
-      tempFill.style.clipPath = "inset(0 100% 0 0)";
+    const ultimoCoracao = coracoes[4];
+    if (ultimoCoracao) {
+      let excedente = ultimoCoracao.querySelector(".pv-heart-temp-overflow");
+      if (vidaTemp > vidaMax * 3 && vidaMax > 0) {
+        if (!excedente) {
+          excedente = document.createElement("span");
+          excedente.className = "pv-heart-temp-overflow";
+          excedente.textContent = "+";
+          excedente.setAttribute("aria-hidden", "true");
+          ultimoCoracao.appendChild(excedente);
+        }
+      } else excedente?.remove();
     }
+    grupo.setAttribute("aria-label", `PV atuais: ${vidaAtual} de ${vidaMax}; PV temporários: ${vidaTemp}`);
   });
 }
+
+function iniciarGerenciadorPvTemporario() {
+  const dialog = document.getElementById("pvTemporarioDialogo");
+  const abrir = document.getElementById("btnGerenciarPvTemporarios");
+  const campo = document.getElementById("pvTemporariosRecebidos");
+  const saldo = document.getElementById("pvTemporario");
+  const contador = document.getElementById("pvTemporarioContador");
+  const saldoModal = document.getElementById("pvTemporarioSaldo");
+  const remover = document.getElementById("btnRemoverPvTemporarios");
+  const status = document.getElementById("pvTemporarioStatus");
+  if (!dialog || !campo || !saldo) return;
+  const sincronizar = () => {
+    contador.textContent = saldo.value || "0";
+    if (saldoModal) saldoModal.textContent = saldo.value || "0";
+    remover.disabled = (parseInt(saldo.value, 10) || 0) <= 0;
+    atualizarCoracoesVida();
+  };
+  const salvar = () => {
+    saldo.dispatchEvent(new Event("input", { bubbles: true }));
+    saldo.dispatchEvent(new Event("change", { bubbles: true }));
+    sincronizar();
+  };
+  const abrirDialogo = () => {
+    campo.value = "";
+    status.textContent = "";
+    sincronizar();
+    dialog.showModal();
+    campo.focus();
+  };
+  abrir?.addEventListener("click", abrirDialogo);
+  document.addEventListener("ficha:gerenciar-pv-temporarios", abrirDialogo);
+  document.getElementById("btnCancelarPvTemporarios")?.addEventListener("click", () => dialog.close());
+  document.getElementById("btnConfirmarPvTemporarios")?.addEventListener("click", () => {
+    const valor = campo.valueAsNumber;
+    if (!Number.isInteger(valor) || valor <= 0) {
+      campo.setCustomValidity("Informe um número inteiro positivo.");
+      campo.reportValidity();
+      return;
+    }
+    campo.setCustomValidity("");
+    const atual = parseInt(saldo.value, 10) || 0;
+    if (valor > atual) {
+      saldo.value = String(valor);
+      salvar();
+      status.textContent = `PV temporários atualizados para ${valor}.`;
+      dialog.close();
+    } else {
+      status.textContent = `O saldo foi mantido em ${atual} PV temporários.`;
+    }
+  });
+  remover.addEventListener("click", () => {
+    saldo.value = "0";
+    salvar();
+    status.textContent = "PV temporários removidos.";
+    dialog.close();
+  });
+  campo.addEventListener("input", () => campo.setCustomValidity(""));
+  saldo.addEventListener("input", sincronizar);
+  saldo.addEventListener("change", sincronizar);
+  sincronizar();
+}
+
+iniciarGerenciadorPvTemporario();
 
 function normalizarPontosDeVida() {
   const campoAtual = document.getElementById("pvAtual");
@@ -111,7 +193,7 @@ function normalizarPontosDeVida() {
 
   let pvAtual = parseInt(String(campoAtual.value).replace(/[^\d-]/g, "")) || 0;
   let pvTotal = parseInt(String(campoTotal.value).replace(/[^\d-]/g, "")) || 0;
-  formatarPvTemporario();
+  const pvTemporario = formatarPvTemporario();
 
   if (pvAtual < 0) pvAtual = 0;
   if (pvTotal < 0) pvTotal = 0;
@@ -121,6 +203,12 @@ function normalizarPontosDeVida() {
 
   campoAtual.value = pvAtual;
   campoTotal.value = pvTotal;
+  const contadorTemporario = document.getElementById("pvTemporarioContador");
+  const saldoTemporarioModal = document.getElementById("pvTemporarioSaldo");
+  const botaoRemoverTemporarios = document.getElementById("btnRemoverPvTemporarios");
+  if (contadorTemporario) contadorTemporario.textContent = String(pvTemporario);
+  if (saldoTemporarioModal) saldoTemporarioModal.textContent = String(pvTemporario);
+  if (botaoRemoverTemporarios) botaoRemoverTemporarios.disabled = pvTemporario <= 0;
 
   atualizarCoracoesVida();
   atualizarResumoAtaquesConjuracao();
